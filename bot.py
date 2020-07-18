@@ -54,6 +54,9 @@ class DiscordBot(discord.Client):
         log.debug(f'Logged in as {self.user.name}')
         log.info(f'Invite with: {self.invite_url}')
         log.debug(f'Active in {", ".join([g.name for g in self.guilds])}')
+        await self.update_base_emojis()
+
+    async def update_base_emojis(self):
         for guild in self.guilds:
             if guild.name == self.BASE_GUILD:
                 for emoji in guild.emojis:
