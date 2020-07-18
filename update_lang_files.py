@@ -7,7 +7,7 @@ languages = (
     'German',
     'Russian',
 )
-base_url = 'https://gemsofwarconsole.blob.core.windows.net/data/Production480/Localization'
+base_url = 'https://gemsofwarconsole.blob.core.windows.net/data/Production500/Localization'
 
 for lang in languages:
     filename = f'GemsOfWar_{lang}.json'
