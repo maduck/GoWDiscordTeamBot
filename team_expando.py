@@ -19,8 +19,12 @@ class Translations:
     BASE_LANG = 'en'
     LANGUAGES = {
         'en': 'English',
+        'fr': 'French',
         'de': 'German',
         'ru': 'Russian',
+        'it': 'Italian',
+        'es': 'Spanish',
+        'cn': 'Chinese',
     }
 
     def __init__(self):
@@ -38,7 +42,7 @@ class Translations:
 
 
 class TeamExpander:
-    FORMAT = re.compile(r'(de|en|ru)?\[(\d+,?){1,13}\]', re.IGNORECASE)
+    FORMAT = re.compile(r'(en|fr|de|ru|it|es|cn)?\[(\d+,?){1,13}\]', re.IGNORECASE)
     COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown')
 
     def __init__(self):
