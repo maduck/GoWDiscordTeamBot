@@ -6,7 +6,7 @@ import discord
 
 from team_expando import TeamExpander
 
-TOKEN = os.getenv('DISCORD_TOKEN', 'NzMzMzk5MDUxNzk3NzkwODEw.XxCz3Q.kYbLJJFO0332ccp7ltqusDwUgJU')
+TOKEN = os.getenv('DISCORD_TOKEN')
 LOGLEVEL = logging.DEBUG
 
 formatter = logging.Formatter('%(asctime)-15s [%(levelname)s] %(message)s')
