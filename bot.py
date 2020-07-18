@@ -81,9 +81,10 @@ class DiscordBot(discord.Client):
             troops = [f'{self.my_emojis.get(t[0], f":{t[0]}:")} {t[1]}' for t in team['troops']]
             team_text = '\n'.join(troops)
             e.add_field(name=team['troops_title'], value=team_text, inline=True)
-            banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
+            if team['banner']:
+                banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
                             team['banner']['description']]
-            e.add_field(name=team['banner']['name'], value='\n'.join(banner_texts), inline=True)
+                e.add_field(name=team['banner']['name'], value='\n'.join(banner_texts), inline=True)
             if team['class']:
                 e.add_field(name=f'{team["class_title"]}: {team["class"]}', value='\n'.join(team['talents']),
                             inline=False)
