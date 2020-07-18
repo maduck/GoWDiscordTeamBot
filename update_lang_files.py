@@ -4,8 +4,12 @@ import requests
 
 languages = (
     'English',
+    'French',
     'German',
+    'Italian',
     'Russian',
+    'Spanish',
+    'Chinese',
 )
 base_url = 'https://gemsofwarconsole.blob.core.windows.net/data/Production500/Localization'
 
