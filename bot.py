@@ -68,6 +68,8 @@ class DiscordBot(discord.Client):
     SEARCH_COMMANDS = (
         {'key': 'troop',
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?!troop (?P<search>.*)$')},
+        {'key': 'weapon',
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?!weapon (?P<search>.*)$')},
     )
 
     def __init__(self, *args, **kwargs):
