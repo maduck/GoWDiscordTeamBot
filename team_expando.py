@@ -234,5 +234,5 @@ class TeamExpander:
             self.translate_weapon(result, lang)
             return [result]
 
-    def translate_weapon(self, result, lang):
-        pass
+    def translate_weapon(self, weapon, lang):
+        weapon['color_code'] = "".join(weapon['colors'])
