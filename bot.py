@@ -203,14 +203,15 @@ class DiscordBot(discord.Client):
         else:
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title=f'Troop search `{search_term}` found {len(result)} matches.', color=color)
-            troops_found = '\n'.join([f'{t["name"]} ({t["id"]})' for t in result])
+            troops_found = [f'{t["name"]} ({t["id"]})' for t in result]
             troop_chunks = chunks(troops_found, 30)
             """
             if len(troops_found) > 1024:
                 troops_found = troops_found[:992] + '\n...\n(list too long to display)'
             """
-            for i, chunk in enumerate(troop_chunks, start=1):
-                e.add_field(name=f'results {i} - {i + len(chunk) - 1}', value=chunk)
+            for i, chunk in enumerate(troop_chunks):
+                chunk_message = '\n'.join(chunk)
+                e.add_field(name=f'results {30 * i} - {30 * i + len(chunk) - 1}', value=chunk_message)
 
         await message.channel.send(embed=e)
 
