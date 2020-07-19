@@ -46,9 +46,10 @@ async def show_help(message):
                       'fr, de, ru, it, es, cn) in front of the team code, e.g. `de[1075,6251,6699,6007,3010,3,1,1,1,'
                       '3,1,1,14007]`',
                 inline=False)
+    e.add_field(name='─────────────────────────────────────', value='┈')
     e.add_field(name='Troop search',
-                value='**Basis** enter `!troop <search>`, e.g. `!troop elemaugrim`.\n\n'
-                      'Search is _not_ case sensitive. Spaces don\'t matter.'
+                value='**Basics** enter `!troop <search>`, e.g. `!troop elemaugrim`.\n'
+                      'Search is _not_ case sensitive. Spaces don\'t matter.\n\n'
                       '**Language support** All GoW languages are supported, put the two country code letters (en, '
                       'fr, de, ru, it, es, cn) in front of the command, e.g. `de!troop elemaugrim`.',
                 inline=False)
