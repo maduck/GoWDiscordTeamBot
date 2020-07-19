@@ -14,16 +14,25 @@ log = logging.getLogger(__name__)
 log.setLevel(LOGLEVEL)
 log.addHandler(handler)
 
-
-RARITIES = (
+TROOP_RARITIES = (
     'Common',
     'Rare',
     'Ultra-Rare',
     'Epic',
     'Legendary',
     'Mythic',
+)
+
+WEAPON_RARITIES = (
+    'Common',
+    'Uncommon',
+    'Ultra-Rare',
+    'Epic',
+    'Legendary',
+    'Mythic',
     'Doomed',
 )
+
 
 class Translations:
     BASE_LANG = 'en'
@@ -226,7 +235,7 @@ class TeamExpander:
         troop['color_code'] = "".join(troop['colors'])
         troop['rarity_title'] = self.translations.get('[RARITY]', lang)
         troop['raw_rarity'] = troop['rarity']
-        rarity_number = RARITIES.index(troop['rarity'])
+        rarity_number = TROOP_RARITIES.index(troop['rarity'])
         troop['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
         troop['traits_title'] = self.translations.get('[TRAITS]', lang)
         traits = []
@@ -274,7 +283,8 @@ class TeamExpander:
         weapon['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
         weapon['rarity_title'] = self.translations.get('[RARITY]', lang)
         weapon['raw_rarity'] = weapon['rarity']
-        rarity_number = RARITIES.index(weapon['rarity'])
+
+        rarity_number = WEAPON_RARITIES.index(weapon['rarity'])
         weapon['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
         spell = self.spells[weapon['spell_id']]
         weapon['spell'] = {
