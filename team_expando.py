@@ -271,4 +271,4 @@ class TeamExpander:
         weapon['roles_title'] = self.translations.get('[WEAPON_ROLE]', lang)
         weapon['roles'] = [self.translations.get(role, lang) for role in weapon['roles']]
         weapon['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
-        weapon['type'] = self.translations.get(f'[WEAPONTYPE_{weapon["type"]}]', lang)
+        weapon['type'] = self.translations.get(f'[WEAPONTYPE_{weapon["type"].upper()}]', lang)
