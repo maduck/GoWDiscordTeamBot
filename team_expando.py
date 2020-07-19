@@ -98,6 +98,7 @@ class TeamExpander:
         for weapon in data['Weapons']:
             colors = [c.replace('Color', '').lower() for c, v in weapon['ManaColors'].items() if v]
             self.weapons[weapon['Id']] = {
+                'id': weapon['Id'],
                 'name': f'[SPELL{weapon["SpellId"]}_NAME]',
                 'description': f'[SPELL{weapon["SpellId"]}_DESC]',
                 'colors': sorted(colors),
@@ -256,4 +257,5 @@ class TeamExpander:
 
     def translate_weapon(self, weapon, lang):
         weapon['name'] = self.translations.get(weapon['name'], lang)
+        weapon['description'] = self.translations.get(weapon['description'], lang)
         weapon['color_code'] = "".join(weapon['colors'])
