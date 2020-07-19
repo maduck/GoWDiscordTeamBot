@@ -41,6 +41,10 @@ class Translations:
         return self.translations[lang].get(key, key)
 
 
+def extract_search_tag(search_term):
+    return search_term.lower().replace(' ', '').replace('\'', '')
+
+
 class TeamExpander:
     FORMAT = re.compile(r'(en|fr|de|ru|it|es|cn)?\[(\d+,?){1,13}\]', re.IGNORECASE)
     COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown')
@@ -191,8 +195,8 @@ class TeamExpander:
         else:
             possible_matches = []
             for troop in self.troops.values():
-                translated_name = self.translations.get(troop['name'], lang).lower().replace(' ', '')
-                real_search = search_term.lower().replace(' ', '')
+                translated_name = extract_search_tag(self.translations.get(troop['name'], lang))
+                real_search = extract_search_tag(search_term)
                 if real_search == translated_name:
                     result = troop.copy()
                     self.translate_troop(result, lang)
@@ -235,4 +239,5 @@ class TeamExpander:
             return [result]
 
     def translate_weapon(self, weapon, lang):
+        weapon['name'] = self.translations.get(weapon['name'], lang)
         weapon['color_code'] = "".join(weapon['colors'])
