@@ -97,15 +97,16 @@ class DiscordBot(discord.Client):
         if result:
             mana = self.my_emojis.get(result['color_code'])
             message_lines = [
-                f'**Description** {result["description"]}',
+                result["description"],
+                '',
                 f'**Spell** {result["spell_id"]}',
-                f'**Rarity** {result["rarity"]}',
-                f'**Roles** {", ".join(result["roles"])}',
+                f'**{result["rarity_title"]}** {result["rarity"]}',
+                f'**{result["roles_title"]}** {", ".join(result["roles"])}',
                 f'**Type** {result["type"]}',
             ]
             e.add_field(name=f'{mana} {result["name"]}', value='\n'.join(message_lines))
             traits = '\n'.join(result['traits'])
-            e.add_field(name='Traits', value=traits)
+            e.add_field(name=result['traits_title'], value=traits, inline=False)
         else:
             e.add_field(name=search_term, value='did not yield any result')
         await message.channel.send(embed=e)
