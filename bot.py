@@ -112,9 +112,8 @@ class DiscordBot(discord.Client):
             traits = '\n'.join(trait_list)
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
-            troops_found = [t['name'] for t in result]
-            e.add_field(name=search_term, value='yielded multiple results')
-            e.add_field(name='matching troops', value='\n'.join(troops_found))
+            troops_found = '\n'.join([f'{t["name"] (t["id"])}' for t in result])
+            e.add_field(name=f'{search_term} matches more than one troop.', value=troops_found)
 
         await message.channel.send(embed=e)
 
