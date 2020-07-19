@@ -126,6 +126,21 @@ class DiscordBot(discord.Client):
         if "[" in message.content:
             await self.handle_team_code(message)
 
+    async def handle_weapon_search(self, message, search_term, lang):
+        result = self.expander.search_weapon(search_term, lang)
+        if not result:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Weapon search', color=color)
+            e.add_field(name=search_term, value='did not yield any result')
+        elif len(result) == 1:
+            weapon = result[0]
+            rarity_color = RARITY_COLORS.get(weapon['rarity'], RARITY_COLORS['Mythic'])
+            color = discord.Color.from_rgb(*rarity_color)
+            e = discord.Embed(title='Weapon search', color=color)
+            mana = self.my_emojis.get(weapon['color_code'])
+            e.add_field(name='result', value=str(weapon))
+        await message.channel.send(embed=e)
+
     async def handle_troop_search(self, message, search_term, lang):
         result = self.expander.search_troop(search_term, lang)
 

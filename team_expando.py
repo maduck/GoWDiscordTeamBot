@@ -223,3 +223,12 @@ class TeamExpander:
             'description': self.translations.get(spell['description'], lang),
         }
         troop['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+
+    def search_weapon(self, search_term, lang):
+        if search_term.isdigit():
+            result = self.weapons.get(int(search_term)).copy()
+            self.translate_weapon(result, lang)
+            return [result]
+
+    def translate_weapon(self, result, lang):
+        pass
