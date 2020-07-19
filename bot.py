@@ -112,7 +112,6 @@ class DiscordBot(discord.Client):
             traits = '\n'.join(trait_list)
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
-            log.debug(result)
             troops_found = '\n'.join([f'{t["name"]} ({t["id"]})' for t in result])
             e.add_field(name=f'{search_term} matches more than one troop.', value=troops_found)
 
