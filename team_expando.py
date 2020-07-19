@@ -102,9 +102,11 @@ class TeamExpander:
                 'spell_id': troop['SpellId'],
                 'traits': [self.traits.get(trait, trait) for trait in troop['Traits']],
                 'rarity': troop['TroopRarity'],
-                'type': troop['TroopType'],
+                'types': [troop['TroopType']],
                 'roles': troop['TroopRoleArray'],
             }
+            if 'TroopType2' in troop:
+                troop['types'].append('TroopType2')
         for kingdom in data['Kingdoms']:
             color_lookup_names = [f'[GEM_{c.upper()}]' for c in self.COLORS]
             color_names = [self.translations.get(c).lower() for c in color_lookup_names]
@@ -248,7 +250,10 @@ class TeamExpander:
         troop['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
         troop['roles'] = [self.translations.get(role, lang) for role in troop['roles']]
         troop['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
-        troop['type'] = self.translations.get(f'[TROOPTYPE_{troop["type"].upper()}]', lang)
+        types = [
+            self.translations.get(f'[TROOPTYPE_{type.upper()}]', lang) for type in troop['types']
+        ]
+        troop['type'] = ' / '.join(types)
         spell = self.spells[troop['spell_id']]
         troop['spell'] = {
             'name': self.translations.get(spell['name'], lang),
