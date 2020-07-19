@@ -95,7 +95,8 @@ class DiscordBot(discord.Client):
         result = self.expander.search_troop(search_term, lang)
         e = discord.Embed(title='Troop search')
         if result:
-            e.add_field(name=result['name'], value=self.my_emojis.get(result['color_code']))
+            mana = self.my_emojis.get(result['color_code'])
+            e.add_field(name=f'{mana} {result["name"]}', value='this feature will be added soon')
         else:
             e.add_field(name=search_term, value='did not yield any result')
         await message.channel.send(embed=e)
