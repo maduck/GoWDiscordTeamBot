@@ -19,6 +19,13 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 log.addHandler(handler)
 
+RARITY_COLORS = {
+    'Common': (255, 253, 255),
+    'Rare': (84, 168, 31),
+    'Ultra-Rare': (32, 113, 254),
+    'Legendary': (246, 161, 32),
+    'Mythic': (19, 227, 246),
+}
 
 async def pluralize_author(author):
     if author[-1] == 's':
@@ -93,11 +100,16 @@ class DiscordBot(discord.Client):
 
     async def handle_troop_search(self, message, search_term, lang):
         result = self.expander.search_troop(search_term, lang)
-        e = discord.Embed(title='Troop search')
+
         if not result:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Troop search', color=color)
             e.add_field(name=search_term, value='did not yield any result')
         elif len(result) == 1:
             troop = result[0]
+            rarity_color = RARITY_COLORS.get(troop['raw_rarity'], RARITY_COLORS['Mythic'])
+            color = discord.Color.from_rgb(*rarity_color)
+            e = discord.Embed(title='Troop search', color=color)
             mana = self.my_emojis.get(troop['color_code'])
             message_lines = [
                 troop["description"],
@@ -112,6 +124,8 @@ class DiscordBot(discord.Client):
             traits = '\n'.join(trait_list)
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
+            color = discord.Color.from_rgb(255, 255, 255)
+            e = discord.Embed(title='Troop search', color=color)
             troops_found = '\n'.join([f'{t["name"]} ({t["id"]})' for t in result])
             e.add_field(name=f'{search_term} matches more than one troop.', value=troops_found)
 

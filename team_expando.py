@@ -200,6 +200,7 @@ class TeamExpander:
         troop['description'] = self.translations.get(troop['description'], lang)
         troop['color_code'] = "".join(troop['colors'])
         troop['rarity_title'] = self.translations.get('[RARITY]', lang)
+        troop['raw_rarity'] = troop['rarity']
         troop['rarity'] = self.translations.get(troop['rarity'], lang)
         troop['traits_title'] = self.translations.get('[TRAITS]', lang)
         traits = []
