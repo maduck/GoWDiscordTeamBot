@@ -37,7 +37,7 @@ async def pluralize_author(author):
     return author
 
 
-def show_help(message):
+async def show_help(message):
     e = discord.Embed(title='help')
     e.add_field(name='Team codes',
                 value='**Basis** Just paste your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. '
