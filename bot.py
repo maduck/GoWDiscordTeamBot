@@ -73,8 +73,20 @@ class DiscordBot(discord.Client):
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
-        if "[" in message.content:
+        if message.content.startswith('!troop'):
+            await self.handle_troop_search(message)
+        elif "[" in message.content:
             await self.handle_team_code(message)
+
+    async def handle_troop_search(self, message):
+        search_term = message.content[7:]
+        result = self.expander.search_troop(search_term)
+        e = discord.Embed(title='Troop search')
+        if result:
+            e.add_field(name=result['name'], value=self.my_emojis.get(result['color_code']))
+        else:
+            e.add_field(name=search_term, value='did not yield any result')
+        await message.channel.send(embed=e)
 
     async def handle_team_code(self, message):
         team = self.expander.get_team_from_message(message.content)
