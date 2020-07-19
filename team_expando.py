@@ -237,7 +237,9 @@ class TeamExpander:
         troop['color_code'] = "".join(troop['colors'])
         troop['rarity_title'] = self.translations.get('[RARITY]', lang)
         troop['raw_rarity'] = troop['rarity']
-        rarity_number = TROOP_RARITIES.index(troop['rarity'])
+        rarity_number = 1
+        if troop['rarity'] in TROOP_RARITIES:
+            rarity_number = TROOP_RARITIES.index(troop['rarity'])
         troop['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
         troop['traits_title'] = self.translations.get('[TRAITS]', lang)
         traits = []
