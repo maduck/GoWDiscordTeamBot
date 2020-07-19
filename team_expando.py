@@ -183,7 +183,7 @@ class TeamExpander:
                     break
         if result:
             result['name'] = self.translations.get(result['name'], lang)
+            result['description'] = self.translations.get(result['description'], lang)
             result['color_code'] = "".join(result['colors'])
+            result['traits'] = [self.translations.get(trait, lang) for trait in result['traits']]
         return result
-
-
