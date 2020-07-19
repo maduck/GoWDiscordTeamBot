@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging
 import os
+import re
 
 import discord
 
@@ -31,6 +32,10 @@ class DiscordBot(discord.Client):
     BOT_NAME = 'Garys GoW Team Bot'
     BASE_GUILD = 'GoW Bot Dev'
     VERSION = '0.1'
+    SEARCH_COMMANDS = (
+        {'key': 'troop',
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?!troop (?P<search>.*)$')},
+    )
 
     def __init__(self, *args, **kwargs):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
@@ -73,14 +78,21 @@ class DiscordBot(discord.Client):
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
-        if message.content.startswith('!troop'):
-            await self.handle_troop_search(message)
-        elif "[" in message.content:
+        for command in self.SEARCH_COMMANDS:
+            match = command['search'].match(message.content)
+            if match:
+                function_name = f'handle_{command["key"]}_search'
+                search_function = getattr(self, function_name)
+                groups = match.groupdict()
+                search_term = groups['search']
+                lang = groups['lang']
+                await search_function(search_term, lang)
+                return
+        if "[" in message.content:
             await self.handle_team_code(message)
 
-    async def handle_troop_search(self, message):
-        search_term = message.content[7:]
-        result = self.expander.search_troop(search_term)
+    async def handle_troop_search(self, search_term, lang):
+        result = self.expander.search_troop(search_term, lang)
         e = discord.Embed(title='Troop search')
         if result:
             e.add_field(name=result['name'], value=self.my_emojis.get(result['color_code']))
