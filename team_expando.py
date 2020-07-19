@@ -67,7 +67,7 @@ class TeamExpander:
                 'cost': spell['Cost'],
             }
         for trait in data['Traits']:
-            self.traits[trait['Code']] = trait['Name']
+            self.traits[trait['Code']] = {'name': trait['Name'], 'description': trait['Description']}
         for troop in data['Troops']:
             colors = [c.replace('Color', '').lower() for c, v in troop['ManaColors'].items() if v]
             self.troops[troop['Id']] = {
@@ -195,7 +195,10 @@ class TeamExpander:
             result['rarity_title'] = self.translations.get('[RARITY]', lang)
             result['rarity'] = self.translations.get(result['rarity'], lang)
             result['traits_title'] = self.translations.get('[TRAITS]', lang)
-            result['traits'] = [self.translations.get(trait, lang) for trait in result['traits']]
+            result['traits'] = [{
+                'name': self.translations.get(trait['name'], lang),
+                'description': self.translations.get(trait['description'], lang),
+            } for trait in result['traits']],
             result['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
             result['roles'] = [self.translations.get(role, lang) for role in result['roles']]
             result['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
@@ -204,5 +207,6 @@ class TeamExpander:
                 'name': self.translations.get(spell['name'], lang),
                 'description': self.translations.get(spell['description'], lang),
             }
-            result['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+        result['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+
         return result
