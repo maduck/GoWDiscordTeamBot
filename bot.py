@@ -104,7 +104,7 @@ class DiscordBot(discord.Client):
         if message.author.id == self.user.id:
             return
         if message.content.lower().strip() == '!help':
-            show_help(message)
+            await show_help(message)
         for command in self.SEARCH_COMMANDS:
             match = command['search'].match(message.content)
             if match:
