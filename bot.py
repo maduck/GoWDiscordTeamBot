@@ -40,21 +40,21 @@ async def pluralize_author(author):
 async def show_help(message):
     e = discord.Embed(title='help')
     e.add_field(name='Team codes',
-                value='· __Basics__: Just post your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
+                value='• __Basics__: Just post your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
                       '14007]`. The bot will automatically answer with the troops posted in the code. The code can be '
                       'embedded within more text, and does not need to stand alone.\n\n '
-                      '· __Language support__: All GoW languages are supported, put the two country code letters (en, '
+                      '• __Language support__: All GoW languages are supported, put the two country code letters (en, '
                       'fr, de, ru, it, es, cn) in front of the team code, e.g. `de[1075,6251,6699,6007,3010,3,1,1,1,'
                       '3,1,1,14007]`',
                 inline=False)
     e.add_field(name='─────────────────────────────────────', value='┈')
     e.add_field(name='Troop search',
-                value='· __Basics__: enter `!troop <search>`, e.g. `!troop elemaugrim`.\n'
-                      '· __Rules__:\n'
+                value='• __Basics__: enter `!troop <search>`, e.g. `!troop elemaugrim`.\n'
+                      '• __Rules__:\n'
                       '  - Search is _not_ case sensitive.\n'
                       '  - Multiple results will show a list of matched troops.\n'
                       '  - Spaces don\'t matter.\n\n'
-                      '· __Language support__: All GoW languages are supported, put the two country code letters (en, '
+                      '• __Language support__: All GoW languages are supported, put the two country code letters (en, '
                       'fr, de, ru, it, es, cn) in front of the command, e.g. `de!troop elemaugrim`. Localized '
                       'searches will only look for troop names with their respective translations.',
                 inline=False)
