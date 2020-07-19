@@ -167,7 +167,7 @@ class TeamExpander:
         for talent_no, talent_code in enumerate(result['talents']):
             talent = '-'
             if talent_code > 0:
-                talent = self.translations.get(result['class_talents'][talent_code - 1][talent_no], lang)
+                talent = self.translations.get(result['class_talents'][talent_code - 1][talent_no]['name'], lang)
             new_talents.append(talent)
         result['talents'] = new_talents
 

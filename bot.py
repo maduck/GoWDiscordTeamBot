@@ -37,6 +37,22 @@ async def pluralize_author(author):
     return author
 
 
+def show_help(message):
+    e = discord.Embed(title='help')
+    e.add_field(name='Team codes',
+                value='**Basis** Just paste your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. '
+                      'The bot will automatically\n '
+                      '**Language support** All GoW languages are supported, put the two country code letters (en, '
+                      'fr, de, ru, it, es, cn) in front of the team code, e.g. `de[1075,6251,6699,6007,3010,3,1,1,1,'
+                      '3,1,1,14007]`')
+    e.add_field(name='Troop search',
+                value='**Basis** enter `!troop <search>`, e.g. `!troop elemaugrim`.\n'
+                      'Search is _not_ case sensitive. Spaces don\'t matter.'
+                      '**Language support** All GoW languages are supported, put the two country code letters (en, '
+                      'fr, de, ru, it, es, cn) in front of the command, e.g. `de!troop elemaugrim`.')
+    await message.channel.send(embed=e)
+
+
 class DiscordBot(discord.Client):
     BOT_NAME = 'Garys GoW Team Bot'
     BASE_GUILD = 'GoW Bot Dev'
@@ -87,6 +103,8 @@ class DiscordBot(discord.Client):
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
+        if message.content.lower().strip() == '!help':
+            show_help(message)
         for command in self.SEARCH_COMMANDS:
             match = command['search'].match(message.content)
             if match:
