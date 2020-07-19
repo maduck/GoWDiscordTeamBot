@@ -31,7 +31,7 @@ async def pluralize_author(author):
 class DiscordBot(discord.Client):
     BOT_NAME = 'Garys GoW Team Bot'
     BASE_GUILD = 'GoW Bot Dev'
-    VERSION = '0.1'
+    VERSION = '0.2'
     SEARCH_COMMANDS = (
         {'key': 'troop',
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?!troop (?P<search>.*)$')},
