@@ -199,7 +199,9 @@ class TeamExpander:
             result['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
             result['roles'] = [self.translations.get(role, lang) for role in result['roles']]
             result['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
-            result['spell']['description'] = self.translations.get(result['spell']['description'], lang)
-            result['spell']['name'] = self.translations.get(result['spell']['name'], lang)
+            result['spell'] = {
+                'name': self.translations.get(result['spell']['name'], lang),
+                'description': self.translations.get(result['spell']['description'], lang),
+            }
             result['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
         return result
