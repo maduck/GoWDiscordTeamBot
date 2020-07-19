@@ -105,9 +105,9 @@ class DiscordBot(discord.Client):
                 f'**Type** {result["type"]}',
             ]
             e.add_field(name=f'{mana} {result["name"]}', value='\n'.join(message_lines))
-            trait_list = [f'{trait["name"]} ({trait["description"]})' for trait in result['traits']]
+            trait_list = [f'**{trait["name"]}** - {trait["description"]})' for trait in result['traits']]
             traits = '\n'.join(trait_list)
-            e.add_field(name=result['traits_title'], value=traits, inline=False)
+            e.add_field(name=result["traits_title"], value=traits, inline=False)
         else:
             e.add_field(name=search_term, value='did not yield any result')
         await message.channel.send(embed=e)

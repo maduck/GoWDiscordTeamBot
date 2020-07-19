@@ -195,10 +195,13 @@ class TeamExpander:
             result['rarity_title'] = self.translations.get('[RARITY]', lang)
             result['rarity'] = self.translations.get(result['rarity'], lang)
             result['traits_title'] = self.translations.get('[TRAITS]', lang)
-            result['traits'] = [{
-                'name': self.translations.get(trait['name'], lang),
-                'description': self.translations.get(trait['description'], lang),
-            } for trait in result['traits']],
+            traits = []
+            for trait in result['traits']:
+                traits.append({
+                    'name': self.translations.get(trait['name'], lang),
+                    'description': self.translations.get(trait['description'], lang)
+                })
+            result['traits'] = traits
             result['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
             result['roles'] = [self.translations.get(role, lang) for role in result['roles']]
             result['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
