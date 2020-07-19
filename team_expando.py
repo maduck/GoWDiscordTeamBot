@@ -61,7 +61,7 @@ class TeamExpander:
             data = json.load(f)
 
         for spell in data['Spells']:
-            self.spells[spell['id']] = {
+            self.spells[spell['Id']] = {
                 'name': spell['Name'],
                 'description': spell['Description'],
                 'cost': spell['Cost'],
