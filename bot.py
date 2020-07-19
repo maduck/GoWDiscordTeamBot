@@ -141,6 +141,11 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='Weapon search', color=color)
             mana = self.my_emojis.get(weapon['color_code'])
             e.add_field(name='result', value=str(weapon))
+        else:
+            color = discord.Color.from_rgb(255, 255, 255)
+            e = discord.Embed(title='Weapon search', color=color)
+            weapons_found = '\n'.join([f'{w["name"]} ({w["id"]})' for w in result])
+            e.add_field(name=f'{search_term} matches more than one weapon.', value=weapons_found)
         await message.channel.send(embed=e)
 
     async def handle_troop_search(self, message, search_term, lang):

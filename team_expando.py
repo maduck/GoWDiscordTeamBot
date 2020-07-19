@@ -237,6 +237,20 @@ class TeamExpander:
             result = self.weapons.get(int(search_term)).copy()
             self.translate_weapon(result, lang)
             return [result]
+        else:
+            possible_matches = []
+            for weapon in self.weapons.values():
+                translated_name = extract_search_tag(self.translations.get(weapon['name'], lang))
+                real_search = extract_search_tag(search_term)
+                if real_search == translated_name:
+                    result = weapon.copy()
+                    self.translate_troop(result, lang)
+                    return [result]
+                elif real_search in translated_name:
+                    result = weapon.copy()
+                    self.translate_troop(result, lang)
+                    possible_matches.append(result)
+            return possible_matches
 
     def translate_weapon(self, weapon, lang):
         weapon['name'] = self.translations.get(weapon['name'], lang)
