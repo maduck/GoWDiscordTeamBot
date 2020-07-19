@@ -228,7 +228,7 @@ class TeamExpander:
         troop['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
         troop['roles'] = [self.translations.get(role, lang) for role in troop['roles']]
         troop['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
-        troop['type'] = self.translations.get(f'[TROOPTYPE_{troop["type"]}]', lang)
+        troop['type'] = self.translations.get(f'[TROOPTYPE_{troop["type"].upper()}]', lang)
         spell = self.spells[troop['spell_id']]
         troop['spell'] = {
             'name': self.translations.get(spell['name'], lang),
