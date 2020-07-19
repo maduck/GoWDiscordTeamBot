@@ -59,6 +59,7 @@ class TeamExpander:
         self.talent_trees = {}
         self.translations = Translations()
         self.populate_world_data()
+        log.debug('Done populating world data.')
 
     def populate_world_data(self):
         with open('World.json', encoding='utf8') as f:
@@ -98,6 +99,7 @@ class TeamExpander:
             colors = [c.replace('Color', '').lower() for c, v in weapon['ManaColors'].items() if v]
             self.weapons[weapon['Id']] = {
                 'name': f'[SPELL{weapon["SpellId"]}_NAME]',
+                'description': f'[SPELL{weapon["SpellId"]}_DESC]',
                 'colors': sorted(colors),
                 'rarity': weapon['WeaponRarity'],
                 'type': weapon['Type'],
