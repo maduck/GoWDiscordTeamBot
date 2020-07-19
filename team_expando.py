@@ -71,6 +71,7 @@ class TeamExpander:
         for troop in data['Troops']:
             colors = [c.replace('Color', '').lower() for c, v in troop['ManaColors'].items() if v]
             self.troops[troop['Id']] = {
+                'id': troop['Id'],
                 'name': troop['Name'],
                 'colors': sorted(colors),
                 'description': troop['Description'],
