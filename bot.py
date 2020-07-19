@@ -19,6 +19,14 @@ log.setLevel(logging.DEBUG)
 log.addHandler(handler)
 
 
+async def pluralize_author(author):
+    if author[-1] == 's':
+        author += "'"
+    else:
+        author += "'s"
+    return author
+
+
 class DiscordBot(discord.Client):
     BOT_NAME = 'Garys GoW Team Bot'
     BASE_GUILD = 'GoW Bot Dev'
@@ -73,10 +81,7 @@ class DiscordBot(discord.Client):
             log.debug(f'[{message.guild}][{message.channel}] sending result to {message.author.display_name}: {team}')
             color = discord.Color.from_rgb(19, 227, 246)
             author = message.author.display_name
-            if author[-1] == 's':
-                author += "'"
-            else:
-                author += "'s"
+            author = await pluralize_author(author)
             e = discord.Embed(title=f"{author} team", color=color)
             troops = [f'{self.my_emojis.get(t[0], f":{t[0]}:")} {t[1]}' for t in team['troops']]
             team_text = '\n'.join(troops)
