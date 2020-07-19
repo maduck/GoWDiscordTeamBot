@@ -261,6 +261,7 @@ class TeamExpander:
         weapon['description'] = self.translations.get(weapon['description'], lang)
         weapon['color_code'] = "".join(weapon['colors'])
         weapon['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+        weapon['rarity_title'] = self.translations.get('[RARITY]', lang)
         weapon['raw_rarity'] = weapon['rarity']
         spell = self.spells[weapon['spell_id']]
         weapon['spell'] = {
