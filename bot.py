@@ -199,7 +199,9 @@ class DiscordBot(discord.Client):
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title='Troop search', color=color)
             troops_found = '\n'.join([f'{t["name"]} ({t["id"]})' for t in result])
-            e.add_field(name=f'{search_term} matches more than one troop.', value=troops_found)
+            if len(troops_found) > 1024:
+                troops_found = troops_found[:992] + '\n...\n(list too long to display)'
+            e.add_field(name=f'{search_term} matches {len(result)} troops.', value=troops_found)
 
         await message.channel.send(embed=e)
 
