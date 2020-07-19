@@ -20,12 +20,14 @@ log.setLevel(logging.DEBUG)
 log.addHandler(handler)
 
 RARITY_COLORS = {
-    'Common': (255, 253, 255),
+    'Common': (255, 255, 255),
     'Rare': (84, 168, 31),
     'Ultra-Rare': (32, 113, 254),
+    'Epic': (151, 54, 232),
     'Legendary': (246, 161, 32),
     'Mythic': (19, 227, 246),
 }
+
 
 async def pluralize_author(author):
     if author[-1] == 's':
