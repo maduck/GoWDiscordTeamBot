@@ -136,11 +136,20 @@ class DiscordBot(discord.Client):
             e.add_field(name=search_term, value='did not yield any result')
         elif len(result) == 1:
             weapon = result[0]
-            rarity_color = RARITY_COLORS.get(weapon['rarity'], RARITY_COLORS['Mythic'])
+            rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Weapon search', color=color)
             mana = self.my_emojis.get(weapon['color_code'])
-            e.add_field(name='result', value=str(weapon))
+            message_lines = [
+                weapon["description"],
+                '',
+                f'**{weapon["spell_title"]}** {weapon["spell"]["name"]}: {weapon["spell"]["description"]}',
+                f'**{weapon["rarity_title"]}** {weapon["rarity"]}',
+                f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
+                f'**Type** {weapon["type"]}',
+            ]
+            e.add_field(name=f'{mana} {troop["name"]}', value='\n'.join(message_lines))
+
         else:
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title='Weapon search', color=color)
