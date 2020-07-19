@@ -190,7 +190,7 @@ class TeamExpander:
                 translated_name = self.translations.get(troop['name'], lang).lower().replace(' ', '')
                 real_search = search_term.lower().replace(' ', '')
                 if real_search == translated_name:
-                    result = self.troops.get(int(search_term)).copy()
+                    result = troop.copy()
                     self.translate_troop(result, lang)
                     return [result]
                 elif real_search in translated_name:
