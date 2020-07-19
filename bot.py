@@ -26,6 +26,7 @@ RARITY_COLORS = {
     'UltraRare': (150, 54, 232),
     'Epic': (246, 161, 32),
     'Legendary': (19, 227, 246),
+    'Mythic': (0, 0, 0),
     'Doomed': (186, 0, 0),
 }
 
