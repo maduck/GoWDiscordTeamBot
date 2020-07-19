@@ -146,7 +146,7 @@ class DiscordBot(discord.Client):
                 f'**{weapon["spell_title"]}** {weapon["spell"]["name"]}: {weapon["spell"]["description"]}',
                 f'**{weapon["rarity_title"]}** {weapon["rarity"]}',
                 f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
-                f'**Type** {weapon["type"]}',
+                f'**{weapon["type_title"]}** {weapon["type"]}',
             ]
             e.add_field(name=f'{mana} {weapon["name"]}', value='\n'.join(message_lines))
 
@@ -176,7 +176,7 @@ class DiscordBot(discord.Client):
                 f'**{troop["spell_title"]}** {troop["spell"]["name"]}: {troop["spell"]["description"]}',
                 f'**{troop["rarity_title"]}** {troop["rarity"]}',
                 f'**{troop["roles_title"]}** {", ".join(troop["roles"])}',
-                f'**Type** {troop["type"]}',
+                f'**{troop["type_title"]}** {troop["type"]}',
             ]
             e.add_field(name=f'{mana} {troop["name"]}', value='\n'.join(message_lines))
             trait_list = [f'**{trait["name"]}** - {trait["description"]}' for trait in troop['traits']]
