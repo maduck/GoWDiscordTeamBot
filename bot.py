@@ -86,12 +86,12 @@ class DiscordBot(discord.Client):
                 groups = match.groupdict()
                 search_term = groups['search']
                 lang = groups['lang']
-                await search_function(search_term, lang)
+                await search_function(message, search_term, lang)
                 return
         if "[" in message.content:
             await self.handle_team_code(message)
 
-    async def handle_troop_search(self, search_term, lang):
+    async def handle_troop_search(self, message, search_term, lang):
         result = self.expander.search_troop(search_term, lang)
         e = discord.Embed(title='Troop search')
         if result:
