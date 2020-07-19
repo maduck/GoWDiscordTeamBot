@@ -211,7 +211,7 @@ class DiscordBot(discord.Client):
             """
             for i, chunk in enumerate(troop_chunks):
                 chunk_message = '\n'.join(chunk)
-                e.add_field(name=f'results {30 * i} - {30 * i + len(chunk) - 1}', value=chunk_message)
+                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
 
         await message.channel.send(embed=e)
 
