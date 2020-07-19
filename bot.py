@@ -74,26 +74,29 @@ class DiscordBot(discord.Client):
         if message.author.id == self.user.id:
             return
         if "[" in message.content:
-            team = self.expander.get_team_from_message(message.content)
-            if not team:
-                log.debug(f'nothing found in message {message.content}')
-                return
-            log.debug(f'[{message.guild}][{message.channel}] sending result to {message.author.display_name}: {team}')
-            color = discord.Color.from_rgb(19, 227, 246)
-            author = message.author.display_name
-            author = await pluralize_author(author)
-            e = discord.Embed(title=f"{author} team", color=color)
-            troops = [f'{self.my_emojis.get(t[0], f":{t[0]}:")} {t[1]}' for t in team['troops']]
-            team_text = '\n'.join(troops)
-            e.add_field(name=team['troops_title'], value=team_text, inline=True)
-            if team['banner']:
-                banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
+            await self.handle_team_code(message)
+
+    async def handle_team_code(self, message):
+        team = self.expander.get_team_from_message(message.content)
+        if not team:
+            log.debug(f'nothing found in message {message.content}')
+            return
+        log.debug(f'[{message.guild}][{message.channel}] sending result to {message.author.display_name}: {team}')
+        color = discord.Color.from_rgb(19, 227, 246)
+        author = message.author.display_name
+        author = await pluralize_author(author)
+        e = discord.Embed(title=f"{author} team", color=color)
+        troops = [f'{self.my_emojis.get(t[0], f":{t[0]}:")} {t[1]}' for t in team['troops']]
+        team_text = '\n'.join(troops)
+        e.add_field(name=team['troops_title'], value=team_text, inline=True)
+        if team['banner']:
+            banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
                             team['banner']['description']]
-                e.add_field(name=team['banner']['name'], value='\n'.join(banner_texts), inline=True)
-            if team['class']:
-                e.add_field(name=f'{team["class_title"]}: {team["class"]}', value='\n'.join(team['talents']),
-                            inline=False)
-            await message.channel.send(embed=e)
+            e.add_field(name=team['banner']['name'], value='\n'.join(banner_texts), inline=True)
+        if team['class']:
+            e.add_field(name=f'{team["class_title"]}: {team["class"]}', value='\n'.join(team['talents']),
+                        inline=False)
+        await message.channel.send(embed=e)
 
 
 if __name__ == '__main__':
