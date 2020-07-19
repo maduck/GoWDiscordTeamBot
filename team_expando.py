@@ -106,7 +106,7 @@ class TeamExpander:
                 'roles': troop['TroopRoleArray'],
             }
             if 'TroopType2' in troop:
-                troop['types'].append('TroopType2')
+                self.troops[troop['Id']]['types'].append('TroopType2')
         for kingdom in data['Kingdoms']:
             color_lookup_names = [f'[GEM_{c.upper()}]' for c in self.COLORS]
             color_names = [self.translations.get(c).lower() for c in color_lookup_names]
