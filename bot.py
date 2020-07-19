@@ -21,7 +21,7 @@ log.addHandler(handler)
 
 RARITY_COLORS = {
     'Common': (255, 255, 255),
-    'Rare': (84, 168, 31),
+    'Uncommon': (84, 168, 31),
     'UltraRare': (32, 113, 254),
     'Epic': (151, 54, 232),
     'Legendary': (246, 161, 32),
