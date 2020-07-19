@@ -210,6 +210,6 @@ class TeamExpander:
                 'name': self.translations.get(spell['name'], lang),
                 'description': self.translations.get(spell['description'], lang),
             }
-        result['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+            result['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
 
         return result
