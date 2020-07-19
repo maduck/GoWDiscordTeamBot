@@ -59,11 +59,19 @@ class TeamExpander:
         with open('World.json', encoding='utf8') as f:
             data = json.load(f)
 
+        for trait in data['Traits']:
+            self.traits[trait['Code']] = trait['Name']
         for troop in data['Troops']:
             colors = [c.replace('Color', '').lower() for c, v in troop['ManaColors'].items() if v]
             self.troops[troop['Id']] = {
                 'name': troop['Name'],
                 'colors': sorted(colors),
+                'description': troop['Description'],
+                'spell_id': troop['SpellId'],
+                'traits': [self.traits.get(trait, trait) for trait in troop['Traits']],
+                'rarity': troop['TroopRarity'],
+                'type': troop['TroopType'],
+                'roles': troop['TroopRoleArray'],
             }
         for kingdom in data['Kingdoms']:
             color_lookup_names = [f'[GEM_{c.upper()}]' for c in self.COLORS]
@@ -80,8 +88,6 @@ class TeamExpander:
                 'name': f'[SPELL{weapon["SpellId"]}_NAME]',
                 'colors': sorted(colors),
             }
-        for trait in data['Traits']:
-            self.traits[trait['Code']] = trait['Name']
         for tree in data['TalentTrees']:
             talents = [self.traits.get(trait, trait) for trait in tree['Traits']]
             self.talent_trees[tree['Code']] = talents

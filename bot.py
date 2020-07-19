@@ -96,7 +96,14 @@ class DiscordBot(discord.Client):
         e = discord.Embed(title='Troop search')
         if result:
             mana = self.my_emojis.get(result['color_code'])
-            e.add_field(name=f'{mana} {result["name"]}', value='this feature will be added soon')
+            message_lines = [
+                f'**Description** {result["description"]}',
+                f'**Spell** {result["spell_id"]}',
+                f'**Rarity** {result["rarity"]}',
+                f'**Roles** {", ".join(result["roles"])}',
+                f'**Type** {result["type"]}',
+            ]
+            e.add_field(name=f'{mana} {result["name"]}', value='\n'.join(message_lines))
         else:
             e.add_field(name=search_term, value='did not yield any result')
         await message.channel.send(embed=e)
