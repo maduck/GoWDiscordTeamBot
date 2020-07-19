@@ -95,6 +95,10 @@ class TeamExpander:
             self.weapons[weapon['Id']] = {
                 'name': f'[SPELL{weapon["SpellId"]}_NAME]',
                 'colors': sorted(colors),
+                'rarity': weapon['WeaponRarity'],
+                'type': weapon['Type'],
+                'roles': weapon['TroopRoleArray'],
+                'spell_id': weapon['SpellId'],
             }
         for tree in data['TalentTrees']:
             talents = [self.traits.get(trait, trait) for trait in tree['Traits']]
