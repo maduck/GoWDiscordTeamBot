@@ -168,12 +168,13 @@ class TeamExpander:
     def search_troop(self, search_term, lang):
         result = None
         if search_term.isdigit():
-            result = self.troops.get(int(search_term))
+            result = self.troops.get(int(search_term)).copy()
         else:
             for troop in self.troops.values():
                 translated_name = self.translations.get(troop['name'], lang).lower()
                 if search_term.lower() in translated_name:
-                    result = troop
+                    result = troop.copy()
+                    break
         if result:
             result['name'] = self.translations.get(result['name'], lang)
             result['color_code'] = "".join(result['colors'])
