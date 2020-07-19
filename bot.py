@@ -148,7 +148,7 @@ class DiscordBot(discord.Client):
                 f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
                 f'**Type** {weapon["type"]}',
             ]
-            e.add_field(name=f'{mana} {troop["name"]}', value='\n'.join(message_lines))
+            e.add_field(name=f'{mana} {weapon["name"]}', value='\n'.join(message_lines))
 
         else:
             color = discord.Color.from_rgb(255, 255, 255)
