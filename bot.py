@@ -198,7 +198,7 @@ class DiscordBot(discord.Client):
                 f'**{troop["roles_title"]}** {", ".join(troop["roles"])}',
                 f'**{troop["type_title"]}** {troop["type"]}',
             ]
-            e.add_field(name=f'{mana} {troop["name"]}', value='\n'.join(message_lines))
+            e.add_field(name=f'{mana} {troop["name"]} `#{troop["id"]}`', value='\n'.join(message_lines))
             trait_list = [f'**{trait["name"]}** - {trait["description"]}' for trait in troop['traits']]
             traits = '\n'.join(trait_list)
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
