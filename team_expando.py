@@ -171,8 +171,8 @@ class TeamExpander:
             result = self.troops.get(int(search_term)).copy()
         else:
             for troop in self.troops.values():
-                translated_name = self.translations.get(troop['name'], lang).lower()
-                if search_term.lower() in translated_name:
+                translated_name = self.translations.get(troop['name'], lang).lower().replace(' ', '')
+                if search_term.lower().replace(' ', '') in translated_name:
                     result = troop.copy()
                     break
         if result:
