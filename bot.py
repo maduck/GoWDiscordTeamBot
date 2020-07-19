@@ -94,22 +94,28 @@ class DiscordBot(discord.Client):
     async def handle_troop_search(self, message, search_term, lang):
         result = self.expander.search_troop(search_term, lang)
         e = discord.Embed(title='Troop search')
-        if result:
-            mana = self.my_emojis.get(result['color_code'])
-            message_lines = [
-                result["description"],
-                '',
-                f'**{result["spell_title"]}** {result["spell"]["name"]}: {result["spell"]["description"]}',
-                f'**{result["rarity_title"]}** {result["rarity"]}',
-                f'**{result["roles_title"]}** {", ".join(result["roles"])}',
-                f'**Type** {result["type"]}',
-            ]
-            e.add_field(name=f'{mana} {result["name"]}', value='\n'.join(message_lines))
-            trait_list = [f'**{trait["name"]}** - {trait["description"]}' for trait in result['traits']]
-            traits = '\n'.join(trait_list)
-            e.add_field(name=result["traits_title"], value=traits, inline=False)
-        else:
+        if not result:
             e.add_field(name=search_term, value='did not yield any result')
+        elif len(result) == 1:
+            troop = result[0]
+            mana = self.my_emojis.get(troop['color_code'])
+            message_lines = [
+                troop["description"],
+                '',
+                f'**{troop["spell_title"]}** {troop["spell"]["name"]}: {troop["spell"]["description"]}',
+                f'**{troop["rarity_title"]}** {troop["rarity"]}',
+                f'**{troop["roles_title"]}** {", ".join(troop["roles"])}',
+                f'**Type** {troop["type"]}',
+            ]
+            e.add_field(name=f'{mana} {troop["name"]}', value='\n'.join(message_lines))
+            trait_list = [f'**{trait["name"]}** - {trait["description"]}' for trait in troop['traits']]
+            traits = '\n'.join(trait_list)
+            e.add_field(name=troop["traits_title"], value=traits, inline=False)
+        else:
+            troops_found = [t['name'] for t in result]
+            e.add_field(name=search_term, value='yielded multiple results')
+            e.add_field(name='matching troops', value='\n'.join(troops_found))
+
         await message.channel.send(embed=e)
 
     async def handle_team_code(self, message):

@@ -182,34 +182,38 @@ class TeamExpander:
         result = None
         if search_term.isdigit():
             result = self.troops.get(int(search_term)).copy()
+            self.translate_troop(result, lang)
+            return [result]
         else:
+            possible_matches = []
             for troop in self.troops.values():
                 translated_name = self.translations.get(troop['name'], lang).lower().replace(' ', '')
                 if search_term.lower().replace(' ', '') in translated_name:
                     result = troop.copy()
-                    break
-        if result:
-            result['name'] = self.translations.get(result['name'], lang)
-            result['description'] = self.translations.get(result['description'], lang)
-            result['color_code'] = "".join(result['colors'])
-            result['rarity_title'] = self.translations.get('[RARITY]', lang)
-            result['rarity'] = self.translations.get(result['rarity'], lang)
-            result['traits_title'] = self.translations.get('[TRAITS]', lang)
-            traits = []
-            for trait in result['traits']:
-                traits.append({
-                    'name': self.translations.get(trait['name'], lang),
-                    'description': self.translations.get(trait['description'], lang)
-                })
-            result['traits'] = traits
-            result['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
-            result['roles'] = [self.translations.get(role, lang) for role in result['roles']]
-            result['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
-            spell = self.spells[result['spell_id']]
-            result['spell'] = {
-                'name': self.translations.get(spell['name'], lang),
-                'description': self.translations.get(spell['description'], lang),
-            }
-            result['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+                    self.translate_troop(result, lang)
+                    possible_matches.append(result)
+            return possible_matches
 
-        return result
+    def translate_troop(self, troop, lang):
+        troop['name'] = self.translations.get(troop['name'], lang)
+        troop['description'] = self.translations.get(troop['description'], lang)
+        troop['color_code'] = "".join(troop['colors'])
+        troop['rarity_title'] = self.translations.get('[RARITY]', lang)
+        troop['rarity'] = self.translations.get(troop['rarity'], lang)
+        troop['traits_title'] = self.translations.get('[TRAITS]', lang)
+        traits = []
+        for trait in troop['traits']:
+            traits.append({
+                'name': self.translations.get(trait['name'], lang),
+                'description': self.translations.get(trait['description'], lang)
+            })
+        troop['traits'] = traits
+        troop['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
+        troop['roles'] = [self.translations.get(role, lang) for role in troop['roles']]
+        troop['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
+        spell = self.spells[troop['spell_id']]
+        troop['spell'] = {
+            'name': self.translations.get(spell['name'], lang),
+            'description': self.translations.get(spell['description'], lang),
+        }
+        troop['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
