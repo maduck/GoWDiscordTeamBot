@@ -47,6 +47,7 @@ class TeamExpander:
 
     def __init__(self):
         self.troops = {}
+        self.spells = {}
         self.weapons = {}
         self.classes = {}
         self.banners = {}
@@ -59,6 +60,12 @@ class TeamExpander:
         with open('World.json', encoding='utf8') as f:
             data = json.load(f)
 
+        for spell in data['Spells']:
+            self.spells[spell['id']] = {
+                'name': spell['Name'],
+                'description': spell['Description'],
+                'cost': spell['Cost'],
+            }
         for trait in data['Traits']:
             self.traits[trait['Code']] = trait['Name']
         for troop in data['Troops']:
@@ -189,7 +196,10 @@ class TeamExpander:
             result['rarity'] = self.translations.get(result['rarity'], lang)
             result['traits_title'] = self.translations.get('[TRAITS]', lang)
             result['traits'] = [self.translations.get(trait, lang) for trait in result['traits']]
-            result['roles_title'] = self.translations.get('[TROOP_ROLE]')
+            result['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
             result['roles'] = [self.translations.get(role, lang) for role in result['roles']]
-            result['type_title'] = self.translations.get('[FILTER_TROOPTYPE]')
+            result['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
+            result['spell']['description'] = self.translations.get(result['spell']['description'], lang),
+            result['spell']['name'] = self.translations.get(result['spell']['name'], lang),
+            result['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
         return result

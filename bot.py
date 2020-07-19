@@ -99,7 +99,7 @@ class DiscordBot(discord.Client):
             message_lines = [
                 result["description"],
                 '',
-                f'**Spell** {result["spell_id"]}',
+                f'**{result["spell_title"]}** {result["spell"]["name"]}: {result["spell"]["description"]}',
                 f'**{result["rarity_title"]}** {result["rarity"]}',
                 f'**{result["roles_title"]}** {", ".join(result["roles"])}',
                 f'**Type** {result["type"]}',
