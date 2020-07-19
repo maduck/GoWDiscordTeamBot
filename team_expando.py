@@ -17,7 +17,7 @@ log.addHandler(handler)
 TROOP_RARITIES = (
     'Common',
     'Rare',
-    'Ultra-Rare',
+    'UltraRare',
     'Epic',
     'Legendary',
     'Mythic',
@@ -26,7 +26,7 @@ TROOP_RARITIES = (
 WEAPON_RARITIES = (
     'Common',
     'Uncommon',
-    'Ultra-Rare',
+    'UltraRare',
     'Epic',
     'Legendary',
     'Mythic',
