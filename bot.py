@@ -40,16 +40,18 @@ async def pluralize_author(author):
 async def show_help(message):
     e = discord.Embed(title='help')
     e.add_field(name='Team codes',
-                value='**Basis** Just paste your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. '
-                      'The bot will automatically\n '
+                value='**Basics** Just paste your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. '
+                      'The bot will automatically post the troops posted in the code.\n\n'
                       '**Language support** All GoW languages are supported, put the two country code letters (en, '
                       'fr, de, ru, it, es, cn) in front of the team code, e.g. `de[1075,6251,6699,6007,3010,3,1,1,1,'
-                      '3,1,1,14007]`')
+                      '3,1,1,14007]`',
+                inline=False)
     e.add_field(name='Troop search',
-                value='**Basis** enter `!troop <search>`, e.g. `!troop elemaugrim`.\n'
+                value='**Basis** enter `!troop <search>`, e.g. `!troop elemaugrim`.\n\n'
                       'Search is _not_ case sensitive. Spaces don\'t matter.'
                       '**Language support** All GoW languages are supported, put the two country code letters (en, '
-                      'fr, de, ru, it, es, cn) in front of the command, e.g. `de!troop elemaugrim`.')
+                      'fr, de, ru, it, es, cn) in front of the command, e.g. `de!troop elemaugrim`.',
+                inline=False)
     await message.channel.send(embed=e)
 
 
