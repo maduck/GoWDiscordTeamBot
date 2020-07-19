@@ -170,7 +170,7 @@ class TeamExpander:
         if search_term.isdigit():
             result = self.troops.get(int(search_term))
         else:
-            for troop in self.troops:
+            for troop in self.troops.values():
                 translated_name = self.translations.get(troop['name'], lang).lower()
                 if search_term.lower() in translated_name:
                     result = troop
