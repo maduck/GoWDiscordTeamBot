@@ -29,6 +29,11 @@ RARITY_COLORS = {
 }
 
 
+def chunks(iterable, chunk_size):
+    for i in range(0, len(iterable), chunk_size):
+        yield iterable[i:i + chunk_size]
+
+
 async def pluralize_author(author):
     if author[-1] == 's':
         author += "'"
@@ -197,11 +202,15 @@ class DiscordBot(discord.Client):
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
             color = discord.Color.from_rgb(255, 255, 255)
-            e = discord.Embed(title='Troop search', color=color)
+            e = discord.Embed(title=f'Troop search `{search_term}` found {len(result)} matches.', color=color)
             troops_found = '\n'.join([f'{t["name"]} ({t["id"]})' for t in result])
+            troop_chunks = chunks(troops_found, 30)
+            """
             if len(troops_found) > 1024:
                 troops_found = troops_found[:992] + '\n...\n(list too long to display)'
-            e.add_field(name=f'{search_term} matches {len(result)} troops.', value=troops_found)
+            """
+            for i, chunk in enumerate(troop_chunks, start=1):
+                e.add_field(name=f'results {i} - {i + len(chunk) - 1}', value=chunk)
 
         await message.channel.send(embed=e)
 
