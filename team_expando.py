@@ -25,6 +25,16 @@ RARITIES = (
     'Doomed'
 )
 
+WEAPON_RARITIES = (
+    'Common',
+    'Uncommon',
+    'Rare',
+    'UltraRare',
+    'Epic',
+    'Mythic',
+    'Doomed'
+)
+
 
 class Translations:
     BASE_LANG = 'en'
@@ -283,9 +293,7 @@ class TeamExpander:
         weapon['rarity_title'] = self.translations.get('[RARITY]', lang)
         weapon['raw_rarity'] = weapon['rarity']
 
-        rarity_number = 1
-        if weapon['rarity'] in RARITIES:
-            rarity_number = RARITIES.index(weapon['rarity'])
+        rarity_number = WEAPON_RARITIES.index(weapon['rarity'])
         weapon['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
         spell = self.spells[weapon['spell_id']]
         weapon['spell'] = {
