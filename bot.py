@@ -46,9 +46,6 @@ async def pluralize_author(author):
     return author
 
 
-
-
-
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
     PREFIX_CONFIG_FILE = 'prefixes.json'
@@ -103,7 +100,7 @@ class DiscordBot(discord.Client):
                     self.my_emojis[emoji.name] = str(emoji)
 
     async def show_help(self, message):
-        my_prefix = self.prefixes.get(message.guild.id, self.DEFAULT_PREFIX)
+        my_prefix = self.get_my_prefix(message.guild)
         e = discord.Embed(title='help')
         e.add_field(name='Team codes',
                     value='• __Basics__: Just post your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
@@ -145,7 +142,7 @@ class DiscordBot(discord.Client):
         if message.author.id == self.user.id:
             return
 
-        my_prefix = self.prefixes.get(message.guild.id, self.DEFAULT_PREFIX)
+        my_prefix = self.get_my_prefix(message.guild)
         user_command = message.content.lower().strip()
         if user_command == f'{my_prefix}help':
             await self.show_help(message)
@@ -163,6 +160,9 @@ class DiscordBot(discord.Client):
                 return
         if "[" in message.content:
             await self.handle_team_code(message)
+
+    def get_my_prefix(self, guild):
+        return self.prefixes.get(str(guild.id), self.DEFAULT_PREFIX)
 
     async def handle_weapon_search(self, message, search_term, lang):
         result = self.expander.search_weapon(search_term, lang)
