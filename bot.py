@@ -177,7 +177,7 @@ class DiscordBot(discord.Client):
 
     def get_my_prefix(self, guild):
         if guild is None:
-            self.DEFAULT_PREFIX
+            return self.DEFAULT_PREFIX
                         
         return self.prefixes.get(str(guild.id), self.DEFAULT_PREFIX)
 
