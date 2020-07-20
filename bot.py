@@ -59,6 +59,8 @@ class DiscordBot(discord.Client):
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)weapon (?P<search>.*)$')},
         {'key': 'kingdom',
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)kingdom (?P<search>.*)$')},
+        {'key': 'pet',
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)pet (?P<search>.*)$')},
     )
 
     def __init__(self, *args, **kwargs):
@@ -186,6 +188,23 @@ class DiscordBot(discord.Client):
                 kingdom['description'],
             ]
             e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}`', value='\n'.join(message_lines))
+
+        await message.channel.send(embed=e)
+
+    async def handle_pet_search(self, message, search_term, lang):
+        result = self.expander.search_pet(search_term, lang)
+        if not result:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Pet search', color=color)
+            e.add_field(name=search_term, value='did not yield any result')
+        elif len(result) == 1:
+            pet = result[0]
+            e = discord.Embed(title='Pet search')
+            message_lines = [
+                f'Kingdom: {pet["kingdom_id"]}',
+                ', '.join(pet['colors']),
+            ]
+            e.add_field(name=f'{pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
 
         await message.channel.send(embed=e)
 

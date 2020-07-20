@@ -77,6 +77,7 @@ class TeamExpander:
         self.banners = {}
         self.traits = {}
         self.kingdoms = {}
+        self.pets = {}
         self.talent_trees = {}
         self.translations = Translations()
         self.populate_world_data()
@@ -135,6 +136,14 @@ class TeamExpander:
                 'type': weapon['Type'],
                 'roles': weapon['TroopRoleArray'],
                 'spell_id': weapon['SpellId'],
+            }
+        for pet in data['Pets']:
+            colors = [c.replace('Color', '').lower() for c, v in pet['ManaColors'].items() if v]
+            self.pets[pet['Id']] = {
+                'id': pet['Id'],
+                'name': pet['Name'],
+                'kingdom_id': pet['KingdomId'],
+                'colors': sorted(colors),
             }
         for tree in data['TalentTrees']:
             talents = [self.traits.get(trait, trait) for trait in tree['Traits']]
@@ -295,6 +304,29 @@ class TeamExpander:
         kingdom['name'] = self.translations.get(kingdom['name'], lang)
         kingdom['description'] = self.translations.get(kingdom['description'], lang)
         kingdom['punchline'] = self.translations.get(kingdom['punchline'], lang)
+
+    def search_pet(self, search_term, lang):
+        if search_term.isdigit():
+            result = self.pets.get(int(search_term)).copy()
+            self.translate_pet(result, lang)
+            return [result]
+        else:
+            possible_matches = []
+            for pet in self.pets.values():
+                translated_name = extract_search_tag(self.translations.get(pet['name'], lang))
+                real_search = extract_search_tag(search_term)
+                if real_search == translated_name:
+                    result = pet.copy()
+                    self.translate_pet(result, lang)
+                    return [result]
+                elif real_search in translated_name:
+                    result = pet.copy()
+                    self.translate_pet(result, lang)
+                    possible_matches.append(result)
+            return possible_matches
+
+    def translate_pet(self, pet, lang):
+        pet['name'] = self.translations.get(pet['name'], lang)
 
     def search_weapon(self, search_term, lang):
         if search_term.isdigit():
