@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+import json
 import logging
 import os
 import re
+import threading
 
 import discord
 
@@ -82,6 +84,8 @@ async def show_help(message):
 
 
 class DiscordBot(discord.Client):
+    DEFAULT_PREFIX = '!'
+    PREFIX_CONFIG_FILE = 'prefixes.json'
     BOT_NAME = 'Garys GoW Team Bot'
     BASE_GUILD = 'GoW Bot Dev'
     VERSION = '0.2'
@@ -100,6 +104,8 @@ class DiscordBot(discord.Client):
         self.invite_url = self.invite_url.format(self.permissions.value)
         self.my_emojis = {}
         self.expander = TeamExpander()
+        self.prefixes = {}
+        self.load_prefixes()
 
     @staticmethod
     def generate_permissions():
@@ -238,6 +244,18 @@ class DiscordBot(discord.Client):
             e.add_field(name=f'{team["class_title"]}: {team["class"]}', value='\n'.join(team['talents']),
                         inline=False)
         await message.channel.send(embed=e)
+
+    def save_prefixes(self):
+        lock = threading.Lock()
+        with lock:
+            with open(self.PREFIX_CONFIG_FILE, 'w') as f:
+                json.dump(self.prefixes, f, sort_keys=True, indent=2)
+
+    def load_prefixes(self):
+        lock = threading.Lock()
+        with lock:
+            with open(self.PREFIX_CONFIG_FILE) as f:
+                self.prefixes = json.load(f)
 
 
 if __name__ == '__main__':
