@@ -112,10 +112,11 @@ class DiscordBot(discord.Client):
                     value='• __Basics__: Just post your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
                           '14007]`. The bot will automatically answer with the troops posted in the code. The code '
                           'can be embedded within more text, and does not need to stand alone.\n\n'
-                          ' • __Language '
-                          'support__: All GoW languages are supported, put the two country code letters (en, fr, de, '
-                          'ru, it, es, cn) in front of the team code, e.g. `cn[1075,6251,6699,6007,3010,3,1,1,1,3,1,'
-                          '1,14007]`',
+                          '• __Language support__: All GoW languages are supported, put the two country code letters '
+                          '(en, fr, de, ru, it, es, cn) in front of the team code, e.g. `cn[1075,6251,6699,6007,3010,'
+                          '3,1,1,1,3,1,1,14007]` '
+                          '• __Mini format__: Put a "-" in front of the code to make it appear in a small box, '
+                          'e.g. `-[1075,6251,6699,6007]`, or with language `de-[1075,6251,6699,6007`.',
                     inline=False)
         e.add_field(name='─────────────────────────────────────', value='┈')
         e.add_field(name='Troop search',
