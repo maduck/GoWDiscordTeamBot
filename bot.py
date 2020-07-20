@@ -61,6 +61,8 @@ class DiscordBot(discord.Client):
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)kingdom (?P<search>.*)$')},
         {'key': 'pet',
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)pet (?P<search>.*)$')},
+        {'key': 'class',
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)class (?P<search>.*)$')},
     )
 
     def __init__(self, *args, **kwargs):
@@ -189,6 +191,25 @@ class DiscordBot(discord.Client):
             ]
             e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}`', value='\n'.join(message_lines))
 
+        await message.channel.send(embed=e)
+
+    async def handle_class_search(self, message, search_term, lang):
+        result = self.expander.search_class(search_term, lang)
+        if not result:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Class search', color=color)
+            e.add_field(name=search_term, value='did not yield any result.')
+        elif len(result) == 1:
+            _class = result[0]
+            e = discord.Embed(title='Class search')
+            class_lines = [
+                _class['kingdom'],
+                _class['weapon'],
+            ]
+            e.add_field(name=f'{_class["name"]} `#{_class["id"]}`', value='\n'.join(class_lines), inline=False)
+            for i, tree in enumerate(_class['talents']):
+                talents = [f'**{t["name"]}** ({t["description"]})' for t in tree]
+                e.add_field(name=_class['trees'][i], value='\n'.join(talents), inline=True)
         await message.channel.send(embed=e)
 
     async def handle_pet_search(self, message, search_term, lang):
