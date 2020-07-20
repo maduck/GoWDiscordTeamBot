@@ -141,6 +141,7 @@ class TeamExpander:
                 'type': weapon['Type'],
                 'roles': weapon['TroopRoleArray'],
                 'spell_id': weapon['SpellId'],
+                'kingdom': self.kingdoms[weapon['KingdomId']],
             }
         for pet in data['Pets']:
             colors = [c.replace('Color', '').lower() for c, v in pet['ManaColors'].items() if v]
@@ -417,6 +418,8 @@ class TeamExpander:
             'description': self.translations.get(
                 spell['description'], lang).replace('{1}', f'[{magic} + {spell["amount"]}]'),
         }
+        weapon['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
+        weapon['kingdom'] = self.translations.get(weapon['kingdom']['name'], lang)
         weapon['roles_title'] = self.translations.get('[WEAPON_ROLE]', lang)
         weapon['roles'] = [self.translations.get(f'[TROOP_ROLE_{role.upper()}]', lang) for role in weapon['roles']]
         weapon['type_title'] = self.translations.get('[FILTER_WEAPONTYPE]', lang)

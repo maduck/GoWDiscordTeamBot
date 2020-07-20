@@ -251,6 +251,7 @@ class DiscordBot(discord.Client):
             message_lines = [
                 weapon['spell']['description'],
                 '',
+                f'**{weapon["kingdom_title"]}** {weapon["kingdom"]}',
                 f'**{weapon["rarity_title"]}** {weapon["rarity"]}',
                 f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
                 f'**{weapon["type_title"]}** {weapon["type"]}',
