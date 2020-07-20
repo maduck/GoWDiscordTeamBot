@@ -256,7 +256,7 @@ class DiscordBot(discord.Client):
                 f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
                 f'**{weapon["type_title"]}** {weapon["type"]}',
             ]
-            e.add_field(name=f'{mana} {weapon["name"]} `#{weapon["id"]}`', value='\n'.join(message_lines))
+            e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`', value='\n'.join(message_lines))
         else:
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title='Weapon search', color=color)

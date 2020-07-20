@@ -421,6 +421,7 @@ class TeamExpander:
         magic = self.translations.get('[MAGIC]', lang)
         weapon['spell'] = {
             'name': self.translations.get(spell['name'], lang),
+            'cost': spell['cost'],
             'description': self.translations.get(
                 spell['description'], lang).replace('{1}', f'[{magic} + {spell["amount"]}]'),
         }
