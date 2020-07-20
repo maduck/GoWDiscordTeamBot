@@ -170,10 +170,15 @@ class DiscordBot(discord.Client):
                 lang = groups['lang']
                 await search_function(message, search_term, lang)
                 return
-        if "[" in message.content:
+        if "-[" in message.content:
+            await self.handle_team_code(message, shortend=True)
+        elif "[" in message.content:
             await self.handle_team_code(message)
 
     def get_my_prefix(self, guild):
+        if guild is None:
+            return self.DEFAULT_PREFIX
+                        
         return self.prefixes.get(str(guild.id), self.DEFAULT_PREFIX)
 
     async def handle_kingdom_search(self, message, search_term, lang):
@@ -205,6 +210,7 @@ class DiscordBot(discord.Client):
             class_lines = [
                 _class['kingdom'],
                 _class['weapon'],
+                _class['type'],
             ]
             e.add_field(name=f'{_class["name"]} `#{_class["id"]}`', value='\n'.join(class_lines), inline=False)
             for i, tree in enumerate(_class['talents']):
@@ -296,7 +302,7 @@ class DiscordBot(discord.Client):
 
         await message.channel.send(embed=e)
 
-    async def handle_team_code(self, message):
+    async def handle_team_code(self, message, shortend=False):
         team = self.expander.get_team_from_message(message.content)
         if not team:
             log.debug(f'nothing found in message {message.content}')
@@ -305,6 +311,15 @@ class DiscordBot(discord.Client):
         color = discord.Color.from_rgb(19, 227, 246)
         author = message.author.display_name
         author = await pluralize_author(author)
+
+        if shortend:
+            e = self.format_output_team_shortend(team, color, author)
+        else:
+            e = self.format_output_team(team, color, author)
+
+        await message.channel.send(embed=e)
+
+    def format_output_team(self, team, color, author):
         e = discord.Embed(title=f"{author} team", color=color)
         troops = [f'{self.my_emojis.get(t[0], f":{t[0]}:")} {t[1]}' for t in team['troops']]
         team_text = '\n'.join(troops)
@@ -316,7 +331,25 @@ class DiscordBot(discord.Client):
         if team['class']:
             e.add_field(name=f'{team["class_title"]}: {team["class"]}', value='\n'.join(team['talents']),
                         inline=False)
-        await message.channel.send(embed=e)
+        return e
+
+    def format_output_team_shortend(self, team, color, author):
+        # title: troop1, troop2
+        # description: banner.name (:red:+ :brown:++ :yellow:-)
+
+        e = discord.Embed()
+        troops = [f'{t[1]}' for t in team['troops']]
+        e.title = ', '.join(troops)
+
+        if team['banner']:
+            banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
+                            team['banner']['description']]
+            banner = '{banner_name} ({banner_texts})'.format(
+                banner_name=team['banner']['name'],
+                banner_texts=' '.join(banner_texts)
+            )
+            e.description = banner
+        return e
 
     def save_prefixes(self):
         lock = threading.Lock()
