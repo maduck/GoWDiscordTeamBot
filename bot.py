@@ -57,6 +57,8 @@ class DiscordBot(discord.Client):
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)troop (?P<search>.*)$')},
         {'key': 'weapon',
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)weapon (?P<search>.*)$')},
+        {'key': 'kingdom',
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)kingdom (?P<search>.*)$')},
     )
 
     def __init__(self, *args, **kwargs):
@@ -170,6 +172,23 @@ class DiscordBot(discord.Client):
     def get_my_prefix(self, guild):
         return self.prefixes.get(str(guild.id), self.DEFAULT_PREFIX)
 
+    async def handle_kingdom_search(self, message, search_term, lang):
+        result = self.expander.search_kingdom(search_term, lang)
+        if not result:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Kingdom search', color=color)
+            e.add_field(name=search_term, value='did not yield any result')
+        elif len(result) == 1:
+            kingdom = result[0]
+            e = discord.Embed(title='Kingdom search')
+            message_lines = [
+                kingdom['punchline'],
+                kingdom['description'],
+            ]
+            e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}`', value='\n'.join(message_lines))
+
+        await message.channel.send(embed=e)
+
     async def handle_weapon_search(self, message, search_term, lang):
         result = self.expander.search_weapon(search_term, lang)
         if not result:
@@ -191,7 +210,6 @@ class DiscordBot(discord.Client):
                 f'**{weapon["type_title"]}** {weapon["type"]}',
             ]
             e.add_field(name=f'{mana} {weapon["name"]} `#{weapon["id"]}`', value='\n'.join(message_lines))
-
         else:
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title='Weapon search', color=color)

@@ -76,6 +76,7 @@ class TeamExpander:
         self.classes = {}
         self.banners = {}
         self.traits = {}
+        self.kingdoms = {}
         self.talent_trees = {}
         self.translations = Translations()
         self.populate_world_data()
@@ -116,6 +117,12 @@ class TeamExpander:
             self.banners[kingdom['Id']] = {
                 'name': kingdom['BannerName'],
                 'colors': colors,
+            }
+            self.kingdoms[kingdom['Id']] = {
+                'id': kingdom['Id'],
+                'name': kingdom['Name'],
+                'description': kingdom['Description'],
+                'punchline': kingdom['ByLine'],
             }
         for weapon in data['Weapons']:
             colors = [c.replace('Color', '').lower() for c, v in weapon['ManaColors'].items() if v]
@@ -263,6 +270,31 @@ class TeamExpander:
             'description': self.translations.get(spell['description'], lang),
         }
         troop['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+
+    def search_kingdom(self, search_term, lang):
+        if search_term.isdigit():
+            result = self.kingdoms.get(int(search_term)).copy()
+            self.translate_kingdom(result, lang)
+            return [result]
+        else:
+            possible_matches = []
+            for kingdom in self.kingdoms.values():
+                translated_name = extract_search_tag(self.translations.get(kingdom['name'], lang))
+                real_search = extract_search_tag(search_term)
+                if real_search == translated_name:
+                    result = kingdom.copy()
+                    self.translate_kingdom(result, lang)
+                    return [result]
+                elif real_search in translated_name:
+                    result = kingdom.copy()
+                    self.translate_kingdom(result, lang)
+                    possible_matches.append(result)
+            return possible_matches
+
+    def translate_kingdom(self, kingdom, lang):
+        kingdom['name'] = self.translations.get(kingdom['name'], lang)
+        kingdom['description'] = self.translations.get(kingdom['description'], lang)
+        kingdom['punchline'] = self.translations.get(kingdom['punchline'], lang)
 
     def search_weapon(self, search_term, lang):
         if search_term.isdigit():
