@@ -9,8 +9,7 @@ Keep in mind I will not be providing the needed game files (World.json and trans
 * install all packages from requirements.txt
 
 ## configure
-* copy the World.js file to your folder
-* update_lang_files.py to download the needed translation files
+* run update_lang_files.py
 
 ## run
 * export the ENV DISCORD_TOKEN (register the app on discord to get a token)
