@@ -411,9 +411,11 @@ class TeamExpander:
         rarity_number = WEAPON_RARITIES.index(weapon['rarity'])
         weapon['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
         spell = self.spells[weapon['spell_id']]
+        magic = self.translations.get('[MAGIC]', lang)
         weapon['spell'] = {
             'name': self.translations.get(spell['name'], lang),
-            'description': self.translations.get(spell['description'], lang),
+            'description': self.translations.get(
+                spell['description'], lang).replace('{1}', f'[{magic} + {spell["amount"]}]'),
         }
         weapon['roles_title'] = self.translations.get('[WEAPON_ROLE]', lang)
         weapon['roles'] = [self.translations.get(role, lang) for role in weapon['roles']]

@@ -249,7 +249,7 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='Weapon search', color=color)
             mana = self.my_emojis.get(weapon['color_code'])
             message_lines = [
-                weapon["description"],
+                weapon['spell']['description'],
                 '',
                 f'**{weapon["rarity_title"]}** {weapon["rarity"]}',
                 f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
