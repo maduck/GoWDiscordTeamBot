@@ -46,41 +46,7 @@ async def pluralize_author(author):
     return author
 
 
-async def show_help(message):
-    e = discord.Embed(title='help')
-    e.add_field(name='Team codes',
-                value='• __Basics__: Just post your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
-                      '14007]`. The bot will automatically answer with the troops posted in the code. The code can be '
-                      'embedded within more text, and does not need to stand alone.\n\n '
-                      '• __Language support__: All GoW languages are supported, put the two country code letters (en, '
-                      'fr, de, ru, it, es, cn) in front of the team code, e.g. `de[1075,6251,6699,6007,3010,3,1,1,1,'
-                      '3,1,1,14007]`',
-                inline=False)
-    e.add_field(name='─────────────────────────────────────', value='┈')
-    e.add_field(name='Troop search',
-                value='• __Basics__: enter `!troop <search>`, e.g. `!troop elemaugrim`.\n'
-                      '• __Rules__:\n'
-                      '  - Search both works for troop ids and parts of their names.\n'
-                      '  - Search is _not_ case sensitive.\n'
-                      '  - Multiple results will show a list of matched troops.\n'
-                      '  - Spaces and apostrophes (\') don\'t matter.\n\n'
-                      '• __Language support__: All GoW languages are supported, put the two country code letters (en, '
-                      'fr, de, ru, it, es, cn) in front of the command, e.g. `de!troop elemaugrim`. Localized '
-                      'searches will only look for troop names with their respective translations.',
-                inline=False)
-    e.add_field(name='─────────────────────────────────────', value='┈')
-    e.add_field(name='Weapon search',
-                value='• __Basics__: enter `!weapon <search>`, e.g. `!weapon cog`.\n'
-                      '• __Rules__:\n'
-                      '  - Search both works for weapon ids and parts of their names.\n'
-                      '  - Search is _not_ case sensitive.\n'
-                      '  - Multiple results will show a list of matched troops.\n'
-                      '  - Spaces and apostrophes (\') don\'t matter.\n\n'
-                      '• __Language support__: All GoW languages are supported, put the two country code letters (en, '
-                      'fr, de, ru, it, es, cn) in front of the command, e.g. `de!weapon cog`. Localized '
-                      'searches will only look for weapon names with their respective translations.',
-                inline=False)
-    await message.channel.send(embed=e)
+
 
 
 class DiscordBot(discord.Client):
@@ -135,6 +101,45 @@ class DiscordBot(discord.Client):
             if guild.name == self.BASE_GUILD:
                 for emoji in guild.emojis:
                     self.my_emojis[emoji.name] = str(emoji)
+
+    async def show_help(self, message):
+        my_prefix = self.prefixes.get(message.guild.id, self.DEFAULT_PREFIX)
+        e = discord.Embed(title='help')
+        e.add_field(name='Team codes',
+                    value='• __Basics__: Just post your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
+                          '14007]`. The bot will automatically answer with the troops posted in the code. The code '
+                          'can be embedded within more text, and does not need to stand alone.\n\n'
+                          ' • __Language '
+                          'support__: All GoW languages are supported, put the two country code letters (en, fr, de, '
+                          'ru, it, es, cn) in front of the team code, e.g. `cn[1075,6251,6699,6007,3010,3,1,1,1,3,1,'
+                          '1,14007]`',
+                    inline=False)
+        e.add_field(name='─────────────────────────────────────', value='┈')
+        e.add_field(name='Troop search',
+                    value=f'• __Basics__: enter `{my_prefix}troop <search>`, e.g. `{my_prefix}troop elemaugrim`.\n'
+                          f'• __Rules__:\n'
+                          f'  - Search both works for troop ids and parts of their names.\n'
+                          f'  - Search is _not_ case sensitive.\n'
+                          f'  - Multiple results will show a list of matched troops.\n'
+                          f'  - Spaces and apostrophes (\') don\'t matter.\n\n'
+                          f'• __Language support__: All GoW languages are supported, put the two country code letters '
+                          f'(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}troop '
+                          f'elemaugrim`. Localized searches will only look for troop names with their respective '
+                          f'translations.',
+                    inline=False)
+        e.add_field(name='─────────────────────────────────────', value='┈')
+        e.add_field(name='Weapon search',
+                    value='• __Basics__: enter `{my_prefix}weapon <search>`, e.g. `{my_prefix}weapon cog`.\n'
+                          '• __Rules__:\n'
+                          '  - Search both works for weapon ids and parts of their names.\n'
+                          '  - Search is _not_ case sensitive.\n'
+                          '  - Multiple results will show a list of matched troops.\n'
+                          '  - Spaces and apostrophes (\') don\'t matter.\n\n'
+                          '• __Language support__: All GoW languages are supported, put the two country code letters '
+                          '(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}weapon cog`. '
+                          'Localized searches will only look for weapon names with their respective translations.',
+                    inline=False)
+        await message.channel.send(embed=e)
 
     async def on_message(self, message):
         if message.author.id == self.user.id:
