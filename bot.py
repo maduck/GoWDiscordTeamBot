@@ -257,6 +257,8 @@ class DiscordBot(discord.Client):
                 json.dump(self.prefixes, f, sort_keys=True, indent=2)
 
     def load_prefixes(self):
+        if not os.path.exists(self.PREFIX_CONFIG_FILE):
+            return
         lock = threading.Lock()
         with lock:
             with open(self.PREFIX_CONFIG_FILE) as f:
