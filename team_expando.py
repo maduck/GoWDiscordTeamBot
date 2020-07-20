@@ -20,7 +20,6 @@ RARITIES = (
     'Rare',
     'UltraRare',
     'Epic',
-    'Legendary',
     'Mythic',
     'Doomed'
 )
