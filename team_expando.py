@@ -182,6 +182,7 @@ class TeamExpander:
         lang = 'en'
         if message[span[0]] != '[':
             lang = message[span[0]:span[0] + 2].lower()
+        log.debug(lang)
         numbers = [int(n.strip()) for n in raw_code.split(',')]
         return numbers, lang
 
