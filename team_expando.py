@@ -88,10 +88,15 @@ class TeamExpander:
             data = json.load(f)
 
         for spell in data['Spells']:
+            amount = 0
+            for spell_step in spell['SpellSteps']:
+                if spell_step.get('Primarypower'):
+                    amount = spell_step.get('Amount')
             self.spells[spell['Id']] = {
                 'name': spell['Name'],
                 'description': spell['Description'],
                 'cost': spell['Cost'],
+                'amount': amount,
             }
         for trait in data['Traits']:
             self.traits[trait['Code']] = {'name': trait['Name'], 'description': trait['Description']}
@@ -280,9 +285,11 @@ class TeamExpander:
         ]
         troop['type'] = ' / '.join(types)
         spell = self.spells[troop['spell_id']]
+        magic = self.translations.get('[MAGIC]', lang)
         troop['spell'] = {
             'name': self.translations.get(spell['name'], lang),
-            'description': self.translations.get(spell['description'], lang),
+            'description': self.translations.get(
+                spell['description'], lang).replace('{1}', f'[{magic} + {spell["amount"]}]'),
         }
         troop['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
 
