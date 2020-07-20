@@ -174,6 +174,9 @@ class DiscordBot(discord.Client):
             await self.handle_team_code(message)
 
     def get_my_prefix(self, guild):
+        if guild is None:
+            self.DEFAULT_PREFIX
+                        
         return self.prefixes.get(str(guild.id), self.DEFAULT_PREFIX)
 
     async def handle_kingdom_search(self, message, search_term, lang):
