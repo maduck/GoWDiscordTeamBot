@@ -326,7 +326,11 @@ class DiscordBot(discord.Client):
         author = await pluralize_author(author)
 
         if shortend:
+<<<<<<< HEAD
             e = self.format_output_team_shortend(team, color)
+=======
+            e = self.format_output_team_shortend(team, color, author)
+>>>>>>> * add format out function for troops
         else:
             e = self.format_output_team(team, color, author)
 
