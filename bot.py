@@ -354,7 +354,10 @@ class DiscordBot(discord.Client):
         e = discord.Embed(color=color)
         troops = [f'{t[1]}' for t in team['troops']]
         e.title = ', '.join(troops)
-
+        descriptions = []
+        
+        if team['class']:
+            descriptions.append(team["class"])
         if team['banner']:
             banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
                             team['banner']['description']]
@@ -362,7 +365,8 @@ class DiscordBot(discord.Client):
                 banner_name=team['banner']['name'],
                 banner_texts=' '.join(banner_texts)
             )
-            e.description = banner
+            descriptions.append(banner)
+        e.description = '\n'.join(descriptions)
         return e
 
     def save_prefixes(self):
