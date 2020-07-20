@@ -313,7 +313,7 @@ class DiscordBot(discord.Client):
         author = await pluralize_author(author)
 
         if shortend:
-            e = self.format_output_team_shortend(team, color, author)
+            e = self.format_output_team_shortend(team, color)
         else:
             e = self.format_output_team(team, color, author)
 
@@ -333,18 +333,15 @@ class DiscordBot(discord.Client):
                         inline=False)
         return e
 
-    def format_output_team_shortend(self, team, color, author):
-        # title: troop1, troop2
-        # description: banner.name (:red:+ :brown:++ :yellow:-)
-
-        e = discord.Embed()
+    def format_output_team_shortend(self, team, color):
+        e = discord.Embed(color=color)
         troops = [f'{t[1]}' for t in team['troops']]
         e.title = ', '.join(troops)
 
         if team['banner']:
             banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
                             team['banner']['description']]
-            banner = '{banner_name} ({banner_texts})'.format(
+            banner = '{banner_name} {banner_texts}'.format(
                 banner_name=team['banner']['name'],
                 banner_texts=' '.join(banner_texts)
             )
