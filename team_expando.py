@@ -66,7 +66,7 @@ def extract_search_tag(search_term):
 
 
 class TeamExpander:
-    FORMAT = re.compile(r'(en|fr|de|ru|it|es|cn)?(-)?\[(\d+,?){1,13}\]', re.IGNORECASE)
+    FORMAT = re.compile(r'(en|fr|de|ru|it|es|cn)?-?\[(\d+,?){1,13}\]', re.IGNORECASE)
     COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown')
 
     def __init__(self):
