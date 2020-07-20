@@ -138,6 +138,12 @@ class DiscordBot(discord.Client):
                     inline=False)
         await message.channel.send(embed=e)
 
+    async def on_guild_join(self, guild):
+        log.debug(f'Joined guild {guild} (id {guild.id}).')
+
+    async def on_guild_remove(self, guild):
+        log.debug(f'Guild {guild} (id {guild.id}) kicked me out.')
+
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
