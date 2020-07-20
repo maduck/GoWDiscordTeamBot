@@ -116,7 +116,7 @@ class DiscordBot(discord.Client):
                           '(en, fr, de, ru, it, es, cn) in front of the team code, e.g. `cn[1075,6251,6699,6007,3010,'
                           '3,1,1,1,3,1,1,14007]` '
                           '• __Mini format__: Put a "-" in front of the code to make it appear in a small box, '
-                          'e.g. `-[1075,6251,6699,6007]`, or with language `de-[1075,6251,6699,6007`.',
+                          'e.g. `-[1075,6251,6699,6007]`, or with language `de-[1075,6251,6699,6007]`.',
                     inline=False)
         e.add_field(name='─────────────────────────────────────', value='┈')
         e.add_field(name='Troop search',
