@@ -76,6 +76,8 @@ class TeamExpander:
         self.classes = {}
         self.banners = {}
         self.traits = {}
+        self.kingdoms = {}
+        self.pets = {}
         self.talent_trees = {}
         self.translations = Translations()
         self.populate_world_data()
@@ -117,6 +119,12 @@ class TeamExpander:
                 'name': kingdom['BannerName'],
                 'colors': colors,
             }
+            self.kingdoms[kingdom['Id']] = {
+                'id': kingdom['Id'],
+                'name': kingdom['Name'],
+                'description': kingdom['Description'],
+                'punchline': kingdom['ByLine'],
+            }
         for weapon in data['Weapons']:
             colors = [c.replace('Color', '').lower() for c, v in weapon['ManaColors'].items() if v]
             self.weapons[weapon['Id']] = {
@@ -129,13 +137,27 @@ class TeamExpander:
                 'roles': weapon['TroopRoleArray'],
                 'spell_id': weapon['SpellId'],
             }
+        for pet in data['Pets']:
+            colors = [c.replace('Color', '').lower() for c, v in pet['ManaColors'].items() if v]
+            self.pets[pet['Id']] = {
+                'id': pet['Id'],
+                'name': pet['Name'],
+                'kingdom_id': pet['KingdomId'],
+                'colors': sorted(colors),
+            }
         for tree in data['TalentTrees']:
             talents = [self.traits.get(trait, trait) for trait in tree['Traits']]
             self.talent_trees[tree['Code']] = talents
         for _class in data['HeroClasses']:
             self.classes[_class['Id']] = {
+                'id': _class['Id'],
                 'name': _class['Name'],
-                'talents': [self.talent_trees[tree] for tree in _class['TalentTrees']]
+                'talents': [self.talent_trees[tree] for tree in _class['TalentTrees']],
+                'trees': _class['TalentTrees'],
+                'traits': _class['Traits'],
+                'weapon_id': _class['ClassWeaponId'],
+                'kingdom_id': _class['KingdomId'],
+                'type': _class['Augment'][0],
             }
 
     @classmethod
@@ -263,6 +285,93 @@ class TeamExpander:
             'description': self.translations.get(spell['description'], lang),
         }
         troop['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+
+    def search_kingdom(self, search_term, lang):
+        if search_term.isdigit():
+            result = self.kingdoms.get(int(search_term)).copy()
+            self.translate_kingdom(result, lang)
+            return [result]
+        else:
+            possible_matches = []
+            for kingdom in self.kingdoms.values():
+                translated_name = extract_search_tag(self.translations.get(kingdom['name'], lang))
+                real_search = extract_search_tag(search_term)
+                if real_search == translated_name:
+                    result = kingdom.copy()
+                    self.translate_kingdom(result, lang)
+                    return [result]
+                elif real_search in translated_name:
+                    result = kingdom.copy()
+                    self.translate_kingdom(result, lang)
+                    possible_matches.append(result)
+            return possible_matches
+
+    def translate_kingdom(self, kingdom, lang):
+        kingdom['name'] = self.translations.get(kingdom['name'], lang)
+        kingdom['description'] = self.translations.get(kingdom['description'], lang)
+        kingdom['punchline'] = self.translations.get(kingdom['punchline'], lang)
+
+    def search_class(self, search_term, lang):
+        if search_term.isdigit():
+            result = self.classes.get(int(search_term)).copy()
+            self.translate_class(result, lang)
+            return [result]
+        else:
+            possible_matches = []
+            for _class in self.classes.values():
+                translated_name = extract_search_tag(self.translations.get(_class['name'], lang))
+                real_search = extract_search_tag(search_term)
+                if real_search == translated_name:
+                    result = _class.copy()
+                    self.translate_class(result, lang)
+                    return [result]
+                elif real_search in translated_name:
+                    result = _class.copy()
+                    self.translate_class(result, lang)
+                    possible_matches.append(result)
+            return possible_matches
+
+    def translate_class(self, _class, lang):
+        kingdom = self.kingdoms[_class['kingdom_id']]
+        _class['kingdom'] = self.translations.get(kingdom['name'], lang)
+        weapon = self.weapons[_class['weapon_id']]
+        _class['weapon'] = self.translations.get(weapon['name'], lang)
+        _class['name'] = self.translations.get(_class['name'], lang)
+        translated_trees = []
+        for tree in _class['talents']:
+            translated_talents = []
+            for talent in tree:
+                translated_talents.append({
+                    'name': self.translations.get(talent['name'], lang),
+                    'description': self.translations.get(talent['description'], lang)
+                })
+            translated_trees.append(translated_talents)
+        _class['talents'] = translated_trees
+        _class['trees'] = [self.translations.get(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
+        _class['type'] = self.translations.get(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
+
+    def search_pet(self, search_term, lang):
+        if search_term.isdigit():
+            result = self.pets.get(int(search_term)).copy()
+            self.translate_pet(result, lang)
+            return [result]
+        else:
+            possible_matches = []
+            for pet in self.pets.values():
+                translated_name = extract_search_tag(self.translations.get(pet['name'], lang))
+                real_search = extract_search_tag(search_term)
+                if real_search == translated_name:
+                    result = pet.copy()
+                    self.translate_pet(result, lang)
+                    return [result]
+                elif real_search in translated_name:
+                    result = pet.copy()
+                    self.translate_pet(result, lang)
+                    possible_matches.append(result)
+            return possible_matches
+
+    def translate_pet(self, pet, lang):
+        pet['name'] = self.translations.get(pet['name'], lang)
 
     def search_weapon(self, search_term, lang):
         if search_term.isdigit():
