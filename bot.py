@@ -205,6 +205,7 @@ class DiscordBot(discord.Client):
             class_lines = [
                 _class['kingdom'],
                 _class['weapon'],
+                _class['type'],
             ]
             e.add_field(name=f'{_class["name"]} `#{_class["id"]}`', value='\n'.join(class_lines), inline=False)
             for i, tree in enumerate(_class['talents']):

@@ -157,6 +157,7 @@ class TeamExpander:
                 'traits': _class['Traits'],
                 'weapon_id': _class['ClassWeaponId'],
                 'kingdom_id': _class['KingdomId'],
+                'type': _class['Augment'][0],
             }
 
     @classmethod
@@ -347,6 +348,7 @@ class TeamExpander:
             translated_trees.append(translated_talents)
         _class['talents'] = translated_trees
         _class['trees'] = [self.translations.get(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
+        _class['type'] = self.translations.get(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
 
     def search_pet(self, search_term, lang):
         if search_term.isdigit():
