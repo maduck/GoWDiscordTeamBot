@@ -418,6 +418,6 @@ class TeamExpander:
                 spell['description'], lang).replace('{1}', f'[{magic} + {spell["amount"]}]'),
         }
         weapon['roles_title'] = self.translations.get('[WEAPON_ROLE]', lang)
-        weapon['roles'] = [self.translations.get(role, lang) for role in weapon['roles']]
+        weapon['roles'] = [self.translations.get(f'[TROOP_ROLE_{role.upper()}]', lang) for role in weapon['roles']]
         weapon['type_title'] = self.translations.get('[FILTER_WEAPONTYPE]', lang)
         weapon['type'] = self.translations.get(f'[WEAPONTYPE_{weapon["type"].upper()}]', lang)
