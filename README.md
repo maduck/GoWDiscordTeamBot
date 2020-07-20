@@ -1,5 +1,7 @@
 # Discord bot for handling Gems of War team codes
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/b4b04e1e077f2edc8b6e/maintainability)](https://codeclimate.com/github/maduck/GoWDiscordTeamBot/maintainability)
+
 you're on your own installing and using this.
 Keep in mind I will not be providing the needed game files (World.json and translations).
 
