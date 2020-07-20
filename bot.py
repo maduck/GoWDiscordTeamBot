@@ -91,9 +91,9 @@ class DiscordBot(discord.Client):
     VERSION = '0.2'
     SEARCH_COMMANDS = (
         {'key': 'troop',
-         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?!troop (?P<search>.*)$')},
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)troop (?P<search>.*)$')},
         {'key': 'weapon',
-         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?!weapon (?P<search>.*)$')},
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)weapon (?P<search>.*)$')},
     )
 
     def __init__(self, *args, **kwargs):
@@ -139,14 +139,19 @@ class DiscordBot(discord.Client):
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
-        if message.content.lower().strip() == '!help':
+
+        my_prefix = self.prefixes.get(message.guild.id, self.DEFAULT_PREFIX)
+        user_command = message.content.lower().strip()
+        if user_command == f'{my_prefix}help':
             await show_help(message)
         for command in self.SEARCH_COMMANDS:
-            match = command['search'].match(message.content)
+            match = command['search'].match(user_command)
             if match:
+                groups = match.groupdict()
+                if groups['prefix'] != my_prefix:
+                    return
                 function_name = f'handle_{command["key"]}_search'
                 search_function = getattr(self, function_name)
-                groups = match.groupdict()
                 search_term = groups['search']
                 lang = groups['lang']
                 await search_function(message, search_term, lang)
