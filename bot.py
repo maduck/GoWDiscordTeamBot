@@ -233,7 +233,7 @@ class DiscordBot(discord.Client):
         if not team:
             log.debug(f'nothing found in message {message.content}')
             return
-        log.debug(f'[{message.guild}][{message.channel}] sending result to {message.author.display_name}: {team}')
+        log.debug(f'[{message.guild.id}][{message.channel}] sending team result to {message.author.display_name}')
         color = discord.Color.from_rgb(19, 227, 246)
         author = message.author.display_name
         author = await pluralize_author(author)
