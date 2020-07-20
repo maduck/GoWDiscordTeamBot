@@ -57,6 +57,12 @@ class DiscordBot(discord.Client):
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)troop (?P<search>.*)$')},
         {'key': 'weapon',
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)weapon (?P<search>.*)$')},
+        {'key': 'kingdom',
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)kingdom (?P<search>.*)$')},
+        {'key': 'pet',
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)pet (?P<search>.*)$')},
+        {'key': 'class',
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)class (?P<search>.*)$')},
     )
 
     def __init__(self, *args, **kwargs):
@@ -175,6 +181,60 @@ class DiscordBot(discord.Client):
                         
         return self.prefixes.get(str(guild.id), self.DEFAULT_PREFIX)
 
+    async def handle_kingdom_search(self, message, search_term, lang):
+        result = self.expander.search_kingdom(search_term, lang)
+        if not result:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Kingdom search', color=color)
+            e.add_field(name=search_term, value='did not yield any result')
+        elif len(result) == 1:
+            kingdom = result[0]
+            e = discord.Embed(title='Kingdom search')
+            message_lines = [
+                kingdom['punchline'],
+                kingdom['description'],
+            ]
+            e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}`', value='\n'.join(message_lines))
+
+        await message.channel.send(embed=e)
+
+    async def handle_class_search(self, message, search_term, lang):
+        result = self.expander.search_class(search_term, lang)
+        if not result:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Class search', color=color)
+            e.add_field(name=search_term, value='did not yield any result.')
+        elif len(result) == 1:
+            _class = result[0]
+            e = discord.Embed(title='Class search')
+            class_lines = [
+                _class['kingdom'],
+                _class['weapon'],
+                _class['type'],
+            ]
+            e.add_field(name=f'{_class["name"]} `#{_class["id"]}`', value='\n'.join(class_lines), inline=False)
+            for i, tree in enumerate(_class['talents']):
+                talents = [f'**{t["name"]}** ({t["description"]})' for t in tree]
+                e.add_field(name=_class['trees'][i], value='\n'.join(talents), inline=True)
+        await message.channel.send(embed=e)
+
+    async def handle_pet_search(self, message, search_term, lang):
+        result = self.expander.search_pet(search_term, lang)
+        if not result:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Pet search', color=color)
+            e.add_field(name=search_term, value='did not yield any result')
+        elif len(result) == 1:
+            pet = result[0]
+            e = discord.Embed(title='Pet search')
+            message_lines = [
+                f'Kingdom: {pet["kingdom_id"]}',
+                ', '.join(pet['colors']),
+            ]
+            e.add_field(name=f'{pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
+
+        await message.channel.send(embed=e)
+
     async def handle_weapon_search(self, message, search_term, lang):
         result = self.expander.search_weapon(search_term, lang)
         if not result:
@@ -190,13 +250,11 @@ class DiscordBot(discord.Client):
             message_lines = [
                 weapon["description"],
                 '',
-                f'**{weapon["spell_title"]}** {weapon["spell"]["name"]}: {weapon["spell"]["description"]}',
                 f'**{weapon["rarity_title"]}** {weapon["rarity"]}',
                 f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
                 f'**{weapon["type_title"]}** {weapon["type"]}',
             ]
-            e.add_field(name=f'{mana} {weapon["name"]}', value='\n'.join(message_lines))
-
+            e.add_field(name=f'{mana} {weapon["name"]} `#{weapon["id"]}`', value='\n'.join(message_lines))
         else:
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title='Weapon search', color=color)
