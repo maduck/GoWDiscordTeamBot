@@ -148,7 +148,7 @@ class DiscordBot(discord.Client):
         my_prefix = self.prefixes.get(message.guild.id, self.DEFAULT_PREFIX)
         user_command = message.content.lower().strip()
         if user_command == f'{my_prefix}help':
-            await show_help(message)
+            await self.show_help(message)
         for command in self.SEARCH_COMMANDS:
             match = command['search'].match(user_command)
             if match:
