@@ -130,6 +130,9 @@ class TeamExpander:
                 'description': kingdom['Description'],
                 'punchline': kingdom['ByLine'],
             }
+            for troop_id in kingdom['TroopIds']:
+                if troop_id != -1:
+                    self.troops[troop_id]['kingdom'] = kingdom
         for weapon in data['Weapons']:
             colors = [c.replace('Color', '').lower() for c, v in weapon['ManaColors'].items() if v]
             self.weapons[weapon['Id']] = {
@@ -282,9 +285,11 @@ class TeamExpander:
         troop['roles'] = [self.translations.get(role, lang) for role in troop['roles']]
         troop['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
         types = [
-            self.translations.get(f'[TROOPTYPE_{type.upper()}]', lang) for type in troop['types']
+            self.translations.get(f'[TROOPTYPE_{_type.upper()}]', lang) for _type in troop['types']
         ]
         troop['type'] = ' / '.join(types)
+        troop['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
+        troop['kingdom'] = self.translations.get(troop['kingdom']['Name'], lang)
         spell = self.spells[troop['spell_id']]
         magic = self.translations.get('[MAGIC]', lang)
         troop['spell'] = {

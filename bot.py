@@ -282,6 +282,7 @@ class DiscordBot(discord.Client):
                 '',
                 f'**{troop["spell_title"]}** {troop["spell"]["name"]}: {troop["spell"]["description"]}',
                 '',
+                f'**{troop["kingdom_title"]}** {troop["kingdom"]}',
                 f'**{troop["rarity_title"]}** {troop["rarity"]}',
                 f'**{troop["roles_title"]}** {", ".join(troop["roles"])}',
                 f'**{troop["type_title"]}** {troop["type"]}',
