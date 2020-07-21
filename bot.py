@@ -283,7 +283,7 @@ class DiscordBot(discord.Client):
             message_lines = [
                 troop["description"],
                 '',
-                f'**{troop["spell_title"]}** {troop["spell"]["name"]}: {troop["spell"]["description"]}',
+                f'**{troop["spell"]["name"]}** {troop["spell"]["description"]}',
                 '',
                 f'**{troop["kingdom_title"]}** {troop["kingdom"]}',
                 f'**{troop["rarity_title"]}** {troop["rarity"]}',
