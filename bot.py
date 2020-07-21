@@ -410,7 +410,10 @@ class DiscordBot(discord.Client):
                             team['banner']['description']]
             e.add_field(name=team['banner']['name'], value='\n'.join(banner_texts), inline=True)
         if team['class']:
-            e.add_field(name=f'{team["class_title"]}: {team["class"]}', value='\n'.join(team['talents']),
+            talents = '\n'.join(team['talents'])
+            if all([t == '-' for t in team['talents']]):
+                talents = '-'
+            e.add_field(name=f'{team["class_title"]}: {team["class"]}', value=talents,
                         inline=False)
         return e
 
