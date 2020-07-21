@@ -50,7 +50,7 @@ class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
     PREFIX_CONFIG_FILE = 'prefixes.json'
     BOT_NAME = 'Garys GoW Team Bot'
-    BASE_GUILD = 'Gary\'s GoW Gommunity'
+    BASE_GUILD = 'Garyatrics'
     VERSION = '0.2'
     SEARCH_COMMANDS = (
         {'key': 'troop',
