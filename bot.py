@@ -302,10 +302,6 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title=f'Troop search for `{search_term}` found {len(result)} matches.', color=color)
             troops_found = [f'{t["name"]} ({t["id"]})' for t in result]
             troop_chunks = chunks(troops_found, 30)
-            """
-            if len(troops_found) > 1024:
-                troops_found = troops_found[:992] + '\n...\n(list too long to display)'
-            """
             for i, chunk in enumerate(troop_chunks):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
