@@ -98,7 +98,7 @@ class DiscordBot(discord.Client):
         log.info(f'Invite with: {self.invite_url}')
         log.debug(f'Active in {", ".join([g.name for g in self.guilds])}')
         game = discord.Game("Gems of War")
-        await self.change_presence(status=discord.Status.idle, activity=game)
+        await self.change_presence(status=discord.Status.online, activity=game)
         await self.update_base_emojis()
 
     async def update_base_emojis(self):
@@ -128,6 +128,7 @@ class DiscordBot(discord.Client):
                           f'  - Search is _not_ case sensitive.\n'
                           f'  - Multiple results will show a list of matched troops.\n'
                           f'  - Spaces and apostrophes (\') don\'t matter.\n\n'
+                          f'If one matching troop is found, the side color will reflect the troop\'s base rarity.\n\n'
                           f'• __Language support__: All GoW languages are supported, put the two country code letters '
                           f'(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}troop '
                           f'elemaugrim`. Localized searches will only look for troop names with their respective '
