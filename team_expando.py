@@ -89,14 +89,17 @@ class TeamExpander:
 
         for spell in data['Spells']:
             amount = 0
+            multiplier = 1
             for spell_step in spell['SpellSteps']:
                 if spell_step.get('Primarypower'):
                     amount = spell_step.get('Amount')
+                    multiplier = spell_step.get('SpellPowerMultiplier', 1)
             self.spells[spell['Id']] = {
                 'name': spell['Name'],
                 'description': spell['Description'],
                 'cost': spell['Cost'],
                 'amount': amount,
+                'multiplier': multiplier,
             }
         for trait in data['Traits']:
             self.traits[trait['Code']] = {'name': trait['Name'], 'description': trait['Description']}
@@ -427,12 +430,20 @@ class TeamExpander:
         spell_amount = ''
         if spell['amount']:
             spell_amount = f' + {spell["amount"]}'
+        multiplier = ''
+        if spell['multiplier'] > 1:
+            multiplier = f'{spell["multiplier"]} * '
+
+        divisor = ''
+        if spell['multiplier'] < 1:
+            number = int(1/spell['multiplier'])
+            divisor = f' / {number}'
 
         weapon['spell'] = {
             'name': self.translations.get(spell['name'], lang),
             'cost': spell['cost'],
             'description': self.translations.get(
-                spell['description'], lang).replace('{1}', f'[{magic}{spell_amount}]'),
+                spell['description'], lang).replace('{1}', f'[{multiplier}{magic}{divisor}{spell_amount}]'),
         }
         weapon['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
         weapon['kingdom'] = self.translations.get(weapon['kingdom']['name'], lang)
