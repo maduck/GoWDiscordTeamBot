@@ -152,7 +152,7 @@ class TeamExpander:
             self.pets[pet['Id']] = {
                 'id': pet['Id'],
                 'name': pet['Name'],
-                'kingdom_id': pet['KingdomId'],
+                'kingdom': self.kingdoms[pet['KingdomId']],
                 'colors': sorted(colors),
             }
         for tree in data['TalentTrees']:
@@ -387,6 +387,8 @@ class TeamExpander:
 
     def translate_pet(self, pet, lang):
         pet['name'] = self.translations.get(pet['name'], lang)
+        pet['kingdom'] = self.translations.get(pet['kingdom']['name'], lang)
+        pet['color_code'] = "".join(pet['colors'])
 
     def search_weapon(self, search_term, lang):
         if search_term.isdigit():

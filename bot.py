@@ -231,12 +231,19 @@ class DiscordBot(discord.Client):
         elif len(result) == 1:
             pet = result[0]
             e = discord.Embed(title='Pet search')
+            mana = self.my_emojis.get(pet['color_code'])
             message_lines = [
-                f'Kingdom: {pet["kingdom_id"]}',
-                ', '.join(pet['colors']),
+                f'Kingdom: {pet["kingdom"]}',
             ]
-            e.add_field(name=f'{pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
-
+            e.add_field(name=f'{mana} {pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
+        else:
+            color = discord.Color.from_rgb(255, 255, 255)
+            e = discord.Embed(title=f'Pet search for `{search_term}` found {len(result)} matches.', color=color)
+            pets_found = [f'{pet["name"]} ({pet["id"]})' for pet in result]
+            weapon_chunks = chunks(pets_found, 30)
+            for i, chunk in enumerate(weapon_chunks):
+                chunk_message = '\n'.join(chunk)
+                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
     async def handle_weapon_search(self, message, search_term, lang):
