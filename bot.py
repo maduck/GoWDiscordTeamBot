@@ -165,18 +165,18 @@ class DiscordBot(discord.Client):
         await message.channel.send(embed=e)
 
     async def show_quickhelp(self, message):
-        my_prefix = self.get_my_prefix(message.guild)        
+        my_prefix = self.get_my_prefix(message.guild)
         e = discord.Embed(title='quickhelp')
         e.description = (
-                f'`{my_prefix}help`, complete help\n' 
-                f'`{my_prefix}quickhelp`, this command\n'
-                f'`[<troopcode>]`, post team, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1]`\n'
-                f'`-[<troopcode>]`, post team (short), e.g. `-[1075,6251,6699,6007,3010]`\n'
-                f'`{my_prefix}troop <search>`, e.g. `{my_prefix}troop elemaugrim`.\n'
-                f'`{my_prefix}weapon <search>`, e.g. `{my_prefix}weapon cog`.\n'
-                f'`{my_prefix}pet <search>`, e.g. `{my_prefix}pet dire rose`.\n'
-                f'`<language><command>`, language support, e.g. `de{my_prefix}weapon cog`, `de-[1075,6251,6699,6007,3010]`.\n'
-                f''
+            f'`{my_prefix}help` complete help\n'
+            f'`{my_prefix}quickhelp` this command\n'
+            f'`{my_prefix}invite`\n'
+            f'`[<troopcode>]` post team\n'
+            f'`-[<troopcode>]` post team (short)\n'
+            f'`{my_prefix}troop <search>`\n'
+            f'`{my_prefix}weapon <search>`\n'
+            f'`{my_prefix}pet <search>`\n'
+            f'`<language><command>` language support\n'
         )
         await message.channel.send(embed=e)
 
@@ -196,6 +196,8 @@ class DiscordBot(discord.Client):
             await self.show_help(message)
         elif user_command == f'{my_prefix}quickhelp':
             await self.show_quickhelp(message)
+        elif user_command == f'{my_prefix}invite':
+            await self.show_invite_link(message)
         elif user_command.startswith(f'{my_prefix}prefix '):
             await self.change_prefix(message, user_command)
         for command in self.SEARCH_COMMANDS:
@@ -214,6 +216,13 @@ class DiscordBot(discord.Client):
             await self.handle_team_code(message, shortend=True)
         elif "[" in message.content:
             await self.handle_team_code(message)
+
+    async def show_invite_link(self, message):
+        color = discord.Color.from_rgb(255, 255, 255)
+        e = discord.Embed(title='Bot invite link', color=color)
+        link = 'https://discordapp.com/api/oauth2/authorize?client_id=733399051797790810&scope=bot&permissions=339008'
+        e.add_field(name='Feel free to share!', value=link)
+        await message.channel.send(embed=e)
 
     async def change_prefix(self, message, user_command):
         my_prefix = self.get_my_prefix(message.guild)
@@ -237,7 +246,7 @@ class DiscordBot(discord.Client):
     def get_my_prefix(self, guild):
         if guild is None:
             return self.DEFAULT_PREFIX
-                        
+
         return self.prefixes.get(str(guild.id), self.DEFAULT_PREFIX)
 
     async def handle_kingdom_search(self, message, search_term, lang):
@@ -356,7 +365,8 @@ class DiscordBot(discord.Client):
                 f'**{troop["roles_title"]}** {", ".join(troop["roles"])}',
                 f'**{troop["type_title"]}** {troop["type"]}',
             ]
-            e.add_field(name=f'{troop["spell"]["cost"]}{mana} {troop["name"]} `#{troop["id"]}`', value='\n'.join(message_lines))
+            e.add_field(name=f'{troop["spell"]["cost"]}{mana} {troop["name"]} `#{troop["id"]}`',
+                        value='\n'.join(message_lines))
             trait_list = [f'**{trait["name"]}** - {trait["description"]}' for trait in troop['traits']]
             traits = '\n'.join(trait_list)
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
@@ -407,7 +417,7 @@ class DiscordBot(discord.Client):
         troops = [f'{t[1]}' for t in team['troops']]
         e.title = ', '.join(troops)
         descriptions = []
-        
+
         if team['class']:
             descriptions.append(team["class"])
         if team['banner']:
