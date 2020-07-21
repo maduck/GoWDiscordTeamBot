@@ -262,9 +262,12 @@ class DiscordBot(discord.Client):
             e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`', value='\n'.join(message_lines))
         else:
             color = discord.Color.from_rgb(255, 255, 255)
-            e = discord.Embed(title='Weapon search', color=color)
-            weapons_found = '\n'.join([f'{w["name"]} ({w["id"]})' for w in result])
-            e.add_field(name=f'{search_term} matches more than one weapon.', value=weapons_found)
+            e = discord.Embed(title=f'Weapon search for `{search_term}` found {len(result)} matches.', color=color)
+            weapons_found = [f'{t["name"]} ({t["id"]})' for t in result]
+            weapon_chunks = chunks(weapons_found, 30)
+            for i, chunk in enumerate(weapon_chunks):
+                chunk_message = '\n'.join(chunk)
+                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
     async def handle_troop_search(self, message, search_term, lang):
@@ -296,7 +299,7 @@ class DiscordBot(discord.Client):
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
             color = discord.Color.from_rgb(255, 255, 255)
-            e = discord.Embed(title=f'Troop search `{search_term}` found {len(result)} matches.', color=color)
+            e = discord.Embed(title=f'Troop search for `{search_term}` found {len(result)} matches.', color=color)
             troops_found = [f'{t["name"]} ({t["id"]})' for t in result]
             troop_chunks = chunks(troops_found, 30)
             """
