@@ -230,9 +230,6 @@ class TeamExpander:
                 result['talents'].append(element)
                 continue
 
-        for i in range(7 - len(result['talents'])):
-            result['talents'].append(0)
-
         new_talents = []
         for talent_no, talent_code in enumerate(result['talents']):
             talent = '-'
@@ -447,7 +444,7 @@ class TeamExpander:
 
         divisor = ''
         if spell['multiplier'] < 1:
-            number = int(1/spell['multiplier'])
+            number = int(1 / spell['multiplier'])
             divisor = f' / {number}'
 
         weapon['spell'] = {
