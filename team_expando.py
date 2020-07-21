@@ -146,6 +146,7 @@ class TeamExpander:
                 'roles': weapon['TroopRoleArray'],
                 'spell_id': weapon['SpellId'],
                 'kingdom': self.kingdoms[weapon['KingdomId']],
+                'requirement': weapon['MasteryRequirement'],
             }
         for pet in data['Pets']:
             colors = [c.replace('Color', '').lower() for c, v in pet['ManaColors'].items() if v]
@@ -169,6 +170,7 @@ class TeamExpander:
                 'kingdom_id': _class['KingdomId'],
                 'type': _class['Augment'][0],
             }
+            self.weapons[_class['ClassWeaponId']]['class'] = _class['Name']
 
     @classmethod
     def extract_code_from_message(cls, message):
@@ -434,3 +436,13 @@ class TeamExpander:
         weapon['roles'] = [self.translations.get(f'[TROOP_ROLE_{role.upper()}]', lang) for role in weapon['roles']]
         weapon['type_title'] = self.translations.get('[FILTER_WEAPONTYPE]', lang)
         weapon['type'] = self.translations.get(f'[WEAPONTYPE_{weapon["type"].upper()}]', lang)
+        if weapon['requirement'] < 1000:
+            weapon['requirement_text'] = self.translations.get('[WEAPON_MASTERY_REQUIRED]', lang) + \
+                                         str(weapon['requirement'])
+        elif weapon['requirement'] == 1000:
+            weapon['requirement_text'] = self.translations.get('[WEAPON_AVAILABLE_FROM_CHESTS_AND_EVENTS]', lang)
+        elif weapon['requirement'] == 1002:
+            _class = self.translations.get(weapon['class'], lang)
+            weapon['requirement_text'] = self.translations.get('[CLASS_REWARD_TITLE]', lang) + f' ({_class})'
+        elif weapon['requirement'] == 1003:
+            weapon['requirement_text'] = self.translations.get('[SOULFORGE_WEAPONS_TAB_EMPTY_ERROR]', lang)

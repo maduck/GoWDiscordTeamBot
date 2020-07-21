@@ -329,6 +329,8 @@ class DiscordBot(discord.Client):
                 f'**{weapon["rarity_title"]}** {weapon["rarity"]}',
                 f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
                 f'**{weapon["type_title"]}** {weapon["type"]}',
+                '',
+                weapon['requirement_text'],
             ]
             e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
                         value='\n'.join(message_lines))
