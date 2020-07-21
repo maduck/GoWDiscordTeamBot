@@ -112,6 +112,7 @@ class TeamExpander:
                 'rarity': troop['TroopRarity'],
                 'types': [troop['TroopType']],
                 'roles': troop['TroopRoleArray'],
+                'kingdom': {'Name': ''},
             }
             if 'TroopType2' in troop:
                 self.troops[troop['Id']]['types'].append(troop['TroopType2'])
