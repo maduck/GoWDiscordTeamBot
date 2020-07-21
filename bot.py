@@ -162,6 +162,8 @@ class DiscordBot(discord.Client):
         user_command = message.content.lower().strip()
         if user_command == f'{my_prefix}help':
             await self.show_help(message)
+        elif user_command.startswith(f'{my_prefix}prefix '):
+            await self.change_prefix(message, user_command)
         for command in self.SEARCH_COMMANDS:
             match = command['search'].match(user_command)
             if match:
@@ -178,6 +180,25 @@ class DiscordBot(discord.Client):
             await self.handle_team_code(message, shortend=True)
         elif "[" in message.content:
             await self.handle_team_code(message)
+
+    async def change_prefix(self, message, user_command):
+        my_prefix = self.get_my_prefix(message.guild)
+        issuing_user = message.author
+        guild_owner = message.guild.owner
+        if issuing_user == guild_owner:
+            new_prefix = user_command[len(f'{my_prefix}prefix '):]
+            self.prefixes[str(message.guild.id)] = new_prefix
+            self.save_prefixes()
+            color = discord.Color.from_rgb(255, 0, 0)
+            e = discord.Embed(title='ADMINISTRATIVE CHANGE', color=color)
+            e.add_field(name='Prefix change', value=f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
+            await message.channel.send(embed=e)
+            log.debug(f'Changed prefix from {my_prefix} to {new_prefix}')
+        else:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='There was a problem', color=color)
+            e.add_field(name='Prefix change', value=f'Only the server owner has permission to change the prefix.')
+            await message.channel.send(embed=e)
 
     def get_my_prefix(self, guild):
         if guild is None:
@@ -266,7 +287,8 @@ class DiscordBot(discord.Client):
                 f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
                 f'**{weapon["type_title"]}** {weapon["type"]}',
             ]
-            e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`', value='\n'.join(message_lines))
+            e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
+                        value='\n'.join(message_lines))
         else:
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title=f'Weapon search for `{search_term}` found {len(result)} matches.', color=color)
