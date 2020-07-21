@@ -146,6 +146,38 @@ class DiscordBot(discord.Client):
                           f'(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}weapon cog`. '
                           f'Localized searches will only look for weapon names with their respective translations.',
                     inline=False)
+        e.add_field(name='─────────────────────────────────────', value='┈')
+        e.add_field(name='Pet search',
+                    value=f'• __Basics__: enter `{my_prefix}pet <search>`, e.g. `{my_prefix}pet dire rose`.\n'
+                          f'• __Rules__:\n'
+                          f'  - Search both works for pet ids and parts of their names.\n'
+                          f'  - Search is _not_ case sensitive.\n'
+                          f'  - Multiple results will show a list of matched pets.\n'
+                          f'  - Spaces and apostrophes (\') don\'t matter.\n\n'
+                          f'• __Language support__: All GoW languages are supported, put the two country code letters '
+                          f'(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}pet dire rose`. '
+                          f'Localized searches will only look for weapon names with their respective translations.',
+                    inline=False)
+        e.add_field(name='─────────────────────────────────────', value='┈')
+        e.add_field(name='Quickhelp',
+                    value=f'• __Basics__: enter `{my_prefix}quickhelp` to open a short overview of all commands.\n',
+                    inline=False)
+        await message.channel.send(embed=e)
+
+    async def show_quickhelp(self, message):
+        my_prefix = self.get_my_prefix(message.guild)        
+        e = discord.Embed(title='quickhelp')
+        e.description = (
+                f'`{my_prefix}help`, complete help\n' 
+                f'`{my_prefix}quickhelp`, this command\n'
+                f'`[<troopcode>]`, post team, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1]`\n'
+                f'`-[<troopcode>]`, post team (short), e.g. `-[1075,6251,6699,6007,3010]`\n'
+                f'`{my_prefix}troop <search>`, e.g. `{my_prefix}troop elemaugrim`.\n'
+                f'`{my_prefix}weapon <search>`, e.g. `{my_prefix}weapon cog`.\n'
+                f'`{my_prefix}pet <search>`, e.g. `{my_prefix}pet dire rose`.\n'
+                f'`<language><command>`, language support, e.g. `de{my_prefix}weapon cog`, `de-[1075,6251,6699,6007,3010]`.\n'
+                f''
+        )
         await message.channel.send(embed=e)
 
     async def on_guild_join(self, guild):
@@ -162,6 +194,8 @@ class DiscordBot(discord.Client):
         user_command = message.content.lower().strip()
         if user_command == f'{my_prefix}help':
             await self.show_help(message)
+        elif user_command == f'{my_prefix}quickhelp':
+            await self.show_quickhelp(message)
         elif user_command.startswith(f'{my_prefix}prefix '):
             await self.change_prefix(message, user_command)
         for command in self.SEARCH_COMMANDS:
