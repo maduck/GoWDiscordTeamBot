@@ -298,11 +298,22 @@ class TeamExpander:
         troop['kingdom'] = self.translations.get(troop['kingdom']['Name'], lang)
         spell = self.spells[troop['spell_id']]
         magic = self.translations.get('[MAGIC]', lang)
+        spell_amount = ''
+        if spell['amount']:
+            spell_amount = f' + {spell["amount"]}'
+        multiplier = ''
+        if spell['multiplier'] > 1:
+            multiplier = f'{int(spell["multiplier"])} ⨯ '
+
+        divisor = ''
+        if spell['multiplier'] < 1:
+            number = int(1 / spell['multiplier'])
+            divisor = f' / {number}'
         troop['spell'] = {
             'name': self.translations.get(spell['name'], lang),
             'cost': spell['cost'],
             'description': self.translations.get(
-                spell['description'], lang).replace('{1}', f'[{magic} + {spell["amount"]}]'),
+                spell['description'], lang).replace('{1}', f'[{multiplier}{magic}{divisor}{spell_amount}]'),
         }
         troop['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
 
@@ -432,7 +443,7 @@ class TeamExpander:
             spell_amount = f' + {spell["amount"]}'
         multiplier = ''
         if spell['multiplier'] > 1:
-            multiplier = f'{spell["multiplier"]} * '
+            multiplier = f'{int(spell["multiplier"])} ⨯ '
 
         divisor = ''
         if spell['multiplier'] < 1:
