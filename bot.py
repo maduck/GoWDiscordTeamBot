@@ -189,6 +189,8 @@ class DiscordBot(discord.Client):
             await self.show_invite_link(message)
         elif user_command.startswith(f'{my_prefix}prefix '):
             await self.change_prefix(message, user_command)
+        elif user_command == f'{my_prefix}prefix':
+            await self.show_prefix(message)
         for command in self.SEARCH_COMMANDS:
             match = command['search'].match(user_command)
             if match:
@@ -347,6 +349,7 @@ class DiscordBot(discord.Client):
                 rarity_color = RARITY_COLORS['Doomed']
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Troop search', color=color)
+            e.set_thumbnail(url=troop['filename'])
             message_lines = [
                 f'**{troop["spell"]["name"]}**: {troop["spell"]["description"]}',
                 '',
@@ -444,6 +447,13 @@ class DiscordBot(discord.Client):
         with lock:
             with open(self.PREFIX_CONFIG_FILE) as f:
                 self.prefixes = json.load(f)
+
+    async def show_prefix(self, message):
+        my_prefix = self.get_my_prefix(message.guild)
+        color = discord.Color.from_rgb(255, 255, 255)
+        e = discord.Embed(title='Prefix', color=color)
+        e.add_field(name='The current prefix is', value=f'`{my_prefix}`')
+        await message.channel.send(embed=e)
 
 
 if __name__ == '__main__':
