@@ -293,25 +293,7 @@ class TeamExpander:
         troop['type'] = ' / '.join(types)
         troop['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
         troop['kingdom'] = self.translations.get(troop['kingdom']['Name'], lang)
-        spell = self.spells[troop['spell_id']]
-        magic = self.translations.get('[MAGIC]', lang)
-        spell_amount = ''
-        if spell['amount']:
-            spell_amount = f' + {spell["amount"]}'
-        multiplier = ''
-        if spell['multiplier'] > 1:
-            multiplier = f'{int(spell["multiplier"])} ⨯ '
-
-        divisor = ''
-        if spell['multiplier'] < 1:
-            number = int(1 / spell['multiplier'])
-            divisor = f' / {number}'
-        troop['spell'] = {
-            'name': self.translations.get(spell['name'], lang),
-            'cost': spell['cost'],
-            'description': self.translations.get(
-                spell['description'], lang).replace('{1}', f'[{multiplier}{magic}{divisor}{spell_amount}]'),
-        }
+        troop['spell'] = self.translate_spell(troop['spell_id'], lang)
         troop['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
 
     def search_kingdom(self, search_term, lang):
@@ -433,26 +415,7 @@ class TeamExpander:
 
         rarity_number = WEAPON_RARITIES.index(weapon['rarity'])
         weapon['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
-        spell = self.spells[weapon['spell_id']]
-        magic = self.translations.get('[MAGIC]', lang)
-        spell_amount = ''
-        if spell['amount']:
-            spell_amount = f' + {spell["amount"]}'
-        multiplier = ''
-        if spell['multiplier'] > 1:
-            multiplier = f'{int(spell["multiplier"])} ⨯ '
-
-        divisor = ''
-        if spell['multiplier'] < 1:
-            number = int(1 / spell['multiplier'])
-            divisor = f' / {number}'
-
-        weapon['spell'] = {
-            'name': self.translations.get(spell['name'], lang),
-            'cost': spell['cost'],
-            'description': self.translations.get(
-                spell['description'], lang).replace('{1}', f'[{multiplier}{magic}{divisor}{spell_amount}]'),
-        }
+        weapon['spell'] = self.translate_spell(weapon['spell_id'], lang)
         weapon['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
         weapon['kingdom'] = self.translations.get(weapon['kingdom']['name'], lang)
         weapon['roles_title'] = self.translations.get('[WEAPON_ROLE]', lang)
@@ -469,3 +432,25 @@ class TeamExpander:
             weapon['requirement_text'] = self.translations.get('[CLASS_REWARD_TITLE]', lang) + f' ({_class})'
         elif weapon['requirement'] == 1003:
             weapon['requirement_text'] = self.translations.get('[SOULFORGE_WEAPONS_TAB_EMPTY_ERROR]', lang)
+
+    def translate_spell(self, spell_id, lang):
+        spell = self.spells[spell_id]
+        magic = self.translations.get('[MAGIC]', lang)
+        spell_amount = ''
+        if spell['amount']:
+            spell_amount = f' + {spell["amount"]}'
+        multiplier = ''
+        if spell['multiplier'] > 1:
+            multiplier = f'{int(spell["multiplier"])} ⨯ '
+        divisor = ''
+        if spell['multiplier'] < 1:
+            number = int(round(1 / spell['multiplier']))
+            divisor = f' / {number}'
+
+        damage = f'[{multiplier}{magic}{divisor}{spell_amount}]'
+        description = self.translations.get(spell['description'], lang).replace('{1}', damage)
+        return {
+            'name': self.translations.get(spell['name'], lang),
+            'cost': spell['cost'],
+            'description': description,
+        }
