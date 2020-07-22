@@ -239,7 +239,7 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='ADMINISTRATIVE CHANGE', color=color)
             e.add_field(name='Prefix change', value=f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
             await message.channel.send(embed=e)
-            log.debug(f'Changed prefix from {my_prefix} to {new_prefix}')
+            log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
         else:
             color = discord.Color.from_rgb(0, 0, 0)
             e = discord.Embed(title='There was a problem', color=color)
