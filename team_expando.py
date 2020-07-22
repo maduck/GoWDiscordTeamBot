@@ -62,7 +62,7 @@ class Translations:
 
 
 def extract_search_tag(search_term):
-    ignored_characters = '-\''
+    ignored_characters = ' -\''
     for char in ignored_characters:
         search_term = search_term.replace(char, '')
     return search_term.lower()
