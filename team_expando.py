@@ -111,7 +111,7 @@ class TeamExpander:
                 'colors': sorted(colors),
                 'description': troop['Description'],
                 'spell_id': troop['SpellId'],
-                'traits': [self.traits.get(trait, trait) for trait in troop['Traits']],
+                'traits': [self.traits.get(trait, {'name': trait, 'description': '-'}) for trait in troop['Traits']],
                 'rarity': troop['TroopRarity'],
                 'types': [troop['TroopType']],
                 'roles': troop['TroopRoleArray'],
