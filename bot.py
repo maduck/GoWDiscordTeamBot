@@ -285,7 +285,7 @@ class DiscordBot(discord.Client):
             ]
             e.add_field(name=f'{_class["name"]} `#{_class["id"]}`', value='\n'.join(class_lines), inline=False)
             for i, tree in enumerate(_class['talents']):
-                talents = [f'**{t["name"]}** ({t["description"]})' for t in tree]
+                talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree]
                 e.add_field(name=_class['trees'][i], value='\n'.join(talents), inline=True)
         await message.channel.send(embed=e)
 
@@ -328,10 +328,10 @@ class DiscordBot(discord.Client):
             message_lines = [
                 weapon['spell']['description'],
                 '',
-                f'**{weapon["kingdom_title"]}** {weapon["kingdom"]}',
-                f'**{weapon["rarity_title"]}** {weapon["rarity"]}',
-                f'**{weapon["roles_title"]}** {", ".join(weapon["roles"])}',
-                f'**{weapon["type_title"]}** {weapon["type"]}',
+                f'**{weapon["kingdom_title"]}**: {weapon["kingdom"]}',
+                f'**{weapon["rarity_title"]}**: {weapon["rarity"]}',
+                f'**{weapon["roles_title"]}**: {", ".join(weapon["roles"])}',
+                f'**{weapon["type_title"]}**: {weapon["type"]}',
                 '',
                 weapon['requirement_text'],
             ]
@@ -362,12 +362,12 @@ class DiscordBot(discord.Client):
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Troop search', color=color)
             message_lines = [
-                f'**{troop["spell"]["name"]}** {troop["spell"]["description"]}',
+                f'**{troop["spell"]["name"]}**: {troop["spell"]["description"]}',
                 '',
-                f'**{troop["kingdom_title"]}** {troop["kingdom"]}',
-                f'**{troop["rarity_title"]}** {troop["rarity"]}',
-                f'**{troop["roles_title"]}** {", ".join(troop["roles"])}',
-                f'**{troop["type_title"]}** {troop["type"]}',
+                f'**{troop["kingdom_title"]}**: {troop["kingdom"]}',
+                f'**{troop["rarity_title"]}**: {troop["rarity"]}',
+                f'**{troop["roles_title"]}**: {", ".join(troop["roles"])}',
+                f'**{troop["type_title"]}**: {troop["type"]}',
             ]
             mana = self.my_emojis.get(troop['color_code'])
             mana_display = f'{troop["spell"]["cost"]}{mana} '
@@ -376,7 +376,7 @@ class DiscordBot(discord.Client):
                 description = f' *{troop["description"]}*'
             e.add_field(name=f'{mana_display}{troop["name"]} `#{troop["id"]}`{description}',
                         value='\n'.join(message_lines))
-            trait_list = [f'**{trait["name"]}** - {trait["description"]}' for trait in troop['traits']]
+            trait_list = [f'**{trait["name"]}**: {trait["description"]}' for trait in troop['traits']]
             traits = '\n'.join(trait_list)
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
