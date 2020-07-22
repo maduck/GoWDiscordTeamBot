@@ -134,40 +134,14 @@ class DiscordBot(discord.Client):
                           f'• __Rules__:\n'
                           f'  - Search both works for ids and parts of their names.\n'
                           f'  - Search is _not_ case sensitive.\n'
-                          f'  - Multiple results will show a list of matched troops.\n'
                           f'  - Spaces, apostrophes (\') and dashes (-) will be ignored.\n\n'
-                          f'If one matching troop is found, the side color will reflect the troop\'s base rarity.\n\n'
+                          f'  - Multiple results will show a list of matched troops.\n'
+                          f'If one matching item is found, the side color will reflect the troop\'s base rarity.\n\n'
                           f'• __Language support__: All GoW languages are supported, put the two country code letters '
                           f'(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}troop '
                           f'elemaugrim`. Localized searches will only look for troop names with their respective '
                           f'translations.',
                     inline=False)
-        e.add_field(name='─────────────────────────────────────', value='┈')
-        e.add_field(name='Weapon search',
-                    value=f'• __Basics__: enter `{my_prefix}weapon <search>`, e.g. `{my_prefix}weapon cog`.\n'
-                          f'• __Rules__:\n'
-                          f'  - Search both works for weapon ids and parts of their names.\n'
-                          f'  - Search is _not_ case sensitive.\n'
-                          f'  - Multiple results will show a list of matched troops.\n'
-                          f'  - Spaces and apostrophes (\') don\'t matter.\n\n'
-                          f'• __Language support__: All GoW languages are supported, put the two country code letters '
-                          f'(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}weapon cog`. '
-                          f'Localized searches will only look for weapon names with their respective translations.',
-                    inline=False)
-        e.add_field(name='─────────────────────────────────────', value='┈')
-        e.add_field(name='Pet search',
-                    value=f'• __Basics__: enter `{my_prefix}pet <search>`, e.g. `{my_prefix}pet dire rose`.\n'
-                          f'• __Rules__:\n'
-                          f'  - Search both works for pet ids and parts of their names.\n'
-                          f'  - Search is _not_ case sensitive.\n'
-                          f'  - Multiple results will show a list of matched pets.\n'
-                          f'  - Spaces and apostrophes (\') don\'t matter.\n\n'
-                          f'• __Language support__: All GoW languages are supported, put the two country code letters '
-                          f'(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}pet dire rose`. '
-                          f'Localized searches will only look for weapon names with their respective translations.',
-                    inline=False)
-        e.add_field(name='─────────────────────────────────────', value='┈')
-        e.add_field(name='Class search')
         e.add_field(name='─────────────────────────────────────', value='┈')
         e.add_field(name='Prefix',
                     value=f'• __Basics__: enter `{my_prefix}prefix <new_prefix>` to set a new prefix. Only the server' \
@@ -189,6 +163,8 @@ class DiscordBot(discord.Client):
             f'`{my_prefix}troop <search>`\n'
             f'`{my_prefix}weapon <search>`\n'
             f'`{my_prefix}pet <search>`\n'
+            f'`{my_prefix}class <search>`\n'
+            f'`{my_prefix}kingdom <search>`\n'
             f'`<language><command>` language support\n'
         )
         await message.channel.send(embed=e)
