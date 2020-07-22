@@ -96,7 +96,10 @@ class DiscordBot(discord.Client):
         self.invite_url = self.invite_url.format(self.user.id)
         log.debug(f'Logged in as {self.user.name}')
         log.info(f'Invite with: {self.invite_url}')
-        log.debug(f'Active in {", ".join([g.name for g in self.guilds if g])}')
+
+        guilds = [g.name for g in self.guilds if g]
+        log.debug(f'Active in {len(guilds)} guilds: {", ".join(guilds)}')
+
         game = discord.Game("Gems of War")
         await self.change_presence(status=discord.Status.online, activity=game)
         await self.update_base_emojis()
