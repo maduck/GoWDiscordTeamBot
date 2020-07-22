@@ -93,16 +93,20 @@ class TeamExpander:
         for spell in data['Spells']:
             amount = 0
             multiplier = 1
+            boost = 1
             for spell_step in spell['SpellSteps']:
                 if spell_step.get('Primarypower'):
                     amount = spell_step.get('Amount')
                     multiplier = spell_step.get('SpellPowerMultiplier', 1)
+                elif spell_step['Type'].startswith('Count'):
+                    boost = spell_step.get('Amount', 1)
             self.spells[spell['Id']] = {
                 'name': spell['Name'],
                 'description': spell['Description'],
                 'cost': spell['Cost'],
                 'amount': amount,
                 'multiplier': multiplier,
+                'boost': boost,
             }
         for trait in data['Traits']:
             self.traits[trait['Code']] = {'name': trait['Name'], 'description': trait['Description']}
@@ -450,9 +454,13 @@ class TeamExpander:
         if spell['multiplier'] < 1:
             number = int(round(1 / spell['multiplier']))
             divisor = f' / {number}'
-
+        boost = ''
+        if spell['boost'] > 100:
+            boost = f' [x{int(round(spell["boost"]/100))}]'
+        elif spell['boost'] != 1 and spell['boost'] <= 100:
+            boost = f' [{int(round(1/(spell["boost"]/100)))}:1]'
         damage = f'[{multiplier}{magic}{divisor}{spell_amount}]'
-        description = self.translations.get(spell['description'], lang).replace('{1}', damage)
+        description = self.translations.get(spell['description'], lang).replace('{1}', damage) + boost
         return {
             'name': self.translations.get(spell['name'], lang),
             'cost': spell['cost'],
