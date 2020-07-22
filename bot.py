@@ -356,10 +356,7 @@ class DiscordBot(discord.Client):
             rarity_color = RARITY_COLORS.get(troop['raw_rarity'], RARITY_COLORS['Mythic'])
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Troop search', color=color)
-            mana = self.my_emojis.get(troop['color_code'])
             message_lines = [
-                troop["description"],
-                '',
                 f'**{troop["spell"]["name"]}** {troop["spell"]["description"]}',
                 '',
                 f'**{troop["kingdom_title"]}** {troop["kingdom"]}',
@@ -367,7 +364,12 @@ class DiscordBot(discord.Client):
                 f'**{troop["roles_title"]}** {", ".join(troop["roles"])}',
                 f'**{troop["type_title"]}** {troop["type"]}',
             ]
-            e.add_field(name=f'{troop["spell"]["cost"]}{mana} {troop["name"]} `#{troop["id"]}`',
+            mana = self.my_emojis.get(troop['color_code'])
+            mana_display = f'{troop["spell"]["cost"]}{mana} '
+            description = ''
+            if troop['description']:
+                description = f' *{troop["description"]}*'
+            e.add_field(name=f'{mana_display}{troop["name"]} `#{troop["id"]}`{description}',
                         value='\n'.join(message_lines))
             trait_list = [f'**{trait["name"]}** - {trait["description"]}' for trait in troop['traits']]
             traits = '\n'.join(trait_list)
