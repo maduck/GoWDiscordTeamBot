@@ -255,9 +255,12 @@ class TeamExpander:
 
     def search_troop(self, search_term, lang):
         if search_term.isdigit():
-            result = self.troops.get(int(search_term)).copy()
-            self.translate_troop(result, lang)
-            return [result]
+            troop = self.troops.get(int(search_term))
+            if troop:
+                result = troop.copy()
+                self.translate_troop(result, lang)
+                return [result]
+            return []
         else:
             possible_matches = []
             for troop in self.troops.values():
@@ -395,9 +398,12 @@ class TeamExpander:
 
     def search_weapon(self, search_term, lang):
         if search_term.isdigit():
-            result = self.weapons.get(int(search_term)).copy()
-            self.translate_weapon(result, lang)
-            return [result]
+            weapon = self.weapons.get(int(search_term))
+            if weapon:
+                result = weapon.copy()
+                self.translate_weapon(result, lang)
+                return [result]
+            return []
         else:
             possible_matches = []
             for weapon in self.weapons.values():
