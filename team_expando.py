@@ -287,6 +287,7 @@ class TeamExpander:
         troop['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
         troop['roles'] = [self.translations.get(role, lang) for role in troop['roles']]
         troop['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
+        troop['raw_types'] = troop['types']
         types = [
             self.translations.get(f'[TROOPTYPE_{_type.upper()}]', lang) for _type in troop['types']
         ]

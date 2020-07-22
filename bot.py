@@ -357,6 +357,8 @@ class DiscordBot(discord.Client):
         elif len(result) == 1:
             troop = result[0]
             rarity_color = RARITY_COLORS.get(troop['raw_rarity'], RARITY_COLORS['Mythic'])
+            if 'Boss' in troop['raw_types']:
+                rarity_color = RARITY_COLORS['Doomed']
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Troop search', color=color)
             message_lines = [
