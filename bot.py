@@ -124,13 +124,18 @@ class DiscordBot(discord.Client):
                           'e.g. `-[1075,6251,6699,6007]`, or with language `de-[1075,6251,6699,6007]`.',
                     inline=False)
         e.add_field(name='─────────────────────────────────────', value='┈')
-        e.add_field(name='Troop search',
-                    value=f'• __Basics__: enter `{my_prefix}troop <search>`, e.g. `{my_prefix}troop elemaugrim`.\n'
+        e.add_field(name='Searches',
+                    value=f'• __Basics__: the following searches are supported:\n'
+                          f' - `{my_prefix}troop <search>`, e.g. `{my_prefix}troop elemaugrim`.\n'
+                          f' - `{my_prefix}weapon <search>`, e.g. `{my_prefix}weapon mang`.\n'
+                          f' - `{my_prefix}pet <search>`, e.g. `{my_prefix}weapon mang`.\n'
+                          f' - `{my_prefix}class <search>`, e.g. `{my_prefix}class archer`.\n'
+                          f' - `{my_prefix}kingdom <search>`, e.g. `{my_prefix}kingdom karakoth`.\n'
                           f'• __Rules__:\n'
-                          f'  - Search both works for troop ids and parts of their names.\n'
+                          f'  - Search both works for ids and parts of their names.\n'
                           f'  - Search is _not_ case sensitive.\n'
                           f'  - Multiple results will show a list of matched troops.\n'
-                          f'  - Spaces and apostrophes (\') don\'t matter.\n\n'
+                          f'  - Spaces, apostrophes (\') and dashes (-) will be ignored.\n\n'
                           f'If one matching troop is found, the side color will reflect the troop\'s base rarity.\n\n'
                           f'• __Language support__: All GoW languages are supported, put the two country code letters '
                           f'(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}troop '
@@ -162,6 +167,11 @@ class DiscordBot(discord.Client):
                           f'Localized searches will only look for weapon names with their respective translations.',
                     inline=False)
         e.add_field(name='─────────────────────────────────────', value='┈')
+        e.add_field(name='Class search')
+        e.add_field(name='─────────────────────────────────────', value='┈')
+        e.add_field(name='Prefix',
+                    value=f'• __Basics__: enter `{my_prefix}prefix <new_prefix>` to set a new prefix. Only the server' \
+                          f'owner can do that.', inline=False)
         e.add_field(name='Quickhelp',
                     value=f'• __Basics__: enter `{my_prefix}quickhelp` to open a short overview of all commands.\n',
                     inline=False)
