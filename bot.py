@@ -290,7 +290,7 @@ class DiscordBot(discord.Client):
             e.add_field(name=_class["traits_title"], value=traits, inline=False)
             for i, tree in enumerate(_class['talents']):
                 talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree]
-                e.add_field(name=_class['trees'][i], value='\n'.join(talents), inline=True)
+                e.add_field(name=f'__{_class["trees"][i]}__', value='\n'.join(talents), inline=True)
         await message.channel.send(embed=e)
 
     async def handle_pet_search(self, message, search_term, lang):
