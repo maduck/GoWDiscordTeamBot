@@ -80,6 +80,7 @@ class TeamExpander:
         self.banners = {}
         self.traits = {}
         self.kingdoms = {}
+        self.pet_effects = ()
         self.pets = {}
         self.talent_trees = {}
         self.translations = Translations()
@@ -159,6 +160,16 @@ class TeamExpander:
                 'kingdom': self.kingdoms[weapon['KingdomId']],
                 'requirement': weapon['MasteryRequirement'],
             }
+        self.pet_effects = (
+            '[PETTYPE_BUFFTEAMCOLOR]',
+            '[PETTYPE_BUFFGEMMASTERY]',
+            '[PETTYPE_BUFFTEAMKINGDOM]',
+            '[PETTYPE_BUFFTEAMTROOPTYPE]',
+            '[PETTYPE_LOOTSOULS]',
+            '[PETTYPE_LOOTGOLD]',
+            '[PETTYPE_LOOTXP]',
+            '[PETTYPE_NOEFFECT]',
+        )
         for pet in data['Pets']:
             colors = [c.replace('Color', '').lower() for c, v in pet['ManaColors'].items() if v]
             self.pets[pet['Id']] = {
@@ -166,6 +177,9 @@ class TeamExpander:
                 'name': pet['Name'],
                 'kingdom': self.kingdoms[pet['KingdomId']],
                 'colors': sorted(colors),
+                'effect': self.pet_effects[pet['Effect']],
+                'effect_data': pet.get('EffectData'),
+                'troop_type': pet.get('EffectTroopType'),
             }
         for tree in data['TalentTrees']:
             talents = [self.traits.get(trait, trait) for trait in tree['Traits']]
@@ -404,6 +418,29 @@ class TeamExpander:
         pet['kingdom'] = self.translations.get(pet['kingdom']['name'], lang)
         pet['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
         pet['color_code'] = "".join(pet['colors'])
+        pet['raw_effect'] = pet['effect']
+        pet['effect'] = self.translations.get(pet['effect'], lang)
+        colors = (
+            '',
+            'GREEN',
+            'RED',
+            'YELLOW',
+            'PURPLE',
+            'BROWN',
+        )
+        if pet['raw_effect'] == '[PETTYPE_BUFFTEAMKINGDOM]':
+            pet['effect_data'] = self.translations.get(self.kingdoms[pet['effect_data']]['name'], lang)
+        elif pet['raw_effect'] == '[PETTYPE_BUFFTEAMTROOPTYPE]':
+            pet['effect_data'] = self.translations.get(f'[TROOPTYPE_{pet["troop_type"].upper()}]', lang)
+        elif pet['raw_effect'] == '[PETTYPE_BUFFTEAMCOLOR]':
+            pet['effect'] = self.translations.get(f'[PET_{pet["colors"][0].upper()}_BUFF]', lang)
+        elif pet['raw_effect'] == '[PETTYPE_BUFFGEMMASTERY]':
+            if pet['effect_data']:
+                pet['effect'] = self.translations.get(f'[PET_{colors[pet["effect_data"]]}_BUFF]', lang)
+                pet['effect_data'] = None
+            else:
+                pet['effect'] = self.translations.get(f'[PET_{pet["colors"][0].upper()}_BUFF]', lang)
+        pet['effect_title'] = self.translations.get('[PET_TYPE]', lang)
 
     def search_weapon(self, search_term, lang):
         if search_term.isdigit():
@@ -471,9 +508,9 @@ class TeamExpander:
             divisor = f' / {number}'
         boost = ''
         if spell['boost'] > 100:
-            boost = f' [x{int(round(spell["boost"]/100))}]'
+            boost = f' [x{int(round(spell["boost"] / 100))}]'
         elif spell['boost'] != 1 and spell['boost'] <= 100:
-            boost = f' [{int(round(1/(spell["boost"]/100)))}:1]'
+            boost = f' [{int(round(1 / (spell["boost"] / 100)))}:1]'
         damage = f'[{multiplier}{magic}{divisor}{spell_amount}]'
         description = self.translations.get(spell['description'], lang).replace('{1}', damage) + boost
         return {

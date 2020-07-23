@@ -302,7 +302,11 @@ class DiscordBot(discord.Client):
             pet = result[0]
             e = discord.Embed(title='Pet search')
             mana = self.my_emojis.get(pet['color_code'])
+            effect_data = ''
+            if pet['effect_data']:
+                effect_data = f' ({pet["effect_data"]})'
             message_lines = [
+                f'**{pet["effect_title"]}**: {pet["effect"]}{effect_data}',
                 f'**{pet["kingdom_title"]}**: {pet["kingdom"]}',
             ]
             e.add_field(name=f'{mana} {pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
