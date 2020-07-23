@@ -207,7 +207,6 @@ class DiscordBot(discord.Client):
                 search_function = getattr(self, function_name)
                 search_term = groups['search']
                 lang = groups['lang']
-                log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
                 await search_function(message, search_term, lang)
                 return
         if "-[" in message.content:
