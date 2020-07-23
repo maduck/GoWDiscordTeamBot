@@ -397,6 +397,7 @@ class TeamExpander:
     def translate_pet(self, pet, lang):
         pet['name'] = self.translations.get(pet['name'], lang)
         pet['kingdom'] = self.translations.get(pet['kingdom']['name'], lang)
+        pet['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
         pet['color_code'] = "".join(pet['colors'])
 
     def search_weapon(self, search_term, lang):

@@ -295,7 +295,7 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='Pet search')
             mana = self.my_emojis.get(pet['color_code'])
             message_lines = [
-                f'Kingdom: {pet["kingdom"]}',
+                f'**{pet["kingdom_title"]}**: {pet["kingdom"]}',
             ]
             e.add_field(name=f'{mana} {pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
         else:
