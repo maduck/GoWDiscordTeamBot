@@ -319,7 +319,9 @@ class DiscordBot(discord.Client):
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Weapon search', color=color)
             mana = self.my_emojis.get(weapon['color_code'])
-            color_requirement = [f'{self.my_emojis.get(c, f":{c}:")}' for c in weapon['colors']]
+            color_requirement = []
+            if weapon['requirement'] < 1000:
+                color_requirement = [f'{self.my_emojis.get(c, f":{c}:")}' for c in weapon['colors']]
             message_lines = [
                 weapon['spell']['description'],
                 '',
