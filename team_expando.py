@@ -102,6 +102,7 @@ class TeamExpander:
                 elif spell_step['Type'].startswith('Count'):
                     boost = spell_step.get('Amount', 1)
             self.spells[spell['Id']] = {
+                'id': spell['Id'],
                 'name': spell['Name'],
                 'description': spell['Description'],
                 'cost': spell['Cost'],
@@ -159,6 +160,7 @@ class TeamExpander:
                 'spell_id': weapon['SpellId'],
                 'kingdom': self.kingdoms[weapon['KingdomId']],
                 'requirement': weapon['MasteryRequirement'],
+                'affixes': [self.spells.get(spell) for spell in weapon['Affixes'] if spell in self.spells],
             }
         self.pet_effects = (
             '[PETTYPE_BUFFTEAMCOLOR]',
@@ -477,6 +479,8 @@ class TeamExpander:
         rarity_number = WEAPON_RARITIES.index(weapon['rarity'])
         weapon['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
         weapon['spell'] = self.translate_spell(weapon['spell_id'], lang)
+        weapon['affix_title'] = self.translations.get('[UPGRADE_WEAPON]', lang)
+        weapon['affixes'] = [self.translate_spell(spell['id'], lang) for spell in weapon['affixes']]
         weapon['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
         weapon['kingdom'] = self.translations.get(weapon['kingdom']['name'], lang)
         weapon['roles_title'] = self.translations.get('[WEAPON_ROLE]', lang)

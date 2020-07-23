@@ -230,7 +230,8 @@ class DiscordBot(discord.Client):
             if len(new_prefix) != 1:
                 color = discord.Color.from_rgb(0, 0, 0)
                 e = discord.Embed(title='Prefix change', color=color)
-                e.add_field(name='Error', value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
+                e.add_field(name='Error',
+                            value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
                 await message.channel.send(embed=e)
                 return
             self.prefixes[str(message.guild.id)] = new_prefix
@@ -335,6 +336,10 @@ class DiscordBot(discord.Client):
             color_requirement = []
             if weapon['requirement'] < 1000:
                 color_requirement = [f'{self.my_emojis.get(c, f":{c}:")}' for c in weapon['colors']]
+            affixes = '\n'.join([f'**{affix["name"]}**: {affix["description"]}' for affix in weapon['affixes']])
+            affix_text = ''
+            if weapon['affixes']:
+                affix_text = f'\n**{weapon["affix_title"]}**\n{affixes}\n'
             message_lines = [
                 weapon['spell']['description'],
                 '',
@@ -342,7 +347,7 @@ class DiscordBot(discord.Client):
                 f'**{weapon["rarity_title"]}**: {weapon["rarity"]}',
                 f'**{weapon["roles_title"]}**: {", ".join(weapon["roles"])}',
                 f'**{weapon["type_title"]}**: {weapon["type"]}',
-                '',
+                affix_text,
                 f'{weapon["requirement_text"]} {" ".join(color_requirement)}',
             ]
             e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
@@ -419,7 +424,8 @@ class DiscordBot(discord.Client):
         try:
             await message.channel.send(embed=e)
         except discord.errors.Forbidden:
-            log.warning(f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
+            log.warning(
+                f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
 
     def format_output_team(self, team, color, author):
         e = discord.Embed(title=f"{author} team", color=color)
