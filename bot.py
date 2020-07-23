@@ -267,8 +267,8 @@ class DiscordBot(discord.Client):
             _class = result[0]
             e = discord.Embed(title='Class search')
             class_lines = [
-                _class['kingdom'],
-                _class['weapon'],
+                f'**{_class["kingdom_title"]}**: {_class["kingdom"]}',
+                f'**{_class["weapon_title"]}**: {_class["weapon"]}',
                 _class['type'],
             ]
             e.add_field(name=f'{_class["name"]} `#{_class["id"]}`', value='\n'.join(class_lines), inline=False)

@@ -368,6 +368,8 @@ class TeamExpander:
                     'description': self.translations.get(talent['description'], lang)
                 })
             translated_trees.append(translated_talents)
+        _class['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
+        _class['weapon_title'] = self.translations.get('[WEAPON]', lang)
         _class['talents'] = translated_trees
         _class['trees'] = [self.translations.get(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
         _class['type'] = self.translations.get(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
