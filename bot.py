@@ -182,18 +182,24 @@ class DiscordBot(discord.Client):
         my_prefix = self.get_my_prefix(message.guild)
         user_command = message.content.lower().strip()
         if user_command == f'{my_prefix}help':
+            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
             await self.show_help(message)
         elif user_command == f'{my_prefix}quickhelp':
+            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
             await self.show_quickhelp(message)
         elif user_command == f'{my_prefix}invite':
+            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
             await self.show_invite_link(message)
         elif user_command.startswith(f'{my_prefix}prefix '):
+            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
             await self.change_prefix(message, user_command)
         elif user_command == f'{my_prefix}prefix':
+            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
             await self.show_prefix(message)
         for command in self.SEARCH_COMMANDS:
             match = command['search'].match(user_command)
             if match:
+                log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
                 groups = match.groupdict()
                 if groups['prefix'] != my_prefix:
                     return
@@ -201,6 +207,7 @@ class DiscordBot(discord.Client):
                 search_function = getattr(self, function_name)
                 search_term = groups['search']
                 lang = groups['lang']
+                log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
                 await search_function(message, search_term, lang)
                 return
         if "-[" in message.content:
@@ -384,7 +391,7 @@ class DiscordBot(discord.Client):
         if not team:
             log.debug(f'nothing found in message {message.content}')
             return
-        log.debug(f'[{message.guild.name}][{message.channel}] sending team result to {message.author.display_name}')
+        log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
         color = discord.Color.from_rgb(19, 227, 246)
         author = message.author.display_name
         author = await pluralize_author(author)
