@@ -123,7 +123,7 @@ class TeamExpander:
                 'types': [troop['TroopType']],
                 'roles': troop['TroopRoleArray'],
                 'kingdom': {'Name': ''},
-                'filename': f'http://garyatrics.com/gow_assets/{troop["FileBase"]}.png',
+                'filename': f'http://garyatrics.com/gow_assets/{troop["FileBase"].lower()}.png',
             }
             if 'TroopType2' in troop:
                 self.troops[troop['Id']]['types'].append(troop['TroopType2'])
