@@ -434,6 +434,7 @@ class TeamExpander:
             pet['effect_data'] = self.translations.get(f'[TROOPTYPE_{pet["troop_type"].upper()}]', lang)
         elif pet['raw_effect'] == '[PETTYPE_BUFFTEAMCOLOR]':
             pet['effect'] = self.translations.get(f'[PET_{pet["colors"][0].upper()}_BUFF]', lang)
+            pet['effect_data'] = None
         elif pet['raw_effect'] == '[PETTYPE_BUFFGEMMASTERY]':
             if pet['effect_data']:
                 pet['effect'] = self.translations.get(f'[PET_{colors[pet["effect_data"]]}_BUFF]', lang)
