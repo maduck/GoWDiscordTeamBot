@@ -49,9 +49,9 @@ async def pluralize_author(author):
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
     PREFIX_CONFIG_FILE = 'prefixes.json'
-    BOT_NAME = 'Garys GoW Team Bot'
+    BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
-    VERSION = '0.2'
+    VERSION = '0.3'
     SEARCH_COMMANDS = (
         {'key': 'troop',
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)troop #?(?P<search>.*)$')},
@@ -151,6 +151,52 @@ class DiscordBot(discord.Client):
                     inline=False)
         await message.channel.send(embed=e)
 
+    async def show_help_fr(self, message):
+        my_prefix = self.get_my_prefix(message.guild)
+        e = discord.Embed(title='aide')
+        e.add_field(name='Codes d\'équipe',
+                    value='• __Les bases__: Postez simplement votre code d\'équipe, par exemple: [1075,6251,6699,'
+                          '6007,3010,3,1,1,1,3,1,1,14007]. Le bot répondra automatiquement en affichant les troupes '
+                          'postées dans le code. Ce code peut être intégré dans du texte supplémentaire et il ne '
+                          'nécessite pas d\'être seul sur une ligne.\n\n '
+                          '• __Support linguistique__: Toutes les langues utilisées dans GoW sont supportées. '
+                          'Préfixez simplement votre code avec les deux lettres de votre code pays (en, fr, de, ru, '
+                          'it, es, cn),par exemple: fr[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]\n\n '
+                          '• __Format raccourci__: Utilisez le caractère "-" (tiret) en début de code pour que le '
+                          'résultat apparaisse en mode minimal et condensé, par exemple -[1075,6251,6699,6007], '
+                          'ou avec le code langue fr-[1075,6251,6699,6007].',
+                    inline=False)
+        e.add_field(name='─────────────────────────────────────', value='┈')
+        e.add_field(name='Recherches',
+                    value=f'• __Les bases__: les recherches suivantes sont supportées:\n'
+                          f' - `{my_prefix}troop <recherche>`, par exemple `fr{my_prefix}troop élémaugrim`.\n'
+                          f' - `{my_prefix}weapon <recherche>`\n'
+                          f' - `{my_prefix}pet <recherche>`\n'
+                          f' - `{my_prefix}class <recherche>`\n'
+                          f' - `{my_prefix}kingdom <recherche>`\n'
+                          f'• __Règles__:\n'
+                          f'  - La recherche fonctionne avec les numéros ids et les parties de noms.\n'
+                          f'  - La recherche n\'est sensible ni aux majuscules ni aux minuscules.\n'
+                          f'  - Les espaces, les apostrophes (\') et les tirets (-) peuvent être ignorés.\n\n'
+                          f'  - Plusieurs résultats peuvent être affichés, en tant que troupes, s\'ils correspondent '
+                          f'à la recherche.\n '
+                          f'Si une seule troupe correspond à la recherche effectuée, la couleur du bord du résultat '
+                          f'montrera la rareté de base de la troupe.\n\n '
+                          f'• __Support linguistique__: Toutes les langues utilisées dans GoW sont supportées. Préfixez '
+                          f'simplement votre code avec les deux lettres de votre code pays (en, fr, de, ru, it, es, '
+                          f'cn). Les recherches dans la langue correspondante s\'effectueront uniquement sur les noms '
+                          f'de troupes dans la langue choisie.',
+                    inline=False)
+        e.add_field(name='─────────────────────────────────────', value='┈')
+        e.add_field(name='Préfixe',
+                    value=f'• __Les Bases__: tapez `{my_prefix}prefix <nouveau_préfixe>` pour configurer un nouveau '
+                          f'préfixe. Seul le propriétaire du serveur peut faire ce changement.', inline=False)
+        e.add_field(name='Aide rapide',
+                    value=f'• __Les Bases__: tapez `{my_prefix}quickhelp` pour ouvrir un court aperçu de toutes les '
+                          f'commandes.\n',
+                    inline=False)
+        await message.channel.send(embed=e)
+
     async def show_quickhelp(self, message):
         my_prefix = self.get_my_prefix(message.guild)
         e = discord.Embed(title='quickhelp')
@@ -184,6 +230,9 @@ class DiscordBot(discord.Client):
         if user_command == f'{my_prefix}help':
             log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
             await self.show_help(message)
+        elif user_command.lower() == f'fr{my_prefix}help'.lower():
+            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
+            await self.show_help_fr(message)
         elif user_command == f'{my_prefix}quickhelp':
             log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
             await self.show_quickhelp(message)
