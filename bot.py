@@ -416,7 +416,10 @@ class DiscordBot(discord.Client):
         else:
             e = self.format_output_team(team, color, author)
 
-        await message.channel.send(embed=e)
+        try:
+            await message.channel.send(embed=e)
+        except discord.errors.Forbidden:
+            log.warning(f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
 
     def format_output_team(self, team, color, author):
         e = discord.Embed(title=f"{author} team", color=color)
