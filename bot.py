@@ -227,6 +227,12 @@ class DiscordBot(discord.Client):
         guild_owner = message.guild.owner
         if issuing_user == guild_owner:
             new_prefix = user_command[len(f'{my_prefix}prefix '):]
+            if len(new_prefix) != 1:
+                color = discord.Color.from_rgb(0, 0, 0)
+                e = discord.Embed(title='Prefix change', color=color)
+                e.add_field(name='Error', value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
+                await message.channel.send(embed=e)
+                return
             self.prefixes[str(message.guild.id)] = new_prefix
             self.save_prefixes()
             color = discord.Color.from_rgb(255, 0, 0)
