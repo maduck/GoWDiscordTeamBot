@@ -269,7 +269,7 @@ class TeamExpander:
         return self.get_team_from_code(code, lang)
 
     def search_troop(self, search_term, lang):
-        if search_term.isdigit():
+        if search_term.isdigit() and int(search_term) in self.troops:
             troop = self.troops.get(int(search_term))
             if troop:
                 result = troop.copy()
@@ -326,7 +326,7 @@ class TeamExpander:
         return new_traits
 
     def search_kingdom(self, search_term, lang):
-        if search_term.isdigit():
+        if search_term.isdigit() and int(search_term) in self.kingdoms:
             result = self.kingdoms.get(int(search_term)).copy()
             self.translate_kingdom(result, lang)
             return [result]
@@ -351,7 +351,7 @@ class TeamExpander:
         kingdom['punchline'] = self.translations.get(kingdom['punchline'], lang)
 
     def search_class(self, search_term, lang):
-        if search_term.isdigit():
+        if search_term.isdigit() and int(search_term) in self.classes:
             result = self.classes.get(int(search_term)).copy()
             self.translate_class(result, lang)
             return [result]
@@ -394,7 +394,7 @@ class TeamExpander:
         _class['type'] = self.translations.get(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
 
     def search_pet(self, search_term, lang):
-        if search_term.isdigit():
+        if search_term.isdigit() and int(search_term) in self.pets:
             result = self.pets.get(int(search_term)).copy()
             self.translate_pet(result, lang)
             return [result]
@@ -443,7 +443,7 @@ class TeamExpander:
         pet['effect_title'] = self.translations.get('[PET_TYPE]', lang)
 
     def search_weapon(self, search_term, lang):
-        if search_term.isdigit():
+        if search_term.isdigit() and int(search_term) in self.weapons:
             weapon = self.weapons.get(int(search_term))
             if weapon:
                 result = weapon.copy()
