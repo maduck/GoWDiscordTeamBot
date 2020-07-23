@@ -295,7 +295,7 @@ class TeamExpander:
 
     def translate_troop(self, troop, lang):
         troop['name'] = self.translations.get(troop['name'], lang)
-        troop['description'] = self.translations.get(troop['description'], lang)
+        troop['description'] = self.translations.get(troop['description'], lang).replace('widerbeleben', 'wiederbeleben')
         troop['color_code'] = "".join(troop['colors'])
         troop['rarity_title'] = self.translations.get('[RARITY]', lang)
         troop['raw_rarity'] = troop['rarity']
