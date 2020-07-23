@@ -284,6 +284,9 @@ class DiscordBot(discord.Client):
                 _class['type'],
             ]
             e.add_field(name=f'{_class["name"]} `#{_class["id"]}`', value='\n'.join(class_lines), inline=False)
+            trait_list = [f'**{trait["name"]}**: {trait["description"]}' for trait in _class['traits']]
+            traits = '\n'.join(trait_list)
+            e.add_field(name=_class["traits_title"], value=traits, inline=False)
             for i, tree in enumerate(_class['talents']):
                 talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree]
                 e.add_field(name=_class['trees'][i], value='\n'.join(talents), inline=True)

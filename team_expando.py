@@ -176,7 +176,7 @@ class TeamExpander:
                 'name': _class['Name'],
                 'talents': [self.talent_trees[tree] for tree in _class['TalentTrees']],
                 'trees': _class['TalentTrees'],
-                'traits': _class['Traits'],
+                'traits': [self.traits.get(trait, {'name': trait, 'description': '-'}) for trait in _class['Traits']],
                 'weapon_id': _class['ClassWeaponId'],
                 'kingdom_id': _class['KingdomId'],
                 'type': _class['Augment'][0],
@@ -288,13 +288,7 @@ class TeamExpander:
             rarity_number = RARITIES.index(troop['rarity'])
         troop['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
         troop['traits_title'] = self.translations.get('[TRAITS]', lang)
-        traits = []
-        for trait in troop['traits']:
-            traits.append({
-                'name': self.translations.get(trait['name'], lang),
-                'description': self.translations.get(trait['description'], lang)
-            })
-        troop['traits'] = traits
+        troop['traits'] = self.enrich_traits(troop['traits'], lang)
         troop['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
         troop['roles'] = [self.translations.get(role, lang) for role in troop['roles']]
         troop['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
@@ -307,6 +301,15 @@ class TeamExpander:
         troop['kingdom'] = self.translations.get(troop['kingdom']['Name'], lang)
         troop['spell'] = self.translate_spell(troop['spell_id'], lang)
         troop['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+
+    def enrich_traits(self, traits, lang):
+        new_traits = []
+        for trait in traits:
+            new_traits.append({
+                'name': self.translations.get(trait['name'], lang),
+                'description': self.translations.get(trait['description'], lang)
+            })
+        return new_traits
 
     def search_kingdom(self, search_term, lang):
         if search_term.isdigit():
@@ -369,6 +372,8 @@ class TeamExpander:
                 })
             translated_trees.append(translated_talents)
         _class['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
+        _class['traits_title'] = self.translations.get('[TRAITS]', lang)
+        _class['traits'] = self.enrich_traits(_class['traits'], lang)
         _class['weapon_title'] = self.translations.get('[WEAPON]', lang)
         _class['talents'] = translated_trees
         _class['trees'] = [self.translations.get(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
