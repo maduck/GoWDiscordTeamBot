@@ -7,6 +7,7 @@ import threading
 
 import discord
 
+from help import get_help_text
 from team_expando import TeamExpander
 
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -53,27 +54,65 @@ def debug(message):
     log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
 
 
-
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
     PREFIX_CONFIG_FILE = 'prefixes.json'
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
     VERSION = '0.3'
-    SEARCH_COMMANDS = (
-        {'key': 'troop',
-         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)troop #?(?P<search>.*)$')},
-        {'key': 'weapon',
-         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)weapon #?(?P<search>.*)$')},
-        {'key': 'kingdom',
-         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)kingdom #?(?P<search>.*)$')},
-        {'key': 'pet',
-         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)pet #?(?P<search>.*)$')},
-        {'key': 'class',
-         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)class #?(?P<search>.*)$')},
-        {'key': 'talent',
-         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)talent #?(?P<search>.*)$')},
-    )
+    SEARCH_PATTERN = r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.){0} #?(?P<search_term>.*)$'
+    COMMAND_REGISTRY = [
+        {
+            'function': 'handle_troop_search',
+            'pattern': re.compile(SEARCH_PATTERN.format('troop'), re.IGNORECASE)
+        },
+        {
+            'function': 'handle_weapon_search',
+            'pattern': re.compile(SEARCH_PATTERN.format('weapon'), re.IGNORECASE)
+        },
+        {
+            'function': 'handle_kingdom_search',
+            'pattern': re.compile(SEARCH_PATTERN.format('kingdom'), re.IGNORECASE)
+        },
+        {
+            'function': 'handle_pet_search',
+            'pattern': re.compile(SEARCH_PATTERN.format('pet'), re.IGNORECASE)
+        },
+        {
+            'function': 'handle_class_search',
+            'pattern': re.compile(SEARCH_PATTERN.format('class'), re.IGNORECASE)
+        },
+        {
+            'function': 'handle_talent_search',
+            'pattern': re.compile(SEARCH_PATTERN.format('talent'), re.IGNORECASE)
+        },
+        {
+            'function': 'show_help',
+            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)help$', re.IGNORECASE)
+        },
+        {
+            'function': 'show_quickhelp',
+            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)quickhelp$', re.IGNORECASE)
+        },
+        {
+            'function': 'show_invite_link',
+            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)invite$', re.IGNORECASE)
+        },
+        {
+            'function': 'show_prefix',
+            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)prefix$', re.IGNORECASE)
+        },
+        {
+            'function': 'change_prefix',
+            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)prefix (?P<new_prefix>.+)$',
+                                  re.IGNORECASE)
+        },
+        {
+            'function': 'handle_team_code',
+            'pattern': re.compile(r'(?P<lang>en|fr|de|ru|it|es|cn)?(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})\]',
+                                  re.IGNORECASE)
+        }
+    ]
 
     def __init__(self, *args, **kwargs):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
@@ -114,116 +153,43 @@ class DiscordBot(discord.Client):
         await self.change_presence(status=discord.Status.online, activity=game)
         await self.update_base_emojis()
 
+    async def get_function_for_command(self, user_command, user_prefix):
+        for command in self.COMMAND_REGISTRY:
+            match = command['pattern'].match(user_command)
+            if match:
+                groups = match.groupdict()
+                if groups.get('prefix', user_prefix) == user_prefix:
+                    return getattr(self, command['function']), groups
+        return None, None
+
     async def update_base_emojis(self):
         for guild in self.guilds:
             if guild.name == self.BASE_GUILD:
                 for emoji in guild.emojis:
                     self.my_emojis[emoji.name] = str(emoji)
 
-    async def show_help(self, message):
-        my_prefix = self.get_my_prefix(message.guild)
-        e = discord.Embed(title='help')
-        e.add_field(name='Team codes',
-                    value='• __Basics__: Just post your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
-                          '14007]`. The bot will automatically answer with the troops posted in the code. The code '
-                          'can be embedded within more text, and does not need to stand alone.\n\n'
-                          '• __Language support__: All GoW languages are supported, put the two country code letters '
-                          '(en, fr, de, ru, it, es, cn) in front of the team code, e.g. `cn[1075,6251,6699,6007,3010,'
-                          '3,1,1,1,3,1,1,14007]`\n\n'
-                          '• __Mini format__: Put a "-" in front of the code to make it appear in a small box, '
-                          'e.g. `-[1075,6251,6699,6007]`, or with language `de-[1075,6251,6699,6007]`.',
-                    inline=False)
-        e.add_field(name='─────────────────────────────────────', value='┈')
-        e.add_field(name='Searches',
-                    value=f'• __Basics__: the following searches are supported:\n'
-                          f' - `{my_prefix}troop <search>`, e.g. `{my_prefix}troop elemaugrim`.\n'
-                          f' - `{my_prefix}weapon <search>`, e.g. `{my_prefix}weapon mang`.\n'
-                          f' - `{my_prefix}pet <search>`, e.g. `{my_prefix}pet puddling`.\n'
-                          f' - `{my_prefix}class <search>`, e.g. `{my_prefix}class archer`.\n'
-                          f' - `{my_prefix}talent <search>`, e.g. `{my_prefix}talent mana source`.\n'
-                          f' - `{my_prefix}kingdom <search>`, e.g. `{my_prefix}kingdom karakoth`.\n'
-                          f'• __Rules__:\n'
-                          f'  - Search both works for ids and parts of their names.\n'
-                          f'  - Search is _not_ case sensitive.\n'
-                          f'  - Spaces, apostrophes (\') and dashes (-) will be ignored.\n\n'
-                          f'  - Multiple results will show a list of matched troops.\n'
-                          f'If one matching item is found, the side color will reflect the troop\'s base rarity.\n\n'
-                          f'• __Language support__: All GoW languages are supported, put the two country code letters '
-                          f'(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{my_prefix}troop '
-                          f'elemaugrim`. Localized searches will only look for troop names with their respective '
-                          f'translations.',
-                    inline=False)
-        e.add_field(name='─────────────────────────────────────', value='┈')
-        e.add_field(name='Prefix',
-                    value=f'• __Basics__: enter `{my_prefix}prefix <new_prefix>` to set a new prefix. Only the server' \
-                          f'owner can do that.', inline=False)
-        e.add_field(name='Quickhelp',
-                    value=f'• __Basics__: enter `{my_prefix}quickhelp` to open a short overview of all commands.\n',
-                    inline=False)
+    async def show_help(self, message, prefix, lang):
+        help_title, help_text = get_help_text(prefix, lang)
+
+        e = discord.Embed(title=help_title)
+        for section, text in help_text.items():
+            e.add_field(name=section, value=text, inline=False)
         await message.channel.send(embed=e)
 
-    async def show_help_fr(self, message):
-        my_prefix = self.get_my_prefix(message.guild)
-        e = discord.Embed(title='aide')
-        e.add_field(name='Codes d\'équipe',
-                    value='• __Les bases__: Postez simplement votre code d\'équipe, par exemple: [1075,6251,6699,'
-                          '6007,3010,3,1,1,1,3,1,1,14007]. Le bot répondra automatiquement en affichant les troupes '
-                          'postées dans le code. Ce code peut être intégré dans du texte supplémentaire et il ne '
-                          'nécessite pas d\'être seul sur une ligne.\n\n '
-                          '• __Support linguistique__: Toutes les langues utilisées dans GoW sont supportées. '
-                          'Préfixez simplement votre code avec les deux lettres de votre code pays (en, fr, de, ru, '
-                          'it, es, cn),par exemple: fr[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]\n\n '
-                          '• __Format raccourci__: Utilisez le caractère "-" (tiret) en début de code pour que le '
-                          'résultat apparaisse en mode minimal et condensé, par exemple -[1075,6251,6699,6007], '
-                          'ou avec le code langue fr-[1075,6251,6699,6007].',
-                    inline=False)
-        e.add_field(name='─────────────────────────────────────', value='┈')
-        e.add_field(name='Recherches',
-                    value=f'• __Les bases__: les recherches suivantes sont supportées:\n'
-                          f' - `{my_prefix}troop <recherche>`, par exemple `fr{my_prefix}troop élémaugrim`.\n'
-                          f' - `{my_prefix}weapon <recherche>`\n'
-                          f' - `{my_prefix}pet <recherche>`\n'
-                          f' - `{my_prefix}class <recherche>`\n'
-                          f' - `{my_prefix}kingdom <recherche>`\n'
-                          f' - `{my_prefix}talent <recherche>`\n'
-                          f'• __Règles__:\n'
-                          f'  - La recherche fonctionne avec les numéros ids et les parties de noms.\n'
-                          f'  - La recherche n\'est sensible ni aux majuscules ni aux minuscules.\n'
-                          f'  - Les espaces, les apostrophes (\') et les tirets (-) peuvent être ignorés.\n\n'
-                          f'  - Plusieurs résultats peuvent être affichés, en tant que troupes, s\'ils correspondent '
-                          f'à la recherche.\n '
-                          f'Si une seule troupe correspond à la recherche effectuée, la couleur du bord du résultat '
-                          f'montrera la rareté de base de la troupe.\n\n '
-                          f'• __Support linguistique__: Toutes les langues utilisées dans GoW sont supportées. Préfixez '
-                          f'simplement votre code avec les deux lettres de votre code pays (en, fr, de, ru, it, es, '
-                          f'cn). Les recherches dans la langue correspondante s\'effectueront uniquement sur les noms '
-                          f'de troupes dans la langue choisie.',
-                    inline=False)
-        e.add_field(name='─────────────────────────────────────', value='┈')
-        e.add_field(name='Préfixe',
-                    value=f'• __Les Bases__: tapez `{my_prefix}prefix <nouveau_préfixe>` pour configurer un nouveau '
-                          f'préfixe. Seul le propriétaire du serveur peut faire ce changement.', inline=False)
-        e.add_field(name='Aide rapide',
-                    value=f'• __Les Bases__: tapez `{my_prefix}quickhelp` pour ouvrir un court aperçu de toutes les '
-                          f'commandes.\n',
-                    inline=False)
-        await message.channel.send(embed=e)
-
-    async def show_quickhelp(self, message):
-        my_prefix = self.get_my_prefix(message.guild)
+    async def show_quickhelp(self, message, prefix, lang):
         e = discord.Embed(title='quickhelp')
         e.description = (
-            f'`{my_prefix}help` complete help\n'
-            f'`{my_prefix}quickhelp` this command\n'
-            f'`{my_prefix}invite`\n'
+            f'`{prefix}help` complete help\n'
+            f'`{prefix}quickhelp` this command\n'
+            f'`{prefix}invite`\n'
             f'`[<troopcode>]` post team\n'
             f'`-[<troopcode>]` post team (short)\n'
-            f'`{my_prefix}troop <search>`\n'
-            f'`{my_prefix}weapon <search>`\n'
-            f'`{my_prefix}pet <search>`\n'
-            f'`{my_prefix}class <search>`\n'
-            f'`{my_prefix}kingdom <search>`\n'
-            f'`{my_prefix}talent <search>`\n'
+            f'`{prefix}troop <search>`\n'
+            f'`{prefix}weapon <search>`\n'
+            f'`{prefix}pet <search>`\n'
+            f'`{prefix}class <search>`\n'
+            f'`{prefix}kingdom <search>`\n'
+            f'`{prefix}talent <search>`\n'
             f'`<language><command>` language support\n'
         )
         await message.channel.send(embed=e)
@@ -238,57 +204,32 @@ class DiscordBot(discord.Client):
         if message.author.id == self.user.id:
             return
 
-        my_prefix = self.get_my_prefix(message.guild)
         user_command = message.content.lower().strip()
-        if user_command == f'{my_prefix}help':
+        my_prefix = self.get_my_prefix(message.guild)
+        function, params = await self.get_function_for_command(user_command, my_prefix)
+        if function:
             debug(message)
-            await self.show_help(message)
-        elif user_command.lower() == f'fr{my_prefix}help'.lower():
-            debug(message)
-            await self.show_help_fr(message)
-        elif user_command == f'{my_prefix}quickhelp':
-            debug(message)
-            await self.show_quickhelp(message)
-        elif user_command == f'{my_prefix}invite':
-            debug(message)
-            await self.show_invite_link(message)
-        elif user_command.startswith(f'{my_prefix}prefix '):
-            debug(message)
-            await self.change_prefix(message, user_command)
-        elif user_command == f'{my_prefix}prefix':
-            debug(message)
-            await self.show_prefix(message)
-        for command in self.SEARCH_COMMANDS:
-            match = command['search'].match(user_command)
-            if match:
-                debug(message)
-                groups = match.groupdict()
-                if groups['prefix'] != my_prefix:
-                    return
-                function_name = f'handle_{command["key"]}_search'
-                search_function = getattr(self, function_name)
-                search_term = groups['search']
-                lang = groups['lang']
-                await search_function(message, search_term, lang)
-                return
-        if "-[" in message.content:
-            await self.handle_team_code(message, shortend=True)
-        elif "[" in message.content:
-            await self.handle_team_code(message)
+            await function(message, **params)
 
-    async def show_invite_link(self, message):
+    async def show_invite_link(self, message, prefix, lang):
         color = discord.Color.from_rgb(255, 255, 255)
         e = discord.Embed(title='Bot invite link', color=color)
         link = 'https://discordapp.com/api/oauth2/authorize?client_id=733399051797790810&scope=bot&permissions=339008'
         e.add_field(name='Feel free to share!', value=link)
         await message.channel.send(embed=e)
 
-    async def change_prefix(self, message, user_command):
+    async def change_prefix(self, message, prefix, new_prefix, lang):
         my_prefix = self.get_my_prefix(message.guild)
         issuing_user = message.author
+        if not message.guild:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Prefix change', color=color)
+            e.add_field(name='Error',
+                        value=f'Prefix change not possible in direct messages.')
+            await message.channel.send(embed=e)
+            return
         guild_owner = message.guild.owner
         if issuing_user == guild_owner:
-            new_prefix = user_command[len(f'{my_prefix}prefix '):]
             if len(new_prefix) != 1:
                 color = discord.Color.from_rgb(0, 0, 0)
                 e = discord.Embed(title='Prefix change', color=color)
@@ -439,7 +380,7 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
-    async def handle_troop_search(self, message, search_term, lang):
+    async def handle_troop_search(self, message, prefix, search_term, lang):
         result = self.expander.search_troop(search_term, lang)
 
         if not result:
@@ -508,17 +449,17 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
-    async def handle_team_code(self, message, shortend=False):
-        team = self.expander.get_team_from_message(message.content)
+    async def handle_team_code(self, message, lang, team_code, shortened=''):
+        team = self.expander.get_team_from_message(team_code, lang)
         if not team:
-            log.debug(f'nothing found in message {message.content}')
+            log.debug(f'nothing found in message {team_code}')
             return
         debug(message)
         color = discord.Color.from_rgb(19, 227, 246)
         author = message.author.display_name
         author = await pluralize_author(author)
 
-        if shortend:
+        if shortened:
             e = self.format_output_team_shortend(team, color)
         else:
             e = self.format_output_team(team, color, author)
@@ -581,11 +522,10 @@ class DiscordBot(discord.Client):
             with open(self.PREFIX_CONFIG_FILE) as f:
                 self.prefixes = json.load(f)
 
-    async def show_prefix(self, message):
-        my_prefix = self.get_my_prefix(message.guild)
+    async def show_prefix(self, message, lang, prefix):
         color = discord.Color.from_rgb(255, 255, 255)
         e = discord.Embed(title='Prefix', color=color)
-        e.add_field(name='The current prefix is', value=f'`{my_prefix}`')
+        e.add_field(name='The current prefix is', value=f'`{prefix}`')
         await message.channel.send(embed=e)
 
 

@@ -207,19 +207,9 @@ class TeamExpander:
                 self.talent_trees[tree]['classes'].append(_class['Name'])
 
     @classmethod
-    def extract_code_from_message(cls, message):
-        m = cls.FORMAT.search(message)
-        if m is None:
-            return None, None
-        span = m.span()
-        beginning = span[0] + message[span[0]:].find('[') + 1
-        ending = span[1] - 1
-        raw_code = message[beginning:ending]
-        lang = 'en'
-        if message[span[0]] != '[':
-            lang = message[span[0]:span[0] + 2].lower()
+    def extract_code_from_message(cls, raw_code):
         numbers = [int(n.strip()) for n in raw_code.split(',')]
-        return numbers, lang
+        return numbers
 
     def get_team_from_code(self, code, lang):
         result = {
@@ -277,8 +267,8 @@ class TeamExpander:
 
         return result
 
-    def get_team_from_message(self, message):
-        code, lang = self.extract_code_from_message(message)
+    def get_team_from_message(self, user_code, lang):
+        code = self.extract_code_from_message(user_code)
         if not code:
             return
         return self.get_team_from_code(code, lang)
