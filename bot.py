@@ -455,7 +455,6 @@ class DiscordBot(discord.Client):
         if not team or not team['troops']:
             log.debug(f'nothing found in message {team_code}')
             return
-        debug(message)
         color = discord.Color.from_rgb(19, 227, 246)
         author = message.author.display_name
         author = await pluralize_author(author)
