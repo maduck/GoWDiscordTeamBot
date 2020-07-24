@@ -451,7 +451,7 @@ class DiscordBot(discord.Client):
 
     async def handle_team_code(self, message, lang, team_code, shortened=''):
         team = self.expander.get_team_from_message(team_code, lang)
-        if not team:
+        if not team or not team['troops']:
             log.debug(f'nothing found in message {team_code}')
             return
         debug(message)
