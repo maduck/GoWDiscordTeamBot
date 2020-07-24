@@ -321,7 +321,14 @@ class DiscordBot(discord.Client):
                 kingdom['description'],
             ]
             e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}`', value='\n'.join(message_lines))
-
+        else:
+            color = discord.Color.from_rgb(255, 255, 255)
+            e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=color)
+            kingdoms_found = [f'{kingdom["name"]} `{kingdom["id"]}`' for kingdom in result]
+            kingdom_chunks = chunks(kingdoms_found, 30)
+            for i, chunk in enumerate(kingdom_chunks):
+                chunk_message = '\n'.join(chunk)
+                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
     async def handle_class_search(self, message, search_term, lang):
