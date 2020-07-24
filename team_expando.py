@@ -143,6 +143,7 @@ class TeamExpander:
                 'name': kingdom['Name'],
                 'description': kingdom['Description'],
                 'punchline': kingdom['ByLine'],
+                'underworld': bool(kingdom.get('MapIndex', 0)),
             }
             for troop_id in kingdom['TroopIds']:
                 if troop_id != -1:
@@ -357,6 +358,9 @@ class TeamExpander:
         kingdom['name'] = self.translations.get(kingdom['name'], lang)
         kingdom['description'] = self.translations.get(kingdom['description'], lang)
         kingdom['punchline'] = self.translations.get(kingdom['punchline'], lang)
+        kingdom['map'] = self.translations.get('[MAPNAME_MAIN]', lang)
+        if kingdom['underworld']:
+            kingdom['map'] = self.translations.get('[MAPNAME_UNDERWORLD]', lang)
 
     def search_class(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.classes:

@@ -320,7 +320,7 @@ class DiscordBot(discord.Client):
                 kingdom['punchline'],
                 kingdom['description'],
             ]
-            e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}`', value='\n'.join(message_lines))
+            e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}` ({kingdom["map"]})', value='\n'.join(message_lines))
         else:
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=color)
