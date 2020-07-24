@@ -132,6 +132,7 @@ class DiscordBot(discord.Client):
                           f' - `{my_prefix}weapon <search>`, e.g. `{my_prefix}weapon mang`.\n'
                           f' - `{my_prefix}pet <search>`, e.g. `{my_prefix}weapon mang`.\n'
                           f' - `{my_prefix}class <search>`, e.g. `{my_prefix}class archer`.\n'
+                          f' - `{my_prefix}talent <search>`, e.g. `{my_prefix}talent mana source`.\n'
                           f' - `{my_prefix}kingdom <search>`, e.g. `{my_prefix}kingdom karakoth`.\n'
                           f'• __Rules__:\n'
                           f'  - Search both works for ids and parts of their names.\n'
@@ -176,6 +177,7 @@ class DiscordBot(discord.Client):
                           f' - `{my_prefix}pet <recherche>`\n'
                           f' - `{my_prefix}class <recherche>`\n'
                           f' - `{my_prefix}kingdom <recherche>`\n'
+                          f' - `{my_prefix}talent <recherche>`\n'
                           f'• __Règles__:\n'
                           f'  - La recherche fonctionne avec les numéros ids et les parties de noms.\n'
                           f'  - La recherche n\'est sensible ni aux majuscules ni aux minuscules.\n'
@@ -213,6 +215,7 @@ class DiscordBot(discord.Client):
             f'`{my_prefix}pet <search>`\n'
             f'`{my_prefix}class <search>`\n'
             f'`{my_prefix}kingdom <search>`\n'
+            f'`{my_prefix}talent <search>`\n'
             f'`<language><command>` language support\n'
         )
         await message.channel.send(embed=e)
