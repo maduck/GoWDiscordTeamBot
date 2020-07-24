@@ -1,0 +1,3 @@
+class TalentTree:
+    pass
+

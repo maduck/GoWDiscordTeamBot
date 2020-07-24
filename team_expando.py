@@ -3,6 +3,8 @@ import logging
 import operator
 import re
 
+import data_source
+
 LOGLEVEL = logging.DEBUG
 
 formatter = logging.Formatter('%(asctime)-15s [%(levelname)s] %(message)s')
