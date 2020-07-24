@@ -230,6 +230,7 @@ class TeamExpander:
             'class_title': self.translations.get('[CLASS]', lang),
             'troops_title': self.translations.get('[TROOPS]', lang),
         }
+        has_weapon = False
 
         for element in code:
             troop = self.troops.get(element)
@@ -243,6 +244,7 @@ class TeamExpander:
                 color_code = "".join(weapon["colors"])
                 weapon_name = self.translations.get(weapon['name'], lang)
                 result['troops'].append([color_code, weapon_name + ' :crossed_swords:'])
+                has_weapon = True
                 continue
 
             _class = self.classes.get(element)
@@ -261,13 +263,17 @@ class TeamExpander:
                 result['talents'].append(element)
                 continue
 
-        new_talents = []
-        for talent_no, talent_code in enumerate(result['talents']):
-            talent = '-'
-            if talent_code > 0:
-                talent = self.translations.get(result['class_talents'][talent_code - 1][talent_no]['name'], lang)
-            new_talents.append(talent)
-        result['talents'] = new_talents
+        if has_weapon:
+            new_talents = []
+            for talent_no, talent_code in enumerate(result['talents']):
+                talent = '-'
+                if talent_code > 0:
+                    talent = self.translations.get(result['class_talents'][talent_code - 1][talent_no]['name'], lang)
+                new_talents.append(talent)
+            result['talents'] = new_talents
+        else:
+            result['class'] = None
+            result['talents'] = None
 
         return result
 
