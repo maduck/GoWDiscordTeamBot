@@ -46,6 +46,14 @@ async def pluralize_author(author):
     return author
 
 
+def debug(message):
+    guild = '-'
+    if message.guild:
+        guild = message.guild.name
+    log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
+
+
+
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
     PREFIX_CONFIG_FILE = 'prefixes.json'
@@ -233,27 +241,27 @@ class DiscordBot(discord.Client):
         my_prefix = self.get_my_prefix(message.guild)
         user_command = message.content.lower().strip()
         if user_command == f'{my_prefix}help':
-            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
+            debug(message)
             await self.show_help(message)
         elif user_command.lower() == f'fr{my_prefix}help'.lower():
-            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
+            debug(message)
             await self.show_help_fr(message)
         elif user_command == f'{my_prefix}quickhelp':
-            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
+            debug(message)
             await self.show_quickhelp(message)
         elif user_command == f'{my_prefix}invite':
-            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
+            debug(message)
             await self.show_invite_link(message)
         elif user_command.startswith(f'{my_prefix}prefix '):
-            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
+            debug(message)
             await self.change_prefix(message, user_command)
         elif user_command == f'{my_prefix}prefix':
-            log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
+            debug(message)
             await self.show_prefix(message)
         for command in self.SEARCH_COMMANDS:
             match = command['search'].match(user_command)
             if match:
-                log.debug(f'[{message.guild.name}][{message.channel}][{message.author.display_name}] {message.content}')
+                debug(message)
                 groups = match.groupdict()
                 if groups['prefix'] != my_prefix:
                     return
