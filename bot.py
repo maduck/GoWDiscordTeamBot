@@ -63,6 +63,8 @@ class DiscordBot(discord.Client):
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)pet #?(?P<search>.*)$')},
         {'key': 'class',
          'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)class #?(?P<search>.*)$')},
+        {'key': 'talent',
+         'search': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)talent #?(?P<search>.*)$')},
     )
 
     def __init__(self, *args, **kwargs):
@@ -453,6 +455,31 @@ class DiscordBot(discord.Client):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
 
+        await message.channel.send(embed=e)
+
+    async def handle_talent_search(self, message, search_term, lang):
+        result = self.expander.search_talent_tree(search_term, lang)
+        if not result:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='Talent search', color=color)
+            e.add_field(name=search_term, value='did not yield any result')
+        elif len(result) == 1:
+            tree = result[0]
+            e = discord.Embed(title='Talent search')
+            talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree['talents']]
+            e.add_field(name=f'__{tree["name"]}__', value='\n'.join(talents), inline=True)
+            e.add_field(name='Classes using this Talent Tree:', value=', '.join(tree['classes']), inline=False)
+        else:
+            color = discord.Color.from_rgb(255, 255, 255)
+            e = discord.Embed(title=f'Talent search for `{search_term}` found {len(result)} matches.', color=color)
+            talent_found = []
+            for t in result:
+                talents_matches = f'({", ".join(t["talent_matches"])})' if 'talent_matches' in t else ''
+                talent_found.append(f'{t["name"]} {talents_matches}')
+            troop_chunks = chunks(talent_found, 30)
+            for i, chunk in enumerate(troop_chunks):
+                chunk_message = '\n'.join(chunk)
+                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
     async def handle_team_code(self, message, shortend=False):

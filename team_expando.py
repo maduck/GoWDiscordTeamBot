@@ -416,7 +416,7 @@ class TeamExpander:
                 self.translate_talent_tree(result, lang)
                 possible_matches.append(result)
             else:
-                talent_matches = [t for t in translated_talents if real_search in t]
+                talent_matches = [t for t in translated_talents if real_search in extract_search_tag(t)]
                 if talent_matches:
                     result = tree.copy()
                     result['talent_matches'] = talent_matches
