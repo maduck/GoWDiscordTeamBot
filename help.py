@@ -34,6 +34,35 @@ help_texts = {
                           'can do that.\n'
                           '__Short help__: enter `{0}quickhelp` to open a short overview of all commands.'
     },
+    'de': {
+        'Team Codes': '• __Basis__: Füge einfach die Team codes ein, z.B. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
+                      '14007]`. Der Bot wird automatisch mit den richtigen Truppen antworten. Der Code kann in einer'
+                      'Zeile mit anderem Text stehen.\n\n'
+                      '• __Sprachen__: Alle GoW Sprachen werden unterstützt. Einfach die Ländercodes (en, fr, de, ru, '
+                      'it, es, cn) vor dem Teamcode einfügen, z.B. `cn[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
+                      '14007]`\n\n '
+                      '• __Kompaktansicht__: Ein "-" vor dem Teamcode macht die Ansicht kleiner, '
+                      'z.B. `-[1075,6251,6699,6007]`, oder mit Sprache `ru-[1075,6251,6699,6007]`.',
+        'Suchen': '• __Basis__: Die folgenden Suchen werden unterstützt:\n'
+                  ' - `{0}troop <suche>`, z.B. `{0}troop elemaugrim`.\n'
+                  ' - `{0}weapon <suche>`, z.B. `{0}weapon mang`.\n'
+                  ' - `{0}pet <search>`, z.B. `{0}pet puddling`.\n'
+                  ' - `{0}class <suche>`, z.B. `{0}class archer`.\n'
+                  ' - `{0}talent <suche>`, z.B. `{0}talent mana source`.\n'
+                  ' - `{0}kingdom <suche>`, z.B. `{0}kingdom karakoth`.\n'
+                  '• __Regeln__:\n'
+                  '  - Die Suche funktioniert sowohl für numerische IDs als auch für Bestandteile der Namen.\n'
+                  '  - Groß- und Kleinschreibung spielt keine Rolle.\n'
+                  '  - Leerzeichen, Apostrophe (\') and Bindestriche (-) werden ignoriert.\n\n'
+                  '  - Mehrere Ergebnisse werden als Liste dargestellt.\n'
+                  'Wenn ein Ergebnis gefunden wurde, spiegelt die Farbe an der Seite die Seltenheit wider.\n\n'
+                  '• __Sprachen__: Alle GoW Sprachen werden unterstützt. Einfach die Ländercodes (en, fr, de, ru, '
+                  'vor das Kommando setzen, z.B. `de{0}troop elemaugrim`.\n'
+                  'Bei der Suche werden Ergebnisse nur in der gesetzten Sprache gefunden.',
+        'Andere Befehle': '• __Prefix__: `{0}prefix <new_prefix>` setzt ein neues Prefix. Nur der Server-Besitzer '
+                          'kann dies tun.\n '
+                          '__Kurzhilfe__: `{0}quickhelp` zeigt eine Kurzreferenz an.'
+    },
     'fr': {
         'Codes d\'équipe': '• __Les bases__: Postez simplement votre code d\'équipe, par exemple: [1075,6251,6699,'
                            '6007,3010,3,1,1,1,3,1,1,14007]. Le bot répondra automatiquement en affichant les troupes '
