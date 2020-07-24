@@ -185,12 +185,16 @@ class TeamExpander:
             }
         for tree in data['TalentTrees']:
             talents = [self.traits.get(trait, trait) for trait in tree['Traits']]
-            self.talent_trees[tree['Code']] = talents
+            self.talent_trees[tree['Code']] = {
+                'name' : f'[TALENT_TREE_{tree["Code"].upper()}]',
+                'talents' : talents,
+                'classes' : [],
+            }
         for _class in data['HeroClasses']:
             self.classes[_class['Id']] = {
                 'id': _class['Id'],
                 'name': _class['Name'],
-                'talents': [self.talent_trees[tree] for tree in _class['TalentTrees']],
+                'talents': [self.talent_trees[tree]['talents'] for tree in _class['TalentTrees']],
                 'trees': _class['TalentTrees'],
                 'traits': [self.traits.get(trait, {'name': trait, 'description': '-'}) for trait in _class['Traits']],
                 'weapon_id': _class['ClassWeaponId'],
@@ -198,6 +202,8 @@ class TeamExpander:
                 'type': _class['Augment'][0],
             }
             self.weapons[_class['ClassWeaponId']]['class'] = _class['Name']
+            for tree in _class['TalentTrees']:
+                self.talent_trees[tree]['classes'].append(_class['Name'])
 
     @classmethod
     def extract_code_from_message(cls, message):
@@ -394,6 +400,40 @@ class TeamExpander:
         _class['talents'] = translated_trees
         _class['trees'] = [self.translations.get(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
         _class['type'] = self.translations.get(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
+
+    def search_talent_tree(self, search_term, lang):
+        possible_matches = []
+        for tree in self.talent_trees.values():
+            translated_name = extract_search_tag(self.translations.get(tree['name'], lang))
+            translated_talents = [self.translations.get(t['name'], lang) for t in tree['talents']]
+            real_search = extract_search_tag(search_term)
+            if real_search == translated_name or real_search in translated_talents:
+                result = tree.copy()
+                self.translate_talent_tree(result, lang)
+                return [result]
+            elif real_search in translated_name:
+                result = tree.copy()
+                self.translate_talent_tree(result, lang)
+                possible_matches.append(result)
+            else:
+                talent_matches = [t for t in translated_talents if real_search in t]
+                if talent_matches:
+                    result = tree.copy()
+                    result['talent_matches'] = talent_matches
+                    self.translate_talent_tree(result, lang)
+                    possible_matches.append(result)
+        return possible_matches
+        
+    def translate_talent_tree(self, _tree, lang):
+        _tree['name'] = self.translations.get(_tree['name'], lang)
+        translated_talents = []
+        for talent in _tree['talents']:
+            translated_talents.append({
+                'name': self.translations.get(talent['name'], lang),
+                'description': self.translations.get(talent['description'], lang)
+            })
+        _tree['talents'] = translated_talents
+        _tree['classes'] = [self.translations.get(t, lang) for t in _tree['classes']]
 
     def search_pet(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.pets:
