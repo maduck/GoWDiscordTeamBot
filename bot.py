@@ -256,7 +256,7 @@ class DiscordBot(discord.Client):
 
         return self.prefixes.get(str(guild.id), self.DEFAULT_PREFIX)
 
-    async def handle_kingdom_search(self, message, search_term, lang):
+    async def handle_kingdom_search(self, message, search_term, lang, prefix):
         result = self.expander.search_kingdom(search_term, lang)
         if not result:
             color = discord.Color.from_rgb(0, 0, 0)
@@ -280,7 +280,7 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
-    async def handle_class_search(self, message, search_term, lang):
+    async def handle_class_search(self, message, search_term, lang, prefix):
         result = self.expander.search_class(search_term, lang)
         if not result:
             color = discord.Color.from_rgb(0, 0, 0)
@@ -311,7 +311,7 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
-    async def handle_pet_search(self, message, search_term, lang):
+    async def handle_pet_search(self, message, search_term, lang, prefix):
         result = self.expander.search_pet(search_term, lang)
         if not result:
             color = discord.Color.from_rgb(0, 0, 0)
@@ -339,7 +339,7 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
-    async def handle_weapon_search(self, message, search_term, lang):
+    async def handle_weapon_search(self, message, search_term, lang, prefix):
         result = self.expander.search_weapon(search_term, lang)
         if not result:
             color = discord.Color.from_rgb(0, 0, 0)
@@ -424,7 +424,7 @@ class DiscordBot(discord.Client):
 
         await message.channel.send(embed=e)
 
-    async def handle_talent_search(self, message, search_term, lang):
+    async def handle_talent_search(self, message, search_term, lang, prefix):
         result = self.expander.search_talent_tree(search_term, lang)
         if not result:
             color = discord.Color.from_rgb(0, 0, 0)
