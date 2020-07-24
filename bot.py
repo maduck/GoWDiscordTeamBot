@@ -138,7 +138,7 @@ class DiscordBot(discord.Client):
                     value=f'• __Basics__: the following searches are supported:\n'
                           f' - `{my_prefix}troop <search>`, e.g. `{my_prefix}troop elemaugrim`.\n'
                           f' - `{my_prefix}weapon <search>`, e.g. `{my_prefix}weapon mang`.\n'
-                          f' - `{my_prefix}pet <search>`, e.g. `{my_prefix}weapon mang`.\n'
+                          f' - `{my_prefix}pet <search>`, e.g. `{my_prefix}pet puddling`.\n'
                           f' - `{my_prefix}class <search>`, e.g. `{my_prefix}class archer`.\n'
                           f' - `{my_prefix}talent <search>`, e.g. `{my_prefix}talent mana source`.\n'
                           f' - `{my_prefix}kingdom <search>`, e.g. `{my_prefix}kingdom karakoth`.\n'
