@@ -342,6 +342,14 @@ class DiscordBot(discord.Client):
             for i, tree in enumerate(_class['talents']):
                 talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree]
                 e.add_field(name=f'__{_class["trees"][i]}__', value='\n'.join(talents), inline=True)
+        else:
+            color = discord.Color.from_rgb(255, 255, 255)
+            e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=color)
+            classes_found = [f'{_class["name"]} ({_class["id"]})' for _class in result]
+            class_chunks = chunks(classes_found, 30)
+            for i, chunk in enumerate(class_chunks):
+                chunk_message = '\n'.join(chunk)
+                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
 
     async def handle_pet_search(self, message, search_term, lang):
@@ -366,8 +374,8 @@ class DiscordBot(discord.Client):
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title=f'Pet search for `{search_term}` found {len(result)} matches.', color=color)
             pets_found = [f'{pet["name"]} ({pet["id"]})' for pet in result]
-            weapon_chunks = chunks(pets_found, 30)
-            for i, chunk in enumerate(weapon_chunks):
+            pet_chunks = chunks(pets_found, 30)
+            for i, chunk in enumerate(pet_chunks):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await message.channel.send(embed=e)
