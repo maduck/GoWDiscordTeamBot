@@ -633,7 +633,7 @@ class DiscordBot(discord.Client):
                     await channel.send(embed=e)
                 except Exception as e:
                     log.debug(e)
-        with open(NEWS_FILENAME, 'w') as f:
+        with open(NewsDownloader.NEWS_FILENAME, 'w') as f:
             f.write('[]')
 
 
