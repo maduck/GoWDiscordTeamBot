@@ -1,3 +1,4 @@
-discord.py[voice]
 requests
 discord
+feedparser
+beautifulsoup4

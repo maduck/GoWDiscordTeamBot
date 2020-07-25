@@ -2,3 +2,4 @@
 *.json
 __pycache__
 .vscode
+/jobs/latest_known_post.dat

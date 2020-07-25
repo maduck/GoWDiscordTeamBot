@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import asyncio
 import json
 import logging
 import os
@@ -6,8 +7,10 @@ import re
 import threading
 
 import discord
+from discord.ext import tasks
 
 from help import get_help_text
+from jobs.news_downloader import NewsDownloader
 from team_expando import TeamExpander
 
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -57,6 +60,7 @@ def debug(message):
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
     PREFIX_CONFIG_FILE = 'prefixes.json'
+    SUBSCRIPTION_CONFIG_FILE = 'subscriptions.json'
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
     VERSION = '0.3'
@@ -112,8 +116,18 @@ class DiscordBot(discord.Client):
             'pattern': re.compile(
                 r'.*?(?P<lang>en|fr|de|ru|it|es|cn)?(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})\].*',
                 re.IGNORECASE)
-        }
+        },
+        {
+            'function': 'news_subscribe',
+            'pattern': re.compile(r'^(?P<prefix>.)news subscribe$')
+        },
+        {
+            'function': 'news_unsubscribe',
+            'pattern': re.compile(r'^(?P<prefix>.)news unsubscribe$')
+        },
     ]
+
+    news_available = False
 
     def __init__(self, *args, **kwargs):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
@@ -125,6 +139,8 @@ class DiscordBot(discord.Client):
         self.expander = TeamExpander()
         self.prefixes = {}
         self.load_prefixes()
+        self.subscriptions = []
+        self.load_subscriptions()
 
     @staticmethod
     def generate_permissions():
@@ -213,7 +229,7 @@ class DiscordBot(discord.Client):
             await function(message, **params)
 
     async def show_invite_link(self, message, prefix, lang):
-        color = discord.Color.from_rgb(255, 255, 255)
+        color = discord.Color.from_rgb(254, 254, 254)
         e = discord.Embed(title='Bot invite link', color=color)
         link = 'https://discordapp.com/api/oauth2/authorize?client_id=733399051797790810&scope=bot&permissions=339008'
         e.add_field(name='Feel free to share!', value=link)
@@ -272,7 +288,7 @@ class DiscordBot(discord.Client):
             ]
             e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}` ({kingdom["map"]})', value='\n'.join(message_lines))
         else:
-            color = discord.Color.from_rgb(255, 255, 255)
+            color = discord.Color.from_rgb(254, 254, 254)
             e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=color)
             kingdoms_found = [f'{kingdom["name"]} `{kingdom["id"]}`' for kingdom in result]
             kingdom_chunks = chunks(kingdoms_found, 30)
@@ -303,7 +319,7 @@ class DiscordBot(discord.Client):
                 talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree]
                 e.add_field(name=f'__{_class["trees"][i]}__', value='\n'.join(talents), inline=True)
         else:
-            color = discord.Color.from_rgb(255, 255, 255)
+            color = discord.Color.from_rgb(254, 254, 254)
             e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=color)
             classes_found = [f'{_class["name"]} ({_class["id"]})' for _class in result]
             class_chunks = chunks(classes_found, 30)
@@ -331,7 +347,7 @@ class DiscordBot(discord.Client):
             ]
             e.add_field(name=f'{mana} {pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
         else:
-            color = discord.Color.from_rgb(255, 255, 255)
+            color = discord.Color.from_rgb(254, 254, 254)
             e = discord.Embed(title=f'Pet search for `{search_term}` found {len(result)} matches.', color=color)
             pets_found = [f'{pet["name"]} ({pet["id"]})' for pet in result]
             pet_chunks = chunks(pets_found, 30)
@@ -372,7 +388,7 @@ class DiscordBot(discord.Client):
             e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
                         value='\n'.join(message_lines))
         else:
-            color = discord.Color.from_rgb(255, 255, 255)
+            color = discord.Color.from_rgb(254, 254, 254)
             e = discord.Embed(title=f'Weapon search for `{search_term}` found {len(result)} matches.', color=color)
             weapons_found = [f'{t["name"]} ({t["id"]})' for t in result]
             weapon_chunks = chunks(weapons_found, 30)
@@ -415,7 +431,7 @@ class DiscordBot(discord.Client):
             traits = '\n'.join(trait_list)
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
-            color = discord.Color.from_rgb(255, 255, 255)
+            color = discord.Color.from_rgb(254, 254, 254)
             e = discord.Embed(title=f'Troop search for `{search_term}` found {len(result)} matches.', color=color)
             troops_found = [f'{t["name"]} ({t["id"]})' for t in result]
             troop_chunks = chunks(troops_found, 30)
@@ -439,7 +455,7 @@ class DiscordBot(discord.Client):
             classes = [f'{c["name"]} `#{c["id"]}`' for c in tree['classes']]
             e.add_field(name='__Classes using this Talent Tree:__', value=', '.join(classes), inline=False)
         else:
-            color = discord.Color.from_rgb(255, 255, 255)
+            color = discord.Color.from_rgb(254, 254, 254)
             e = discord.Embed(title=f'Talent search for `{search_term}` found {len(result)} matches.', color=color)
             talent_found = []
             for t in result:
@@ -523,13 +539,114 @@ class DiscordBot(discord.Client):
             with open(self.PREFIX_CONFIG_FILE) as f:
                 self.prefixes = json.load(f)
 
+    def save_subscriptions(self):
+        lock = threading.Lock()
+        with lock:
+            with open(self.SUBSCRIPTION_CONFIG_FILE, 'w') as f:
+                json.dump(self.subscriptions, f, sort_keys=True, indent=2)
+
+    def load_subscriptions(self):
+        if not os.path.exists(self.SUBSCRIPTION_CONFIG_FILE):
+            return
+        lock = threading.Lock()
+        with lock:
+            with open(self.SUBSCRIPTION_CONFIG_FILE) as f:
+                self.subscriptions = json.load(f)
+
     async def show_prefix(self, message, lang, prefix):
-        color = discord.Color.from_rgb(255, 255, 255)
+        color = discord.Color.from_rgb(254, 254, 254)
         e = discord.Embed(title='Prefix', color=color)
         e.add_field(name='The current prefix is', value=f'`{prefix}`')
         await message.channel.send(embed=e)
 
+    @staticmethod
+    async def get_subscription_from_message(message):
+        return {
+            'guild_name': message.guild.name,
+            'guild_id': message.guild.id,
+            'channel_id': message.channel.id,
+            'channel_name': message.channel.name,
+        }
+
+    async def news_subscribe(self, message, prefix):
+        if not message.guild:
+            return
+        if message.author != message.guild.owner:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='News management', color=color)
+            e.add_field(name='Susbscribe',
+                        value=f'Only the server owner has permission to change news subscriptions.')
+            await message.channel.send(embed=e)
+            return
+
+        subscription = await self.get_subscription_from_message(message)
+        self.subscriptions.append(subscription)
+        self.save_subscriptions()
+
+        color = discord.Color.from_rgb(254, 254, 254)
+        e = discord.Embed(title='News management', color=color)
+        e.add_field(name='Subscribe',
+                    value=f'News will now be posted into channel {message.channel.name}.')
+        await message.channel.send(embed=e)
+
+    async def news_unsubscribe(self, message, prefix):
+        if not message.guild:
+            return
+        if message.author != message.guild.owner:
+            color = discord.Color.from_rgb(0, 0, 0)
+            e = discord.Embed(title='News management', color=color)
+            e.add_field(name='Unsubscribe',
+                        value=f'Only the server owner has permission to change news subscriptions.')
+            await message.channel.send(embed=e)
+            return
+
+        subscription = await self.get_subscription_from_message(message)
+        if subscription in self.subscriptions:
+            self.subscriptions.remove(subscription)
+            self.save_subscriptions()
+
+        color = discord.Color.from_rgb(254, 254, 254)
+        e = discord.Embed(title='News management', color=color)
+        e.add_field(name='Unsubscribe',
+                    value=f'News will *not* be posted into channel {message.channel.name}.')
+        await message.channel.send(embed=e)
+
+    async def show_latest_news(self):
+        if not self.is_ready():
+            return
+
+        with open(NewsDownloader.NEWS_FILENAME) as f:
+            articles = json.load(f)
+            articles.reverse()
+        if articles:
+            log.debug(f'Distributing {len(articles)} news articles to {len(self.subscriptions)} channels.')
+        for article in articles:
+            for subscription in self.subscriptions:
+                channel = self.get_channel(subscription['channel_id'])
+                color = discord.Color.from_rgb(254, 254, 254)
+                e = discord.Embed(title='Gems of War news', color=color, url=article['url'])
+                e.set_image(url=article['image'])
+                log.debug(
+                    f'Sending out {article["title"]} to {subscription["guild_name"]}/{subscription["channel_name"]}')
+                e.add_field(name=article['title'], value=article['content'][:800])
+                try:
+                    await channel.send(embed=e)
+                except Exception as e:
+                    log.debug(e)
+        with open(NEWS_FILENAME, 'w') as f:
+            f.write('[]')
+
+
+@tasks.loop(minutes=5, reconnect=False)
+async def test_task(discord_client):
+    lock = asyncio.Lock()
+    async with lock:
+        downloader = NewsDownloader()
+        downloader.process_news_feed()
+        await discord_client.show_latest_news()
+
 
 if __name__ == '__main__':
     client = DiscordBot()
+    test_task.start(client)
     client.run(TOKEN)
