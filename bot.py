@@ -436,7 +436,8 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='Talent search')
             talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree['talents']]
             e.add_field(name=f'__{tree["name"]}__', value='\n'.join(talents), inline=True)
-            e.add_field(name='__Classes using this Talent Tree:__', value=', '.join(tree['classes']), inline=False)
+            classes = [f'{c["name"]} `{c["id"]}`' for c in tree['classes']]
+            e.add_field(name='__Classes using this Talent Tree:__', value=', '.join(classes), inline=False)
         else:
             color = discord.Color.from_rgb(255, 255, 255)
             e = discord.Embed(title=f'Talent search for `{search_term}` found {len(result)} matches.', color=color)

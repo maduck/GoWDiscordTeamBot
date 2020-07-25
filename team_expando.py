@@ -189,9 +189,9 @@ class TeamExpander:
         for tree in data['TalentTrees']:
             talents = [self.traits.get(trait, trait) for trait in tree['Traits']]
             self.talent_trees[tree['Code']] = {
-                'name' : f'[TALENT_TREE_{tree["Code"].upper()}]',
-                'talents' : talents,
-                'classes' : [],
+                'name': f'[TALENT_TREE_{tree["Code"].upper()}]',
+                'talents': talents,
+                'classes': [],
             }
         for _class in data['HeroClasses']:
             self.classes[_class['Id']] = {
@@ -206,7 +206,7 @@ class TeamExpander:
             }
             self.weapons[_class['ClassWeaponId']]['class'] = _class['Name']
             for tree in _class['TalentTrees']:
-                self.talent_trees[tree]['classes'].append(_class['Name'])
+                self.talent_trees[tree]['classes'].append(self.classes[_class['Id']].copy())
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -300,7 +300,8 @@ class TeamExpander:
 
     def translate_troop(self, troop, lang):
         troop['name'] = self.translations.get(troop['name'], lang)
-        troop['description'] = self.translations.get(troop['description'], lang).replace('widerbeleben', 'wiederbeleben')
+        troop['description'] = self.translations.get(troop['description'], lang).replace('widerbeleben',
+                                                                                         'wiederbeleben')
         troop['color_code'] = "".join(troop['colors'])
         troop['rarity_title'] = self.translations.get('[RARITY]', lang)
         troop['raw_rarity'] = troop['rarity']
@@ -425,17 +426,22 @@ class TeamExpander:
                     self.translate_talent_tree(result, lang)
                     possible_matches.append(result)
         return possible_matches
-        
-    def translate_talent_tree(self, _tree, lang):
-        _tree['name'] = self.translations.get(_tree['name'], lang)
+
+    def translate_talent_tree(self, tree, lang):
+        tree['name'] = self.translations.get(tree['name'], lang)
         translated_talents = []
-        for talent in _tree['talents']:
+        for talent in tree['talents']:
             translated_talents.append({
                 'name': self.translations.get(talent['name'], lang),
                 'description': self.translations.get(talent['description'], lang)
             })
-        _tree['talents'] = translated_talents
-        _tree['classes'] = [self.translations.get(t, lang) for t in _tree['classes']]
+        tree['talents'] = translated_talents
+        tree['classes'] = [
+            {'id': c['id'],
+             'name': self.translations.get(c['name'], lang)
+             }
+            for c in tree['classes']
+        ]
 
     def search_pet(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.pets:
