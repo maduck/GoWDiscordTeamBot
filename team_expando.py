@@ -140,16 +140,21 @@ class TeamExpander:
                 'name': kingdom['BannerName'],
                 'colors': colors,
             }
+            kingdom_troops = [troop_id for troop_id in kingdom['TroopIds'] if troop_id != -1]
             self.kingdoms[kingdom['Id']] = {
                 'id': kingdom['Id'],
                 'name': kingdom['Name'],
                 'description': kingdom['Description'],
                 'punchline': kingdom['ByLine'],
                 'underworld': bool(kingdom.get('MapIndex', 0)),
+                'troop_ids': kingdom_troops,
+                'troop_type': kingdom['KingdomTroopType'],
+                'linked_kingdom_id': kingdom.get('SisterKingdomId'),
             }
-            for troop_id in kingdom['TroopIds']:
-                if troop_id != -1:
-                    self.troops[troop_id]['kingdom'] = kingdom
+            if 'SisterKingdomId' in kingdom:
+                self.kingdoms[kingdom['SisterKingdomId']]['linked_kingdom_id'] = kingdom['Id']
+            for troop_id in kingdom_troops:
+                self.troops[troop_id]['kingdom'] = kingdom
         for weapon in data['Weapons']:
             colors = [c.replace('Color', '').lower() for c, v in weapon['ManaColors'].items() if v]
             self.weapons[weapon['Id']] = {
@@ -357,9 +362,22 @@ class TeamExpander:
         kingdom['name'] = self.translations.get(kingdom['name'], lang)
         kingdom['description'] = self.translations.get(kingdom['description'], lang)
         kingdom['punchline'] = self.translations.get(kingdom['punchline'], lang)
+        kingdom['troop_title'] = self.translations.get('[TROOPS]', lang)
+        kingdom['troops'] = [
+            {'name': self.translations.get(self.troops[_id]['name'], lang),
+             'id': _id
+             } for _id in kingdom['troop_ids']
+        ]
+        kingdom['linked_kingdom'] = None
+        if kingdom['linked_kingdom_id']:
+            kingdom['linked_kingdom'] = self.translations.get(self.kingdoms[kingdom['linked_kingdom_id']]['name'], lang)
+        if kingdom['linked_kingdom'].startswith('['):
+            kingdom['linked_kingdom'] = None
         kingdom['map'] = self.translations.get('[MAPNAME_MAIN]', lang)
+        kingdom['linked_map'] = self.translations.get('[MAPNAME_UNDERWORLD]', lang)
         if kingdom['underworld']:
             kingdom['map'] = self.translations.get('[MAPNAME_UNDERWORLD]', lang)
+            kingdom['linked_map'] = self.translations.get('[MAPNAME_MAIN]', lang)
 
     def search_class(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.classes:

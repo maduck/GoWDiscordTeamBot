@@ -282,9 +282,12 @@ class DiscordBot(discord.Client):
         elif len(result) == 1:
             kingdom = result[0]
             e = discord.Embed(title='Kingdom search')
+            kingdom_troops = ', '.join([f'{troop["name"]} `#{troop["id"]}`' for troop in kingdom['troops']])
             message_lines = [
                 kingdom['punchline'],
                 kingdom['description'],
+                f'\n**{kingdom["linked_map"]}**: {kingdom["linked_kingdom"]}' if kingdom['linked_kingdom'] else '',
+                f'**{kingdom["troop_title"]}**: {kingdom_troops}',
             ]
             e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}` ({kingdom["map"]})', value='\n'.join(message_lines))
         else:
