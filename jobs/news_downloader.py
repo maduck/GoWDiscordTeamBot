@@ -20,11 +20,16 @@ class NewsDownloader:
     @staticmethod
     def remove_tags(text):
         soup = BeautifulSoup(text, 'html5lib')
-        image = soup.find('img')
-        if image:
-            image = image['src']
+        images = soup.findAll('img')
+        image = None
+        for i in images:
+            source = i['src']
+            if 'dividerline' not in source:
+                image = source
+                break
         html_tags = re.compile(r'<.*?>')
         tags_removed = re.sub(html_tags, '', text)
+
         return image, tags_removed
 
     @staticmethod
