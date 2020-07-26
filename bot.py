@@ -361,6 +361,11 @@ class DiscordBot(discord.Client):
             affix_text = ''
             if weapon['upgrades']:
                 affix_text = f'\n**{weapon["upgrade_title"]}**\n{upgrades}\n'
+
+            req_text_formated = weapon["requirement_text"].replace("erhähltlich", "erhältlich")
+            if weapon['has_mastery_requirment_color'] and ':' in req_text_formated:
+                req_text_formated = '**' + req_text_formated.replace(': ', '**: ')
+
             message_lines = [
                 weapon['spell']['description'],
                 '',
@@ -369,7 +374,7 @@ class DiscordBot(discord.Client):
                 f'**{weapon["roles_title"]}**: {", ".join(weapon["roles"])}',
                 f'**{weapon["type_title"]}**: {weapon["type"]}',
                 affix_text,
-                f'{weapon["requirement_text"].replace("erhähltlich", "erhältlich")} {" ".join(color_requirement)}',
+                f'{req_text_formated} {" ".join(color_requirement)}',
             ]
             e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
                         value='\n'.join(message_lines))
