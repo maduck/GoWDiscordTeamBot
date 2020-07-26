@@ -272,11 +272,13 @@ class DiscordBot(discord.Client):
             kingdom = result[0]
             e = discord.Embed(title='Kingdom search', color=self.WHITE)
             kingdom_troops = ', '.join([f'{troop["name"]} `#{troop["id"]}`' for troop in kingdom['troops']])
+            colors = [f'{self.my_emojis.get(c, f":{c}:")}' for c in kingdom['colors']]
             message_lines = [
                 kingdom['punchline'],
                 kingdom['description'],
                 f'\n**{kingdom["linked_map"]}**: {kingdom["linked_kingdom"]}' if kingdom['linked_kingdom'] else '',
                 f'**{kingdom["troop_title"]}**: {kingdom_troops}',
+                f'\n{" ".join(colors)}'
             ]
             e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}` ({kingdom["map"]})', value='\n'.join(message_lines))
         else:
