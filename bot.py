@@ -128,6 +128,10 @@ class DiscordBot(discord.Client):
         },
     ]
 
+    WHITE = discord.Color.from_rgb(254, 254, 254)
+    BLACK = discord.Color.from_rgb(0, 0, 0)
+    RED = discord.Color.from_rgb(255, 0, 0)
+
     def __init__(self, *args, **kwargs):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
         super().__init__(*args, **kwargs)
@@ -186,13 +190,13 @@ class DiscordBot(discord.Client):
     async def show_help(self, message, prefix, lang):
         help_title, help_text = get_help_text(prefix, lang)
 
-        e = discord.Embed(title=help_title)
+        e = discord.Embed(title=help_title, color=self.WHITE)
         for section, text in help_text.items():
             e.add_field(name=section, value=text, inline=False)
         await answer(message, e)
 
     async def show_quickhelp(self, message, prefix, lang):
-        e = discord.Embed(title='quickhelp')
+        e = discord.Embed(title='quickhelp', color=self.WHITE)
         e.description = (
             f'`{prefix}help` complete help\n'
             f'`{prefix}quickhelp` this command\n'
@@ -227,8 +231,7 @@ class DiscordBot(discord.Client):
             await function(message, **params)
 
     async def show_invite_link(self, message, prefix, lang):
-        color = discord.Color.from_rgb(254, 254, 254)
-        e = discord.Embed(title='Bot invite link', color=color)
+        e = discord.Embed(title='Bot invite link', color=self.WHITE)
         link = 'https://discordapp.com/api/oauth2/authorize?client_id=733399051797790810&scope=bot&permissions=339008'
         e.add_field(name='Feel free to share!', value=link)
         await answer(message, e)
@@ -237,8 +240,7 @@ class DiscordBot(discord.Client):
         my_prefix = self.prefix.get(message.guild)
         issuing_user = message.author
         if not message.guild:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='Prefix change', color=color)
+            e = discord.Embed(title='Prefix change', color=self.BLACK)
             e.add_field(name='Error',
                         value=f'Prefix change not possible in direct messages.')
             await answer(message, e)
@@ -246,33 +248,29 @@ class DiscordBot(discord.Client):
         guild_owner = message.guild.owner
         if issuing_user == guild_owner:
             if len(new_prefix) != 1:
-                color = discord.Color.from_rgb(0, 0, 0)
-                e = discord.Embed(title='Prefix change', color=color)
+                e = discord.Embed(title='Prefix change', color=self.BLACK)
                 e.add_field(name='Error',
                             value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
                 await answer(message, e)
                 return
             self.prefix.add(message.guild, new_prefix)
-            color = discord.Color.from_rgb(255, 0, 0)
-            e = discord.Embed(title='ADMINISTRATIVE CHANGE', color=color)
+            e = discord.Embed(title='ADMINISTRATIVE CHANGE', color=self.RED)
             e.add_field(name='Prefix change', value=f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
             await answer(message, e)
             log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
         else:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='There was a problem', color=color)
+            e = discord.Embed(title='There was a problem', color=self.BLACK)
             e.add_field(name='Prefix change', value=f'Only the server owner has permission to change the prefix.')
             await answer(message, e)
 
     async def handle_kingdom_search(self, message, search_term, lang, prefix):
         result = self.expander.search_kingdom(search_term, lang)
         if not result:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='Kingdom search', color=color)
+            e = discord.Embed(title='Kingdom search', color=self.BLACK)
             e.add_field(name=search_term, value='did not yield any result')
         elif len(result) == 1:
             kingdom = result[0]
-            e = discord.Embed(title='Kingdom search')
+            e = discord.Embed(title='Kingdom search', color=self.WHITE)
             kingdom_troops = ', '.join([f'{troop["name"]} `#{troop["id"]}`' for troop in kingdom['troops']])
             message_lines = [
                 kingdom['punchline'],
@@ -282,8 +280,7 @@ class DiscordBot(discord.Client):
             ]
             e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}` ({kingdom["map"]})', value='\n'.join(message_lines))
         else:
-            color = discord.Color.from_rgb(254, 254, 254)
-            e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=color)
+            e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             kingdoms_found = [f'{kingdom["name"]} `{kingdom["id"]}`' for kingdom in result]
             kingdom_chunks = chunks(kingdoms_found, 30)
             for i, chunk in enumerate(kingdom_chunks):
@@ -294,12 +291,11 @@ class DiscordBot(discord.Client):
     async def handle_class_search(self, message, search_term, lang, prefix):
         result = self.expander.search_class(search_term, lang)
         if not result:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='Class search', color=color)
+            e = discord.Embed(title='Class search', color=self.BLACK)
             e.add_field(name=search_term, value='did not yield any result.')
         elif len(result) == 1:
             _class = result[0]
-            e = discord.Embed(title='Class search')
+            e = discord.Embed(title='Class search', color=self.WHITE)
             class_lines = [
                 f'**{_class["kingdom_title"]}**: {_class["kingdom"]}',
                 f'**{_class["weapon_title"]}**: {_class["weapon"]}',
@@ -313,8 +309,7 @@ class DiscordBot(discord.Client):
                 talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree]
                 e.add_field(name=f'__{_class["trees"][i]}__', value='\n'.join(talents), inline=True)
         else:
-            color = discord.Color.from_rgb(254, 254, 254)
-            e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=color)
+            e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             classes_found = [f'{_class["name"]} ({_class["id"]})' for _class in result]
             class_chunks = chunks(classes_found, 30)
             for i, chunk in enumerate(class_chunks):
@@ -325,12 +320,11 @@ class DiscordBot(discord.Client):
     async def handle_pet_search(self, message, search_term, lang, prefix):
         result = self.expander.search_pet(search_term, lang)
         if not result:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='Pet search', color=color)
+            e = discord.Embed(title='Pet search', color=self.BLACK)
             e.add_field(name=search_term, value='did not yield any result')
         elif len(result) == 1:
             pet = result[0]
-            e = discord.Embed(title='Pet search')
+            e = discord.Embed(title='Pet search', color=self.WHITE)
             mana = self.my_emojis.get(pet['color_code'])
             effect_data = ''
             if pet['effect_data']:
@@ -341,8 +335,7 @@ class DiscordBot(discord.Client):
             ]
             e.add_field(name=f'{mana} {pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
         else:
-            color = discord.Color.from_rgb(254, 254, 254)
-            e = discord.Embed(title=f'Pet search for `{search_term}` found {len(result)} matches.', color=color)
+            e = discord.Embed(title=f'Pet search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             pets_found = [f'{pet["name"]} ({pet["id"]})' for pet in result]
             pet_chunks = chunks(pets_found, 30)
             for i, chunk in enumerate(pet_chunks):
@@ -353,8 +346,7 @@ class DiscordBot(discord.Client):
     async def handle_weapon_search(self, message, search_term, lang, prefix):
         result = self.expander.search_weapon(search_term, lang)
         if not result:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='Weapon search', color=color)
+            e = discord.Embed(title='Weapon search', color=self.BLACK)
             e.add_field(name=search_term, value='did not yield any result')
         elif len(result) == 1:
             weapon = result[0]
@@ -382,8 +374,7 @@ class DiscordBot(discord.Client):
             e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
                         value='\n'.join(message_lines))
         else:
-            color = discord.Color.from_rgb(254, 254, 254)
-            e = discord.Embed(title=f'Weapon search for `{search_term}` found {len(result)} matches.', color=color)
+            e = discord.Embed(title=f'Weapon search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             weapons_found = [f'{t["name"]} ({t["id"]})' for t in result]
             weapon_chunks = chunks(weapons_found, 30)
             for i, chunk in enumerate(weapon_chunks):
@@ -395,8 +386,7 @@ class DiscordBot(discord.Client):
         result = self.expander.search_troop(search_term, lang)
 
         if not result:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='Troop search', color=color)
+            e = discord.Embed(title='Troop search', color=self.BLACK)
             e.add_field(name=search_term, value='did not yield any result')
         elif len(result) == 1:
             troop = result[0]
@@ -425,8 +415,7 @@ class DiscordBot(discord.Client):
             traits = '\n'.join(trait_list)
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
-            color = discord.Color.from_rgb(254, 254, 254)
-            e = discord.Embed(title=f'Troop search for `{search_term}` found {len(result)} matches.', color=color)
+            e = discord.Embed(title=f'Troop search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             troops_found = [f'{t["name"]} ({t["id"]})' for t in result]
             troop_chunks = chunks(troops_found, 30)
             for i, chunk in enumerate(troop_chunks):
@@ -438,19 +427,17 @@ class DiscordBot(discord.Client):
     async def handle_talent_search(self, message, search_term, lang, prefix):
         result = self.expander.search_talent_tree(search_term, lang)
         if not result:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='Talent search', color=color)
+            e = discord.Embed(title='Talent search', color=self.BLACK)
             e.add_field(name=search_term, value='did not yield any result')
         elif len(result) == 1:
             tree = result[0]
-            e = discord.Embed(title='Talent search')
+            e = discord.Embed(title='Talent search', color=self.WHITE)
             talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree['talents']]
             e.add_field(name=f'__{tree["name"]}__', value='\n'.join(talents), inline=True)
             classes = [f'{c["name"]} `#{c["id"]}`' for c in tree['classes']]
             e.add_field(name='__Classes using this Talent Tree:__', value=', '.join(classes), inline=False)
         else:
-            color = discord.Color.from_rgb(254, 254, 254)
-            e = discord.Embed(title=f'Talent search for `{search_term}` found {len(result)} matches.', color=color)
+            e = discord.Embed(title=f'Talent search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             talent_found = []
             for t in result:
                 talents_matches = f'({", ".join(t["talent_matches"])})' if 'talent_matches' in t else ''
@@ -466,7 +453,7 @@ class DiscordBot(discord.Client):
         if not team or not team['troops']:
             log.debug(f'nothing found in message {team_code}')
             return
-        color = discord.Color.from_rgb(19, 227, 246)
+        color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         author = message.author.display_name
         author = await pluralize_author(author)
 
@@ -516,8 +503,7 @@ class DiscordBot(discord.Client):
         return e
 
     async def show_prefix(self, message, lang, prefix):
-        color = discord.Color.from_rgb(254, 254, 254)
-        e = discord.Embed(title='Prefix', color=color)
+        e = discord.Embed(title='Prefix', color=self.WHITE)
         e.add_field(name='The current prefix is', value=f'`{prefix}`')
         await answer(message, e)
 
@@ -525,8 +511,7 @@ class DiscordBot(discord.Client):
         if not message.guild:
             return
         if message.author != message.guild.owner:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='News management', color=color)
+            e = discord.Embed(title='News management', color=self.BLACK)
             e.add_field(name='Susbscribe',
                         value=f'Only the server owner has permission to change news subscriptions.')
             await answer(message, e)
@@ -534,8 +519,7 @@ class DiscordBot(discord.Client):
 
         self.subscriptions.add(message)
 
-        color = discord.Color.from_rgb(254, 254, 254)
-        e = discord.Embed(title='News management', color=color)
+        e = discord.Embed(title='News management', color=self.WHITE)
         e.add_field(name='Subscribe',
                     value=f'News will now be posted into channel {message.channel.name}.')
         await answer(message, e)
@@ -544,8 +528,7 @@ class DiscordBot(discord.Client):
         if not message.guild:
             return
         if message.author != message.guild.owner:
-            color = discord.Color.from_rgb(0, 0, 0)
-            e = discord.Embed(title='News management', color=color)
+            e = discord.Embed(title='News management', color=self.BLACK)
             e.add_field(name='Unsubscribe',
                         value=f'Only the server owner has permission to change news subscriptions.')
             await answer(message, e)
@@ -553,8 +536,7 @@ class DiscordBot(discord.Client):
 
         self.subscriptions.remove(message)
 
-        color = discord.Color.from_rgb(254, 254, 254)
-        e = discord.Embed(title='News management', color=color)
+        e = discord.Embed(title='News management', color=self.WHITE)
         e.add_field(name='Unsubscribe',
                     value=f'News will *not* be posted into channel {message.channel.name}.')
         await answer(message, e)
@@ -568,8 +550,7 @@ class DiscordBot(discord.Client):
         if subscribed:
             answer_text = f'News will be posted into channel {message.channel.name}.'
 
-        color = discord.Color.from_rgb(254, 254, 254)
-        e = discord.Embed(title='News management', color=color)
+        e = discord.Embed(title='News management', color=self.WHITE)
         e.add_field(name='Status', value=answer_text)
         await answer(message, e)
 
@@ -585,8 +566,7 @@ class DiscordBot(discord.Client):
         for article in articles:
             for subscription in self.subscriptions:
                 channel = self.get_channel(subscription['channel_id'])
-                color = discord.Color.from_rgb(254, 254, 254)
-                e = discord.Embed(title='Gems of War news', color=color, url=article['url'])
+                e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
                 e.set_image(url=article['image'])
                 log.debug(
                     f'Sending out {article["title"]} to {subscription["guild_name"]}/{subscription["channel_name"]}')
