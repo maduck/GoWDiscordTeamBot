@@ -201,6 +201,7 @@ class TeamExpander:
             'troops_title': _('[TROOPS]', lang),
         }
         has_weapon = False
+        has_class = False
 
         for element in code:
             troop = self.troops.get(element)
@@ -221,6 +222,7 @@ class TeamExpander:
             if _class:
                 result['class'] = _(_class['name'], lang)
                 result['class_talents'] = _class['talents']
+                has_class = True
                 continue
 
             banner = self.banners.get(element)
@@ -233,7 +235,7 @@ class TeamExpander:
                 result['talents'].append(element)
                 continue
 
-        if has_weapon:
+        if has_weapon and has_class:
             new_talents = []
             for talent_no, talent_code in enumerate(result['talents']):
                 talent = '-'

@@ -114,7 +114,7 @@ class DiscordBot(discord.Client):
         {
             'function': 'handle_team_code',
             'pattern': re.compile(
-                r'.*?(?P<lang>en|fr|de|ru|it|es|cn)?(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})\].*',
+                r'.*?(?P<lang>en|fr|de|ru|it|es|cn)?(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,12})\].*',
                 re.IGNORECASE)
         },
         {
