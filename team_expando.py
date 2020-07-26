@@ -93,6 +93,7 @@ class TeamExpander:
                 'colors': colors,
             }
             kingdom_troops = [troop_id for troop_id in kingdom['TroopIds'] if troop_id != -1]
+            kingdom_colors = [c.replace('Color', '').lower() for c, v in kingdom['ManaColors'].items() if v]
             self.kingdoms[kingdom['Id']] = {
                 'id': kingdom['Id'],
                 'name': kingdom['Name'],
@@ -102,6 +103,7 @@ class TeamExpander:
                 'troop_ids': kingdom_troops,
                 'troop_type': kingdom['KingdomTroopType'],
                 'linked_kingdom_id': kingdom.get('SisterKingdomId'),
+                'colors': sorted(kingdom_colors)
             }
             if 'SisterKingdomId' in kingdom:
                 self.kingdoms[kingdom['SisterKingdomId']]['linked_kingdom_id'] = kingdom['Id']
