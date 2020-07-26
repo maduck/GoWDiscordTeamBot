@@ -83,8 +83,7 @@ class TeamExpander:
 
             banner = self.banners.get(element)
             if banner:
-                result['banner']['name'] = _(banner['name'], lang)
-                result['banner']['description'] = [c for c in banner['colors'] if c[1]]
+                result['banner'] = self.translate_banner(banner, lang)
                 continue
 
             if 0 <= element <= 3:
@@ -199,6 +198,9 @@ class TeamExpander:
              'id': _id
              } for _id in kingdom['troop_ids']
         ]
+        kingdom['banner_title'] = _('[BANNERS]', lang)
+        kingdom['banner'] = self.translate_banner(self.banners[kingdom['id']], lang)
+
         kingdom['linked_kingdom'] = None
         if kingdom['linked_kingdom_id']:
             kingdom['linked_kingdom'] = _(self.kingdoms[kingdom['linked_kingdom_id']]['name'], lang)
@@ -441,3 +443,13 @@ class TeamExpander:
             'cost': spell['cost'],
             'description': description,
         }
+
+    @staticmethod
+    def translate_banner(banner, lang):
+        result = {
+            'name': _(banner['name'], lang),
+            'colors': [(_(c[0], 'en').lower(), c[1]) for c in banner['colors'] if c[1]]
+        }
+        return result
+
+

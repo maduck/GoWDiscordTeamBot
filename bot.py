@@ -136,7 +136,7 @@ class DiscordBot(discord.Client):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
         super().__init__(*args, **kwargs)
         self.permissions = self.generate_permissions()
-        self.invite_url = 'https://discordapp.com/api/oauth2/authorize?client_id={{}}&scope=bot&permissions={}'\
+        self.invite_url = 'https://discordapp.com/api/oauth2/authorize?client_id={{}}&scope=bot&permissions={}' \
             .format(self.permissions.value)
         self.my_emojis = {}
         self.expander = TeamExpander()
@@ -273,9 +273,11 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='Kingdom search', color=self.WHITE)
             kingdom_troops = ', '.join([f'{troop["name"]} `#{troop["id"]}`' for troop in kingdom['troops']])
             colors = [f'{self.my_emojis.get(c, f":{c}:")}' for c in kingdom['colors']]
+            banner_colors = self.banner_colors(kingdom['banner'])
             message_lines = [
                 kingdom['punchline'],
                 kingdom['description'],
+                f'**{kingdom["banner_title"]}** {kingdom["banner"]["name"]} {" ".join(banner_colors)}',
                 f'\n**{kingdom["linked_map"]}**: {kingdom["linked_kingdom"]}' if kingdom['linked_kingdom'] else '',
                 f'**{kingdom["troop_title"]}**: {kingdom_troops}',
             ]
@@ -471,15 +473,17 @@ class DiscordBot(discord.Client):
 
         await answer(message, e)
 
+    def banner_colors(self, banner):
+        return [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
+
     def format_output_team(self, team, color, author):
         e = discord.Embed(title=f"{author} team", color=color)
         troops = [f'{self.my_emojis.get(t[0], f":{t[0]}:")} {t[1]}' for t in team['troops']]
         team_text = '\n'.join(troops)
         e.add_field(name=team['troops_title'], value=team_text, inline=True)
         if team['banner']:
-            banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
-                            team['banner']['description']]
-            e.add_field(name=team['banner']['name'], value='\n'.join(banner_texts), inline=True)
+            banner_colors = self.banner_colors(team['banner'])
+            e.add_field(name=team['banner']['name'], value='\n'.join(banner_colors), inline=True)
         if team['class']:
             talents = '\n'.join(team['talents'])
             if all([t == '-' for t in team['talents']]):
