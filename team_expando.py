@@ -529,9 +529,12 @@ class TeamExpander:
         weapon['roles'] = [_(f'[TROOP_ROLE_{role.upper()}]', lang) for role in weapon['roles']]
         weapon['type_title'] = _('[FILTER_WEAPONTYPE]', lang)
         weapon['type'] = _(f'[WEAPONTYPE_{weapon["type"].upper()}]', lang)
+
+        weapon['has_mastery_requirment_color'] = False
         if weapon['requirement'] < 1000:
             weapon['requirement_text'] = _('[WEAPON_MASTERY_REQUIRED]', lang) + \
                                          str(weapon['requirement'])
+            weapon['has_mastery_requirment_color'] = True
         elif weapon['requirement'] == 1000:
             weapon['requirement_text'] = _('[WEAPON_AVAILABLE_FROM_CHESTS_AND_EVENTS]', lang)
         elif weapon['requirement'] == 1002:
