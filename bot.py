@@ -48,6 +48,14 @@ def debug(message):
     log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
 
 
+async def answer(message, embed):
+    try:
+        await message.channel.send(embed=embed)
+    except discord.errors.Forbidden:
+        log.warning(
+            f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
+
+
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
     BOT_NAME = 'garyatrics.com'
@@ -180,7 +188,7 @@ class DiscordBot(discord.Client):
         e = discord.Embed(title=help_title)
         for section, text in help_text.items():
             e.add_field(name=section, value=text, inline=False)
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def show_quickhelp(self, message, prefix, lang):
         e = discord.Embed(title='quickhelp')
@@ -198,7 +206,7 @@ class DiscordBot(discord.Client):
             f'`{prefix}talent <search>`\n'
             f'`<language><command>` language support\n'
         )
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def on_guild_join(self, guild):
         log.debug(f'Joined guild {guild} (id {guild.id}).')
@@ -222,7 +230,7 @@ class DiscordBot(discord.Client):
         e = discord.Embed(title='Bot invite link', color=color)
         link = 'https://discordapp.com/api/oauth2/authorize?client_id=733399051797790810&scope=bot&permissions=339008'
         e.add_field(name='Feel free to share!', value=link)
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def change_prefix(self, message, prefix, new_prefix, lang):
         my_prefix = self.prefix.get(message.guild)
@@ -232,7 +240,7 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='Prefix change', color=color)
             e.add_field(name='Error',
                         value=f'Prefix change not possible in direct messages.')
-            await message.channel.send(embed=e)
+            await answer(message, e)
             return
         guild_owner = message.guild.owner
         if issuing_user == guild_owner:
@@ -241,19 +249,19 @@ class DiscordBot(discord.Client):
                 e = discord.Embed(title='Prefix change', color=color)
                 e.add_field(name='Error',
                             value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
-                await message.channel.send(embed=e)
+                await answer(message, e)
                 return
             self.prefix.add(message.guild, new_prefix)
             color = discord.Color.from_rgb(255, 0, 0)
             e = discord.Embed(title='ADMINISTRATIVE CHANGE', color=color)
             e.add_field(name='Prefix change', value=f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
-            await message.channel.send(embed=e)
+            await answer(message, e)
             log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
         else:
             color = discord.Color.from_rgb(0, 0, 0)
             e = discord.Embed(title='There was a problem', color=color)
             e.add_field(name='Prefix change', value=f'Only the server owner has permission to change the prefix.')
-            await message.channel.send(embed=e)
+            await answer(message, e)
 
     async def handle_kingdom_search(self, message, search_term, lang, prefix):
         result = self.expander.search_kingdom(search_term, lang)
@@ -280,7 +288,7 @@ class DiscordBot(discord.Client):
             for i, chunk in enumerate(kingdom_chunks):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def handle_class_search(self, message, search_term, lang, prefix):
         result = self.expander.search_class(search_term, lang)
@@ -311,7 +319,7 @@ class DiscordBot(discord.Client):
             for i, chunk in enumerate(class_chunks):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def handle_pet_search(self, message, search_term, lang, prefix):
         result = self.expander.search_pet(search_term, lang)
@@ -339,7 +347,7 @@ class DiscordBot(discord.Client):
             for i, chunk in enumerate(pet_chunks):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def handle_weapon_search(self, message, search_term, lang, prefix):
         result = self.expander.search_weapon(search_term, lang)
@@ -380,7 +388,7 @@ class DiscordBot(discord.Client):
             for i, chunk in enumerate(weapon_chunks):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def handle_troop_search(self, message, prefix, search_term, lang):
         result = self.expander.search_troop(search_term, lang)
@@ -424,7 +432,7 @@ class DiscordBot(discord.Client):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
 
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def handle_talent_search(self, message, search_term, lang, prefix):
         result = self.expander.search_talent_tree(search_term, lang)
@@ -450,7 +458,7 @@ class DiscordBot(discord.Client):
             for i, chunk in enumerate(troop_chunks):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def handle_team_code(self, message, lang, team_code, shortened=''):
         team = self.expander.get_team_from_message(team_code, lang)
@@ -466,11 +474,7 @@ class DiscordBot(discord.Client):
         else:
             e = self.format_output_team(team, color, author)
 
-        try:
-            await message.channel.send(embed=e)
-        except discord.errors.Forbidden:
-            log.warning(
-                f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
+        await answer(message, e)
 
     def format_output_team(self, team, color, author):
         e = discord.Embed(title=f"{author} team", color=color)
@@ -514,7 +518,7 @@ class DiscordBot(discord.Client):
         color = discord.Color.from_rgb(254, 254, 254)
         e = discord.Embed(title='Prefix', color=color)
         e.add_field(name='The current prefix is', value=f'`{prefix}`')
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def news_subscribe(self, message, prefix):
         if not message.guild:
@@ -524,7 +528,7 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='News management', color=color)
             e.add_field(name='Susbscribe',
                         value=f'Only the server owner has permission to change news subscriptions.')
-            await message.channel.send(embed=e)
+            await answer(message, e)
             return
 
         self.subscriptions.add(message)
@@ -533,7 +537,7 @@ class DiscordBot(discord.Client):
         e = discord.Embed(title='News management', color=color)
         e.add_field(name='Subscribe',
                     value=f'News will now be posted into channel {message.channel.name}.')
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def news_unsubscribe(self, message, prefix):
         if not message.guild:
@@ -543,7 +547,7 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='News management', color=color)
             e.add_field(name='Unsubscribe',
                         value=f'Only the server owner has permission to change news subscriptions.')
-            await message.channel.send(embed=e)
+            await answer(message, e)
             return
 
         self.subscriptions.remove(message)
@@ -552,7 +556,7 @@ class DiscordBot(discord.Client):
         e = discord.Embed(title='News management', color=color)
         e.add_field(name='Unsubscribe',
                     value=f'News will *not* be posted into channel {message.channel.name}.')
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def news_status(self, message, prefix):
         if not message.guild:
@@ -566,7 +570,7 @@ class DiscordBot(discord.Client):
         color = discord.Color.from_rgb(254, 254, 254)
         e = discord.Embed(title='News management', color=color)
         e.add_field(name='Status', value=answer_text)
-        await message.channel.send(embed=e)
+        await answer(message, e)
 
     async def show_latest_news(self):
         if not self.is_ready():
@@ -589,7 +593,8 @@ class DiscordBot(discord.Client):
                 try:
                     await channel.send(embed=e)
                 except Exception as e:
-                    log.debug(e)
+                    log.error('Could not send out news, exception follows')
+                    log.exception(e)
         with open(NewsDownloader.NEWS_FILENAME, 'w') as f:
             f.write('[]')
 
