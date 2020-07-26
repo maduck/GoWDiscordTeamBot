@@ -2,3 +2,4 @@ requests
 discord
 feedparser
 beautifulsoup4
+html5lib
