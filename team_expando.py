@@ -2,6 +2,7 @@ import json
 import logging
 import operator
 
+from data_source.world_data import WorldData
 from game_constants import TROOP_RARITIES, WEAPON_RARITIES
 from translations import _
 
@@ -25,151 +26,21 @@ def extract_search_tag(search_term):
 
 
 class TeamExpander:
-    COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown')
 
     def __init__(self):
-        self.troops = {}
-        self.spells = {}
-        self.weapons = {}
-        self.classes = {}
-        self.banners = {}
-        self.traits = {}
-        self.kingdoms = {}
-        self.pet_effects = ()
-        self.pets = {}
-        self.talent_trees = {}
-        self.populate_world_data()
+        world = WorldData()
+        world.populate_world_data()
         log.debug('Done populating world data.')
-
-    def populate_world_data(self):
-        with open('World.json', encoding='utf8') as f:
-            data = json.load(f)
-
-        for spell in data['Spells']:
-            amount = 0
-            multiplier = 1
-            boost = 1
-            for spell_step in spell['SpellSteps']:
-                if spell_step.get('Primarypower'):
-                    amount = spell_step.get('Amount')
-                    multiplier = spell_step.get('SpellPowerMultiplier', 1)
-                elif spell_step['Type'].startswith('Count'):
-                    boost = spell_step.get('Amount', 1)
-            self.spells[spell['Id']] = {
-                'id': spell['Id'],
-                'name': spell['Name'],
-                'description': spell['Description'],
-                'cost': spell['Cost'],
-                'amount': amount,
-                'multiplier': multiplier,
-                'boost': boost,
-            }
-        for trait in data['Traits']:
-            self.traits[trait['Code']] = {'name': trait['Name'], 'description': trait['Description']}
-        for troop in data['Troops']:
-            colors = [c.replace('Color', '').lower() for c, v in troop['ManaColors'].items() if v]
-            self.troops[troop['Id']] = {
-                'id': troop['Id'],
-                'name': troop['Name'],
-                'colors': sorted(colors),
-                'description': troop['Description'],
-                'spell_id': troop['SpellId'],
-                'traits': [self.traits.get(trait, {'name': trait, 'description': '-'}) for trait in troop['Traits']],
-                'rarity': troop['TroopRarity'],
-                'types': [troop['TroopType']],
-                'roles': troop['TroopRoleArray'],
-                'kingdom': {'Name': ''},
-                'filename': f'http://garyatrics.com/gow_assets/{troop["FileBase"].lower()}.png',
-            }
-            if 'TroopType2' in troop:
-                self.troops[troop['Id']]['types'].append(troop['TroopType2'])
-        for kingdom in data['Kingdoms']:
-            color_lookup_names = [f'[GEM_{c.upper()}]' for c in self.COLORS]
-            color_names = [_(c).lower() for c in color_lookup_names]
-            colors = zip(color_names, kingdom['BannerColors'])
-            colors = sorted(colors, key=operator.itemgetter(1), reverse=True)
-            self.banners[kingdom['Id']] = {
-                'name': kingdom['BannerName'],
-                'colors': colors,
-            }
-            kingdom_troops = [troop_id for troop_id in kingdom['TroopIds'] if troop_id != -1]
-            kingdom_colors = [c.replace('Color', '').lower() for c, v in kingdom['ManaColors'].items() if v]
-            self.kingdoms[kingdom['Id']] = {
-                'id': kingdom['Id'],
-                'name': kingdom['Name'],
-                'description': kingdom['Description'],
-                'punchline': kingdom['ByLine'],
-                'underworld': bool(kingdom.get('MapIndex', 0)),
-                'troop_ids': kingdom_troops,
-                'troop_type': kingdom['KingdomTroopType'],
-                'linked_kingdom_id': kingdom.get('SisterKingdomId'),
-                'colors': sorted(kingdom_colors)
-            }
-            if 'SisterKingdomId' in kingdom:
-                self.kingdoms[kingdom['SisterKingdomId']]['linked_kingdom_id'] = kingdom['Id']
-            for troop_id in kingdom_troops:
-                self.troops[troop_id]['kingdom'] = kingdom
-        for weapon in data['Weapons']:
-            colors = [c.replace('Color', '').lower() for c, v in weapon['ManaColors'].items() if v]
-            self.weapons[weapon['Id']] = {
-                'id': weapon['Id'],
-                'name': f'[SPELL{weapon["SpellId"]}_NAME]',
-                'description': f'[SPELL{weapon["SpellId"]}_DESC]',
-                'colors': sorted(colors),
-                'rarity': weapon['WeaponRarity'],
-                'type': weapon['Type'],
-                'roles': weapon['TroopRoleArray'],
-                'spell_id': weapon['SpellId'],
-                'kingdom': self.kingdoms[weapon['KingdomId']],
-                'requirement': weapon['MasteryRequirement'],
-                'armor_increase': weapon['ArmorIncrease'],
-                'attack_increase': weapon['AttackIncrease'],
-                'health_increase': weapon['HealthIncrease'],
-                'magic_increase': weapon['SpellPowerIncrease'],
-                'affixes': [self.spells.get(spell) for spell in weapon['Affixes'] if spell in self.spells],
-            }
-        self.pet_effects = (
-            '[PETTYPE_BUFFTEAMCOLOR]',
-            '[PETTYPE_BUFFGEMMASTERY]',
-            '[PETTYPE_BUFFTEAMKINGDOM]',
-            '[PETTYPE_BUFFTEAMTROOPTYPE]',
-            '[PETTYPE_LOOTSOULS]',
-            '[PETTYPE_LOOTGOLD]',
-            '[PETTYPE_LOOTXP]',
-            '[PETTYPE_NOEFFECT]',
-        )
-        for pet in data['Pets']:
-            colors = [c.replace('Color', '').lower() for c, v in pet['ManaColors'].items() if v]
-            self.pets[pet['Id']] = {
-                'id': pet['Id'],
-                'name': pet['Name'],
-                'kingdom': self.kingdoms[pet['KingdomId']],
-                'colors': sorted(colors),
-                'effect': self.pet_effects[pet['Effect']],
-                'effect_data': pet.get('EffectData'),
-                'troop_type': pet.get('EffectTroopType'),
-            }
-        for tree in data['TalentTrees']:
-            talents = [self.traits.get(trait, trait) for trait in tree['Traits']]
-            self.talent_trees[tree['Code']] = {
-                'name': f'[TALENT_TREE_{tree["Code"].upper()}]',
-                'talents': talents,
-                'classes': [],
-            }
-        for _class in data['HeroClasses']:
-            self.classes[_class['Id']] = {
-                'id': _class['Id'],
-                'name': _class['Name'],
-                'talents': [self.talent_trees[tree]['talents'] for tree in _class['TalentTrees']],
-                'trees': _class['TalentTrees'],
-                'traits': [self.traits.get(trait, {'name': trait, 'description': '-'}) for trait in _class['Traits']],
-                'weapon_id': _class['ClassWeaponId'],
-                'kingdom_id': _class['KingdomId'],
-                'type': _class['Augment'][0],
-            }
-            self.weapons[_class['ClassWeaponId']]['class'] = _class['Name']
-            for tree in _class['TalentTrees']:
-                self.talent_trees[tree]['classes'].append(self.classes[_class['Id']].copy())
+        self.troops = world.troops
+        self.spells = world.spells
+        self.weapons = world.weapons
+        self.classes = world.classes
+        self.banners = world.banners
+        self.traits = world.traits
+        self.kingdoms = world.kingdoms
+        self.pet_effects = world.pet_effects
+        self.pets = world.pets
+        self.talent_trees = world.talent_trees
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -532,11 +403,11 @@ class TeamExpander:
         weapon['type_title'] = _('[FILTER_WEAPONTYPE]', lang)
         weapon['type'] = _(f'[WEAPONTYPE_{weapon["type"].upper()}]', lang)
 
-        weapon['has_mastery_requirment_color'] = False
+        weapon['has_mastery_requirement_color'] = False
         if weapon['requirement'] < 1000:
             weapon['requirement_text'] = _('[WEAPON_MASTERY_REQUIRED]', lang) + \
                                          str(weapon['requirement'])
-            weapon['has_mastery_requirment_color'] = True
+            weapon['has_mastery_requirement_color'] = True
         elif weapon['requirement'] == 1000:
             weapon['requirement_text'] = _('[WEAPON_AVAILABLE_FROM_CHESTS_AND_EVENTS]', lang)
         elif weapon['requirement'] == 1002:
