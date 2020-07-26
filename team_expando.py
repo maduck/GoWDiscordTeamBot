@@ -3,7 +3,7 @@ import logging
 import operator
 import re
 
-import data_source
+from translations import _
 
 LOGLEVEL = logging.DEBUG
 
@@ -37,32 +37,6 @@ WEAPON_RARITIES = (
 )
 
 
-class Translations:
-    BASE_LANG = 'en'
-    LANGUAGES = {
-        'en': 'English',
-        'fr': 'French',
-        'de': 'German',
-        'ru': 'Russian',
-        'it': 'Italian',
-        'es': 'Spanish',
-        'cn': 'Chinese',
-    }
-
-    def __init__(self):
-        self.translations = {}
-        for lang_code, language in self.LANGUAGES.items():
-            filename = f'GemsOfWar_{language}.json'
-            with open(filename, encoding='utf8') as f:
-                self.translations[lang_code] = json.load(f)
-
-    def get(self, key, lang=''):
-        if lang not in self.translations:
-            lang = self.BASE_LANG
-
-        return self.translations[lang].get(key, key)
-
-
 def extract_search_tag(search_term):
     ignored_characters = ' -\''
     for char in ignored_characters:
@@ -85,7 +59,6 @@ class TeamExpander:
         self.pet_effects = ()
         self.pets = {}
         self.talent_trees = {}
-        self.translations = Translations()
         self.populate_world_data()
         log.debug('Done populating world data.')
 
@@ -133,7 +106,7 @@ class TeamExpander:
                 self.troops[troop['Id']]['types'].append(troop['TroopType2'])
         for kingdom in data['Kingdoms']:
             color_lookup_names = [f'[GEM_{c.upper()}]' for c in self.COLORS]
-            color_names = [self.translations.get(c).lower() for c in color_lookup_names]
+            color_names = [_(c).lower() for c in color_lookup_names]
             colors = zip(color_names, kingdom['BannerColors'])
             colors = sorted(colors, key=operator.itemgetter(1), reverse=True)
             self.banners[kingdom['Id']] = {
@@ -224,8 +197,8 @@ class TeamExpander:
             'banner': {},
             'class': None,
             'talents': [],
-            'class_title': self.translations.get('[CLASS]', lang),
-            'troops_title': self.translations.get('[TROOPS]', lang),
+            'class_title': _('[CLASS]', lang),
+            'troops_title': _('[TROOPS]', lang),
         }
         has_weapon = False
 
@@ -234,25 +207,25 @@ class TeamExpander:
             weapon = self.weapons.get(element)
             if troop:
                 color_code = "".join(troop["colors"])
-                troop_name = self.translations.get(troop['name'], lang)
+                troop_name = _(troop['name'], lang)
                 result['troops'].append([color_code, troop_name])
                 continue
             elif weapon:
                 color_code = "".join(weapon["colors"])
-                weapon_name = self.translations.get(weapon['name'], lang)
+                weapon_name = _(weapon['name'], lang)
                 result['troops'].append([color_code, weapon_name + ' :crossed_swords:'])
                 has_weapon = True
                 continue
 
             _class = self.classes.get(element)
             if _class:
-                result['class'] = self.translations.get(_class['name'], lang)
+                result['class'] = _(_class['name'], lang)
                 result['class_talents'] = _class['talents']
                 continue
 
             banner = self.banners.get(element)
             if banner:
-                result['banner']['name'] = self.translations.get(banner['name'], lang)
+                result['banner']['name'] = _(banner['name'], lang)
                 result['banner']['description'] = [c for c in banner['colors'] if c[1]]
                 continue
 
@@ -265,7 +238,7 @@ class TeamExpander:
             for talent_no, talent_code in enumerate(result['talents']):
                 talent = '-'
                 if talent_code > 0:
-                    talent = self.translations.get(result['class_talents'][talent_code - 1][talent_no]['name'], lang)
+                    talent = _(result['class_talents'][talent_code - 1][talent_no]['name'], lang)
                 new_talents.append(talent)
             result['talents'] = new_talents
         else:
@@ -291,7 +264,7 @@ class TeamExpander:
         else:
             possible_matches = []
             for troop in self.troops.values():
-                translated_name = extract_search_tag(self.translations.get(troop['name'], lang))
+                translated_name = extract_search_tag(_(troop['name'], lang))
                 real_search = extract_search_tag(search_term)
                 if real_search == translated_name:
                     result = troop.copy()
@@ -304,37 +277,37 @@ class TeamExpander:
             return possible_matches
 
     def translate_troop(self, troop, lang):
-        troop['name'] = self.translations.get(troop['name'], lang)
-        troop['description'] = self.translations.get(troop['description'], lang).replace('widerbeleben',
+        troop['name'] = _(troop['name'], lang)
+        troop['description'] = _(troop['description'], lang).replace('widerbeleben',
                                                                                          'wiederbeleben')
         troop['color_code'] = "".join(troop['colors'])
-        troop['rarity_title'] = self.translations.get('[RARITY]', lang)
+        troop['rarity_title'] = _('[RARITY]', lang)
         troop['raw_rarity'] = troop['rarity']
         rarity_number = 1
         if troop['rarity'] in RARITIES:
             rarity_number = RARITIES.index(troop['rarity'])
-        troop['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
-        troop['traits_title'] = self.translations.get('[TRAITS]', lang)
+        troop['rarity'] = _(f'[RARITY_{rarity_number}]', lang)
+        troop['traits_title'] = _('[TRAITS]', lang)
         troop['traits'] = self.enrich_traits(troop['traits'], lang)
-        troop['roles_title'] = self.translations.get('[TROOP_ROLE]', lang)
-        troop['roles'] = [self.translations.get(f'[TROOP_ROLE_{role.upper()}]', lang) for role in troop['roles']]
-        troop['type_title'] = self.translations.get('[FILTER_TROOPTYPE]', lang)
+        troop['roles_title'] = _('[TROOP_ROLE]', lang)
+        troop['roles'] = [_(f'[TROOP_ROLE_{role.upper()}]', lang) for role in troop['roles']]
+        troop['type_title'] = _('[FILTER_TROOPTYPE]', lang)
         troop['raw_types'] = troop['types']
         types = [
-            self.translations.get(f'[TROOPTYPE_{_type.upper()}]', lang) for _type in troop['types']
+            _(f'[TROOPTYPE_{_type.upper()}]', lang) for _type in troop['types']
         ]
         troop['type'] = ' / '.join(types)
-        troop['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
-        troop['kingdom'] = self.translations.get(troop['kingdom']['Name'], lang)
+        troop['kingdom_title'] = _('[KINGDOM]', lang)
+        troop['kingdom'] = _(troop['kingdom']['Name'], lang)
         troop['spell'] = self.translate_spell(troop['spell_id'], lang)
-        troop['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
+        troop['spell_title'] = _('[TROOPHELP_SPELL0]', lang)
 
     def enrich_traits(self, traits, lang):
         new_traits = []
         for trait in traits:
             new_traits.append({
-                'name': self.translations.get(trait['name'], lang),
-                'description': self.translations.get(trait['description'], lang)
+                'name': _(trait['name'], lang),
+                'description': _(trait['description'], lang)
             })
         return new_traits
 
@@ -346,7 +319,7 @@ class TeamExpander:
         else:
             possible_matches = []
             for kingdom in self.kingdoms.values():
-                translated_name = extract_search_tag(self.translations.get(kingdom['name'], lang))
+                translated_name = extract_search_tag(_(kingdom['name'], lang))
                 real_search = extract_search_tag(search_term)
                 if real_search == translated_name:
                     result = kingdom.copy()
@@ -359,25 +332,25 @@ class TeamExpander:
             return possible_matches
 
     def translate_kingdom(self, kingdom, lang):
-        kingdom['name'] = self.translations.get(kingdom['name'], lang)
-        kingdom['description'] = self.translations.get(kingdom['description'], lang)
-        kingdom['punchline'] = self.translations.get(kingdom['punchline'], lang)
-        kingdom['troop_title'] = self.translations.get('[TROOPS]', lang)
+        kingdom['name'] = _(kingdom['name'], lang)
+        kingdom['description'] = _(kingdom['description'], lang)
+        kingdom['punchline'] = _(kingdom['punchline'], lang)
+        kingdom['troop_title'] = _('[TROOPS]', lang)
         kingdom['troops'] = [
-            {'name': self.translations.get(self.troops[_id]['name'], lang),
+            {'name': _(self.troops[_id]['name'], lang),
              'id': _id
              } for _id in kingdom['troop_ids']
         ]
         kingdom['linked_kingdom'] = None
         if kingdom['linked_kingdom_id']:
-            kingdom['linked_kingdom'] = self.translations.get(self.kingdoms[kingdom['linked_kingdom_id']]['name'], lang)
+            kingdom['linked_kingdom'] = _(self.kingdoms[kingdom['linked_kingdom_id']]['name'], lang)
         if kingdom['linked_kingdom'].startswith('['):
             kingdom['linked_kingdom'] = None
-        kingdom['map'] = self.translations.get('[MAPNAME_MAIN]', lang)
-        kingdom['linked_map'] = self.translations.get('[MAPNAME_UNDERWORLD]', lang)
+        kingdom['map'] = _('[MAPNAME_MAIN]', lang)
+        kingdom['linked_map'] = _('[MAPNAME_UNDERWORLD]', lang)
         if kingdom['underworld']:
-            kingdom['map'] = self.translations.get('[MAPNAME_UNDERWORLD]', lang)
-            kingdom['linked_map'] = self.translations.get('[MAPNAME_MAIN]', lang)
+            kingdom['map'] = _('[MAPNAME_UNDERWORLD]', lang)
+            kingdom['linked_map'] = _('[MAPNAME_MAIN]', lang)
 
     def search_class(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.classes:
@@ -387,7 +360,7 @@ class TeamExpander:
         else:
             possible_matches = []
             for _class in self.classes.values():
-                translated_name = extract_search_tag(self.translations.get(_class['name'], lang))
+                translated_name = extract_search_tag(_(_class['name'], lang))
                 real_search = extract_search_tag(search_term)
                 if real_search == translated_name:
                     result = _class.copy()
@@ -401,32 +374,32 @@ class TeamExpander:
 
     def translate_class(self, _class, lang):
         kingdom = self.kingdoms[_class['kingdom_id']]
-        _class['kingdom'] = self.translations.get(kingdom['name'], lang)
+        _class['kingdom'] = _(kingdom['name'], lang)
         weapon = self.weapons[_class['weapon_id']]
-        _class['weapon'] = self.translations.get(weapon['name'], lang)
-        _class['name'] = self.translations.get(_class['name'], lang)
+        _class['weapon'] = _(weapon['name'], lang)
+        _class['name'] = _(_class['name'], lang)
         translated_trees = []
         for tree in _class['talents']:
             translated_talents = []
             for talent in tree:
                 translated_talents.append({
-                    'name': self.translations.get(talent['name'], lang),
-                    'description': self.translations.get(talent['description'], lang)
+                    'name': _(talent['name'], lang),
+                    'description': _(talent['description'], lang)
                 })
             translated_trees.append(translated_talents)
-        _class['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
-        _class['traits_title'] = self.translations.get('[TRAITS]', lang)
+        _class['kingdom_title'] = _('[KINGDOM]', lang)
+        _class['traits_title'] = _('[TRAITS]', lang)
         _class['traits'] = self.enrich_traits(_class['traits'], lang)
-        _class['weapon_title'] = self.translations.get('[WEAPON]', lang)
+        _class['weapon_title'] = _('[WEAPON]', lang)
         _class['talents'] = translated_trees
-        _class['trees'] = [self.translations.get(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
-        _class['type'] = self.translations.get(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
+        _class['trees'] = [_(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
+        _class['type'] = _(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
 
     def search_talent_tree(self, search_term, lang):
         possible_matches = []
         for tree in self.talent_trees.values():
-            translated_name = extract_search_tag(self.translations.get(tree['name'], lang))
-            translated_talents = [self.translations.get(t['name'], lang) for t in tree['talents']]
+            translated_name = extract_search_tag(_(tree['name'], lang))
+            translated_talents = [_(t['name'], lang) for t in tree['talents']]
             real_search = extract_search_tag(search_term)
             if real_search == translated_name or real_search in translated_talents:
                 result = tree.copy()
@@ -446,17 +419,17 @@ class TeamExpander:
         return possible_matches
 
     def translate_talent_tree(self, tree, lang):
-        tree['name'] = self.translations.get(tree['name'], lang)
+        tree['name'] = _(tree['name'], lang)
         translated_talents = []
         for talent in tree['talents']:
             translated_talents.append({
-                'name': self.translations.get(talent['name'], lang),
-                'description': self.translations.get(talent['description'], lang)
+                'name': _(talent['name'], lang),
+                'description': _(talent['description'], lang)
             })
         tree['talents'] = translated_talents
         tree['classes'] = [
             {'id': c['id'],
-             'name': self.translations.get(c['name'], lang)
+             'name': _(c['name'], lang)
              }
             for c in tree['classes']
         ]
@@ -469,7 +442,7 @@ class TeamExpander:
         else:
             possible_matches = []
             for pet in self.pets.values():
-                translated_name = extract_search_tag(self.translations.get(pet['name'], lang))
+                translated_name = extract_search_tag(_(pet['name'], lang))
                 real_search = extract_search_tag(search_term)
                 if real_search == translated_name:
                     result = pet.copy()
@@ -482,12 +455,12 @@ class TeamExpander:
             return possible_matches
 
     def translate_pet(self, pet, lang):
-        pet['name'] = self.translations.get(pet['name'], lang)
-        pet['kingdom'] = self.translations.get(pet['kingdom']['name'], lang)
-        pet['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
+        pet['name'] = _(pet['name'], lang)
+        pet['kingdom'] = _(pet['kingdom']['name'], lang)
+        pet['kingdom_title'] = _('[KINGDOM]', lang)
         pet['color_code'] = "".join(pet['colors'])
         pet['raw_effect'] = pet['effect']
-        pet['effect'] = self.translations.get(pet['effect'], lang)
+        pet['effect'] = _(pet['effect'], lang)
         colors = (
             '',
             'GREEN',
@@ -497,19 +470,19 @@ class TeamExpander:
             'BROWN',
         )
         if pet['raw_effect'] == '[PETTYPE_BUFFTEAMKINGDOM]':
-            pet['effect_data'] = self.translations.get(self.kingdoms[pet['effect_data']]['name'], lang)
+            pet['effect_data'] = _(self.kingdoms[pet['effect_data']]['name'], lang)
         elif pet['raw_effect'] == '[PETTYPE_BUFFTEAMTROOPTYPE]':
-            pet['effect_data'] = self.translations.get(f'[TROOPTYPE_{pet["troop_type"].upper()}]', lang)
+            pet['effect_data'] = _(f'[TROOPTYPE_{pet["troop_type"].upper()}]', lang)
         elif pet['raw_effect'] == '[PETTYPE_BUFFTEAMCOLOR]':
-            pet['effect'] = self.translations.get(f'[PET_{pet["colors"][0].upper()}_BUFF]', lang)
+            pet['effect'] = _(f'[PET_{pet["colors"][0].upper()}_BUFF]', lang)
             pet['effect_data'] = None
         elif pet['raw_effect'] == '[PETTYPE_BUFFGEMMASTERY]':
             if pet['effect_data']:
-                pet['effect'] = self.translations.get(f'[PET_{colors[pet["effect_data"]]}_BUFF]', lang)
+                pet['effect'] = _(f'[PET_{colors[pet["effect_data"]]}_BUFF]', lang)
                 pet['effect_data'] = None
             else:
-                pet['effect'] = self.translations.get(f'[PET_{pet["colors"][0].upper()}_BUFF]', lang)
-        pet['effect_title'] = self.translations.get('[PET_TYPE]', lang)
+                pet['effect'] = _(f'[PET_{pet["colors"][0].upper()}_BUFF]', lang)
+        pet['effect_title'] = _('[PET_TYPE]', lang)
 
     def search_weapon(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.weapons:
@@ -522,7 +495,7 @@ class TeamExpander:
         else:
             possible_matches = []
             for weapon in self.weapons.values():
-                translated_name = extract_search_tag(self.translations.get(weapon['name'], lang))
+                translated_name = extract_search_tag(_(weapon['name'], lang))
                 real_search = extract_search_tag(search_term)
                 if real_search == translated_name:
                     result = weapon.copy()
@@ -535,38 +508,38 @@ class TeamExpander:
             return possible_matches
 
     def translate_weapon(self, weapon, lang):
-        weapon['name'] = self.translations.get(weapon['name'], lang)
-        weapon['description'] = self.translations.get(weapon['description'], lang)
+        weapon['name'] = _(weapon['name'], lang)
+        weapon['description'] = _(weapon['description'], lang)
         weapon['color_code'] = "".join(weapon['colors'])
-        weapon['spell_title'] = self.translations.get('[TROOPHELP_SPELL0]', lang)
-        weapon['rarity_title'] = self.translations.get('[RARITY]', lang)
+        weapon['spell_title'] = _('[TROOPHELP_SPELL0]', lang)
+        weapon['rarity_title'] = _('[RARITY]', lang)
         weapon['raw_rarity'] = weapon['rarity']
 
         rarity_number = WEAPON_RARITIES.index(weapon['rarity'])
-        weapon['rarity'] = self.translations.get(f'[RARITY_{rarity_number}]', lang)
+        weapon['rarity'] = _(f'[RARITY_{rarity_number}]', lang)
         weapon['spell'] = self.translate_spell(weapon['spell_id'], lang)
-        weapon['affix_title'] = self.translations.get('[UPGRADE_WEAPON]', lang)
+        weapon['affix_title'] = _('[UPGRADE_WEAPON]', lang)
         weapon['affixes'] = [self.translate_spell(spell['id'], lang) for spell in weapon['affixes']]
-        weapon['kingdom_title'] = self.translations.get('[KINGDOM]', lang)
-        weapon['kingdom'] = self.translations.get(weapon['kingdom']['name'], lang)
-        weapon['roles_title'] = self.translations.get('[WEAPON_ROLE]', lang)
-        weapon['roles'] = [self.translations.get(f'[TROOP_ROLE_{role.upper()}]', lang) for role in weapon['roles']]
-        weapon['type_title'] = self.translations.get('[FILTER_WEAPONTYPE]', lang)
-        weapon['type'] = self.translations.get(f'[WEAPONTYPE_{weapon["type"].upper()}]', lang)
+        weapon['kingdom_title'] = _('[KINGDOM]', lang)
+        weapon['kingdom'] = _(weapon['kingdom']['name'], lang)
+        weapon['roles_title'] = _('[WEAPON_ROLE]', lang)
+        weapon['roles'] = [_(f'[TROOP_ROLE_{role.upper()}]', lang) for role in weapon['roles']]
+        weapon['type_title'] = _('[FILTER_WEAPONTYPE]', lang)
+        weapon['type'] = _(f'[WEAPONTYPE_{weapon["type"].upper()}]', lang)
         if weapon['requirement'] < 1000:
-            weapon['requirement_text'] = self.translations.get('[WEAPON_MASTERY_REQUIRED]', lang) + \
+            weapon['requirement_text'] = _('[WEAPON_MASTERY_REQUIRED]', lang) + \
                                          str(weapon['requirement'])
         elif weapon['requirement'] == 1000:
-            weapon['requirement_text'] = self.translations.get('[WEAPON_AVAILABLE_FROM_CHESTS_AND_EVENTS]', lang)
+            weapon['requirement_text'] = _('[WEAPON_AVAILABLE_FROM_CHESTS_AND_EVENTS]', lang)
         elif weapon['requirement'] == 1002:
-            _class = self.translations.get(weapon['class'], lang)
-            weapon['requirement_text'] = self.translations.get('[CLASS_REWARD_TITLE]', lang) + f' ({_class})'
+            _class = _(weapon['class'], lang)
+            weapon['requirement_text'] = _('[CLASS_REWARD_TITLE]', lang) + f' ({_class})'
         elif weapon['requirement'] == 1003:
-            weapon['requirement_text'] = self.translations.get('[SOULFORGE_WEAPONS_TAB_EMPTY_ERROR]', lang)
+            weapon['requirement_text'] = _('[SOULFORGE_WEAPONS_TAB_EMPTY_ERROR]', lang)
 
     def translate_spell(self, spell_id, lang):
         spell = self.spells[spell_id]
-        magic = self.translations.get('[MAGIC]', lang)
+        magic = _('[MAGIC]', lang)
         spell_amount = ''
         if spell['amount']:
             spell_amount = f' + {spell["amount"]}'
@@ -583,9 +556,9 @@ class TeamExpander:
         elif spell['boost'] != 1 and spell['boost'] <= 100:
             boost = f' [{int(round(1 / (spell["boost"] / 100)))}:1]'
         damage = f'[{multiplier}{magic}{divisor}{spell_amount}]'
-        description = self.translations.get(spell['description'], lang).replace('{1}', damage) + boost
+        description = _(spell['description'], lang).replace('{1}', damage) + boost
         return {
-            'name': self.translations.get(spell['name'], lang),
+            'name': _(spell['name'], lang),
             'cost': spell['cost'],
             'description': description,
         }
