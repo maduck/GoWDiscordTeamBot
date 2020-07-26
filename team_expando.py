@@ -1,7 +1,6 @@
 import json
 import logging
 import operator
-import re
 
 from game_constants import TROOP_RARITIES, WEAPON_RARITIES
 from translations import _
@@ -121,6 +120,10 @@ class TeamExpander:
                 'spell_id': weapon['SpellId'],
                 'kingdom': self.kingdoms[weapon['KingdomId']],
                 'requirement': weapon['MasteryRequirement'],
+                'armor_increase': weapon['ArmorIncrease'],
+                'attack_increase': weapon['AttackIncrease'],
+                'health_increase': weapon['HealthIncrease'],
+                'magic_increase': weapon['SpellPowerIncrease'],
                 'affixes': [self.spells.get(spell) for spell in weapon['Affixes'] if spell in self.spells],
             }
         self.pet_effects = (
@@ -261,7 +264,7 @@ class TeamExpander:
     def translate_troop(self, troop, lang):
         troop['name'] = _(troop['name'], lang)
         troop['description'] = _(troop['description'], lang).replace('widerbeleben',
-                                                                                         'wiederbeleben')
+                                                                     'wiederbeleben')
         troop['color_code'] = "".join(troop['colors'])
         troop['rarity_title'] = _('[RARITY]', lang)
         troop['raw_rarity'] = troop['rarity']
@@ -500,8 +503,26 @@ class TeamExpander:
         rarity_number = WEAPON_RARITIES.index(weapon['rarity'])
         weapon['rarity'] = _(f'[RARITY_{rarity_number}]', lang)
         weapon['spell'] = self.translate_spell(weapon['spell_id'], lang)
-        weapon['affix_title'] = _('[UPGRADE_WEAPON]', lang)
-        weapon['affixes'] = [self.translate_spell(spell['id'], lang) for spell in weapon['affixes']]
+        weapon['upgrade_title'] = _('[UPGRADE_WEAPON]', lang)
+
+        bonus_title = _('[BONUS]', lang)
+        upgrade_numbers = zip(weapon['armor_increase'], weapon['attack_increase'], weapon['health_increase'],
+                              weapon['magic_increase'])
+        upgrade_titles = (
+            _('[ARMOR]', lang),
+            _('[ATTACK]', lang),
+            _('[LIFE]', lang),
+            _('[MAGIC]', lang),
+        )
+        upgrades = []
+        for upgrade in upgrade_numbers:
+            for i, amount in enumerate(upgrade):
+                if amount:
+                    upgrades.append(
+                        {'name': f'{upgrade_titles[i]} {bonus_title}',
+                         'description': f'+{amount} {upgrade_titles[i]}'})
+
+        weapon['upgrades'] = upgrades + [self.translate_spell(spell['id'], lang) for spell in weapon['affixes']]
         weapon['kingdom_title'] = _('[KINGDOM]', lang)
         weapon['kingdom'] = _(weapon['kingdom']['name'], lang)
         weapon['roles_title'] = _('[WEAPON_ROLE]', lang)

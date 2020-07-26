@@ -357,10 +357,10 @@ class DiscordBot(discord.Client):
             color_requirement = []
             if weapon['requirement'] < 1000:
                 color_requirement = [f'{self.my_emojis.get(c, f":{c}:")}' for c in weapon['colors']]
-            affixes = '\n'.join([f'**{affix["name"]}**: {affix["description"]}' for affix in weapon['affixes']])
+            upgrades = '\n'.join([f'**{affix["name"]}**: {affix["description"]}' for affix in weapon['upgrades']])
             affix_text = ''
-            if weapon['affixes']:
-                affix_text = f'\n**{weapon["affix_title"]}**\n{affixes}\n'
+            if weapon['upgrades']:
+                affix_text = f'\n**{weapon["upgrade_title"]}**\n{upgrades}\n'
             message_lines = [
                 weapon['spell']['description'],
                 '',
