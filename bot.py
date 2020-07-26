@@ -9,6 +9,7 @@ import threading
 import discord
 from discord.ext import tasks
 
+from game_constants import RARITY_COLORS
 from help import get_help_text
 from jobs.news_downloader import NewsDownloader
 from team_expando import TeamExpander
@@ -24,17 +25,6 @@ log = logging.getLogger(__name__)
 
 log.setLevel(logging.DEBUG)
 log.addHandler(handler)
-
-RARITY_COLORS = {
-    'Common': (255, 254, 255),
-    'Uncommon': (84, 168, 31),
-    'Rare': (32, 113, 254),
-    'UltraRare': (150, 54, 232),
-    'Epic': (246, 161, 32),
-    'Legendary': (19, 227, 246),
-    'Mythic': (19, 227, 246),
-    'Doomed': (186, 0, 0),
-}
 
 
 def chunks(iterable, chunk_size):
@@ -63,7 +53,7 @@ class DiscordBot(discord.Client):
     SUBSCRIPTION_CONFIG_FILE = 'subscriptions.json'
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
-    VERSION = '0.3'
+    VERSION = '0.6'
     SEARCH_PATTERN = r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.){0} #?(?P<search_term>.*)$'
     COMMAND_REGISTRY = [
         {

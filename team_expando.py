@@ -3,6 +3,7 @@ import logging
 import operator
 import re
 
+from game_constants import TROOP_RARITIES, WEAPON_RARITIES
 from translations import _
 
 LOGLEVEL = logging.DEBUG
@@ -15,26 +16,6 @@ log = logging.getLogger(__name__)
 
 log.setLevel(LOGLEVEL)
 log.addHandler(handler)
-
-RARITIES = (
-    'Common',
-    'Uncommon',
-    'Rare',
-    'UltraRare',
-    'Epic',
-    'Mythic',
-    'Doomed'
-)
-
-WEAPON_RARITIES = (
-    'Common',
-    'Uncommon',
-    'Rare',
-    'UltraRare',
-    'Epic',
-    'Mythic',
-    'Doomed'
-)
 
 
 def extract_search_tag(search_term):
@@ -286,8 +267,8 @@ class TeamExpander:
         troop['rarity_title'] = _('[RARITY]', lang)
         troop['raw_rarity'] = troop['rarity']
         rarity_number = 1
-        if troop['rarity'] in RARITIES:
-            rarity_number = RARITIES.index(troop['rarity'])
+        if troop['rarity'] in TROOP_RARITIES:
+            rarity_number = TROOP_RARITIES.index(troop['rarity'])
         troop['rarity'] = _(f'[RARITY_{rarity_number}]', lang)
         troop['traits_title'] = _('[TRAITS]', lang)
         troop['traits'] = self.enrich_traits(troop['traits'], lang)
