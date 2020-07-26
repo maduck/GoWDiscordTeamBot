@@ -12,6 +12,7 @@ from discord.ext import tasks
 from game_constants import RARITY_COLORS
 from help import get_help_text
 from jobs.news_downloader import NewsDownloader
+from prefix import Prefix
 from team_expando import TeamExpander
 
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -49,7 +50,6 @@ def debug(message):
 
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
-    PREFIX_CONFIG_FILE = 'prefixes.json'
     SUBSCRIPTION_CONFIG_FILE = 'subscriptions.json'
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
@@ -117,8 +117,6 @@ class DiscordBot(discord.Client):
         },
     ]
 
-    news_available = False
-
     def __init__(self, *args, **kwargs):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
         super().__init__(*args, **kwargs)
@@ -127,8 +125,7 @@ class DiscordBot(discord.Client):
         self.invite_url = self.invite_url.format(self.permissions.value)
         self.my_emojis = {}
         self.expander = TeamExpander()
-        self.prefixes = {}
-        self.load_prefixes()
+        self.prefix = Prefix(self.DEFAULT_PREFIX)
         self.subscriptions = []
         self.load_subscriptions()
 
@@ -212,7 +209,7 @@ class DiscordBot(discord.Client):
             return
 
         user_command = message.content.lower().strip()
-        my_prefix = self.get_my_prefix(message.guild)
+        my_prefix = self.prefix.get(message.guild)
         function, params = await self.get_function_for_command(user_command, my_prefix)
         if function:
             debug(message)
@@ -226,7 +223,7 @@ class DiscordBot(discord.Client):
         await message.channel.send(embed=e)
 
     async def change_prefix(self, message, prefix, new_prefix, lang):
-        my_prefix = self.get_my_prefix(message.guild)
+        my_prefix = self.prefix.get(message.guild)
         issuing_user = message.author
         if not message.guild:
             color = discord.Color.from_rgb(0, 0, 0)
@@ -244,8 +241,7 @@ class DiscordBot(discord.Client):
                             value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
                 await message.channel.send(embed=e)
                 return
-            self.prefixes[str(message.guild.id)] = new_prefix
-            self.save_prefixes()
+            self.prefix.add(message.guild, new_prefix)
             color = discord.Color.from_rgb(255, 0, 0)
             e = discord.Embed(title='ADMINISTRATIVE CHANGE', color=color)
             e.add_field(name='Prefix change', value=f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
@@ -256,12 +252,6 @@ class DiscordBot(discord.Client):
             e = discord.Embed(title='There was a problem', color=color)
             e.add_field(name='Prefix change', value=f'Only the server owner has permission to change the prefix.')
             await message.channel.send(embed=e)
-
-    def get_my_prefix(self, guild):
-        if guild is None:
-            return self.DEFAULT_PREFIX
-
-        return self.prefixes.get(str(guild.id), self.DEFAULT_PREFIX)
 
     async def handle_kingdom_search(self, message, search_term, lang, prefix):
         result = self.expander.search_kingdom(search_term, lang)
@@ -517,20 +507,6 @@ class DiscordBot(discord.Client):
             descriptions.append(', '.join(team['talents']))
         e.description = '\n'.join(descriptions)
         return e
-
-    def save_prefixes(self):
-        lock = threading.Lock()
-        with lock:
-            with open(self.PREFIX_CONFIG_FILE, 'w') as f:
-                json.dump(self.prefixes, f, sort_keys=True, indent=2)
-
-    def load_prefixes(self):
-        if not os.path.exists(self.PREFIX_CONFIG_FILE):
-            return
-        lock = threading.Lock()
-        with lock:
-            with open(self.PREFIX_CONFIG_FILE) as f:
-                self.prefixes = json.load(f)
 
     def save_subscriptions(self):
         lock = threading.Lock()
