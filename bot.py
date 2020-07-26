@@ -644,9 +644,13 @@ class DiscordBot(discord.Client):
 async def test_task(discord_client):
     lock = asyncio.Lock()
     async with lock:
-        downloader = NewsDownloader()
-        downloader.process_news_feed()
-        await discord_client.show_latest_news()
+        try:
+            downloader = NewsDownloader()
+            downloader.process_news_feed()
+            await discord_client.show_latest_news()
+        except Exception as e:
+            log.error('Could not update news. Stacktrace follows.')
+            log.exception(e)
 
 
 if __name__ == '__main__':
