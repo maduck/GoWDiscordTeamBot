@@ -240,7 +240,7 @@ class DiscordBot(discord.Client):
         my_prefix = self.prefix.get(message.guild)
         issuing_user = message.author
         if not message.guild:
-            e = discord.Embed(title='Prefix change', color=self.BLACK)
+            e = discord.Embed(title='Prefix change', color=self.RED)
             e.add_field(name='Error',
                         value=f'Prefix change not possible in direct messages.')
             await answer(message, e)
@@ -248,18 +248,18 @@ class DiscordBot(discord.Client):
         guild_owner = message.guild.owner
         if issuing_user == guild_owner:
             if len(new_prefix) != 1:
-                e = discord.Embed(title='Prefix change', color=self.BLACK)
+                e = discord.Embed(title='Prefix change', color=self.RED)
                 e.add_field(name='Error',
                             value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
                 await answer(message, e)
                 return
             self.prefix.add(message.guild, new_prefix)
-            e = discord.Embed(title='ADMINISTRATIVE CHANGE', color=self.RED)
+            e = discord.Embed(title='Administrative action', color=self.RED)
             e.add_field(name='Prefix change', value=f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
             await answer(message, e)
             log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
         else:
-            e = discord.Embed(title='There was a problem', color=self.BLACK)
+            e = discord.Embed(title='There was a problem', color=self.RED)
             e.add_field(name='Prefix change', value=f'Only the server owner has permission to change the prefix.')
             await answer(message, e)
 
