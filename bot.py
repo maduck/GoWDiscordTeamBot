@@ -4,7 +4,6 @@ import json
 import logging
 import os
 import re
-import threading
 
 import discord
 from discord.ext import tasks
@@ -13,6 +12,7 @@ from game_constants import RARITY_COLORS
 from help import get_help_text
 from jobs.news_downloader import NewsDownloader
 from prefix import Prefix
+from subscriptions import Subscriptions
 from team_expando import TeamExpander
 
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -50,7 +50,6 @@ def debug(message):
 
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
-    SUBSCRIPTION_CONFIG_FILE = 'subscriptions.json'
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
     VERSION = '0.6'
@@ -115,6 +114,10 @@ class DiscordBot(discord.Client):
             'function': 'news_unsubscribe',
             'pattern': re.compile(r'^(?P<prefix>.)news unsubscribe$')
         },
+        {
+            'function': 'news_status',
+            'pattern': re.compile(r'^(?P<prefix>.)news( status)?$')
+        },
     ]
 
     def __init__(self, *args, **kwargs):
@@ -126,8 +129,7 @@ class DiscordBot(discord.Client):
         self.my_emojis = {}
         self.expander = TeamExpander()
         self.prefix = Prefix(self.DEFAULT_PREFIX)
-        self.subscriptions = []
-        self.load_subscriptions()
+        self.subscriptions = Subscriptions()
 
     @staticmethod
     def generate_permissions():
@@ -508,34 +510,11 @@ class DiscordBot(discord.Client):
         e.description = '\n'.join(descriptions)
         return e
 
-    def save_subscriptions(self):
-        lock = threading.Lock()
-        with lock:
-            with open(self.SUBSCRIPTION_CONFIG_FILE, 'w') as f:
-                json.dump(self.subscriptions, f, sort_keys=True, indent=2)
-
-    def load_subscriptions(self):
-        if not os.path.exists(self.SUBSCRIPTION_CONFIG_FILE):
-            return
-        lock = threading.Lock()
-        with lock:
-            with open(self.SUBSCRIPTION_CONFIG_FILE) as f:
-                self.subscriptions = json.load(f)
-
     async def show_prefix(self, message, lang, prefix):
         color = discord.Color.from_rgb(254, 254, 254)
         e = discord.Embed(title='Prefix', color=color)
         e.add_field(name='The current prefix is', value=f'`{prefix}`')
         await message.channel.send(embed=e)
-
-    @staticmethod
-    async def get_subscription_from_message(message):
-        return {
-            'guild_name': message.guild.name,
-            'guild_id': message.guild.id,
-            'channel_id': message.channel.id,
-            'channel_name': message.channel.name,
-        }
 
     async def news_subscribe(self, message, prefix):
         if not message.guild:
@@ -548,9 +527,7 @@ class DiscordBot(discord.Client):
             await message.channel.send(embed=e)
             return
 
-        subscription = await self.get_subscription_from_message(message)
-        self.subscriptions.append(subscription)
-        self.save_subscriptions()
+        self.subscriptions.add(message)
 
         color = discord.Color.from_rgb(254, 254, 254)
         e = discord.Embed(title='News management', color=color)
@@ -569,15 +546,26 @@ class DiscordBot(discord.Client):
             await message.channel.send(embed=e)
             return
 
-        subscription = await self.get_subscription_from_message(message)
-        if subscription in self.subscriptions:
-            self.subscriptions.remove(subscription)
-            self.save_subscriptions()
+        self.subscriptions.remove(message)
 
         color = discord.Color.from_rgb(254, 254, 254)
         e = discord.Embed(title='News management', color=color)
         e.add_field(name='Unsubscribe',
                     value=f'News will *not* be posted into channel {message.channel.name}.')
+        await message.channel.send(embed=e)
+
+    async def news_status(self, message, prefix):
+        if not message.guild:
+            return
+
+        subscribed = self.subscriptions.is_subscribed(message)
+        answer_text = f'News will *not* be posted into channel {message.channel.name}.'
+        if subscribed:
+            answer_text = f'News will be posted into channel {message.channel.name}.'
+
+        color = discord.Color.from_rgb(254, 254, 254)
+        e = discord.Embed(title='News management', color=color)
+        e.add_field(name='Status', value=answer_text)
         await message.channel.send(embed=e)
 
     async def show_latest_news(self):
