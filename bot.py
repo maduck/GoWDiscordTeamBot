@@ -136,8 +136,8 @@ class DiscordBot(discord.Client):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
         super().__init__(*args, **kwargs)
         self.permissions = self.generate_permissions()
-        self.invite_url = 'https://discordapp.com/api/oauth2/authorize?client_id={{}}&scope=bot&permissions={}'
-        self.invite_url = self.invite_url.format(self.permissions.value)
+        self.invite_url = 'https://discordapp.com/api/oauth2/authorize?client_id={{}}&scope=bot&permissions={}'\
+            .format(self.permissions.value)
         self.my_emojis = {}
         self.expander = TeamExpander()
         self.prefix = Prefix(self.DEFAULT_PREFIX)
@@ -160,7 +160,7 @@ class DiscordBot(discord.Client):
         return permissions
 
     async def on_ready(self):
-        self.invite_url = self.invite_url.format(self.user.id)
+        self.invite_url = self.invite_url_format.format(self.user.id)
         log.info(f'Logged in as {self.user.name}')
         log.info(f'Invite with: {self.invite_url}')
 
