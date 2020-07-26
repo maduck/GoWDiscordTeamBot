@@ -160,7 +160,7 @@ class DiscordBot(discord.Client):
         return permissions
 
     async def on_ready(self):
-        self.invite_url = self.invite_url_format.format(self.user.id)
+        self.invite_url = self.invite_url.format(self.user.id)
         log.info(f'Logged in as {self.user.name}')
         log.info(f'Invite with: {self.invite_url}')
 
