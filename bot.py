@@ -214,10 +214,10 @@ class DiscordBot(discord.Client):
         await answer(message, e)
 
     async def on_guild_join(self, guild):
-        log.debug(f'Joined guild {guild} (id {guild.id}).')
+        log.debug(f'Joined guild {guild} (id {guild.id}) Now in {len(self.guilds)} guilds.')
 
     async def on_guild_remove(self, guild):
-        log.debug(f'Guild {guild} (id {guild.id}) kicked me out.')
+        log.debug(f'Guild {guild} (id {guild.id}) kicked me out. Now in {len(self.guilds)} guilds.')
 
     async def on_message(self, message):
         if message.author.id == self.user.id:
@@ -502,7 +502,7 @@ class DiscordBot(discord.Client):
             descriptions.append(team["class"])
         if team['banner']:
             banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
-                            team['banner']['description']]
+                            team['banner']['colors']]
             banner = '{banner_name} {banner_texts}'.format(
                 banner_name=team['banner']['name'],
                 banner_texts=' '.join(banner_texts)
@@ -578,7 +578,8 @@ class DiscordBot(discord.Client):
             for subscription in self.subscriptions:
                 channel = self.get_channel(subscription['channel_id'])
                 e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
-                e.set_image(url=article['image'])
+                if article['image']:
+                    e.set_image(url=article['image'])
                 log.debug(
                     f'Sending out {article["title"]} to {subscription["guild_name"]}/{subscription["channel_name"]}')
                 e.add_field(name=article['title'], value=article['content'][:800])
