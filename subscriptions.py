@@ -43,7 +43,7 @@ class Subscriptions:
 
     def add(self, message):
         subscription = self.get_subscription_from_message(message)
-        if not self.is_subscribed():
+        if not self.is_subscribed(message):
             self.subscriptions.append(subscription)
         self.save_subscriptions()
 
