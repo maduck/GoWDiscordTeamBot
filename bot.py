@@ -61,7 +61,8 @@ class DiscordBot(discord.Client):
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
     VERSION = '0.6'
-    SEARCH_PATTERN = r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.){0} #?(?P<search_term>.*)$'
+    LANG_PATTERN = r'(?P<lang>en|fr|de|ру|ru|it|es|cn)?'
+    SEARCH_PATTERN = r'^' + LANG_PATTERN + '(?P<prefix>.){0} #?(?P<search_term>.*)$'
     COMMAND_REGISTRY = [
         {
             'function': 'handle_troop_search',
@@ -89,30 +90,29 @@ class DiscordBot(discord.Client):
         },
         {
             'function': 'show_help',
-            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)help$', re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)help$', re.IGNORECASE)
         },
         {
             'function': 'show_quickhelp',
-            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)quickhelp$', re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)quickhelp$', re.IGNORECASE)
         },
         {
             'function': 'show_invite_link',
-            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)invite$', re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)invite$', re.IGNORECASE)
         },
         {
             'function': 'show_prefix',
-            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)prefix$', re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)prefix$', re.IGNORECASE)
         },
         {
             'function': 'change_prefix',
-            'pattern': re.compile(r'^(?P<lang>en|fr|de|ru|it|es|cn)?(?P<prefix>.)prefix (?P<new_prefix>.+)$',
-                                  re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)prefix (?P<new_prefix>.+)$', re.IGNORECASE)
         },
         {
             'function': 'handle_team_code',
             'pattern': re.compile(
-                r'.*?(?P<lang>en|fr|de|ru|it|es|cn)?(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})\].*',
-                re.IGNORECASE)
+                r'.*?' + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})\].*',
+                re.IGNORECASE | re.DOTALL)
         },
         {
             'function': 'news_subscribe',
