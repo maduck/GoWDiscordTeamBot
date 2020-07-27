@@ -5,6 +5,7 @@ import re
 import time
 
 import feedparser
+import html2markdown
 from bs4 import BeautifulSoup
 
 
@@ -20,23 +21,23 @@ class NewsDownloader:
     @staticmethod
     def remove_tags(text):
         soup = BeautifulSoup(text, 'html5lib')
-        images = soup.findAll('img')
-        image = None
-        for i in images:
+        source_images = soup.findAll('img')
+        images = []
+        for i in source_images:
             source = i['src']
-            if 'dividerline' not in source:
-                image = source
-                break
-        html_tags = re.compile(r'<.*?>')
-        tags_removed = re.sub(html_tags, '', text)
+            if 'dividerline' not in source and 'ForumBanner' not in source:
+                images.append(source)
 
-        return image, tags_removed
+        forbidden_tags = re.compile(r'</?(a|img|div).*?>')
+        tags_removed = re.sub(forbidden_tags, '', text).replace('\n', '').replace('</em>', '</em> ')
+
+        return images, html2markdown.convert(tags_removed)
 
     @staticmethod
     def reformat_html_summary(e):
-        content = e.content[0]['value']
-        image, tags_removed = NewsDownloader.remove_tags(content)
-        return image, tags_removed.strip()
+        content = e['content'][0]['value']
+        images, tags_removed = NewsDownloader.remove_tags(content)
+        return images, tags_removed.strip()
 
     def get_last_post_date(self):
         if os.path.exists(self.LAST_POST_DATE_FILENAME):
@@ -44,7 +45,8 @@ class NewsDownloader:
                 self.last_post_date = datetime.datetime.fromisoformat(f.read())
 
     def process_news_feed(self):
-        feed = feedparser.parse(self.GOW_FEED_URL)
+        url = f'{self.GOW_FEED_URL}?{int(time.time())}'
+        feed = feedparser.parse(url)
         new_last_post_date = self.last_post_date
 
         posts = []
@@ -57,15 +59,14 @@ class NewsDownloader:
                 continue
 
             if is_pc:
-                image, content = self.reformat_html_summary(entry)
+                images, content = self.reformat_html_summary(entry)
                 posts.append({
                     'author': entry.author,
                     'title': entry.title,
                     'url': entry.link,
                     'content': content,
-                    'image': image,
+                    'images': images,
                 })
-
             new_last_post_date = max(new_last_post_date, posted_date)
 
         if posts:

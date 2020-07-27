@@ -569,6 +569,10 @@ class DiscordBot(discord.Client):
         if not self.is_ready():
             return
 
+        def trim_content_to_length(text, link, max_length=800):
+            break_character = '\n'
+            return f'{text[:text[:max_length].rfind(break_character)]} [...]\n[Read full news article]({link}).'
+
         with open(NewsDownloader.NEWS_FILENAME) as f:
             articles = json.load(f)
             articles.reverse()
@@ -578,11 +582,12 @@ class DiscordBot(discord.Client):
             for subscription in self.subscriptions:
                 channel = self.get_channel(subscription['channel_id'])
                 e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
-                if article['image']:
-                    e.set_image(url=article['image'])
                 log.debug(
                     f'Sending out {article["title"]} to {subscription["guild_name"]}/{subscription["channel_name"]}')
-                e.add_field(name=article['title'], value=article['content'][:800])
+                content = trim_content_to_length(article['content'], article['url'])
+                e.add_field(name=article['title'], value=content)
+                for image_url in article['images']:
+                    e.set_image(url=image_url)
                 try:
                     await channel.send(embed=e)
                 except Exception as e:
