@@ -204,7 +204,7 @@ class TeamExpander:
         kingdom['linked_kingdom'] = None
         if kingdom['linked_kingdom_id']:
             kingdom['linked_kingdom'] = _(self.kingdoms[kingdom['linked_kingdom_id']]['name'], lang)
-        if kingdom['linked_kingdom'].startswith('['):
+        if kingdom['linked_kingdom'] and kingdom['linked_kingdom'].startswith('['):
             kingdom['linked_kingdom'] = None
         kingdom['map'] = _('[MAPNAME_MAIN]', lang)
         kingdom['linked_map'] = _('[MAPNAME_UNDERWORLD]', lang)
