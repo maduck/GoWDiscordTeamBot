@@ -31,7 +31,6 @@ class Subscriptions:
         [self.subscriptions.append(s) for s in subscriptions if s not in self.subscriptions]
         if len(subscriptions) != len(self.subscriptions):
             self.save_subscriptions()
-            print(f'Removed {len(subscriptions) - len(self.subscriptions)} duplicate subscriptions.')
 
     @staticmethod
     def get_subscription_from_message(message):
