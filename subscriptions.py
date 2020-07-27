@@ -23,6 +23,15 @@ class Subscriptions:
         with lock:
             with open(self.SUBSCRIPTION_CONFIG_FILE) as f:
                 self.subscriptions = json.load(f)
+            self.deduplicate()
+
+    def deduplicate(self):
+        subscriptions = self.subscriptions.copy()
+        self.subscriptions = []
+        [self.subscriptions.append(s) for s in subscriptions if s not in self.subscriptions]
+        if len(subscriptions) != len(self.subscriptions):
+            self.save_subscriptions()
+            print(f'Removed {len(subscriptions) - len(self.subscriptions)} duplicate subscriptions.')
 
     @staticmethod
     def get_subscription_from_message(message):
@@ -35,7 +44,8 @@ class Subscriptions:
 
     def add(self, message):
         subscription = self.get_subscription_from_message(message)
-        self.subscriptions.append(subscription)
+        if not self.is_subscribed():
+            self.subscriptions.append(subscription)
         self.save_subscriptions()
 
     def remove(self, message):
