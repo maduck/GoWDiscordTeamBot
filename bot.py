@@ -172,6 +172,10 @@ class DiscordBot(discord.Client):
         await self.change_presence(status=discord.Status.online, activity=game)
         await self.update_base_emojis()
 
+    @staticmethod
+    def is_guild_admin(message):
+        return message.author == message.guild.owner
+
     async def get_function_for_command(self, user_command, user_prefix):
         for command in self.COMMAND_REGISTRY:
             match = command['pattern'].match(user_command)
@@ -238,15 +242,13 @@ class DiscordBot(discord.Client):
 
     async def change_prefix(self, message, prefix, new_prefix, lang):
         my_prefix = self.prefix.get(message.guild)
-        issuing_user = message.author
         if not message.guild:
             e = discord.Embed(title='Prefix change', color=self.RED)
             e.add_field(name='Error',
                         value=f'Prefix change not possible in direct messages.')
             await answer(message, e)
             return
-        guild_owner = message.guild.owner
-        if issuing_user == guild_owner:
+        if self.is_guild_admin(message):
             if len(new_prefix) != 1:
                 e = discord.Embed(title='Prefix change', color=self.RED)
                 e.add_field(name='Error',
@@ -521,8 +523,8 @@ class DiscordBot(discord.Client):
     async def news_subscribe(self, message, prefix):
         if not message.guild:
             return
-        if message.author != message.guild.owner:
-            e = discord.Embed(title='News management', color=self.BLACK)
+        if not self.is_guild_admin(message):
+            e = discord.Embed(title='News management', color=self.RED)
             e.add_field(name='Susbscribe',
                         value=f'Only the server owner has permission to change news subscriptions.')
             await answer(message, e)
@@ -538,8 +540,8 @@ class DiscordBot(discord.Client):
     async def news_unsubscribe(self, message, prefix):
         if not message.guild:
             return
-        if message.author != message.guild.owner:
-            e = discord.Embed(title='News management', color=self.BLACK)
+        if not self.is_guild_admin(message):
+            e = discord.Embed(title='News management', color=self.RED)
             e.add_field(name='Unsubscribe',
                         value=f'Only the server owner has permission to change news subscriptions.')
             await answer(message, e)
