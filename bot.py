@@ -4,6 +4,7 @@ import json
 import logging
 import operator
 import os
+import random
 import re
 
 import discord
@@ -131,6 +132,10 @@ class DiscordBot(discord.Client):
         {
             'function': 'news_status',
             'pattern': re.compile(r'^(?P<prefix>.)news( status)?$')
+        },
+        {
+            'function': 'waffles',
+            'pattern': re.compile(r'^(?P<prefix>.)waffles$')
         },
     ]
 
@@ -548,6 +553,13 @@ class DiscordBot(discord.Client):
             descriptions.append(', '.join(team['talents']))
         e.description = '\n'.join(descriptions)
         return e
+
+    async def waffles(self, message, prefix):
+        e = discord.Embed(title='Waffles', color=self.WHITE)
+        waffle_no = random.randint(0, 66)
+        e.add_field(name='random waffle', value=f'number {waffle_no}')
+        e.set_image(url=f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg')
+        await answer(message, e)
 
     async def show_prefix(self, message, lang, prefix):
         e = discord.Embed(title='Prefix', color=self.WHITE)
