@@ -182,7 +182,8 @@ class TeamExpander:
                     result = kingdom.copy()
                     self.translate_kingdom(result, lang)
                     return [result]
-                elif real_search in translated_name:
+                elif real_search in translated_name or \
+                        (search_term=='summary' and not kingdom['underworld'] and len(kingdom['colors']) > 0):
                     result = kingdom.copy()
                     self.translate_kingdom(result, lang)
                     possible_matches.append(result)
@@ -226,7 +227,7 @@ class TeamExpander:
                     result = _class.copy()
                     self.translate_class(result, lang)
                     return [result]
-                elif real_search in translated_name:
+                elif real_search in translated_name or search_term=='summary':
                     result = _class.copy()
                     self.translate_class(result, lang)
                     possible_matches.append(result)
@@ -253,6 +254,7 @@ class TeamExpander:
         _class['weapon_title'] = _('[WEAPON]', lang)
         _class['talents'] = translated_trees
         _class['trees'] = [_(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
+        _class['type_short'] = _(f'[TROOPTYPE_{_class["type"].upper()}]', lang)
         _class['type'] = _(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
 
     def search_talent_tree(self, search_term, lang):
