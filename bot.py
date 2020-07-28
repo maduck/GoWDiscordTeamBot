@@ -185,7 +185,9 @@ class DiscordBot(discord.Client):
 
     @staticmethod
     def is_guild_admin(message):
-        return message.author == message.guild.owner
+        is_admin = 'admin' in [r.name.lower() for r in message.author.roles]
+        is_owner = message.author == message.guild.owner
+        return is_owner or is_admin
 
     async def get_function_for_command(self, user_command, user_prefix):
         for command in self.COMMAND_REGISTRY:
