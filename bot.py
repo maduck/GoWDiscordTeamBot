@@ -78,7 +78,7 @@ class DiscordBot(discord.Client):
         },
         {
             'function': 'handle_pet_search',
-            'pattern': re.compile(SEARCH_PATTERN.format('pet'), re.IGNORECASE)
+            'pattern': re.compile(SEARCH_PATTERN.format('pet'), re.IGNORECASE | re.MULTILINE)
         },
         {
             'function': 'handle_class_search',
