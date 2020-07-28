@@ -1,5 +1,7 @@
 import json
 import operator
+import os
+from datetime import datetime
 
 
 class WorldData:
@@ -7,6 +9,16 @@ class WorldData:
 
     def __init__(self):
         self.data = None
+        self.user_data = {
+            'pEconomyModel': {
+                'TroopReleaseDates': [],
+                'KingdomReleaseDates': [],
+                'HeroClassReleaseDates': [],
+                'PetReleaseDates': [],
+                'RoomReleaseDates': [],
+                'WeaponReleaseDates': [],
+            }
+        }
 
         self.troops = {}
         self.spells = {}
@@ -26,9 +38,13 @@ class WorldData:
     def read_json_data(self):
         with open('World.json', encoding='utf8') as f:
             self.data = json.load(f)
+        if os.path.exists('User.json'):
+            with open('User.json', encoding='utf8') as f:
+                self.user_data = json.load(f)
 
     def populate_world_data(self):
         self.read_json_data()
+
         self.populate_spells()
         self.populate_traits()
         self.populate_troops()
@@ -37,6 +53,7 @@ class WorldData:
         self.populate_pets()
         self.populate_talents()
         self.populate_classes()
+        self.populate_release_dates()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -177,3 +194,10 @@ class WorldData:
                 'multiplier': multiplier,
                 'boost': boost,
             }
+
+    def populate_release_dates(self):
+        date_format = '%m/%d/%Y %I:%M:%S %p %Z'
+        for release in self.user_data['pEconomyModel']['TroopReleaseDates']:
+            troop_id = release['TroopId']
+            release_date = datetime.strptime(release['Date'], date_format)
+            self.troops[troop_id]['release_date'] = release_date
