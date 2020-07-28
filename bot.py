@@ -54,8 +54,8 @@ async def answer(message, embed):
     try:
         if type(embed) == str:
             if len(embed) > 1993:
-                embed = embed[:1990]+'...'
-            await message.channel.send('```'+embed+'```')
+                embed = embed[:1990] + '...'
+            await message.channel.send('```' + embed + '```')
         else:
             await message.channel.send(embed=embed)
     except discord.errors.Forbidden:
@@ -300,14 +300,16 @@ class DiscordBot(discord.Client):
                         value='\n'.join(message_lines))
         elif search_term == 'summary':
             result.sort(key=operator.itemgetter('name'))
-            max_name_length = max([len(k['name']) for k in result])
-            cols = [max_name_length, 6, 16]
-            message_lines =  [
-                f'{"Name".ljust(cols[0])} {"Troops".ljust(cols[1])} Linked Faction',
-                ' '.join('-'*col for col in cols),
-                ] 
-            message_lines.extend( [f'{kingdom["name"].ljust(cols[0])} {str(len(kingdom["troops"])).ljust(cols[1])} {kingdom["linked_kingdom"] or "-"}' \
-                    for kingdom in result])
+            name_width = max([len(k['name']) for k in result])
+            col_widths = [name_width, 6, 16]
+            message_lines = [
+                f'{"Name".ljust(col_widths[0])} {"Troops".ljust(col_widths[1])} Linked Faction',
+                ' '.join('-' * col for col in col_widths),
+            ]
+            message_lines.extend([f'{kingdom["name"].ljust(col_widths[0])} '
+                                  f'{str(len(kingdom["troops"])).ljust(col_widths[1])} '
+                                  f'{kingdom["linked_kingdom"] or "-"}'
+                                  for kingdom in result])
             e = '\n'.join(message_lines)
         else:
             e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
@@ -339,21 +341,18 @@ class DiscordBot(discord.Client):
                 talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree]
                 e.add_field(name=f'__{_class["trees"][i]}__', value='\n'.join(talents), inline=True)
         elif search_term == 'summary':
-            max_name = -1
-            max_type = -1
             result.sort(key=operator.itemgetter('name'))
-            for _class in result: 
-                if len(_class['name']) > max_name: 
-                    max_name = len(_class['name']) 
-                if len(_class['type_short']) > max_type: 
-                    max_type = len(_class['type_short']) 
-            cols = [max_name,max_type,16]
-            message_lines =  [
-                f'{"Name".ljust(cols[0])} {"Type".ljust(cols[1])} Kingdom',
-                ' '.join('-'*col for col in cols),
-                ] 
-            message_lines.extend( [f'{_class["name"].ljust(cols[0])} {_class["type_short"].ljust(cols[1])} {_class["kingdom"]}' \
-                    for _class in result])
+            name_width = max([len(c['name']) for c in result])
+            type_width = max([len(c['type_short']) for c in result])
+            col_widths = [name_width, type_width, 16]
+            message_lines = [
+                f'{"Name".ljust(col_widths[0])} {"Type".ljust(col_widths[1])} Kingdom',
+                ' '.join('-' * col for col in col_widths),
+            ]
+            message_lines.extend([f'{_class["name"].ljust(col_widths[0])} '
+                                  f'{_class["type_short"].ljust(col_widths[1])} '
+                                  f'{_class["kingdom"]}'
+                                  for _class in result])
             e = '\n'.join(message_lines)
         else:
             e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
