@@ -16,18 +16,6 @@ class Subscriptions:
             with open(self.SUBSCRIPTION_CONFIG_FILE, 'w') as f:
                 json.dump(self.subscriptions, f, sort_keys=True, indent=2)
 
-    def convert_into_new_format(self):
-        # FIXME remove that once it's deployed
-        if isinstance(self.subscriptions, list):
-            new_subscriptions = {}
-            for s in self.subscriptions:
-                subscription_id = f'{s["guild_id"]}-{s["channel_id"]}'
-                s['pc'] = True
-                s['switch'] = False
-                new_subscriptions[subscription_id] = s
-            self.subscriptions = new_subscriptions
-            self.save_subscriptions()
-
     def load_subscriptions(self):
         if not os.path.exists(self.SUBSCRIPTION_CONFIG_FILE):
             return
@@ -35,7 +23,6 @@ class Subscriptions:
         with lock:
             with open(self.SUBSCRIPTION_CONFIG_FILE) as f:
                 self.subscriptions = json.load(f)
-            self.convert_into_new_format()
 
     @staticmethod
     def get_subscription_id(guild, channel):
