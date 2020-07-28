@@ -528,7 +528,7 @@ class DiscordBot(discord.Client):
             await answer(message, e)
             return
 
-        self.subscriptions.add(message)
+        self.subscriptions.add(message.guild, message.channel)
 
         e = discord.Embed(title='News management', color=self.WHITE)
         e.add_field(name='Subscribe',
@@ -545,7 +545,7 @@ class DiscordBot(discord.Client):
             await answer(message, e)
             return
 
-        self.subscriptions.remove(message)
+        self.subscriptions.remove(message.guild, message.channel)
 
         e = discord.Embed(title='News management', color=self.WHITE)
         e.add_field(name='Unsubscribe',
@@ -556,7 +556,7 @@ class DiscordBot(discord.Client):
         if not message.guild:
             return
 
-        subscribed = self.subscriptions.is_subscribed(message)
+        subscribed = self.subscriptions.is_subscribed(message.guild, message.channel)
         answer_text = f'News will *not* be posted into channel {message.channel.name}.'
         if subscribed:
             answer_text = f'News will be posted into channel {message.channel.name}.'
