@@ -450,7 +450,8 @@ class TeamExpander:
     def translate_banner(banner, lang):
         result = {
             'name': _(banner['name'], lang),
-            'colors': [(_(c[0], 'en').lower(), c[1]) for c in banner['colors'] if c[1]]
+            'colors': [(_(c[0], 'en').lower(), c[1]) for c in banner['colors'] if c[1]],
+            'filename': banner['filename'],
         }
         return result
 

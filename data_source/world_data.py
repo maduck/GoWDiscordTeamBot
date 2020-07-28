@@ -132,6 +132,7 @@ class WorldData:
             self.banners[kingdom['Id']] = {
                 'name': kingdom['BannerName'],
                 'colors': colors,
+                'filename': kingdom['FileBase'],
             }
             kingdom_troops = [troop_id for troop_id in kingdom['TroopIds'] if troop_id != -1]
             kingdom_colors = self._convert_color_array(kingdom)

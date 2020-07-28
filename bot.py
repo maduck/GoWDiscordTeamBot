@@ -68,6 +68,7 @@ class DiscordBot(discord.Client):
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
     VERSION = '0.6'
+    GRAPHICS_URL = 'https://gow-stuff-data.s3.amazonaws.com/assets/500/graphics'
     LANG_PATTERN = r'(?P<lang>en|fr|de|ру|ru|it|es|cn)?'
     SEARCH_PATTERN = r'^' + LANG_PATTERN + '(?P<prefix>.){0} #?(?P<search_term>.*)$'
     COMMAND_REGISTRY = [
@@ -526,6 +527,7 @@ class DiscordBot(discord.Client):
         team_text = '\n'.join(troops)
         e.add_field(name=team['troops_title'], value=team_text, inline=True)
         if team['banner']:
+            e.set_thumbnail(url=f'{self.GRAPHICS_URL}/Banners/{team["banner"]["filename"]}_2048x2048.png')
             banner_colors = self.banner_colors(team['banner'])
             e.add_field(name=team['banner']['name'], value='\n'.join(banner_colors), inline=True)
         if team['class']:
