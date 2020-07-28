@@ -7,7 +7,7 @@ class Subscriptions:
     SUBSCRIPTION_CONFIG_FILE = 'subscriptions.json'
 
     def __init__(self):
-        self.subscriptions = None
+        self.subscriptions = {}
         self.load_subscriptions()
 
     def save_subscriptions(self):
