@@ -2,6 +2,7 @@
 import asyncio
 import json
 import logging
+import operator
 import os
 import re
 
@@ -291,11 +292,9 @@ class DiscordBot(discord.Client):
             e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}` {"".join(colors)} ({kingdom["map"]})',
                         value='\n'.join(message_lines))
         elif search_term == 'summary':
-            max_name = -1
-            for _class in result: 
-                if len(_class['name']) > max_name: 
-                    max_name = len(_class['name']) 
-            cols = [max_name,6,16]
+            result.sort(key=operator.itemgetter('name'))
+            max_name_length = max([len(k['name']) for k in result])
+            cols = [max_name_length, 6, 16]
             message_lines =  [
                 f'{"Name".ljust(cols[0])} {"Troops".ljust(cols[1])} Linked Faction',
                 ' '.join('-'*col for col in cols),
@@ -335,6 +334,7 @@ class DiscordBot(discord.Client):
         elif search_term == 'summary':
             max_name = -1
             max_type = -1
+            result.sort(key=operator.itemgetter('name'))
             for _class in result: 
                 if len(_class['name']) > max_name: 
                     max_name = len(_class['name']) 
