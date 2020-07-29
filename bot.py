@@ -186,9 +186,10 @@ class DiscordBot(discord.Client):
 
     @staticmethod
     def is_guild_admin(message):
-        is_admin = 'admin' in [r.name.lower() for r in message.author.roles]
+        has_admin_role = 'admin' in [r.name.lower() for r in message.author.roles]
+        is_administrator = any([r.permissions.administrator for r in message.author.roles])
         is_owner = message.author == message.guild.owner
-        return is_owner or is_admin
+        return is_owner or is_administrator or has_admin_role
 
     async def get_function_for_command(self, user_command, user_prefix):
         for command in self.COMMAND_REGISTRY:
@@ -447,7 +448,8 @@ class DiscordBot(discord.Client):
                 rarity_color = RARITY_COLORS['Doomed']
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Troop search', color=color)
-            e.set_thumbnail(url=troop['filename'])
+            e.set_thumbnail(url=f'{self.GRAPHICS_URL}/Troops/{troop["filename"]}.png')
+            log.debug(e.thumbnail)
             message_lines = [
                 f'**{troop["spell"]["name"]}**: {troop["spell"]["description"]}',
                 '',
