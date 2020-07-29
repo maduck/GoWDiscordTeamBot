@@ -451,7 +451,6 @@ class DiscordBot(discord.Client):
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Troop search', color=color)
             e.set_thumbnail(url=f'{self.GRAPHICS_URL}/Troops/{troop["filename"]}.png')
-            log.debug(e.thumbnail)
             message_lines = [
                 f'**{troop["spell"]["name"]}**: {troop["spell"]["description"]}',
                 '',
