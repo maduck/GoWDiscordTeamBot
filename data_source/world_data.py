@@ -202,3 +202,7 @@ class WorldData:
             troop_id = release['TroopId']
             release_date = datetime.strptime(release['Date'], date_format)
             self.troops[troop_id]['release_date'] = release_date
+        for release in self.user_data['pEconomyModel']['PetReleaseDates']:
+            pet_id = release['PetId']
+            release_date = datetime.strptime(release['Date'], date_format)
+            self.pets[pet_id]['release_date'] = release_date
