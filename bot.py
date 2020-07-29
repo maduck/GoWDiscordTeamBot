@@ -547,8 +547,6 @@ class DiscordBot(discord.Client):
         e.title = ', '.join(troops)
         descriptions = []
 
-        if team['class']:
-            descriptions.append(team["class"])
         if team['banner']:
             banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
                             team['banner']['colors']]
@@ -557,6 +555,8 @@ class DiscordBot(discord.Client):
                 banner_texts=' '.join(banner_texts)
             )
             descriptions.append(banner)
+        if team['class']:
+            descriptions.append(team["class"])
         if team['talents'] and not all([i == '-' for i in team['talents']]):
             descriptions.append(', '.join(team['talents']))
         e.description = '\n'.join(descriptions)
