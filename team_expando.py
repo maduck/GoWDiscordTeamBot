@@ -41,6 +41,7 @@ class TeamExpander:
         self.pets = world.pets
         self.talent_trees = world.talent_trees
         self.spoilers = world.spoilers
+        self.events = world.events
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -454,6 +455,32 @@ class TeamExpander:
             'filename': banner['filename'],
         }
         return result
+
+    def get_events(self, lang):
+        today = datetime.date.today()
+        events = [self.translate_event(e, lang) for e in self.events
+                  if today <= e['start'] < today + datetime.timedelta(days=15)]
+        return events
+
+    def translate_event(self, event, lang):
+        entry = event.copy()
+
+        entry['extra_info'] = ''
+        if entry['type'] in ('[BOUNTY]', '[HIJACK]') and entry['gacha']:
+            entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
+        elif entry['type'] == '[PETRESCUE]' and entry['gacha']:
+            entry['extra_info'] = _(self.pets[entry['gacha']]['name'], lang)
+        elif entry['type'] == '[CLASS_EVENT]' and entry['gacha']:
+            entry['extra_info'] = _(self.classes[entry['gacha']]['name'], lang)
+        elif entry['type'] == '[DELVE_EVENT]':
+            entry['extra_info'] = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
+        elif entry['type'] in ('[INVASION]', '[ADVENTURE_BOARD_SPECIAL_EVENT]') and entry['gacha']:
+            troop = _(self.troops[entry['gacha']]['name'], lang)
+            kingdom = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
+            entry['extra_info'] = f'{troop} ({kingdom})'
+
+        entry['type'] = _(entry['type'], lang)
+        return entry
 
     def get_spoilers(self, lang):
         today = datetime.date.today()

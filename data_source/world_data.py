@@ -1,13 +1,25 @@
 import json
 import operator
 import os
-from datetime import datetime
+import datetime
 
 
 class WorldData:
     COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown')
 
     def __init__(self):
+        self.EVENT_TYPES = {
+            0: '[GUILD_WARS]',
+            2: '[INVASION]',
+            3: '[VAULT]',
+            4: '[BOUNTY]',
+            5: '[PETRESCUE]',
+            6: '[CLASS_EVENT]',
+            7: '[DELVE_EVENT]',
+            9: '[HIJACK]',
+            10: '[ADVENTURE_BOARD_SPECIAL_EVENT]',
+            11: '[CAMPAIGN]',
+        }
         self.data = None
         self.user_data = {
             'pEconomyModel': {
@@ -17,6 +29,7 @@ class WorldData:
                 'PetReleaseDates': [],
                 'RoomReleaseDates': [],
                 'WeaponReleaseDates': [],
+                'BasicLiveEventArray': [],
             }
         }
 
@@ -31,13 +44,14 @@ class WorldData:
         self.pets = {}
         self.talent_trees = {}
         self.spoilers = []
+        self.events = []
 
     @staticmethod
     def _convert_color_array(data_object):
         return [c.replace('Color', '').lower() for c, v in data_object['ManaColors'].items() if v]
 
     def read_json_data(self):
-        with open('World.json', encoding='utf8') as f:
+        with open('World.json') as f:
             self.data = json.load(f)
         if os.path.exists('User.json'):
             with open('User.json', encoding='utf8') as f:
@@ -201,32 +215,43 @@ class WorldData:
         date_format = '%m/%d/%Y %I:%M:%S %p %Z'
         for release in self.user_data['pEconomyModel']['TroopReleaseDates']:
             troop_id = release['TroopId']
-            release_date = datetime.strptime(release['Date'], date_format).date()
+            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
             self.troops[troop_id]['release_date'] = release_date
             self.spoilers.append({'type': 'troop', 'date': release_date, 'id': troop_id})
         for release in self.user_data['pEconomyModel']['PetReleaseDates']:
             pet_id = release['PetId']
-            release_date = datetime.strptime(release['Date'], date_format).date()
+            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
             self.pets[pet_id]['release_date'] = release_date
             self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
         for release in self.user_data['pEconomyModel']['KingdomReleaseDates']:
             kingdom_id = release['KingdomId']
-            release_date = datetime.strptime(release['Date'], date_format).date()
+            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
             self.kingdoms[kingdom_id]['release_date'] = release_date
             self.spoilers.append({'type': 'kingdom', 'date': release_date, 'id': kingdom_id})
         for release in self.user_data['pEconomyModel']['HeroClassReleaseDates']:
             class_id = release['HeroClassId']
-            release_date = datetime.strptime(release['Date'], date_format).date()
+            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
             self.classes[class_id]['release_date'] = release_date
             self.spoilers.append({'type': 'class', 'date': release_date, 'id': class_id})
         for release in self.user_data['pEconomyModel']['RoomReleaseDates']:
             room_id = release['RoomId']
-            release_date = datetime.strptime(release['Date'], date_format).date()
+            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
             # self.rooms[room_id]['release_date'] = release_date
             self.spoilers.append({'type': 'room', 'date': release_date, 'id': room_id})
         for release in self.user_data['pEconomyModel']['WeaponReleaseDates']:
             weapon_id = release['WeaponId']
-            release_date = datetime.strptime(release['Date'], date_format).date()
+            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
             self.weapons.setdefault(weapon_id, {})['release_date'] = release_date
             self.spoilers.append({'type': 'weapon', 'date': release_date, 'id': weapon_id})
+        for release in self.user_data['BasicLiveEventArray']:
+            result = {'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
+                      'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
+                      # 'id': release['Id'],
+                      'type': self.EVENT_TYPES.get(release['Type'], release['Type']),
+                      'names': release.get('Name'),
+                      'gacha': release['GachaTroop'],
+                      'kingdom_id': release.get('Kingdom')}
+            self.events.append(result)
+
+        self.events.sort(key=operator.itemgetter('start'))
         self.spoilers.sort(key=operator.itemgetter('date'))

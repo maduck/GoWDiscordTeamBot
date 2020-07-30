@@ -101,6 +101,10 @@ class DiscordBot(discord.Client):
             'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)spoilers?', re.IGNORECASE)
         },
         {
+            'function': 'show_events',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)events?$', re.IGNORECASE)
+        },
+        {
             'function': 'show_help',
             'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)help$', re.IGNORECASE)
         },
@@ -247,6 +251,21 @@ class DiscordBot(discord.Client):
                 e.add_field(name=translated[spoil_type], value=f'```{result[:800]}```', inline=False)
         await answer(message, e)
 
+    async def show_events(self, message, prefix, lang):
+        events = self.expander.get_events(lang)
+        e = discord.Embed(title='Spoilers', color=self.WHITE)
+        message_lines = ['```']
+        types_width = max([len(e['type']) for e in events])
+        last_event_date = events[0]['start']
+        for event in events:
+            if event['start'] > last_event_date and event['start'].weekday() == 0:
+                message_lines.append('')
+            last_event_date = event['start']
+            message_lines.append(f'{event["start"]}  {event["type"].ljust(types_width)} {event["extra_info"]}')
+        message_lines.append('```')
+        e.add_field(name='Upcoming Events next 15 days', value='\n'.join(message_lines))
+        await answer(message, e)
+
     async def show_help(self, message, prefix, lang):
         help_title, help_text = get_help_text(prefix, lang)
 
@@ -270,8 +289,10 @@ class DiscordBot(discord.Client):
             f'`{prefix}kingdom <search>`\n'
             f'`{prefix}talent <search>`\n'
             f'`{prefix}spoilers`\n'
-            f'`{prefix}news [[un]subscribe]`\n'
-            f'`<language><command>` language support\n'
+            f'`{prefix}events`\n'
+            f'`<language><command>` language support\n\n'
+            f'`{prefix}news [[un]subscribe]` Admin command.\n'
+            f'`{prefix}prefix [new_prefix]` Admin command.\n'
         )
         await answer(message, e)
 
