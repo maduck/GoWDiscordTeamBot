@@ -1,6 +1,5 @@
-import json
+import datetime
 import logging
-import operator
 
 from data_source.world_data import WorldData
 from game_constants import TROOP_RARITIES, WEAPON_RARITIES
@@ -41,6 +40,7 @@ class TeamExpander:
         self.pet_effects = world.pet_effects
         self.pets = world.pets
         self.talent_trees = world.talent_trees
+        self.spoilers = world.spoilers
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -183,7 +183,7 @@ class TeamExpander:
                     self.translate_kingdom(result, lang)
                     return [result]
                 elif real_search in translated_name or \
-                        (search_term=='summary' and not kingdom['underworld'] and len(kingdom['colors']) > 0):
+                        (search_term == 'summary' and not kingdom['underworld'] and len(kingdom['colors']) > 0):
                     result = kingdom.copy()
                     self.translate_kingdom(result, lang)
                     possible_matches.append(result)
@@ -227,7 +227,7 @@ class TeamExpander:
                     result = _class.copy()
                     self.translate_class(result, lang)
                     return [result]
-                elif real_search in translated_name or search_term=='summary':
+                elif real_search in translated_name or search_term == 'summary':
                     result = _class.copy()
                     self.translate_class(result, lang)
                     possible_matches.append(result)
@@ -455,4 +455,29 @@ class TeamExpander:
         }
         return result
 
+    def get_spoilers(self, lang):
+        today = datetime.date.today()
+        spoilers = [self.translate_spoiler(s, lang) for s in self.spoilers
+                    if today < s['date'] < today + datetime.timedelta(days=60)]
+        return spoilers
 
+    def translate_spoiler(self, spoiler, lang):
+        entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {})
+        spoiler['name'] = _(entry['name'], lang)
+        kingdom_id = entry.get('kingdom_id')
+        if kingdom_id:
+            kingdom = self.kingdoms[kingdom_id]
+            spoiler['kingdom'] = _(kingdom['name'], lang)
+        return spoiler
+
+    @staticmethod
+    def translate_categories(categories, lang):
+        def try_different_translated_versions_because_devs_are_stupid(cat):
+            lookup = f'[{cat.upper()}S]'
+            result = _(lookup, lang)
+            if result == lookup:
+                result = _(f'[{cat.upper()}S:]', lang)[:-1]
+            return result
+
+        translated = [try_different_translated_versions_because_devs_are_stupid(c) for c in categories]
+        return dict(zip(categories, translated))

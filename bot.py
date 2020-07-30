@@ -97,6 +97,10 @@ class DiscordBot(discord.Client):
             'pattern': re.compile(SEARCH_PATTERN.format('talent'), re.IGNORECASE)
         },
         {
+            'function': 'show_spoilers',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)spoilers?', re.IGNORECASE)
+        },
+        {
             'function': 'show_help',
             'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)help$', re.IGNORECASE)
         },
@@ -205,6 +209,23 @@ class DiscordBot(discord.Client):
             if guild.name == self.BASE_GUILD:
                 for emoji in guild.emojis:
                     self.my_emojis[emoji.name] = str(emoji)
+
+    async def show_spoilers(self, message, prefix, lang):
+        spoilers = self.expander.get_spoilers(lang)
+        e = discord.Embed(title='Spoilers', color=self.WHITE)
+        categories = ('troop', 'kingdom', 'pet', 'weapon')
+        translated = self.expander.translate_categories(categories, lang)
+
+        for spoil_type in categories:
+            message_lines = ['Date        Name (ID)']
+            for spoiler in spoilers:
+                if spoiler['type'] == spoil_type:
+                    message_lines.append(f'{spoiler["date"]}  {spoiler["name"]} ({spoiler["id"]})')
+            if len(message_lines) > 1:
+                result = '\n'.join(message_lines)
+
+                e.add_field(name=translated[spoil_type], value=f'```{result[:800]}```', inline=False)
+        await answer(message, e)
 
     async def show_help(self, message, prefix, lang):
         help_title, help_text = get_help_text(prefix, lang)
