@@ -463,12 +463,14 @@ class TeamExpander:
 
     def translate_spoiler(self, spoiler, lang):
         entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {})
-        spoiler['name'] = _(entry['name'], lang)
+        entry['name'] = _(entry['name'], lang)
+        entry['type'] = spoiler['type']
+        entry['date'] = spoiler['date']
         kingdom_id = entry.get('kingdom_id')
         if kingdom_id:
             kingdom = self.kingdoms[kingdom_id]
-            spoiler['kingdom'] = _(kingdom['name'], lang)
-        return spoiler
+            entry['kingdom'] = _(kingdom['name'], lang)
+        return entry
 
     @staticmethod
     def translate_categories(categories, lang):

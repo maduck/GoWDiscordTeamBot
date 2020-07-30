@@ -213,7 +213,27 @@ class DiscordBot(discord.Client):
     async def show_spoilers(self, message, prefix, lang):
         spoilers = self.expander.get_spoilers(lang)
         e = discord.Embed(title='Spoilers', color=self.WHITE)
-        categories = ('troop', 'kingdom', 'pet', 'weapon')
+        troop_title = self.expander.translate_categories(['troop'], lang)['troop']
+        headers = ['Date', 'Rarity', 'Name (ID)']
+        troop_spoilers = [s for s in spoilers if s['type'] == 'troop']
+
+        extra_spacing = 2
+        rarity_width = max([len(t['rarity']) for t in troop_spoilers]) + extra_spacing
+        header_widths = [12, rarity_width, 5]
+        header = ''.join([f'{h.ljust(header_widths[i])}' for i, h in enumerate(headers)])
+        message_lines = [header]
+
+        for troop in troop_spoilers:
+            message_lines.append(f'{troop["date"]}  '
+                                 f'{troop["rarity"].ljust(rarity_width)}'
+                                 f'{troop["name"]} '
+                                 f'({troop["id"]})')
+
+        if len(message_lines) > 1:
+            result = '\n'.join(message_lines)
+            e.add_field(name=troop_title, value=f'```{result[:800]}```', inline=False)
+
+        categories = ('kingdom', 'pet', 'weapon')
         translated = self.expander.translate_categories(categories, lang)
 
         for spoil_type in categories:
