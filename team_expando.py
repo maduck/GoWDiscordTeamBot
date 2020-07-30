@@ -462,7 +462,7 @@ class TeamExpander:
         return spoilers
 
     def translate_spoiler(self, spoiler, lang):
-        entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {})
+        entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {}).copy()
         entry['name'] = _(entry['name'], lang)
         entry['type'] = spoiler['type']
         entry['date'] = spoiler['date']
