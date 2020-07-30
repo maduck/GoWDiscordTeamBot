@@ -489,7 +489,7 @@ class DiscordBot(discord.Client):
                         value='\n'.join(message_lines))
             trait_list = [f'**{trait["name"]}**: {trait["description"]}' for trait in troop['traits']]
             if 'release_date' in troop:
-                trait_list.extend(['', f'**Release date**: {troop["release_date"].date()}'])
+                trait_list.extend(['', f'**Release date**: {troop["release_date"]}'])
             traits = '\n'.join(trait_list)
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
