@@ -466,6 +466,12 @@ class TeamExpander:
         entry['name'] = _(entry['name'], lang)
         entry['type'] = spoiler['type']
         entry['date'] = spoiler['date']
+        if 'rarity' in entry:
+            entry['rarity_title'] = _('[RARITY]', lang)
+            if entry['rarity'] in TROOP_RARITIES:
+                rarity_number = TROOP_RARITIES.index(entry['rarity'])
+                entry['rarity'] = _(f'[RARITY_{rarity_number}]', lang)
+
         kingdom_id = entry.get('kingdom_id')
         if kingdom_id:
             kingdom = self.kingdoms[kingdom_id]
