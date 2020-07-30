@@ -269,6 +269,8 @@ class DiscordBot(discord.Client):
             f'`{prefix}class <search>`\n'
             f'`{prefix}kingdom <search>`\n'
             f'`{prefix}talent <search>`\n'
+            f'`{prefix}spoilers`\n'
+            f'`{prefix}news [[un]subscribe]`\n'
             f'`<language><command>` language support\n'
         )
         await answer(message, e)
