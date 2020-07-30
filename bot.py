@@ -403,7 +403,7 @@ class DiscordBot(discord.Client):
                 f'**{pet["kingdom_title"]}**: {pet["kingdom"]}',
             ]
             if 'release_date' in pet:
-                message_lines.extend(['', f'**Release date**: {pet["release_date"].date()}'])
+                message_lines.extend(['', f'**Release date**: {pet["release_date"]}'])
             e.add_field(name=f'{mana} {pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
         else:
             e = discord.Embed(title=f'Pet search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
