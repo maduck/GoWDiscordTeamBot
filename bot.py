@@ -366,13 +366,22 @@ class DiscordBot(discord.Client):
             kingdom_troops = ', '.join([f'{troop["name"]} `#{troop["id"]}`' for troop in kingdom['troops']])
             colors = [f'{self.my_emojis.get(c, f":{c}:")}' for c in kingdom['colors']]
             banner_colors = self.banner_colors(kingdom['banner'])
+
             message_lines = [
                 kingdom['punchline'],
                 kingdom['description'],
-                f'**{kingdom["banner_title"]}** {kingdom["banner"]["name"]} {" ".join(banner_colors)}',
+                f'**{kingdom["banner_title"]}**: {kingdom["banner"]["name"]} {" ".join(banner_colors)}',
+            ]
+            if 'primary_color' in kingdom and 'primary_stat' in kingdom:
+                primary_mana = self.my_emojis.get(kingdom['primary_color'])
+                message_lines.extend([
+                    f'**{kingdom["color_title"]}**: {primary_mana}',
+                    f'**{kingdom["stat_title"]}**: {kingdom["primary_stat"]}',
+                ])
+            message_lines.extend([
                 f'\n**{kingdom["linked_map"]}**: {kingdom["linked_kingdom"]}' if kingdom['linked_kingdom'] else '',
                 f'**{kingdom["troop_title"]}**: {kingdom_troops}',
-            ]
+            ])
             e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}` {"".join(colors)} ({kingdom["map"]})',
                         value='\n'.join(message_lines))
         elif search_term == 'summary':
@@ -597,7 +606,7 @@ class DiscordBot(discord.Client):
         await answer(message, e)
 
     def banner_colors(self, banner):
-        return [f'{self.my_emojis.get(d[0], f":{d[0]}:")} {abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
+        return [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
 
     def format_output_team(self, team, color, author):
         e = discord.Embed(title=f"{author} team", color=color)

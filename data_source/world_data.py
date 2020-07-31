@@ -69,6 +69,7 @@ class WorldData:
         self.populate_talents()
         self.populate_classes()
         self.populate_release_dates()
+        self.enrich_kingdoms()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -255,3 +256,8 @@ class WorldData:
 
         self.events.sort(key=operator.itemgetter('start'))
         self.spoilers.sort(key=operator.itemgetter('date'))
+
+    def enrich_kingdoms(self):
+        for kingdom_id, kingdom_data in self.user_data['pEconomyModel']['KingdomLevelData'].items():
+            self.kingdoms[int(kingdom_id)]['primary_color'] = self.COLORS[kingdom_data['Color']]
+            self.kingdoms[int(kingdom_id)]['primary_stat'] = kingdom_data['Stat']

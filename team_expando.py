@@ -213,6 +213,10 @@ class TeamExpander:
         if kingdom['underworld']:
             kingdom['map'] = _('[MAPNAME_UNDERWORLD]', lang)
             kingdom['linked_map'] = _('[MAPNAME_MAIN]', lang)
+        kingdom['color_title'] = _('[FILTER_MANACOLOR]', lang)
+        kingdom['stat_title'] = _('[STAT_BONUS]', lang)
+        if 'primary_stat' in kingdom:
+            kingdom['primary_stat'] = _(f'[{kingdom["primary_stat"].upper()}]', lang)
 
     def search_class(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.classes:
