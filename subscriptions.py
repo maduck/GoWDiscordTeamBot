@@ -62,7 +62,4 @@ class Subscriptions:
         return len(self.subscriptions)
 
     def __iter__(self):
-        yield from self.subscriptions
-
-    def __getitem__(self, index):
-        return self.subscriptions[index]
+        yield from self.subscriptions.values()

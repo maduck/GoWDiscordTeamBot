@@ -726,8 +726,7 @@ class DiscordBot(discord.Client):
         if articles:
             log.debug(f'Distributing {len(articles)} news articles to {len(self.subscriptions)} channels.')
         for article in articles:
-            for subscription_id in self.subscriptions:
-                subscription = self.subscriptions[subscription_id]
+            for subscription in self.subscriptions:
                 channel = self.get_channel(subscription['channel_id'])
                 e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
                 log.debug(
