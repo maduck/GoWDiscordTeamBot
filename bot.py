@@ -6,6 +6,7 @@ import operator
 import os
 import random
 import re
+from pprint import pprint
 
 import discord
 from discord.ext import tasks
@@ -709,9 +710,15 @@ class DiscordBot(discord.Client):
         if not self.is_ready():
             return
 
-        def trim_content_to_length(text, link, max_length=800):
+        def trim_content_to_length(text, link, max_length=1000):
             break_character = '\n'
-            return f'{text[:text[:max_length].rfind(break_character)]} [...]\n[Read full news article]({link}).'
+            input_text = f'{text}\n'
+            trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
+            read_more = ''
+            if len(trimmed_text + break_character) != len(input_text):
+                read_more = '[...] '
+            result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
+            return result
 
         with open(NewsDownloader.NEWS_FILENAME) as f:
             articles = json.load(f)
@@ -721,7 +728,6 @@ class DiscordBot(discord.Client):
         for article in articles:
             for subscription_id in self.subscriptions:
                 subscription = self.subscriptions[subscription_id]
-                log.debug(subscription)
                 channel = self.get_channel(subscription['channel_id'])
                 e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
                 log.debug(
