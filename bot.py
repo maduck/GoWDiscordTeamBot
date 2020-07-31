@@ -255,15 +255,19 @@ class DiscordBot(discord.Client):
         events = self.expander.get_events(lang)
         e = discord.Embed(title='Spoilers', color=self.WHITE)
         message_lines = ['```']
-        types_width = max([len(e['type']) for e in events])
         last_event_date = events[0]['start']
         for event in events:
             if event['start'] > last_event_date and event['start'].weekday() == 0:
                 message_lines.append('')
             last_event_date = event['start']
-            message_lines.append(f'{event["start"]}  {event["type"].ljust(types_width)} {event["extra_info"]}')
+            message_lines.append(f'{event["start"].strftime("%m-%d")} - '
+                                 f'{event["end"].strftime("%m-%d")} '
+                                 f'{event["type"]}'
+                                 f'{":" if event["extra_info"] else ""} '
+                                 f'{event["extra_info"]}')
+        message_lines = self.cut_lines_by_length(message_lines, 1003)
         message_lines.append('```')
-        e.add_field(name='Upcoming Events next 15 days', value='\n'.join(message_lines))
+        e.add_field(name='Upcoming Events', value='\n'.join(message_lines))
         await answer(message, e)
 
     async def show_help(self, message, prefix, lang):
@@ -318,6 +322,13 @@ class DiscordBot(discord.Client):
         link = 'https://discordapp.com/api/oauth2/authorize?client_id=733399051797790810&scope=bot&permissions=339008'
         e.add_field(name='Feel free to share!', value=link)
         await answer(message, e)
+
+    @staticmethod
+    def cut_lines_by_length(lines, limit):
+        breakdown = [sum([len(c) for c in lines[0:i]]) < limit for i in range(len(lines))]
+        if all(breakdown):
+            return lines
+        return lines[:breakdown.index(False) - 1]
 
     async def change_prefix(self, message, prefix, new_prefix, lang):
         my_prefix = self.prefix.get(message.guild)

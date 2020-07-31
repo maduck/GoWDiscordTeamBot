@@ -458,8 +458,7 @@ class TeamExpander:
 
     def get_events(self, lang):
         today = datetime.date.today()
-        events = [self.translate_event(e, lang) for e in self.events
-                  if today <= e['start'] < today + datetime.timedelta(days=15)]
+        events = [self.translate_event(e, lang) for e in self.events if today <= e['start']]
         return events
 
     def translate_event(self, event, lang):
