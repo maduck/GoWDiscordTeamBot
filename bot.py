@@ -712,7 +712,7 @@ class DiscordBot(discord.Client):
 
         def trim_content_to_length(text, link, max_length=1000):
             break_character = '\n'
-            input_text = f'{text}\n'
+            input_text = f'{text}{break_character}'
             trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
             read_more = ''
             if len(trimmed_text + break_character) != len(input_text):
