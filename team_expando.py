@@ -42,6 +42,7 @@ class TeamExpander:
         self.talent_trees = world.talent_trees
         self.spoilers = world.spoilers
         self.events = world.events
+        self.colors = world.COLORS
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -213,7 +214,10 @@ class TeamExpander:
         if kingdom['underworld']:
             kingdom['map'] = _('[MAPNAME_UNDERWORLD]', lang)
             kingdom['linked_map'] = _('[MAPNAME_MAIN]', lang)
-        kingdom['color_title'] = _('[FILTER_MANACOLOR]', lang)
+        if 'primary_color' in kingdom:
+            deed_num = self.colors.index(kingdom['primary_color'])
+            kingdom['deed'] = _(f'[DEED{deed_num:02d}]', lang)
+        kingdom['color_title'] = _('[GEM_MASTERY]', lang)
         kingdom['stat_title'] = _('[STAT_BONUS]', lang)
         if 'primary_stat' in kingdom:
             kingdom['primary_stat'] = _(f'[{kingdom["primary_stat"].upper()}]', lang)
