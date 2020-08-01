@@ -434,7 +434,6 @@ class TeamExpander:
         magic = _('[MAGIC]', lang)
 
         description = _(spell['description'], lang)
-        log.debug(spell['effects'])
 
         for i, (multiplier, amount) in enumerate(spell['effects'], start=1):
             spell_amount = f' + {amount}'
