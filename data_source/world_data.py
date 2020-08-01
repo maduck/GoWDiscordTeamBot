@@ -165,6 +165,7 @@ class WorldData:
                 'troop_type': kingdom['KingdomTroopType'],
                 'linked_kingdom_id': kingdom.get('SisterKingdomId'),
                 'colors': sorted(kingdom_colors),
+                'filename': kingdom['FileBase'],
             }
             if 'SisterKingdomId' in kingdom:
                 self.kingdoms[kingdom['SisterKingdomId']]['linked_kingdom_id'] = kingdom['Id']

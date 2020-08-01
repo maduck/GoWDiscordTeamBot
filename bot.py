@@ -364,6 +364,9 @@ class DiscordBot(discord.Client):
         elif len(result) == 1:
             kingdom = result[0]
             e = discord.Embed(title='Kingdom search', color=self.WHITE)
+            underworld = 'underworld' if kingdom['underworld'] else ''
+            thumbnail_url = f'{self.GRAPHICS_URL}/Maplocations{underworld}_{kingdom["filename"]}_thumb.png'
+            e.set_thumbnail(url=thumbnail_url)
             kingdom_troops = ', '.join([f'{troop["name"]} `{troop["id"]}`' for troop in kingdom['troops']])
             colors = [f'{self.my_emojis.get(c, f":{c}:")}' for c in kingdom['colors']]
             banner_colors = self.banner_colors(kingdom['banner'])
