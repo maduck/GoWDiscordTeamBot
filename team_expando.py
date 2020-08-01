@@ -432,23 +432,30 @@ class TeamExpander:
     def translate_spell(self, spell_id, lang):
         spell = self.spells[spell_id]
         magic = _('[MAGIC]', lang)
-        spell_amount = ''
-        if spell['amount']:
-            spell_amount = f' + {spell["amount"]}'
-        multiplier = ''
-        if spell['multiplier'] > 1:
-            multiplier = f'{int(spell["multiplier"])} ⨯ '
-        divisor = ''
-        if spell['multiplier'] < 1:
-            number = int(round(1 / spell['multiplier']))
-            divisor = f' / {number}'
+
+        description = _(spell['description'], lang)
+        log.debug(spell['effects'])
+
+        for i, (multiplier, amount) in enumerate(spell['effects'], start=1):
+            spell_amount = f' + {amount}'
+            multiplier_text = ''
+            if multiplier > 1:
+                multiplier_text = f'{int(multiplier)} ⨯ '
+            divisor = ''
+            if multiplier < 1:
+                number = int(round(1 / multiplier))
+                divisor = f' / {number}'
+            damage = f'[{multiplier_text}{magic}{divisor}{spell_amount}]'
+            description = description.replace(f'{{{i}}}', damage)
+
         boost = ''
-        if spell['boost'] > 100:
+        if spell['boost'] and spell['boost'] > 100:
             boost = f' [x{int(round(spell["boost"] / 100))}]'
-        elif spell['boost'] != 1 and spell['boost'] <= 100:
+        elif spell['boost'] and spell['boost'] != 1 and spell['boost'] <= 100:
             boost = f' [{int(round(1 / (spell["boost"] / 100)))}:1]'
-        damage = f'[{multiplier}{magic}{divisor}{spell_amount}]'
-        description = _(spell['description'], lang).replace('{1}', damage) + boost
+
+        description = f'{description}{boost}'
+
         return {
             'name': _(spell['name'], lang),
             'cost': spell['cost'],

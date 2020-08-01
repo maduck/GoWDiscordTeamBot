@@ -1,7 +1,7 @@
+import datetime
 import json
 import operator
 import os
-import datetime
 
 
 class WorldData:
@@ -194,22 +194,24 @@ class WorldData:
 
     def populate_spells(self):
         for spell in self.data['Spells']:
-            amount = 0
-            multiplier = 1
-            boost = 1
-            for spell_step in spell['SpellSteps']:
-                if spell_step.get('Primarypower'):
-                    amount = spell_step.get('Amount')
-                    multiplier = spell_step.get('SpellPowerMultiplier', 1)
-                elif spell_step['Type'].startswith('Count'):
-                    boost = spell_step.get('Amount', 1)
+            spell_effects = []
+            boost = 0
+            last_type = ""
+            for step in spell['SpellSteps']:
+                if 'Amount' in step and 'Type' in step and 'SpellPowerMultiplier' in step:
+                    amount = step.get('Amount')
+                    multiplier = step.get('SpellPowerMultiplier', 1)
+                    if last_type != step['Type']:
+                        spell_effects.append([multiplier, amount])
+                        last_type = step['Type']
+                elif step['Type'].startswith('Count'):
+                    boost = step.get('Amount', 1)
             self.spells[spell['Id']] = {
                 'id': spell['Id'],
                 'name': spell['Name'],
                 'description': spell['Description'],
                 'cost': spell['Cost'],
-                'amount': amount,
-                'multiplier': multiplier,
+                'effects': spell_effects,
                 'boost': boost,
             }
 
