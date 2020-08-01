@@ -375,8 +375,9 @@ class DiscordBot(discord.Client):
             ]
             if 'primary_color' in kingdom and 'primary_stat' in kingdom:
                 primary_mana = self.my_emojis.get(kingdom['primary_color'])
+                deed_emoji = self.my_emojis.get(f'deed_{kingdom["primary_color"]}')
                 message_lines.extend([
-                    f'**{kingdom["color_title"]}**: {primary_mana} ({kingdom["deed"]})',
+                    f'**{kingdom["color_title"]}**: {primary_mana} / {deed_emoji} {kingdom["deed"]}',
                     f'**{kingdom["stat_title"]}**: {kingdom["primary_stat"]}',
                 ])
             message_lines.extend([
