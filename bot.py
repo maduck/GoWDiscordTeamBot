@@ -6,7 +6,6 @@ import operator
 import os
 import random
 import re
-from pprint import pprint
 
 import discord
 from discord.ext import tasks
@@ -69,7 +68,7 @@ class DiscordBot(discord.Client):
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
     VERSION = '0.6'
-    GRAPHICS_URL = 'https://gow-stuff-data.s3.amazonaws.com/assets/500/graphics'
+    GRAPHICS_URL = 'https://garyatrics.com/gow_assets'
     LANG_PATTERN = r'(?P<lang>en|fr|de|ру|ru|it|es|cn)?'
     SEARCH_PATTERN = r'^' + LANG_PATTERN + '(?P<prefix>.){0} #?(?P<search_term>.*)$'
     COMMAND_REGISTRY = [
@@ -458,6 +457,8 @@ class DiscordBot(discord.Client):
         elif len(result) == 1:
             pet = result[0]
             e = discord.Embed(title='Pet search', color=self.WHITE)
+            thumbnail_url = f'{self.GRAPHICS_URL}/Pets/Cards_{pet["filename"]}_thumb.png'
+            e.set_thumbnail(url=thumbnail_url)
             mana = self.my_emojis.get(pet['color_code'])
             effect_data = ''
             if pet['effect_data']:
@@ -535,7 +536,8 @@ class DiscordBot(discord.Client):
                 rarity_color = RARITY_COLORS['Doomed']
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Troop search', color=color)
-            e.set_thumbnail(url=f'{self.GRAPHICS_URL}/Troops/{troop["filename"]}.png')
+            thumbnail_url = f'{self.GRAPHICS_URL}/Troops/Cards_{troop["filename"]}_thumb.png'
+            e.set_thumbnail(url=thumbnail_url)
             message_lines = [
                 f'**{troop["spell"]["name"]}**: {troop["spell"]["description"]}',
                 '',

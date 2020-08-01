@@ -117,6 +117,7 @@ class WorldData:
                 'effect': self.pet_effects[pet['Effect']],
                 'effect_data': pet.get('EffectData'),
                 'troop_type': pet.get('EffectTroopType'),
+                'filename': pet['FileBase'],
             }
 
     def populate_weapons(self):
