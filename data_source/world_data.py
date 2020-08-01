@@ -45,6 +45,7 @@ class WorldData:
         self.talent_trees = {}
         self.spoilers = []
         self.events = []
+        self.soulforge_weapons = []
 
     @staticmethod
     def _convert_color_array(data_object):
@@ -217,6 +218,7 @@ class WorldData:
 
     def populate_release_dates(self):
         date_format = '%m/%d/%Y %I:%M:%S %p %Z'
+        release: dict
         for release in self.user_data['pEconomyModel']['TroopReleaseDates']:
             troop_id = release['TroopId']
             release_date = datetime.datetime.strptime(release['Date'], date_format).date()
@@ -256,6 +258,26 @@ class WorldData:
                       'gacha': release['GachaTroop'],
                       'kingdom_id': release.get('Kingdom')}
             self.events.append(result)
+
+        week_long_events = [e for e in self.events
+                            if e['end'] - e['start'] == datetime.timedelta(days=7)
+                            and e['kingdom_id']]
+        non_craftable_wepon_ids = [
+            1102, 1114, 1070, 1073, 1119, 1118, 1108, 1109, 1203, 1092, 1067, 1094, 1179, 1178, 1069, 1127, 1096, 1134,
+            1097, 1103, 1115, 1123, 1120, 1071, 1095, 1072, 1107, 1100, 1106, 1213, 1121, 1093, 1122, 1295, 1250, 1317,
+            1294, 1239, 1223, 1222, 1272, 1252, 1287, 1275, 1251, 1238, 1224, 1296, 1273, 1274, 1286, 1225
+        ]
+        for event in week_long_events:
+            # print([w['kingdom']['id'] for w in self.weapons.values()])
+            kingdom_weapons = [w['id'] for w in self.weapons.values()
+                               if w['kingdom']['id'] == event['kingdom_id']
+                               and w['id'] not in non_craftable_wepon_ids
+                               and w.get('release_date', datetime.date.min) < event['end']]
+            self.soulforge_weapons.append({
+                'start': event['start'],
+                'end': event['end'],
+                'weapon_ids': kingdom_weapons,
+            })
 
         self.events.sort(key=operator.itemgetter('start'))
         self.spoilers.sort(key=operator.itemgetter('date'))
