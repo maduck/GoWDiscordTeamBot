@@ -184,7 +184,8 @@ class DiscordBot(discord.Client):
         log.info(f'Logged in as {self.user.name}')
         log.info(f'Invite with: {self.invite_url}')
 
-        log.info(f'{len(self.subscriptions)} channels subscribed to news.')
+        subscriptions = sum([s.get('pc', True) for s in self.subscriptions])
+        log.info(f'{subscriptions} channels subscribed to news.')
         guilds = [g.name for g in self.guilds if g]
         log.info(f'Active in {len(guilds)} guilds: {", ".join(guilds)}')
 
@@ -725,10 +726,11 @@ class DiscordBot(discord.Client):
         with open(NewsDownloader.NEWS_FILENAME) as f:
             articles = json.load(f)
             articles.reverse()
+        pc_subscriptions = [s for s in self.subscriptions if s.get('pc', True)]
         if articles:
-            log.debug(f'Distributing {len(articles)} news articles to {len(self.subscriptions)} channels.')
+            log.debug(f'Distributing {len(articles)} news articles to {len(pc_subscriptions)} channels.')
         for article in articles:
-            for subscription in self.subscriptions:
+            for subscription in pc_subscriptions:
                 channel = self.get_channel(subscription['channel_id'])
                 e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
                 log.debug(
