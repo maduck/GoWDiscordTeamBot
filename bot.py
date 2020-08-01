@@ -618,7 +618,8 @@ class DiscordBot(discord.Client):
         team_text = '\n'.join(troops)
         e.add_field(name=team['troops_title'], value=team_text, inline=True)
         if team['banner']:
-            e.set_thumbnail(url=f'{self.GRAPHICS_URL}/Banners/{team["banner"]["filename"]}_2048x2048.png')
+            banner_url = f'{self.GRAPHICS_URL}/Banners/Banners_{team["banner"]["filename"]}_thumb.png'
+            e.set_thumbnail(url=banner_url)
             banner_colors = self.banner_colors(team['banner'])
             e.add_field(name=team['banner']['name'], value='\n'.join(banner_colors), inline=True)
         if team['class']:
