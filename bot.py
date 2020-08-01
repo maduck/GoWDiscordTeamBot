@@ -490,6 +490,8 @@ class DiscordBot(discord.Client):
             rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
             color = discord.Color.from_rgb(*rarity_color)
             e = discord.Embed(title='Weapon search', color=color)
+            thumbnail_url = f'{self.GRAPHICS_URL}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
+            e.set_thumbnail(url=thumbnail_url)
             mana = self.my_emojis.get(weapon['color_code'])
             color_requirement = []
             if weapon['requirement'] < 1000:
