@@ -415,6 +415,8 @@ class DiscordBot(discord.Client):
         elif len(result) == 1:
             _class = result[0]
             e = discord.Embed(title='Class search', color=self.WHITE)
+            thumbnail_url = f'{self.GRAPHICS_URL}/Classes_{_class["code"]}_thumb.png'
+            e.set_thumbnail(url=thumbnail_url)
             class_lines = [
                 f'**{_class["kingdom_title"]}**: {_class["kingdom"]}',
                 f'**{_class["weapon_title"]}**: {_class["weapon"]}',

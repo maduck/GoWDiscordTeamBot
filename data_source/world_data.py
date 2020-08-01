@@ -77,6 +77,7 @@ class WorldData:
             self.classes[_class['Id']] = {
                 'id': _class['Id'],
                 'name': _class['Name'],
+                'code': _class['Code'],
                 'talents': [self.talent_trees[tree]['talents'] for tree in _class['TalentTrees']],
                 'trees': _class['TalentTrees'],
                 'traits': [self.traits.get(trait, {'name': trait, 'description': '-'}) for trait in _class['Traits']],
