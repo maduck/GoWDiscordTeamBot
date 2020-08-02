@@ -14,6 +14,7 @@ from game_constants import RARITY_COLORS
 from help import get_help_text
 from jobs.news_downloader import NewsDownloader
 from prefix import Prefix
+from language import Language
 from subscriptions import Subscriptions
 from team_expando import TeamExpander
 
@@ -54,6 +55,7 @@ def debug(message):
 
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
+    DEFAULT_LANGUAGE = 'en'
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
     VERSION = '0.6'
@@ -135,6 +137,18 @@ class DiscordBot(discord.Client):
             'function': 'waffles',
             'pattern': re.compile(r'^(?P<prefix>.)waffles$')
         },
+        {
+            'function': 'show_language',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)language$', re.IGNORECASE)
+        },
+        {
+            'function': 'show_languages',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)languages$', re.IGNORECASE)
+        },
+        {
+            'function': 'change_language',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)language (?P<new_language>.+)$', re.IGNORECASE)
+        },
     ]
 
     WHITE = discord.Color.from_rgb(254, 254, 254)
@@ -150,6 +164,7 @@ class DiscordBot(discord.Client):
         self.my_emojis = {}
         self.expander = TeamExpander()
         self.prefix = Prefix(self.DEFAULT_PREFIX)
+        self.language = Language(self.DEFAULT_LANGUAGE)
         self.subscriptions = Subscriptions()
 
     @staticmethod
@@ -767,6 +782,49 @@ class DiscordBot(discord.Client):
                     log.exception(e)
         with open(NewsDownloader.NEWS_FILENAME, 'w') as f:
             f.write('[]')
+
+    async def change_language(self, message, new_language, prefix, lang):
+        my_language = self.language.get(message.guild)
+        if not message.guild:
+            e = discord.Embed(title='Language change', color=self.RED)
+            e.add_field(name='Error',
+                        value=f'Language change not possible in direct messages.')
+            await answer(message, e)
+            return
+        if self.is_guild_admin(message):
+            if len(new_language) != 2:
+                e = discord.Embed(title='Language change', color=self.RED)
+                e.add_field(name='Error',
+                            value=f'Your new language has to be 2 characters long, `{new_language}` has {len(new_language)}.')
+                await answer(message, e)
+                return
+            if new_language not in self.language.get_available():
+                e = discord.Embed(title='Language change', color=self.RED)
+                e.add_field(name='Error',
+                            value=f'Your new language is not available, `{new_language}`.')
+                await answer(message, e)
+                return
+
+            self.language.add(message.guild, new_language)
+            e = discord.Embed(title='Administrative action', color=self.RED)
+            e.add_field(name='Language change', value=f'Language was changed from `{my_language}` to `{new_language}`')
+            await answer(message, e)
+            log.debug(f'[{message.guild.name}] Changed language from {my_language} to {new_language}')
+        else:
+            e = discord.Embed(title='There was a problem', color=self.RED)
+            e.add_field(name='Language change', value=f'Only the server owner has permission to change the language.')
+            await answer(message, e)
+
+    async def show_language(self, message, lang, prefix):
+        e = discord.Embed(title='Language', color=self.WHITE)
+        e.add_field(name='The current language is', value=f'`{self.language.get(message.guild)}`')
+        await answer(message, e)
+
+    async def show_languages(self, message, lang, prefix):
+        e = discord.Embed(title='Languages', color=self.WHITE)
+        langs = ', '.join([f'`{lang_code}`' for lang_code in self.language.get_available()])
+        e.add_field(name='The available languages', value=langs)
+        await answer(message, e)
 
 
 @tasks.loop(minutes=5, reconnect=False)
