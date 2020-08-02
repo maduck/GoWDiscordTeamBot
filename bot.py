@@ -155,8 +155,7 @@ class DiscordBot(discord.Client):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
         super().__init__(*args, **kwargs)
         self.permissions = self.generate_permissions()
-        self.invite_url = 'https://discordapp.com/api/oauth2/authorize?client_id={{}}&scope=bot&permissions={}' \
-            .format(self.permissions.value)
+        self.invite_url = ''
         self.my_emojis = {}
         self.expander = TeamExpander()
         self.prefix = Prefix(self.DEFAULT_PREFIX)
@@ -181,7 +180,7 @@ class DiscordBot(discord.Client):
         return permissions
 
     async def on_ready(self):
-        self.invite_url = self.invite_url.format(self.user.id)
+        self.invite_url = f'https://discordapp.com/api/oauth2/authorize?client_id={self.user.id}&scope=bot&permissions={self.permissions.value}'
         log.info(f'Logged in as {self.user.name}')
         log.info(f'Invite with: {self.invite_url}')
 
@@ -343,8 +342,7 @@ class DiscordBot(discord.Client):
 
     async def show_invite_link(self, message, prefix, lang):
         e = discord.Embed(title='Bot invite link', color=self.WHITE)
-        link = 'https://discordapp.com/api/oauth2/authorize?client_id=733399051797790810&scope=bot&permissions=339008'
-        e.add_field(name='Feel free to share!', value=link)
+        e.add_field(name='Feel free to share!', value=self.invite_url)
         await self.answer(message, e)
 
     @staticmethod
