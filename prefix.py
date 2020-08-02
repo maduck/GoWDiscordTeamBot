@@ -32,4 +32,4 @@ class Prefix:
     def get(self, guild):
         if guild is None:
             return self.default_prefix
-        return self.__prefixes.get(guild.id, self.default_prefix)
+        return self.__prefixes.get(str(guild.id), self.default_prefix)

@@ -283,7 +283,7 @@ class DiscordBot(discord.Client):
                                  f'{event["type"]}'
                                  f'{":" if event["extra_info"] else ""} '
                                  f'{event["extra_info"]}')
-        message_lines = self.cut_lines_by_length(message_lines, 900)
+        message_lines = self.trim_text_lines_to_length(message_lines, 900)
         message_lines.append('```')
         e.add_field(name='Upcoming Events', value='\n'.join(message_lines))
         await self.answer(message, e)
@@ -346,7 +346,7 @@ class DiscordBot(discord.Client):
         await self.answer(message, e)
 
     @staticmethod
-    def cut_lines_by_length(lines, limit):
+    def trim_text_lines_to_length(lines, limit):
         breakdown = [sum([len(c) for c in lines[0:i]]) < limit for i in range(len(lines))]
         if all(breakdown):
             return lines
@@ -739,7 +739,7 @@ class DiscordBot(discord.Client):
         await self.answer(message, e)
 
     @staticmethod
-    def trim_content_to_length(text, link, max_length=1000):
+    def trim_news_to_length(text, link, max_length=1000):
         break_character = '\n'
         input_text = f'{text}{break_character}'
         trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
@@ -753,8 +753,6 @@ class DiscordBot(discord.Client):
         if not self.is_ready():
             return
 
-
-
         with open(NewsDownloader.NEWS_FILENAME) as f:
             articles = json.load(f)
             articles.reverse()
@@ -767,7 +765,7 @@ class DiscordBot(discord.Client):
                 e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
                 log.debug(
                     f'Sending out {article["title"]} to {subscription["guild_name"]}/{subscription["channel_name"]}')
-                content = self.trim_content_to_length(article['content'], article['url'])
+                content = self.trim_news_to_length(article['content'], article['url'])
                 e.add_field(name=article['title'], value=content)
                 for image_url in article['images']:
                     e.set_image(url=image_url)
