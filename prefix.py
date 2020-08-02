@@ -26,7 +26,7 @@ class Prefix:
                 json.dump(self.__prefixes, f, sort_keys=True, indent=2)
 
     def set(self, guild, prefix):
-        self.__prefixes[guild.id] = prefix
+        self.__prefixes[str(guild.id)] = prefix
         self.save_prefixes()
 
     def get(self, guild):
