@@ -204,7 +204,8 @@ class DiscordBot(discord.Client):
         is_owner = message.author == message.guild.owner
         return is_owner or is_administrator or has_admin_role
 
-    def embed_check_limits(self, embed):
+    @staticmethod
+    def embed_check_limits(embed):
         if len(embed.title) > 256:
             raise EmbedLimitsExceed('embed.title')
         if len(embed.description) > 2048:
@@ -494,7 +495,17 @@ class DiscordBot(discord.Client):
                                   f'{_class["type_short"].ljust(col_widths[1])} '
                                   f'{_class["kingdom"]}'
                                   for _class in result])
-            e = '\n'.join(message_lines)
+            e = discord.Embed(title='Class Summary')
+            message_text = ''
+            field_title = 'Overview'
+            for line in message_lines:
+                if len(message_text) + len(line) > 1024:
+                    e.add_field(name=field_title, value=f'```{message_text}```', inline=False)
+                    message_text = f'{line}\n'
+                    field_title = 'Continuation'
+                else:
+                    message_text += f'{line}\n'
+            e.add_field(name=field_title, value=f'```{message_text}```')
         else:
             e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             classes_found = [f'{_class["name"]} ({_class["id"]})' for _class in result]
