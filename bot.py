@@ -226,19 +226,16 @@ class DiscordBot(discord.Client):
         if len(embed) > 6000:
             raise EmbedLimitsExceed('total length of embed')
 
-    async def answer(self, message, embed: discord.Embed = None):
+    async def answer(self, message, embed: discord.Embed):
         if message.guild:
             await self.check_for_needed_permissions(message)
         try:
-            if embed:
-                self.embed_check_limits(embed)
+            self.embed_check_limits(embed)
             await message.channel.send(embed=embed)
         except discord.errors.Forbidden:
-            log.warning(
-                f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
-        except EmbedLimitsExceed as err:
-            log.warning(
-                f'[{message.guild.name}][{message.channel}] Could not post response, embed limits exceed: {err}. message: {message.content.lower().strip()}')
+            log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
+        except EmbedLimitsExceed as e:
+            log.warning(f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.')
 
     async def check_for_needed_permissions(self, message):
         channel_permissions = message.channel.permissions_for(message.guild.me)
