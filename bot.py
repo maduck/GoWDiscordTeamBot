@@ -450,7 +450,7 @@ class DiscordBot(discord.Client):
                                   f'{str(len(kingdom["troops"])).ljust(col_widths[1])} '
                                   f'{kingdom["linked_kingdom"] or "-"}'
                                   for kingdom in result])
-            e = await self.generate_embed_from_text(message_lines, 'Kingdom Summary')
+            e = await self.generate_embed_from_text(message_lines, 'Kingdoms', 'Summary')
         else:
             e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             kingdoms_found = [f'{kingdom["name"]} `{kingdom["id"]}`' for kingdom in result]
@@ -496,7 +496,7 @@ class DiscordBot(discord.Client):
                                   f'{_class["kingdom"]}'
                                   for _class in result])
 
-            e = await self.generate_embed_from_text(message_lines, 'Class Summary')
+            e = await self.generate_embed_from_text(message_lines, 'Classes', 'Summary')
         else:
             e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             classes_found = [f'{_class["name"]} ({_class["id"]})' for _class in result]
@@ -507,10 +507,10 @@ class DiscordBot(discord.Client):
         await self.answer(message, e)
 
     @staticmethod
-    async def generate_embed_from_text(message_lines, title):
+    async def generate_embed_from_text(message_lines, title, subtitle):
         e = discord.Embed(title=title)
         message_text = ''
-        field_title = title
+        field_title = subtitle
         for line in message_lines:
             if len(message_text) + len(line) > 1024:
                 e.add_field(name=field_title, value=f'```{message_text}```', inline=False)
