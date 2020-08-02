@@ -326,6 +326,8 @@ class DiscordBot(discord.Client):
             f'`<language><command>` language support\n\n'
             f'`{prefix}news [[un]subscribe]` Admin command.\n'
             f'`{prefix}prefix [new_prefix]` Admin command.\n'
+            f'`{prefix}language [new_language]` Admin command.\n'
+            f'`{prefix}languages`\n'
         )
         await self.answer(message, e)
 
