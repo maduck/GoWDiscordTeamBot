@@ -46,7 +46,7 @@ help_texts = {
         'Suchen': '• __Basis__: Die folgenden Suchen werden unterstützt:\n'
                   ' - `{0}troop <suche>`, z.B. `{0}troop elemaugrim`.\n'
                   ' - `{0}weapon <suche>`, z.B. `{0}weapon mang`.\n'
-                  ' - `{0}pet <search>`, z.B. `{0}pet puddling`.\n'
+                  ' - `{0}pet <suche>`, z.B. `{0}pet puddling`.\n'
                   ' - `{0}class <suche>`, z.B. `{0}class archer`.\n'
                   ' - `{0}talent <suche>`, z.B. `{0}talent mana source`.\n'
                   ' - `{0}kingdom <suche>`, z.B. `{0}kingdom karakoth`.\n'
