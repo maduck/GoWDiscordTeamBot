@@ -2,8 +2,6 @@ import json
 import os
 import threading
 
-from translations import Translations
-
 
 class Language:
     LANGUAGE_CONFIG_FILE = 'languages.json'
@@ -35,6 +33,3 @@ class Language:
         if guild is None:
             return self.default_language
         return self.__languages.get(str(guild.id), self.default_language)
-
-    def get_available(self):
-        return Translations.LANGUAGES

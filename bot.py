@@ -15,6 +15,7 @@ from help import get_help_text
 from jobs.news_downloader import NewsDownloader
 from prefix import Prefix
 from language import Language
+from translations import Translations
 from subscriptions import Subscriptions
 from team_expando import TeamExpander
 
@@ -798,7 +799,7 @@ class DiscordBot(discord.Client):
                             value=f'Your new language has to be 2 characters long, `{new_language}` has {len(new_language)}.')
                 await answer(message, e)
                 return
-            if new_language not in self.language.get_available():
+            if new_language not in Translations.LANGUAGES:
                 e = discord.Embed(title='Language change', color=self.RED)
                 e.add_field(name='Error',
                             value=f'Your new language is not available, `{new_language}`.')
@@ -822,7 +823,7 @@ class DiscordBot(discord.Client):
 
     async def show_languages(self, message, lang, prefix):
         e = discord.Embed(title='Languages', color=self.WHITE)
-        langs = ', '.join([f'`{lang_code}`' for lang_code in self.language.get_available()])
+        langs = ', '.join([f'`{lang_code}`' for lang_code in Translations.LANGUAGES])
         e.add_field(name='The available languages', value=langs)
         await answer(message, e)
 
