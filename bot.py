@@ -506,9 +506,8 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
-    @staticmethod
-    async def generate_embed_from_text(message_lines, title, subtitle):
-        e = discord.Embed(title=title)
+    async def generate_embed_from_text(self, message_lines, title, subtitle):
+        e = discord.Embed(title=title, color=self.WHITE)
         message_text = ''
         field_title = subtitle
         for line in message_lines:
