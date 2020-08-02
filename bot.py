@@ -738,19 +738,22 @@ class DiscordBot(discord.Client):
         e.add_field(name='Status', value=answer_text)
         await self.answer(message, e)
 
+    @staticmethod
+    def trim_content_to_length(text, link, max_length=1000):
+        break_character = '\n'
+        input_text = f'{text}{break_character}'
+        trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
+        read_more = ''
+        if len(trimmed_text + break_character) != len(input_text):
+            read_more = '[...] '
+        result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
+        return result
+
     async def show_latest_news(self):
         if not self.is_ready():
             return
 
-        def trim_content_to_length(text, link, max_length=1000):
-            break_character = '\n'
-            input_text = f'{text}{break_character}'
-            trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
-            read_more = ''
-            if len(trimmed_text + break_character) != len(input_text):
-                read_more = '[...] '
-            result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
-            return result
+
 
         with open(NewsDownloader.NEWS_FILENAME) as f:
             articles = json.load(f)
@@ -764,7 +767,7 @@ class DiscordBot(discord.Client):
                 e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
                 log.debug(
                     f'Sending out {article["title"]} to {subscription["guild_name"]}/{subscription["channel_name"]}')
-                content = trim_content_to_length(article['content'], article['url'])
+                content = self.trim_content_to_length(article['content'], article['url'])
                 e.add_field(name=article['title'], value=content)
                 for image_url in article['images']:
                     e.set_image(url=image_url)
