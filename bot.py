@@ -315,8 +315,9 @@ class DiscordBot(discord.Client):
         my_prefix = self.prefix.get(message.guild)
         function, params = await self.get_function_for_command(user_command, my_prefix)
         if function:
-            debug(message)
-            await function(message, **params)
+            async with message.channel.typing():
+                debug(message)
+                await function(message, **params)
 
     async def show_invite_link(self, message, prefix, lang):
         e = discord.Embed(title='Bot invite link', color=self.WHITE)
