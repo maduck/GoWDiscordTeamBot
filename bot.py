@@ -303,7 +303,7 @@ class DiscordBot(discord.Client):
                                  f'{event["type"]}'
                                  f'{":" if event["extra_info"] else ""} '
                                  f'{event["extra_info"]}')
-        message_lines = self.cut_lines_by_length(message_lines, 1003)
+        message_lines = self.cut_lines_by_length(message_lines, 900)
         message_lines.append('```')
         e.add_field(name='Upcoming Events', value='\n'.join(message_lines))
         await self.answer(message, e)
