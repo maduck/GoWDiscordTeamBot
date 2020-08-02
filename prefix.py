@@ -25,11 +25,11 @@ class Prefix:
             with open(self.PREFIX_CONFIG_FILE, 'w') as f:
                 json.dump(self.__prefixes, f, sort_keys=True, indent=2)
 
-    def add(self, guild, prefix):
-        self.__prefixes[str(guild.id)] = prefix
+    def set(self, guild, prefix):
+        self.__prefixes[guild.id] = prefix
         self.save_prefixes()
 
     def get(self, guild):
         if guild is None:
             return self.default_prefix
-        return self.__prefixes.get(str(guild.id), self.default_prefix)
+        return self.__prefixes.get(guild.id, self.default_prefix)

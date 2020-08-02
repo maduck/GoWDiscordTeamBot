@@ -25,11 +25,11 @@ class Language:
             with open(self.LANGUAGE_CONFIG_FILE, 'w') as f:
                 json.dump(self.__languages, f, sort_keys=True, indent=2)
 
-    def add(self, guild, language):
-        self.__languages[str(guild.id)] = language
+    def set(self, guild, language):
+        self.__languages[guild.id] = language
         self.save_languages()
 
     def get(self, guild):
         if guild is None:
             return self.default_language
-        return self.__languages.get(str(guild.id), self.default_language)
+        return self.__languages.get(guild.id, self.default_language)
