@@ -51,8 +51,20 @@ def debug(message):
         guild = message.guild.name
     log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
 
-
-
+async def answer(message, embed):
+    try:
+        if type(embed) == str:
+            if len(embed) > 1993:
+                embed = embed[:1990] + '...'
+            await message.channel.send('```' + embed + '```')
+        else:
+            await message.channel.send(embed=embed)
+    except discord.errors.Forbidden:
+        log.warning(
+            f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
+    except discord.errors.HTTPException:
+        log.warning(
+            f'[{message.guild.name}][{message.channel}] Could not post response, message exceeds maximum size of 6000.')
 
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
