@@ -343,6 +343,10 @@ class DiscordBot(discord.Client):
         my_prefix = self.prefix.get(message.guild)
         function, params = await self.get_function_for_command(user_command, my_prefix)
         if function:
+            # handle default language
+            if 'lang' in params and params['lang'] is None:
+                params['lang'] = self.language.get(message.guild)
+
             debug(message)
             await function(message, **params)
 
