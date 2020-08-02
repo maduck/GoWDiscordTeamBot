@@ -13,11 +13,11 @@ from discord.ext import tasks
 from game_constants import RARITY_COLORS
 from help import get_help_text
 from jobs.news_downloader import NewsDownloader
-from prefix import Prefix
 from language import Language
-from translations import Translations
+from prefix import Prefix
 from subscriptions import Subscriptions
 from team_expando import TeamExpander
+from translations import Translations
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 LOGLEVEL = logging.DEBUG
@@ -51,17 +51,6 @@ def debug(message):
         guild = message.guild.name
     log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
 
-async def answer(message, embed):
-    try:
-        if type(embed) == str:
-            if len(embed) > 1993:
-                embed = embed[:1990] + '...'
-            await message.channel.send('```' + embed + '```')
-        else:
-            await message.channel.send(embed=embed)
-    except discord.errors.Forbidden:
-        log.warning(
-            f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
 
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
@@ -148,16 +137,13 @@ class DiscordBot(discord.Client):
             'pattern': re.compile(r'^(?P<prefix>.)waffles$')
         },
         {
-            'function': 'show_language',
-            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)language$', re.IGNORECASE)
-        },
-        {
             'function': 'show_languages',
-            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)languages$', re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)lang(uages?)?$', re.IGNORECASE)
         },
         {
             'function': 'change_language',
-            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)language (?P<new_language>.+)$', re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)lang(uages?)? (?P<new_language>.+)$',
+                                  re.IGNORECASE)
         },
     ]
 
@@ -215,16 +201,11 @@ class DiscordBot(discord.Client):
         is_owner = message.author == message.guild.owner
         return is_owner or is_administrator or has_admin_role
 
-    async def answer(self, message, embed):
+    async def answer(self, message, embed: discord.Embed = None):
         if message.guild:
             await self.check_for_needed_permissions(message)
         try:
-            if type(embed) == str:
-                if len(embed) > 1993:
-                    embed = embed[:1990] + '...'
-                await message.channel.send('```' + embed + '```')
-            else:
-                await message.channel.send(embed=embed)
+            await message.channel.send(embed=embed)
         except discord.errors.Forbidden:
             log.warning(
                 f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
@@ -336,7 +317,6 @@ class DiscordBot(discord.Client):
             f'`{prefix}news [[un]subscribe]` Admin command.\n'
             f'`{prefix}prefix [new_prefix]` Admin command.\n'
             f'`{prefix}language [new_language]` Admin command.\n'
-            f'`{prefix}languages`\n'
         )
         await self.answer(message, e)
 
@@ -801,39 +781,39 @@ class DiscordBot(discord.Client):
     async def change_language(self, message, new_language, prefix, lang):
         my_language = self.language.get(message.guild)
         if not message.guild:
-            e = discord.Embed(title='Language change SERVERWIDE', color=self.RED)
+            e = discord.Embed(title='Default Language', color=self.RED)
             e.add_field(name='Error',
                         value=f'Language change not possible in direct messages.')
-            await answer(message, e)
+            await self.answer(message, e)
             return
         if self.is_guild_admin(message):
             if new_language not in Translations.LANGUAGES:
-                e = discord.Embed(title='Language change SERVERWIDE', color=self.RED)
+                e = discord.Embed(title='Default Language', color=self.RED)
                 e.add_field(name='Error',
-                            value=f'Your new language is not available, `{new_language}`.')
-                await answer(message, e)
+                            value=f'`{new_language}` is not a valid language code.')
+                await self.answer(message, e)
                 return
 
             self.language.set(message.guild, new_language)
-            e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Language change SERVERWIDE', value=f'Language was changed __SERVERWIDE__ from `{my_language}` to `{new_language}`')
-            await answer(message, e)
-            log.debug(f'[{message.guild.name}] Changed language from {my_language} to {new_language}')
+            e = discord.Embed(title='Default Language', color=self.WHITE)
+            e.add_field(name=f'Default language for {message.guild}',
+                        value=f'Default language was changed from `{my_language}` to `{new_language}`.')
+            await self.answer(message, e)
+            log.debug(f'[{message.guild.name}] Changed language from {my_language} to {new_language}.')
         else:
-            e = discord.Embed(title='There was a problem', color=self.RED)
-            e.add_field(name='Language change SERVERWIDE', value=f'Only the server owner has permission to change the language.')
-            await answer(message, e)
-
-    async def show_language(self, message, lang, prefix):
-        e = discord.Embed(title='Language', color=self.WHITE)
-        e.add_field(name='The current language SERVERWIDE is', value=f'`{self.language.get(message.guild)}`')
-        await answer(message, e)
+            e = discord.Embed(title='Default Language', color=self.RED)
+            e.add_field(name=f'Default language for {message.guild}',
+                        value='You don\'t have permissions to change the default language on this server.')
+            await self.answer(message, e)
 
     async def show_languages(self, message, lang, prefix):
-        e = discord.Embed(title='Languages', color=self.WHITE)
-        langs = ', '.join([f'`{lang_code}`' for lang_code in Translations.LANGUAGES])
-        e.add_field(name='The available languages', value=langs)
-        await answer(message, e)
+        e = discord.Embed(title='Default Language', color=self.WHITE)
+        e.add_field(name=f'Default language for {message.guild}',
+                    value=f'`{self.language.get(message.guild)}`', inline=False)
+
+        available_langs = ', '.join([f'`{lang_code}`' for lang_code in Translations.LANGUAGES])
+        e.add_field(name='Available languages', value=available_langs, inline=False)
+        await self.answer(message, e)
 
 
 @tasks.loop(minutes=5, reconnect=False)
