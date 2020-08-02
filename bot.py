@@ -821,6 +821,8 @@ class DiscordBot(discord.Client):
                 e = discord.Embed(title='Default Language', color=self.RED)
                 e.add_field(name='Error',
                             value=f'`{new_language}` is not a valid language code.')
+                available_langs = ', '.join([f'`{lang_code}`' for lang_code in Translations.LANGUAGES])
+                e.add_field(name='Available languages', value=available_langs, inline=False)
                 await self.answer(message, e)
                 return
 
