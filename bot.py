@@ -171,7 +171,8 @@ class DiscordBot(discord.Client):
             'read_messages',
             'send_messages',
             'manage_messages',
-            'read_message_history',
+            'embed_links',
+            'attach_files',
             'external_emojis',
         ]
         for perm_name in needed_permissions:
