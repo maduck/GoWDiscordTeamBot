@@ -62,9 +62,6 @@ async def answer(message, embed):
     except discord.errors.Forbidden:
         log.warning(
             f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
-    except discord.errors.HTTPException:
-        log.warning(
-            f'[{message.guild.name}][{message.channel}] Could not post response, message exceeds maximum size of 6000.')
 
 class DiscordBot(discord.Client):
     DEFAULT_PREFIX = '!'
