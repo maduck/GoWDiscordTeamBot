@@ -19,6 +19,11 @@ from subscriptions import Subscriptions
 from team_expando import TeamExpander
 from translations import Translations
 
+
+class EmbedLimitsExceed(Exception):
+    pass
+
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 LOGLEVEL = logging.DEBUG
 
@@ -200,14 +205,40 @@ class DiscordBot(discord.Client):
         is_owner = message.author == message.guild.owner
         return is_owner or is_administrator or has_admin_role
 
+    def embed_check_limits(self, embed):
+        if len(embed.title) > 256:
+            raise EmbedLimitsExceed('embed.title')
+        if len(embed.description) > 2048:
+            raise EmbedLimitsExceed('embed.description')
+        if embed.fields and len(embed.fields) > 25:
+            raise EmbedLimitsExceed('embed.fields')
+        for field in embed.fields:
+            if len(field.name) > 256:
+                raise EmbedLimitsExceed('field.name', field)
+            if len(field.value) > 1024:
+                raise EmbedLimitsExceed('field.value', field)
+        if getattr(embed, '_footer', None):
+            if len(embed.footer.text) > 2048:
+                raise EmbedLimitsExceed('embed.footer.text')
+        if getattr(embed, '__author', None):
+            if len(field.author.name) > 256:
+                raise EmbedLimitsExceed('embed.author.name')
+        if len(embed) > 6000:
+            raise EmbedLimitsExceed('total length of embed')
+
     async def answer(self, message, embed: discord.Embed = None):
         if message.guild:
             await self.check_for_needed_permissions(message)
         try:
+            if embed:
+                self.embed_check_limits(embed)
             await message.channel.send(embed=embed)
         except discord.errors.Forbidden:
             log.warning(
                 f'[{message.guild.name}][{message.channel}] Could not post response, channel is forbidden for me.')
+        except EmbedLimitsExceed as err:
+            log.warning(
+                f'[{message.guild.name}][{message.channel}] Could not post response, embed limits exceed: {err}. message: {message.content.lower().strip()}')
 
     async def check_for_needed_permissions(self, message):
         channel_permissions = message.channel.permissions_for(message.guild.me)
