@@ -389,7 +389,7 @@ class DiscordBot(discord.Client):
                             value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
                 await self.answer(message, e)
                 return
-            self.prefix.add(message.guild, new_prefix)
+            self.prefix.set(message.guild, new_prefix)
             e = discord.Embed(title='Administrative action', color=self.RED)
             e.add_field(name='Prefix change', value=f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
             await self.answer(message, e)
@@ -801,38 +801,32 @@ class DiscordBot(discord.Client):
     async def change_language(self, message, new_language, prefix, lang):
         my_language = self.language.get(message.guild)
         if not message.guild:
-            e = discord.Embed(title='Language change', color=self.RED)
+            e = discord.Embed(title='Language change SERVERWIDE', color=self.RED)
             e.add_field(name='Error',
                         value=f'Language change not possible in direct messages.')
             await answer(message, e)
             return
         if self.is_guild_admin(message):
-            if len(new_language) != 2:
-                e = discord.Embed(title='Language change', color=self.RED)
-                e.add_field(name='Error',
-                            value=f'Your new language has to be 2 characters long, `{new_language}` has {len(new_language)}.')
-                await answer(message, e)
-                return
             if new_language not in Translations.LANGUAGES:
-                e = discord.Embed(title='Language change', color=self.RED)
+                e = discord.Embed(title='Language change SERVERWIDE', color=self.RED)
                 e.add_field(name='Error',
                             value=f'Your new language is not available, `{new_language}`.')
                 await answer(message, e)
                 return
 
-            self.language.add(message.guild, new_language)
+            self.language.set(message.guild, new_language)
             e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Language change', value=f'Language was changed from `{my_language}` to `{new_language}`')
+            e.add_field(name='Language change SERVERWIDE', value=f'Language was changed __SERVERWIDE__ from `{my_language}` to `{new_language}`')
             await answer(message, e)
             log.debug(f'[{message.guild.name}] Changed language from {my_language} to {new_language}')
         else:
             e = discord.Embed(title='There was a problem', color=self.RED)
-            e.add_field(name='Language change', value=f'Only the server owner has permission to change the language.')
+            e.add_field(name='Language change SERVERWIDE', value=f'Only the server owner has permission to change the language.')
             await answer(message, e)
 
     async def show_language(self, message, lang, prefix):
         e = discord.Embed(title='Language', color=self.WHITE)
-        e.add_field(name='The current language is', value=f'`{self.language.get(message.guild)}`')
+        e.add_field(name='The current language SERVERWIDE is', value=f'`{self.language.get(message.guild)}`')
         await answer(message, e)
 
     async def show_languages(self, message, lang, prefix):
