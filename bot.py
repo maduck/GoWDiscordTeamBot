@@ -508,7 +508,7 @@ class DiscordBot(discord.Client):
 
     @staticmethod
     async def generate_embed_from_text(message_lines, title):
-        e = discord.Embed(title='Class Summary')
+        e = discord.Embed(title=title)
         message_text = ''
         field_title = title
         for line in message_lines:
