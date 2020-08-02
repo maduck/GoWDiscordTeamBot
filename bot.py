@@ -62,7 +62,7 @@ class DiscordBot(discord.Client):
     VERSION = '0.6'
     GRAPHICS_URL = 'https://garyatrics.com/gow_assets'
     LANG_PATTERN = r'(?P<lang>en|fr|de|ру|ru|it|es|cn)?'
-    SEARCH_PATTERN = r'^' + LANG_PATTERN + '(?P<prefix>.){0} #?(?P<search_term>.*)$'
+    SEARCH_PATTERN = r'^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.){0} #?(?P<search_term>.*)$'
     COMMAND_REGISTRY = [
         {
             'function': 'handle_troop_search',
@@ -390,7 +390,7 @@ class DiscordBot(discord.Client):
             e.add_field(name='Prefix change', value=f'Only the server owner has permission to change the prefix.')
             await self.answer(message, e)
 
-    async def handle_kingdom_search(self, message, search_term, lang, prefix):
+    async def handle_kingdom_search(self, message, search_term, lang, prefix, shortened):
         result = self.expander.search_kingdom(search_term, lang)
         if not result:
             e = discord.Embed(title='Kingdom search', color=self.BLACK)
@@ -445,7 +445,7 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
-    async def handle_class_search(self, message, search_term, lang, prefix):
+    async def handle_class_search(self, message, search_term, lang, prefix, shortened):
         result = self.expander.search_class(search_term, lang)
         if not result:
             e = discord.Embed(title='Class search', color=self.BLACK)
@@ -490,7 +490,7 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
-    async def handle_pet_search(self, message, search_term, lang, prefix):
+    async def handle_pet_search(self, message, search_term, lang, prefix, shortened):
         result = self.expander.search_pet(search_term, lang)
         if not result:
             e = discord.Embed(title='Pet search', color=self.BLACK)
@@ -520,7 +520,7 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
-    async def handle_weapon_search(self, message, search_term, lang, prefix):
+    async def handle_weapon_search(self, message, search_term, lang, prefix, shortened):
         result = self.expander.search_weapon(search_term, lang)
         if not result:
             e = discord.Embed(title='Weapon search', color=self.BLACK)
@@ -566,9 +566,8 @@ class DiscordBot(discord.Client):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
-    async def handle_troop_search(self, message, prefix, search_term, lang):
+    async def handle_troop_search(self, message, prefix, search_term, lang, shortened):
         result = self.expander.search_troop(search_term, lang)
-
         if not result:
             e = discord.Embed(title='Troop search', color=self.BLACK)
             e.add_field(name=search_term, value='did not yield any result')
@@ -611,7 +610,7 @@ class DiscordBot(discord.Client):
 
         await self.answer(message, e)
 
-    async def handle_talent_search(self, message, search_term, lang, prefix):
+    async def handle_talent_search(self, message, search_term, lang, prefix, shortened):
         result = self.expander.search_talent_tree(search_term, lang)
         if not result:
             e = discord.Embed(title='Talent search', color=self.BLACK)
