@@ -36,7 +36,7 @@ help_texts = {
     },
     'de': {
         'Team Codes': '• __Basis__: Füge einfach die Team codes ein, z.B. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
-                      '14007]`. Der Bot wird automatisch mit den richtigen Truppen antworten. Der Code kann in einer'
+                      '14007]`. Der Bot wird automatisch mit den richtigen Truppen antworten. Der Code kann in einer '
                       'Zeile mit anderem Text stehen.\n\n'
                       '• __Sprachen__: Alle GoW Sprachen werden unterstützt. Einfach die Ländercodes (en, fr, de, ru, '
                       'it, es, cn) vor dem Teamcode einfügen, z.B. `cn[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
