@@ -174,7 +174,6 @@ class DiscordBot(discord.Client):
             'add_reactions',
             'read_messages',
             'send_messages',
-            'manage_messages',
             'embed_links',
             'attach_files',
             'external_emojis',
