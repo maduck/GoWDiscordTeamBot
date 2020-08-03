@@ -527,10 +527,11 @@ class DiscordBot(BaseBot):
 
                 description = ''
                 if troop['description']:
-                    description = f' *{troop["description"]}*'
+                    description = f' **{troop["description"]}**'
 
-                e.add_field(name=f'{mana_display}{troop["name"]} `#{troop["id"]}`{description}',
-                            value='\n'.join(message_lines))
+                e.description = f'**{mana_display}{troop["name"]}** `#{troop["id"]}`{description}'
+                e.description += '\n' + '\n'.join(message_lines)
+
                 trait_list = [f'**{trait["name"]}**: {trait["description"]}' for trait in troop['traits']]
                 if 'release_date' in troop:
                     trait_list.extend(['', f'**Release date**: {troop["release_date"]}'])
