@@ -144,6 +144,10 @@ class DiscordBot(BaseBot):
             'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)lang(uages?)? (?P<new_language>.+)$',
                                   re.IGNORECASE)
         },
+        {
+            'function': 'show_campaign_tasks',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)campaign$', re.IGNORECASE)
+        }
     ]
 
     def __init__(self, *args, **kwargs):
@@ -180,6 +184,17 @@ class DiscordBot(BaseBot):
                 if groups.get('prefix', user_prefix) == user_prefix:
                     return getattr(self, command['function']), groups
         return None, None
+
+    async def show_campaign_tasks(self, message, prefix, lang):
+        task_categories = self.expander.get_campaign_tasks(lang)
+        e = discord.Embed(title='Campaign Tasks', color=self.WHITE)
+
+        for category, tasks in task_categories.items():
+            category_lines = []
+            for task in tasks:
+                category_lines.append(f'**{task["title"]}**: {task["name"]}')
+            e.add_field(name=f'__**{category}**__', value='\n'.join(category_lines), inline=False)
+        await self.answer(message, e)
 
     async def show_spoilers(self, message, prefix, lang, filter):
         spoilers = self.expander.get_spoilers(lang)
@@ -600,7 +615,6 @@ class DiscordBot(BaseBot):
                     else:
                         lst.append(entry)
         return lst
-
 
     def banner_colors(self, banner):
         return [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]

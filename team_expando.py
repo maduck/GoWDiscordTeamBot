@@ -43,6 +43,7 @@ class TeamExpander:
         self.spoilers = world.spoilers
         self.events = world.events
         self.colors = world.COLORS
+        self.campaign_tasks = world.campaign_tasks
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -497,6 +498,37 @@ class TeamExpander:
 
         entry['type'] = _(entry['type'], lang)
         return entry
+
+    def get_campaign_tasks(self, lang):
+        return {
+            _('[MEDAL_LEVEL_0]'): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['bronze']],
+            _('[MEDAL_LEVEL_1]'): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['silver']],
+            _('[MEDAL_LEVEL_2]'): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['gold']],
+        }
+
+    @staticmethod
+    def translate_campaign_task(task, lang):
+        new_task = task.copy()
+        replacements = {
+            'UsingWeaponType': ['{WeaponType}', '[WEAPONTYPE_{c:u}]', '[WEAPONTYPE_{c:u}]'],
+            'OfKingdom': ['{Kingdom}', '[{d:u}_NAME]', '[{d:u}_NAME]'],
+            'UsingBanner': ['{Banner}', '[{c:u}_BANNERNAME]', '[{c:u}_BANNERNAME]'],
+            'AtCampaignDifficulty': ['{Kingdom}', '[{d:u}_NAME]', '[{d:u}_NAME]'],
+            'UsingClass': ['{Class}', '[HEROCLASS_{c:l}_NAME]', '[HEROCLASS_{c:l}_NAME]'],
+        }
+        replacement = replacements.get(task['condition'], ['', '', ''])
+        title_replace = _(replacement[2].format(**new_task), lang)
+        new_task['title'] = _(new_task['title'], lang).replace(replacement[0], title_replace)
+
+        name_replace = _(replacement[1].format(**new_task), lang)
+
+        new_task['name'] = _(new_task["name"], lang).replace(replacement[0], name_replace)
+        if '{0}' in new_task['name']:
+            new_task['name'] = new_task['name'].replace('{0}', str(new_task['x']))
+        else:
+            new_task['name'] = f'{task["x"]}x ' + new_task['name']
+
+        return new_task
 
     def get_spoilers(self, lang):
         today = datetime.date.today()

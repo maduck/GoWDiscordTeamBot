@@ -4,6 +4,19 @@ import operator
 import os
 
 
+class U(str):
+    def __format__(self, fmt):
+        if fmt[0] == 'u':
+            s = self.upper()
+            fmt = fmt[1:]
+        elif fmt[0] == 'l':
+            s = self.lower()
+            fmt = fmt[1:]
+        else:
+            s = str(self)
+        return s.__format__(fmt)
+
+
 class WorldData:
     COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown')
 
@@ -46,6 +59,7 @@ class WorldData:
         self.spoilers = []
         self.events = []
         self.soulforge_weapons = []
+        self.campaign_tasks = {}
 
     @staticmethod
     def _convert_color_array(data_object):
@@ -71,6 +85,7 @@ class WorldData:
         self.populate_classes()
         self.populate_release_dates()
         self.enrich_kingdoms()
+        self.populate_campaign_tasks()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -217,6 +232,31 @@ class WorldData:
                 'effects': spell_effects,
                 'boost': boost,
             }
+
+    def populate_campaign_tasks(self):
+        for kingdom_id, tasks in self.user_data['pTasksData']['CampaignTasks'].items():
+            if not tasks['Bronze'] and not tasks['Silver'] and not tasks['Gold']:
+                continue
+            self.campaign_tasks['bronze'] = [self.transform_campaign_task(t) for t in tasks['Bronze']]
+            self.campaign_tasks['silver'] = [self.transform_campaign_task(t) for t in tasks['Silver']]
+            self.campaign_tasks['gold'] = [self.transform_campaign_task(t) for t in tasks['Gold']]
+
+    @staticmethod
+    def transform_campaign_task(task):
+        translated_task = {
+            'reward': task['Rewards'][0]['Amount'],
+            'condition': task.get('Condition'),
+            'task': task['Task'],
+            'name': task['TaskName'],
+            'title': task['TaskTitle'],
+            'tags': task['Tag'].split(','),
+            'x': task.get('XValue'),
+            'y': task.get('YValue'),
+            'c': U(task.get('CValue')),
+            'd': U(task.get('DValue')),
+            'orig': task,
+        }
+        return translated_task
 
     def populate_release_dates(self):
         date_format = '%m/%d/%Y %I:%M:%S %p %Z'
