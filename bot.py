@@ -86,7 +86,8 @@ class DiscordBot(BaseBot):
         },
         {
             'function': 'show_spoilers',
-            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)spoilers?', re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)spoilers?( '
+                                                        r'(?P<filter>(weapon|pet|kingdom|troop))s?)?', re.IGNORECASE)
         },
         {
             'function': 'show_events',
@@ -180,41 +181,41 @@ class DiscordBot(BaseBot):
                     return getattr(self, command['function']), groups
         return None, None
 
-    async def show_spoilers(self, message, prefix, lang):
+    async def show_spoilers(self, message, prefix, lang, filter):
         spoilers = self.expander.get_spoilers(lang)
         e = discord.Embed(title='Spoilers', color=self.WHITE)
         troop_title = self.expander.translate_categories(['troop'], lang)['troop']
         headers = ['Date', 'Rarity', 'Name (ID)']
-        troop_spoilers = [s for s in spoilers if s['type'] == 'troop']
+        if not filter or filter.lower() == 'troop':
+            troop_spoilers = [s for s in spoilers if s['type'] == 'troop']
 
-        extra_spacing = 2
-        rarity_width = max([len(t['rarity']) for t in troop_spoilers]) + extra_spacing
-        header_widths = [12, rarity_width, 5]
-        header = ''.join([f'{h.ljust(header_widths[i])}' for i, h in enumerate(headers)])
-        message_lines = [header]
+            extra_spacing = 2
+            rarity_width = max([len(t['rarity']) for t in troop_spoilers]) + extra_spacing
+            header_widths = [12, rarity_width, 5]
+            header = ''.join([f'{h.ljust(header_widths[i])}' for i, h in enumerate(headers)])
+            message_lines = [header]
 
-        for troop in troop_spoilers:
-            message_lines.append(f'{troop["date"]}  '
-                                 f'{troop["rarity"].ljust(rarity_width)}'
-                                 f'{troop["name"]} '
-                                 f'({troop["id"]})')
+            for troop in troop_spoilers:
+                message_lines.append(f'{troop["date"]}  '
+                                     f'{troop["rarity"].ljust(rarity_width)}'
+                                     f'{troop["name"]} '
+                                     f'({troop["id"]})')
 
-        if len(message_lines) > 1:
-            result = '\n'.join(message_lines)
-            e.add_field(name=troop_title, value=f'```{result[:800]}```', inline=False)
+            if len(message_lines) > 1:
+                result = '\n'.join(self.trim_text_lines_to_length(message_lines, 1000))
+                e.add_field(name=troop_title, value=f'```{result}```', inline=False)
 
         categories = ('kingdom', 'pet', 'weapon')
         translated = self.expander.translate_categories(categories, lang)
 
-        for spoil_type in categories:
+        for spoil_type in [c for c in categories if (not filter or filter.lower() == c)]:
             message_lines = ['Date        Name (ID)']
             for spoiler in spoilers:
                 if spoiler['type'] == spoil_type:
                     message_lines.append(f'{spoiler["date"]}  {spoiler["name"]} ({spoiler["id"]})')
             if len(message_lines) > 1:
-                result = '\n'.join(message_lines)
-
-                e.add_field(name=translated[spoil_type], value=f'```{result[:800]}```', inline=False)
+                result = '\n'.join(self.trim_text_lines_to_length(message_lines, 1000))
+                e.add_field(name=translated[spoil_type], value=f'```{result}```', inline=False)
         await self.answer(message, e)
 
     async def show_events(self, message, prefix, lang):
