@@ -501,29 +501,41 @@ class DiscordBot(BaseBot):
             if 'Boss' in troop['raw_types']:
                 rarity_color = RARITY_COLORS['Doomed']
             color = discord.Color.from_rgb(*rarity_color)
-            e = discord.Embed(title='Troop search', color=color)
-            thumbnail_url = f'{self.GRAPHICS_URL}/Troops/Cards_{troop["filename"]}_thumb.png'
-            e.set_thumbnail(url=thumbnail_url)
-            message_lines = [
-                f'**{troop["spell"]["name"]}**: {troop["spell"]["description"]}',
-                '',
-                f'**{troop["kingdom_title"]}**: {troop["kingdom"]}',
-                f'**{troop["rarity_title"]}**: {troop["rarity"]}',
-                f'**{troop["roles_title"]}**: {", ".join(troop["roles"])}',
-                f'**{troop["type_title"]}**: {troop["type"]}',
-            ]
             mana = self.my_emojis.get(troop['color_code'])
             mana_display = f'{troop["spell"]["cost"]}{mana} '
-            description = ''
-            if troop['description']:
-                description = f' *{troop["description"]}*'
-            e.add_field(name=f'{mana_display}{troop["name"]} `#{troop["id"]}`{description}',
-                        value='\n'.join(message_lines))
-            trait_list = [f'**{trait["name"]}**: {trait["description"]}' for trait in troop['traits']]
-            if 'release_date' in troop:
-                trait_list.extend(['', f'**Release date**: {troop["release_date"]}'])
-            traits = '\n'.join(trait_list)
-            e.add_field(name=troop["traits_title"], value=traits, inline=False)
+
+            e = discord.Embed(title='Troop search', color=color)
+
+            if shortened:
+                e.description = f'**{mana_display}{troop["name"]}**'
+                attributes = self.get_list(troop["type"], troop["roles"], troop["rarity"], troop["kingdom"])
+                e.description += f' ({", ".join(attributes)}) | {troop["spell"]["description"]}'
+
+                trait_list = [f'{trait["name"]}' for trait in troop['traits']]
+                e.description += f'\n{", ".join(trait_list)}'
+            else:
+                thumbnail_url = f'{self.GRAPHICS_URL}/Troops/Cards_{troop["filename"]}_thumb.png'
+                e.set_thumbnail(url=thumbnail_url)
+                message_lines = [
+                    f'**{troop["spell"]["name"]}**: {troop["spell"]["description"]}',
+                    '',
+                    f'**{troop["kingdom_title"]}**: {troop["kingdom"]}',
+                    f'**{troop["rarity_title"]}**: {troop["rarity"]}',
+                    f'**{troop["roles_title"]}**: {", ".join(troop["roles"])}',
+                    f'**{troop["type_title"]}**: {troop["type"]}',
+                ]
+
+                description = ''
+                if troop['description']:
+                    description = f' *{troop["description"]}*'
+
+                e.add_field(name=f'{mana_display}{troop["name"]} `#{troop["id"]}`{description}',
+                            value='\n'.join(message_lines))
+                trait_list = [f'**{trait["name"]}**: {trait["description"]}' for trait in troop['traits']]
+                if 'release_date' in troop:
+                    trait_list.extend(['', f'**Release date**: {troop["release_date"]}'])
+                traits = '\n'.join(trait_list)
+                e.add_field(name=troop["traits_title"], value=traits, inline=False)
         else:
             e = discord.Embed(title=f'Troop search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             troops_found = [f'{t["name"]} ({t["id"]})' for t in result]
@@ -573,6 +585,21 @@ class DiscordBot(BaseBot):
             e = self.format_output_team(team, color, author)
 
         await self.answer(message, e)
+
+    def get_list(self, *args):
+        lst = []
+        for arg in args:
+            if type(arg) == str and arg != '':
+                lst.append(arg)
+            elif type(arg) == list:
+                # use for loop instead of extend to check if the entry has a value
+                for entry in arg:
+                    if type(arg) == str and entry != '':
+                        lst.append(entry)
+                    else:
+                        lst.append(entry)
+        return lst
+
 
     def banner_colors(self, banner):
         return [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
