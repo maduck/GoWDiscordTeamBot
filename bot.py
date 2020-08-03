@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import asyncio
 import json
-import logging
 import operator
 import os
 import random
@@ -10,6 +9,7 @@ import re
 import discord
 from discord.ext import tasks
 
+from base_bot import BaseBot, log
 from game_constants import RARITY_COLORS
 from help import get_help_text
 from jobs.news_downloader import NewsDownloader
@@ -19,22 +19,7 @@ from subscriptions import Subscriptions
 from team_expando import TeamExpander
 from translations import Translations
 
-
-class EmbedLimitsExceed(Exception):
-    pass
-
-
 TOKEN = os.getenv('DISCORD_TOKEN')
-LOGLEVEL = logging.DEBUG
-
-formatter = logging.Formatter('%(asctime)-15s [%(levelname)s] %(message)s')
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
-handler.setLevel(LOGLEVEL)
-log = logging.getLogger(__name__)
-
-log.setLevel(logging.DEBUG)
-log.addHandler(handler)
 
 
 def chunks(iterable, chunk_size):
@@ -57,13 +42,21 @@ def debug(message):
     log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
 
 
-class DiscordBot(discord.Client):
+class DiscordBot(BaseBot):
     DEFAULT_PREFIX = '!'
     DEFAULT_LANGUAGE = 'en'
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = 'Garyatrics'
     VERSION = '0.6'
     GRAPHICS_URL = 'https://garyatrics.com/gow_assets'
+    NEEDED_PERMISSIONS = [
+        'add_reactions',
+        'read_messages',
+        'send_messages',
+        'embed_links',
+        'attach_files',
+        'external_emojis',
+    ]
     LANG_PATTERN = r'(?P<lang>en|fr|de|ру|ru|it|es|cn)?'
     SEARCH_PATTERN = r'^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.){0} #?(?P<search_term>.*)$'
     COMMAND_REGISTRY = [
@@ -152,39 +145,20 @@ class DiscordBot(discord.Client):
         },
     ]
 
-    WHITE = discord.Color.from_rgb(254, 254, 254)
-    BLACK = discord.Color.from_rgb(0, 0, 0)
-    RED = discord.Color.from_rgb(255, 0, 0)
-
     def __init__(self, *args, **kwargs):
-        log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
         super().__init__(*args, **kwargs)
-        self.permissions = self.generate_permissions()
-        self.invite_url = ''
-        self.my_emojis = {}
+        log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
+
         self.expander = TeamExpander()
         self.prefix = Prefix(self.DEFAULT_PREFIX)
         self.language = Language(self.DEFAULT_LANGUAGE)
         self.subscriptions = Subscriptions()
 
-    @staticmethod
-    def generate_permissions():
-        permissions = discord.Permissions.none()
-        needed_permissions = [
-            'add_reactions',
-            'read_messages',
-            'send_messages',
-            'embed_links',
-            'attach_files',
-            'external_emojis',
-        ]
-        for perm_name in needed_permissions:
-            setattr(permissions, perm_name, True)
-        log.debug(f'Permissions required: {", ".join([p for p, v in permissions if v])}')
-        return permissions
-
     async def on_ready(self):
-        self.invite_url = f'https://discordapp.com/api/oauth2/authorize?client_id={self.user.id}&scope=bot&permissions={self.permissions.value}'
+        self.invite_url = f'https://discordapp.com/api/oauth2/authorize' \
+                          f'?client_id={self.user.id}' \
+                          f'&scope=bot' \
+                          f'&permissions={self.permissions.value}'
         log.info(f'Logged in as {self.user.name}')
         log.info(f'Invite with: {self.invite_url}')
 
@@ -197,54 +171,6 @@ class DiscordBot(discord.Client):
         await self.change_presence(status=discord.Status.online, activity=game)
         await self.update_base_emojis()
 
-    @staticmethod
-    def is_guild_admin(message):
-        has_admin_role = 'admin' in [r.name.lower() for r in message.author.roles]
-        is_administrator = any([r.permissions.administrator for r in message.author.roles])
-        is_owner = message.author == message.guild.owner
-        return is_owner or is_administrator or has_admin_role
-
-    @staticmethod
-    def embed_check_limits(embed):
-        if len(embed.title) > 256:
-            raise EmbedLimitsExceed(embed.title)
-        if len(embed.description) > 2048:
-            raise EmbedLimitsExceed('embed.description')
-        if embed.fields and len(embed.fields) > 25:
-            raise EmbedLimitsExceed('embed.fields')
-        for field in embed.fields:
-            if len(field.name) > 256:
-                raise EmbedLimitsExceed('field.name', field)
-            if len(field.value) > 1024:
-                raise EmbedLimitsExceed('field.value', field)
-        if getattr(embed, '_footer', None):
-            if len(embed.footer.text) > 2048:
-                raise EmbedLimitsExceed('embed.footer.text')
-        if getattr(embed, '__author', None):
-            if len(field.author.name) > 256:
-                raise EmbedLimitsExceed('embed.author.name')
-        if len(embed) > 6000:
-            raise EmbedLimitsExceed('total length of embed')
-
-    async def answer(self, message, embed: discord.Embed):
-        if message.guild:
-            await self.check_for_needed_permissions(message)
-        try:
-            self.embed_check_limits(embed)
-            await message.channel.send(embed=embed)
-        except discord.errors.Forbidden:
-            log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
-        except EmbedLimitsExceed as e:
-            log.warning(f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.')
-
-    async def check_for_needed_permissions(self, message):
-        channel_permissions = message.channel.permissions_for(message.guild.me)
-        needed_permissions = [p for p, v in self.permissions if v]
-        for permission in needed_permissions:
-            has_permission = getattr(channel_permissions, permission)
-            if not has_permission:
-                log.info(f'Missing permission {permission} in channel {message.guild} / {message.channel}.')
-
     async def get_function_for_command(self, user_command, user_prefix):
         for command in self.COMMAND_REGISTRY:
             match = command['pattern'].match(user_command)
@@ -253,12 +179,6 @@ class DiscordBot(discord.Client):
                 if groups.get('prefix', user_prefix) == user_prefix:
                     return getattr(self, command['function']), groups
         return None, None
-
-    async def update_base_emojis(self):
-        for guild in self.guilds:
-            if guild.name == self.BASE_GUILD:
-                for emoji in guild.emojis:
-                    self.my_emojis[emoji.name] = str(emoji)
 
     async def show_spoilers(self, message, prefix, lang):
         spoilers = self.expander.get_spoilers(lang)
@@ -347,12 +267,6 @@ class DiscordBot(discord.Client):
         )
         await self.answer(message, e)
 
-    async def on_guild_join(self, guild):
-        log.debug(f'Joined guild {guild} (id {guild.id}) Now in {len(self.guilds)} guilds.')
-
-    async def on_guild_remove(self, guild):
-        log.debug(f'Guild {guild} (id {guild.id}) kicked me out. Now in {len(self.guilds)} guilds.')
-
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
@@ -372,13 +286,6 @@ class DiscordBot(discord.Client):
         e = discord.Embed(title='Bot invite link', color=self.WHITE)
         e.add_field(name='Feel free to share!', value=self.invite_url)
         await self.answer(message, e)
-
-    @staticmethod
-    def trim_text_lines_to_length(lines, limit):
-        breakdown = [sum([len(c) for c in lines[0:i]]) < limit for i in range(len(lines))]
-        if all(breakdown):
-            return lines
-        return lines[:breakdown.index(False) - 1]
 
     async def change_prefix(self, message, prefix, new_prefix, lang):
         my_prefix = self.prefix.get(message.guild)
@@ -505,20 +412,6 @@ class DiscordBot(discord.Client):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
-
-    async def generate_embed_from_text(self, message_lines, title, subtitle):
-        e = discord.Embed(title=title, color=self.WHITE)
-        message_text = ''
-        field_title = subtitle
-        for line in message_lines:
-            if len(message_text) + len(line) > 1024:
-                e.add_field(name=field_title, value=f'```{message_text}```', inline=False)
-                message_text = f'{line}\n'
-                field_title = 'Continuation'
-            else:
-                message_text += f'{line}\n'
-        e.add_field(name=field_title, value=f'```{message_text}```')
-        return e
 
     async def handle_pet_search(self, message, search_term, lang, prefix, shortened):
         result = self.expander.search_pet(search_term, lang)
@@ -674,7 +567,7 @@ class DiscordBot(discord.Client):
         author = await pluralize_author(author)
 
         if shortened:
-            e = self.format_output_team_shortend(team, color)
+            e = self.format_output_team_shortened(team, color)
         else:
             e = self.format_output_team(team, color, author)
 
@@ -701,7 +594,7 @@ class DiscordBot(discord.Client):
                         inline=False)
         return e
 
-    def format_output_team_shortend(self, team, color):
+    def format_output_team_shortened(self, team, color):
         e = discord.Embed(color=color)
         troops = [f'{t[1]}' for t in team['troops']]
         e.title = ', '.join(troops)
@@ -780,17 +673,6 @@ class DiscordBot(discord.Client):
         e = discord.Embed(title='News management', color=self.WHITE)
         e.add_field(name='Status', value=answer_text)
         await self.answer(message, e)
-
-    @staticmethod
-    def trim_news_to_length(text, link, max_length=1000):
-        break_character = '\n'
-        input_text = f'{text}{break_character}'
-        trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
-        read_more = ''
-        if len(trimmed_text + break_character) != len(input_text):
-            read_more = '[...] '
-        result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
-        return result
 
     async def show_latest_news(self):
         if not self.is_ready():
