@@ -10,12 +10,14 @@ class WorldData:
     def __init__(self):
         self.EVENT_TYPES = {
             0: '[GUILD_WARS]',
+            1: '[RAIDBOSS]',
             2: '[INVASION]',
             3: '[VAULT]',
             4: '[BOUNTY]',
             5: '[PETRESCUE]',
             6: '[CLASS_EVENT]',
             7: '[DELVE_EVENT]',
+            8: '[TOWER_OF_DOOM]',
             9: '[HIJACK]',
             10: '[ADVENTURE_BOARD_SPECIAL_EVENT]',
             11: '[CAMPAIGN]',
@@ -54,9 +56,8 @@ class WorldData:
     def read_json_data(self):
         with open('World.json') as f:
             self.data = json.load(f)
-        if os.path.exists('User.json'):
-            with open('User.json', encoding='utf8') as f:
-                self.user_data = json.load(f)
+        with open('User.json', encoding='utf8') as f:
+            self.user_data = json.load(f)
 
     def populate_world_data(self):
         self.read_json_data()
