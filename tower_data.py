@@ -72,7 +72,7 @@ class TowerOfDoomData:
         category_data = my_data.setdefault(category.lower(), {})
         old_values = category_data.get(field.lower(), self.DEFAULT_TOWER_DATA[category][field])
 
-        new_values = values.split(',')
+        new_values = [v.strip() for v in values.split(',')]
         my_data[category][field] = new_values
         self.set(guild, my_data)
 
