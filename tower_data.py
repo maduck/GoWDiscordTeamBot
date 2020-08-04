@@ -253,7 +253,7 @@ class TowerOfDoomData:
         my_data = self.get(guild)
         e = discord.Embed(title='Tower of Doom Config', color=color)
 
-        log.info(my_data)
+        # log.info(my_data)
 
         help_text = '\n'.join([
             "To configure the aliases, provide a category and a list of values separated by commas.",
