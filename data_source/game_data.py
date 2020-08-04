@@ -259,8 +259,6 @@ class GameData:
             'orig': task,
         }
 
-        from pprint import pprint
-        pprint(translated_task)
         return translated_task
 
     def populate_release_dates(self):
