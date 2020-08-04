@@ -770,11 +770,15 @@ class DiscordBot(BaseBot):
             await self.answer(message, e)
 
     async def show_tower_data(self, message, lang, prefix):
+        if not message.guild:
+            return
         e = self.tower_data.format_output(guild=message.guild, channel=message.channel,
                                           color=self.WHITE)
         await self.answer(message, e)
 
     async def edit_tower_single(self, message, lang, prefix, floor, room, scroll):
+        if not message.guild:
+            return
         my_data = self.tower_data.get(message.guild)
 
         short = my_data["short"]
@@ -793,6 +797,8 @@ class DiscordBot(BaseBot):
 
     async def edit_tower_floor(self, message, lang, prefix, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v,
                                scroll_vi=None):
+        if not message.guild:
+            return
         e = discord.Embed(title='Tower of Doom', color=self.WHITE)
 
         my_data = self.tower_data.get(message.guild)
