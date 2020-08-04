@@ -217,7 +217,7 @@ class TowerOfDoomData:
             if value.lower() == "none":
                 value_parsed = []
             else:
-                value_parsed = value.split(',')
+                value_parsed = [v.strip() for v in value.split(',')]
         else:
             value_parsed = value
 
