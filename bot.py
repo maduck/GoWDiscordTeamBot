@@ -543,6 +543,8 @@ class DiscordBot(BaseBot):
                 affix_text,
                 f'{requirements} {" ".join(color_requirement)}',
             ]
+            if 'release_date' in weapon:
+                message_lines.extend([f'**Release date**: {weapon["release_date"]}'])
             e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
                         value='\n'.join(message_lines))
         else:
