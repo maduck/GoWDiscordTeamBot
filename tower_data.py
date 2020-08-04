@@ -230,6 +230,7 @@ class TowerOfDoomData:
 
     def format_output_config(self, prefix, guild, color):
         my_data = self.get(guild)
+
         e = discord.Embed(title='Tower of Doom Config', color=color)
 
         help_text = '\n'.join([

@@ -290,8 +290,8 @@ class DiscordBot(BaseBot):
             if event['start'] > last_event_date and event['start'].weekday() == 0:
                 message_lines.append('')
             last_event_date = event['start']
-            message_lines.append(f'{event["start"].strftime("%m-%d")} - '
-                                 f'{event["end"].strftime("%m-%d")} '
+            message_lines.append(f'{event["start"].strftime("%b %d")} - '
+                                 f'{event["end"].strftime("%b %d")} '
                                  f'{event["type"]}'
                                  f'{":" if event["extra_info"] else ""} '
                                  f'{event["extra_info"]}')
