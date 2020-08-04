@@ -133,14 +133,14 @@ class TowerOfDoomData:
         try:
             floor_number = atoi(floor)
         except Exception:
-            log.debug(f"Couldn't find floor {floor} in {my_data['floors']}")
+            # log.debug(f"Couldn't find floor {floor} in {my_data['floors']}")
             return f'Invalid floor {floor}'
 
         try:
             room_key = self.get_key_from_alias(my_data, 'rooms', room)
             room_display = my_data['rooms'][room_key][0]
         except KeyError:
-            log.debug(f"Couldn't find room {room} in {my_data['rooms']}")
+            # log.debug(f"Couldn't find room {room} in {my_data['rooms']}")
             return False, f'Couldn\'t find room {room}'
 
         # Mythic room below floor 25? always a scroll.
@@ -167,10 +167,10 @@ class TowerOfDoomData:
     @staticmethod
     def format_floor(my_data, display, floor, floor_data):
         rooms = [
-            f'{my_data["rooms"]["II"][0]} = {my_data["scrolls"].get(floor_data.get("II", "unknown"))[0]} ',
-            f'{my_data["rooms"]["III"][0]} = {my_data["scrolls"].get(floor_data.get("III", "unknown"))[0]} ',
-            f'{my_data["rooms"]["IV"][0]} = {my_data["scrolls"].get(floor_data.get("IV", "unknown"))[0]} ',
-            f'{my_data["rooms"]["V"][0]} = {my_data["scrolls"].get(floor_data.get("V", "unknown"))[0]} ',
+            f'{my_data["rooms"]["II"][0]} = {my_data["scrolls"].get(floor_data.get("II", "unknown"))[0]}, ',
+            f'{my_data["rooms"]["III"][0]} = {my_data["scrolls"].get(floor_data.get("III", "unknown"))[0]}, ',
+            f'{my_data["rooms"]["IV"][0]} = {my_data["scrolls"].get(floor_data.get("IV", "unknown"))[0]}, ',
+            f'{my_data["rooms"]["V"][0]} = {my_data["scrolls"].get(floor_data.get("V", "unknown"))[0]}, ',
             f'{my_data["rooms"]["VI"][0]} = {my_data["scrolls"].get(floor_data.get("VI", "unknown"))[0]}'
         ]
         if floor_data.get('II', 'unknown') in my_data['hide']:
@@ -223,7 +223,7 @@ class TowerOfDoomData:
 
         e = discord.Embed(title='Tower of Doom', color=color)
         e.add_field(name=f'#{channel.name}', value=tower_text)
-        log.warn(e.fields)
+        # log.warn(e.fields)
         return e
 
     def set_option(self, guild, option, value, boolean=False):
@@ -273,7 +273,7 @@ class TowerOfDoomData:
         e.add_field(name='Rooms', value=rooms_text, inline=True)
 
         # TODO: Revise get() to make this cleaner.
-        log.debug(my_data["scrolls"])
+        # log.debug(my_data["scrolls"])
         scrolls_text = '\n'.join([
             f'Armor: {", ".join(my_data["scrolls"]["armor"])}',
             f'Attack: {", ".join(my_data["scrolls"]["attack"])}',
