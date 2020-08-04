@@ -269,39 +269,42 @@ class GameData:
 
         return translated_task
 
-    def populate_release_dates(self):
+    def get_datetime(self, val):
         date_format = '%m/%d/%Y %I:%M:%S %p %Z'
+        return datetime.datetime.strptime(val, date_format)
+
+    def populate_release_dates(self):
         release: dict
         for release in self.user_data['pEconomyModel']['TroopReleaseDates']:
             troop_id = release['TroopId']
-            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
+            release_date = self.get_datetime(release['Date'])
             self.troops[troop_id]['release_date'] = release_date
-            self.spoilers.append({'type': 'troop', 'date': release_date, 'id': troop_id})
+            self.spoilers.append({'type': 'troop', 'date': release_date.date(), 'id': troop_id})
         for release in self.user_data['pEconomyModel']['PetReleaseDates']:
             pet_id = release['PetId']
-            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
+            release_date = self.get_datetime(release['Date'])
             self.pets[pet_id]['release_date'] = release_date
-            self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
+            self.spoilers.append({'type': 'pet', 'date': release_date.date(), 'id': pet_id})
         for release in self.user_data['pEconomyModel']['KingdomReleaseDates']:
             kingdom_id = release['KingdomId']
-            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
+            release_date = self.get_datetime(release['Date'])
             self.kingdoms[kingdom_id]['release_date'] = release_date
-            self.spoilers.append({'type': 'kingdom', 'date': release_date, 'id': kingdom_id})
+            self.spoilers.append({'type': 'kingdom', 'date': release_date.date(), 'id': kingdom_id})
         for release in self.user_data['pEconomyModel']['HeroClassReleaseDates']:
             class_id = release['HeroClassId']
-            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
+            release_date = self.get_datetime(release['Date'])
             self.classes[class_id]['release_date'] = release_date
-            self.spoilers.append({'type': 'class', 'date': release_date, 'id': class_id})
+            self.spoilers.append({'type': 'class', 'date': release_date.date(), 'id': class_id})
         for release in self.user_data['pEconomyModel']['RoomReleaseDates']:
             room_id = release['RoomId']
-            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
+            release_date = self.get_datetime(release['Date'])
             # self.rooms[room_id]['release_date'] = release_date
-            self.spoilers.append({'type': 'room', 'date': release_date, 'id': room_id})
+            self.spoilers.append({'type': 'room', 'date': release_date.date(), 'id': room_id})
         for release in self.user_data['pEconomyModel']['WeaponReleaseDates']:
             weapon_id = release['WeaponId']
-            release_date = datetime.datetime.strptime(release['Date'], date_format).date()
+            release_date = self.get_datetime(release['Date'])
             self.weapons.setdefault(weapon_id, {})['release_date'] = release_date
-            self.spoilers.append({'type': 'weapon', 'date': release_date, 'id': weapon_id})
+            self.spoilers.append({'type': 'weapon', 'date': release_date.date(), 'id': weapon_id})
         for release in self.user_data['BasicLiveEventArray']:
             result = {'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
                       'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
@@ -325,7 +328,7 @@ class GameData:
             kingdom_weapons = [w['id'] for w in self.weapons.values()
                                if w['kingdom']['id'] == event['kingdom_id']
                                and w['id'] not in non_craftable_wepon_ids
-                               and w.get('release_date', datetime.date.min) < event['end']]
+                               and w.get('release_date', datetime.datetime.min).date() < event['end']]
             self.soulforge_weapons.append({
                 'start': event['start'],
                 'end': event['end'],
