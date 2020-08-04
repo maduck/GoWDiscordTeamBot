@@ -164,7 +164,7 @@ tower_help_titles = {
 }
 tower_help_texts = {
     'en': {
-        'Basics': 'Users can use the `{0}tower` command to enter Scroll data for the Tower of Doom,'
+        'Basics': 'Users can use the `{0}tower` command to enter Scroll data for the Tower of Doom, '
                   'then display it for easy viewing. Each Tower is specific to the channel it is in.',
         'Entering Data': 'To enter data, use the `{0}tower` command. Shortened names or aliases can be used.\n'
                          '`{0}tower 4 ii unlock`\n'
