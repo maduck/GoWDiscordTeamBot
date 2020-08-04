@@ -12,11 +12,11 @@ class TowerOfDoomData:
 
     DEFAULT_TOWER_DATA = {
         'rooms': {
-            "II": ["II", "r", "Rare"],
-            "III": ["III", "u", "ur", "ultrarare", "Ultra-Rare"],
-            "IV": ["IV", "e", "Epic"],
-            "V": ["V", "l", "Legendary"],
-            "VI": ["VI", "m", "Mythic"]
+            "ii": ["II", "r", "Rare"],
+            "iii": ["III", "u", "ur", "ultrarare", "Ultra-Rare"],
+            "iv": ["IV", "e", "Epic"],
+            "v": ["V", "l", "Legendary"],
+            "vi": ["VI", "m", "Mythic"]
         },
         'scrolls': {
             "armor": ["🛡️", "ar", "Armor"],
@@ -65,35 +65,27 @@ class TowerOfDoomData:
         self.save_data()
 
     def set_alias(self, guild, category, field, values):
-        # Bypass .get() since that includes default data.
         my_data = self.__data.get(str(guild.id), {})
 
-        old_values = my_data.get(
-            category, self.DEFAULT_TOWER_DATA[category]
-        ).get(
-            field, self.DEFAULT_TOWER_DATA[category][field]
-        )
-        new_values = values.split(',')
+        category_data = my_data.setdefault(category.lower(), {})
+        old_values = category_data.get(field.lower(), self.DEFAULT_TOWER_DATA[category][field])
 
-        # Create a dict if it doesn't exist
-        my_data[category] = my_data.get(category, {})
+        new_values = values.split(',')
         my_data[category][field] = new_values
         self.set(guild, my_data)
 
         return ', '.join(old_values), ', '.join(new_values)
 
     def set_scroll(self, guild, channel, floor, room, scroll):
-        # Bypass .get() since that includes default data.
-        my_data = self.__data.get(str(guild.id), {})
+        channel_data = self.__data.get(str(guild.id), {})
 
-        # Create a dict if it doesn't exist
-        my_data[channel] = my_data.get(channel, {})
-        my_data[channel][floor] = my_data[channel].get(floor, {})
+        channel_data[channel] = channel_data.get(channel, {})
+        channel_data[channel][floor] = channel_data[channel].get(floor, {})
 
-        old_value = my_data[channel][floor].get(room, 'unknown')
-        my_data[channel][floor][room] = scroll
-        new_value = my_data[channel][floor].get(room, '<ERROR>')
-        self.set(guild, my_data)
+        old_value = channel_data[channel][floor].get(room, 'unknown')
+        channel_data[channel][floor][room] = scroll
+        new_value = channel_data[channel][floor].get(room, '<ERROR>')
+        self.set(guild, channel_data)
 
         return old_value, new_value
 
@@ -132,19 +124,14 @@ class TowerOfDoomData:
 
         channel = str(message.channel.id)
 
-        # FIXME this should not be able to fire
-        try:
-            floor_number = atoi(floor)
-        except Exception:
-            # log.debug(f"Couldn't find floor {floor} in {my_data['floors']}")
-            return f'Invalid floor {floor}'
+        floor_number = atoi(floor)
 
         try:
             room_key = self.get_key_from_alias(my_data, 'rooms', room)
             room_display = my_data['rooms'][room_key][0]
         except KeyError:
             # log.debug(f"Couldn't find room {room} in {my_data['rooms']}")
-            return False, f'Couldn\'t find room {room}'
+            return False, f'Couldn\'t find room `{room}`'
 
         # Mythic room below floor 25? always a scroll.
         if floor_number <= 25 and room_key == "VI":
@@ -167,25 +154,14 @@ class TowerOfDoomData:
             scroll_old_display = my_data["scrolls"][scroll_old_key][0]
             return True, f'Replaced floor {floor} room {room_display} to {scroll_new_display} (was {scroll_old_display})'
 
-    @staticmethod
-    def format_floor(my_data, display, floor, floor_data):
+    def format_floor(self, my_data, display, floor, floor_data):
         rooms = [
-            f'{my_data["rooms"]["II"][0]} = {my_data["scrolls"].get(floor_data.get("II", "unknown"))[0]}, ',
-            f'{my_data["rooms"]["III"][0]} = {my_data["scrolls"].get(floor_data.get("III", "unknown"))[0]}, ',
-            f'{my_data["rooms"]["IV"][0]} = {my_data["scrolls"].get(floor_data.get("IV", "unknown"))[0]}, ',
-            f'{my_data["rooms"]["V"][0]} = {my_data["scrolls"].get(floor_data.get("V", "unknown"))[0]}, ',
-            f'{my_data["rooms"]["VI"][0]} = {my_data["scrolls"].get(floor_data.get("VI", "unknown"))[0]}'
+            f'{my_data["rooms"][r][0]} = {my_data["scrolls"].get(floor_data.get(r, "unknown"))[0]}, '
+            for r in self.DEFAULT_TOWER_DATA['rooms'].keys()
         ]
-        if floor_data.get('II', 'unknown') in my_data['hide']:
-            rooms[0] = f"||{rooms[0]}||"
-        if floor_data.get('III', 'unknown') in my_data['hide']:
-            rooms[1] = f"||{rooms[1]}||"
-        if floor_data.get('IV', 'unknown') in my_data['hide']:
-            rooms[2] = f"||{rooms[2]}||"
-        if floor_data.get('V', 'unknown') in my_data['hide']:
-            rooms[3] = f"||{rooms[3]}||"
-        if floor_data.get('VI', 'unknown') in my_data['hide']:
-            rooms[4] = f"||{rooms[4]}||"
+        for i, room in enumerate(self.DEFAULT_TOWER_DATA['rooms'].keys()):
+            if floor_data.get(room, 'unknown') in my_data['hide']:
+                rooms[i] = f'||{rooms[i]}||'
 
         # Hide the boss room (always a scroll)
         if int(floor) <= 25:
@@ -230,15 +206,16 @@ class TowerOfDoomData:
         return e
 
     def set_option(self, guild, option, value, boolean=False):
-        # Bypass .get() since that includes default data.
+        if option not in self.DEFAULT_TOWER_DATA:
+            return None, None
+
         my_data = self.__data.get(str(guild.id), {})
 
         if option in ['short']:
-            # String to boolean.
-            value_parsed = value.lower() in ['true', '1', 't', 'y', 'yes']
+            value_parsed = value.lower() in ['true', '1', 't', 'y', 'yes', 'on']
         elif option in ['hide']:
             # String to list.
-            if value == "none":
+            if value.lower() == "none":
                 value_parsed = []
             else:
                 value_parsed = value.split(',')
@@ -266,35 +243,28 @@ class TowerOfDoomData:
         e.add_field(name='Help', value=help_text, inline=False)
 
         rooms_text = '\n'.join([
-            f'Rare (II): {", ".join(my_data["rooms"]["II"])}',
-            f'Ultra-Rare (III): {", ".join(my_data["rooms"]["III"])}',
-            f'Epic (IV): {", ".join(my_data["rooms"]["IV"])}',
-            f'Legendary (V): {", ".join(my_data["rooms"]["V"])}',
-            f'Mythic (VI): {", ".join(my_data["rooms"]["VI"])}',
+            f'Rare (II): {", ".join(my_data["rooms"]["ii"])}',
+            f'Ultra-Rare (III): {", ".join(my_data["rooms"]["iii"])}',
+            f'Epic (IV): {", ".join(my_data["rooms"]["iv"])}',
+            f'Legendary (V): {", ".join(my_data["rooms"]["v"])}',
+            f'Mythic (VI): {", ".join(my_data["rooms"]["vi"])}',
         ])
 
         e.add_field(name='Rooms', value=rooms_text, inline=True)
 
         # TODO: Revise get() to make this cleaner.
-        # log.debug(my_data["scrolls"])
-        scrolls_text = '\n'.join([
-            f'Armor: {", ".join(my_data["scrolls"]["armor"])}',
-            f'Attack: {", ".join(my_data["scrolls"]["attack"])}',
-            f'Life: {", ".join(my_data["scrolls"]["life"])}',
-            f'Magic: {", ".join(my_data["scrolls"]["magic"])}',
-            f'Haste: {", ".join(my_data["scrolls"]["haste"])}',
-            f'Luck: {", ".join(my_data["scrolls"]["luck"])}',
-            f'Power: {", ".join(my_data["scrolls"]["power"])}',
-            f'Unlock: {", ".join(my_data["scrolls"]["unlock"])}',
-            f'Heroism: {", ".join(my_data["scrolls"]["heroism"])}',
-            f'Fireball: {", ".join(my_data["scrolls"]["fireball"])}'
-        ])
+        # f'Life: {", ".join(my_data["scrolls"]["life"])}',
+        scrolls_text = '\n'.join(
+            [
+                f'{key.title()}: {", ".join(my_data["scrolls"][key.lower()])}'
+                for key in self.DEFAULT_TOWER_DATA['scrolls'].keys()
+            ])
 
         e.add_field(name='Scrolls', value=scrolls_text, inline=True)
 
         options_text = '\n'.join([
             f'**Short Format**: {bool_to_emoticon(my_data["short"])}',
-            'Only respond to edits with a :thumbs_up: instead of a full message.',
+            'Only respond to edits with a :thumbsup: instead of a full message.',
             f'**Hide Values**: {"None" if my_data["hide"] == [] else ",".join(my_data["hide"])}',
             'Hide unimportant scrolls with spoilers.'
         ])

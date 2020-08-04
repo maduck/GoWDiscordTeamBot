@@ -745,11 +745,16 @@ class DiscordBot(BaseBot):
         if self.is_guild_admin(message):
             old_value, new_value = self.tower_data.set_option(guild=message.guild, option=option, value=value)
 
+            if old_value is None and new_value is None:
+                e = discord.Embed(title='Administrative action', color=self.RED)
+                e.add_field(name='Tower change rejected', value=f'Invalid option `{option}` specified.')
+                await self.answer(message, e)
+                return
+
             e = discord.Embed(title='Administrative action', color=self.RED)
             e.add_field(name='Tower change accepted',
                         value=f'Option {option} changed from `{old_value}` to `{new_value}`')
             await self.answer(message, e)
-            log.debug(f'[{message.guild.name}] Changed Tower config {option} from {old_value} to {new_value}')
         else:
             e = discord.Embed(title='Administrative action', color=self.RED)
             e.add_field(name='Tower change rejected', value=f'Only admins can change config options.')
@@ -762,10 +767,8 @@ class DiscordBot(BaseBot):
 
             e = discord.Embed(title='Administrative action', color=self.RED)
             e.add_field(name='Tower change accepted',
-                        value=f'Alias {category}: {field} was changed from `{old_values}` to `{new_values}`')
+                        value=f'Alias {category}: `{field}` was changed from `{old_values}` to `{new_values}`.')
             await self.answer(message, e)
-            log.debug(
-                f'[{message.guild.name}] Changed Tower config {category}: {field} from {old_values} to {new_values}')
         else:
             e = discord.Embed(title='Administrative action', color=self.RED)
             e.add_field(name='Tower change rejected', value=f'Only admins can change config options.')
