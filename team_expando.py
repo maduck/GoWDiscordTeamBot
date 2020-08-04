@@ -506,15 +506,18 @@ class TeamExpander:
             _('[MEDAL_LEVEL_2]'): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['gold']],
         }
 
-    @staticmethod
-    def translate_campaign_task(task, lang):
+    def translate_campaign_task(self, task, lang):
         new_task = task.copy()
+        kingdom = self.kingdoms[task['kingdom_id']]
+        color = kingdom['primary_color'].upper()
+
         replacements = {
             'UsingWeaponType': ['{WeaponType}', '[WEAPONTYPE_{c:u}]', '[WEAPONTYPE_{c:u}]'],
             'OfKingdom': ['{Kingdom}', '[{d:u}_NAME]', '[{d:u}_NAME]'],
             'UsingBanner': ['{Banner}', '[{c:u}_BANNERNAME]', '[{c:u}_BANNERNAME]'],
             'AtCampaignDifficulty': ['{Kingdom}', '[{d:u}_NAME]', '[{d:u}_NAME]'],
             'UsingClass': ['{Class}', '[HEROCLASS_{c:l}_NAME]', '[HEROCLASS_{c:l}_NAME]'],
+            'CampaignTroopColor': ['{Color}', f'[GEM_{color}]', f'[GEM_{color}]']
         }
         replacement = replacements.get(task['condition'], ['', '', ''])
         title_replace = _(replacement[2].format(**new_task), lang)

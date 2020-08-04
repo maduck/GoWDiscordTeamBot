@@ -238,12 +238,12 @@ class GameData:
         for kingdom_id, tasks in self.user_data['pTasksData']['CampaignTasks'].items():
             if not tasks['Bronze'] and not tasks['Silver'] and not tasks['Gold']:
                 continue
-            self.campaign_tasks['bronze'] = [self.transform_campaign_task(t) for t in tasks['Bronze']]
-            self.campaign_tasks['silver'] = [self.transform_campaign_task(t) for t in tasks['Silver']]
-            self.campaign_tasks['gold'] = [self.transform_campaign_task(t) for t in tasks['Gold']]
+            self.campaign_tasks['bronze'] = [self.transform_campaign_task(t, kingdom_id) for t in tasks['Bronze']]
+            self.campaign_tasks['silver'] = [self.transform_campaign_task(t, kingdom_id) for t in tasks['Silver']]
+            self.campaign_tasks['gold'] = [self.transform_campaign_task(t, kingdom_id) for t in tasks['Gold']]
 
     @staticmethod
-    def transform_campaign_task(task):
+    def transform_campaign_task(task, kingdom_id):
         translated_task = {
             'reward': task['Rewards'][0]['Amount'],
             'condition': task.get('Condition'),
@@ -255,8 +255,12 @@ class GameData:
             'y': task.get('YValue'),
             'c': U(task.get('CValue')),
             'd': U(task.get('DValue')),
+            'kingdom_id': int(kingdom_id),
             'orig': task,
         }
+
+        from pprint import pprint
+        pprint(translated_task)
         return translated_task
 
     def populate_release_dates(self):
