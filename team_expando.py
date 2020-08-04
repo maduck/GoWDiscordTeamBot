@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-from data_source.world_data import WorldData
+from data_source.game_data import GameData
 from game_constants import TROOP_RARITIES, WEAPON_RARITIES
 from translations import _
 
@@ -27,7 +27,7 @@ def extract_search_tag(search_term):
 class TeamExpander:
 
     def __init__(self):
-        world = WorldData()
+        world = GameData()
         world.populate_world_data()
         log.debug('Done populating world data.')
         self.troops = world.troops

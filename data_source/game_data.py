@@ -17,7 +17,7 @@ class U(str):
         return s.__format__(fmt)
 
 
-class WorldData:
+class GameData:
     COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown')
 
     def __init__(self):
