@@ -49,7 +49,7 @@ class DiscordBot(BaseBot):
     DEFAULT_LANGUAGE = 'en'
     BOT_NAME = 'garyatrics.com'
     BASE_GUILD = "Garyatrics"
-    VERSION = '0.6'
+    VERSION = '0.7'
     GRAPHICS_URL = 'https://garyatrics.com/gow_assets'
     NEEDED_PERMISSIONS = [
         'add_reactions',
@@ -837,7 +837,7 @@ class DiscordBot(BaseBot):
             return
         if not self.is_guild_admin(message):
             e = discord.Embed(title='News management', color=self.RED)
-            e.add_field(name='Susbscribe',
+            e.add_field(name='Subscribe',
                         value=f'Only the server owner has permission to change news subscriptions.')
             await self.answer(message, e)
             return
