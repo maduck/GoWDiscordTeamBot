@@ -517,7 +517,9 @@ class TeamExpander:
             'UsingBanner': ['{Banner}', '[{c:u}_BANNERNAME]', '[{c:u}_BANNERNAME]'],
             'AtCampaignDifficulty': ['{Kingdom}', '[{d:u}_NAME]', '[{d:u}_NAME]'],
             'UsingClass': ['{Class}', '[HEROCLASS_{c:l}_NAME]', '[HEROCLASS_{c:l}_NAME]'],
-            'CampaignTroopColor': ['{Color}', f'[GEM_{color}]', f'[GEM_{color}]']
+            'CampaignTroopColor': ['{Color}', f'[GEM_{color}]', f'[GEM_{color}]'],
+            'CampaignTroopType': ['{TroopType}', '`?`', '`?`'],
+            'CampaignTroopId': ['{Troop}', '`?`', '`?`'],
         }
         replacement = replacements.get(task['condition'], ['', '', ''])
         title_replace = _(replacement[2].format(**new_task), lang)
