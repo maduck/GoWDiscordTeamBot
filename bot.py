@@ -317,6 +317,8 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def clear_tower_data(self, message, prefix, lang):
+        if not message.guild:
+            return
         self.tower_data.clear_data(prefix, message.guild, message)
 
         e = discord.Embed(title="Tower of Doom", color=self.WHITE)
