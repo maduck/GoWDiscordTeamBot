@@ -1,3 +1,5 @@
+from collections import ChainMap
+
 import discord
 import json
 import os
@@ -90,21 +92,18 @@ class TowerOfDoomData:
         return old_value, new_value
 
     def get(self, guild):
-        # TODO: Make sure the config returns defaults for any unpopulated values,
-        # while also avoiding writing defaults to save space.
-        # I use lots of .get(key, default) to avoid 
-        if guild is None:
-            return {}
-        return merge(dict(self.__data.get(str(guild.id), {})), self.DEFAULT_TOWER_DATA)
+        guild_data = self.__data.get(str(guild.id), {})
+        return merge(guild_data, self.DEFAULT_TOWER_DATA)
 
     def clear_data(self, prefix, guild, message):
-        # Bypass .get() since that includes default data.
-        my_data = self.__data.get(str(guild.id), {})
+        if not str(guild.id) in self.__data:
+            return
+        guild_data = self.__data[str(guild.id)]
         channel = str(message.channel.id)
+        if channel in guild_data:
+            del guild_data[channel]
 
-        # Override channel data with empty.
-        my_data[channel] = {}
-        self.set(guild, my_data)
+        self.set(guild, guild_data)
 
     def get_key_from_alias(self, data, category, value):
         keys = self.DEFAULT_TOWER_DATA[category].keys()
@@ -233,8 +232,6 @@ class TowerOfDoomData:
         my_data = self.get(guild)
         e = discord.Embed(title='Tower of Doom Config', color=color)
 
-        # log.info(my_data)
-
         help_text = '\n'.join([
             "To configure the aliases, provide a category and a list of values separated by commas.",
             f"`{prefix}towerconfig rooms rare r,rare,ii`"
@@ -243,11 +240,11 @@ class TowerOfDoomData:
         e.add_field(name='Help', value=help_text, inline=False)
 
         rooms_text = '\n'.join([
-            f'Rare (II): {", ".join(my_data["rooms"]["ii"])}',
-            f'Ultra-Rare (III): {", ".join(my_data["rooms"]["iii"])}',
-            f'Epic (IV): {", ".join(my_data["rooms"]["iv"])}',
-            f'Legendary (V): {", ".join(my_data["rooms"]["v"])}',
-            f'Mythic (VI): {", ".join(my_data["rooms"]["vi"])}',
+            f'II: {", ".join(my_data["rooms"]["ii"])}',
+            f'III: {", ".join(my_data["rooms"]["iii"])}',
+            f'IV: {", ".join(my_data["rooms"]["iv"])}',
+            f'V: {", ".join(my_data["rooms"]["v"])}',
+            f'VI: {", ".join(my_data["rooms"]["vi"])}',
         ])
 
         e.add_field(name='Rooms', value=rooms_text, inline=True)
