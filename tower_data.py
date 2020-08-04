@@ -119,6 +119,9 @@ class TowerOfDoomData:
 
         # Get the key from the alias.
         result = list(filter(lambda key: value.lower() in [i.lower() for i in data[category].get(key, [])], keys))
+        if not result:
+            return
+
         return result[0]
 
     def edit_floor(self, prefix, guild, message, floor, room, scroll):
