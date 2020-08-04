@@ -235,12 +235,20 @@ class GameData:
             }
 
     def populate_campaign_tasks(self):
-        for kingdom_id, tasks in self.user_data['pTasksData']['CampaignTasks'].items():
-            if not tasks['Bronze'] and not tasks['Silver'] and not tasks['Gold']:
-                continue
-            self.campaign_tasks['bronze'] = [self.transform_campaign_task(t, kingdom_id) for t in tasks['Bronze']]
-            self.campaign_tasks['silver'] = [self.transform_campaign_task(t, kingdom_id) for t in tasks['Silver']]
-            self.campaign_tasks['gold'] = [self.transform_campaign_task(t, kingdom_id) for t in tasks['Gold']]
+        event_kingdom_id = self.get_current_event_kingdom()
+
+        tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
+        self.campaign_tasks['bronze'] = [self.transform_campaign_task(t, event_kingdom_id) for t in tasks['Bronze']]
+        self.campaign_tasks['silver'] = [self.transform_campaign_task(t, event_kingdom_id) for t in tasks['Silver']]
+        self.campaign_tasks['gold'] = [self.transform_campaign_task(t, event_kingdom_id) for t in tasks['Gold']]
+
+    def get_current_event_kingdom(self):
+        today = datetime.date.today()
+        world_event = [e for e in self.events
+                       if e['end'] - e['start'] == datetime.timedelta(days=7)
+                       and e['start'] <= today <= e['end']][0]
+        event_kingdom_id = world_event['kingdom_id']
+        return event_kingdom_id
 
     @staticmethod
     def transform_campaign_task(task, kingdom_id):
