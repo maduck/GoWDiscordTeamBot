@@ -179,7 +179,8 @@ class DiscordBot(BaseBot):
         },
         {
             'function': 'show_campaign_tasks',
-            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)campaign$', re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)campaign( (?P<tier>bronze|silver|gold))?$',
+                                  re.IGNORECASE)
         }
     ]
 
@@ -219,15 +220,19 @@ class DiscordBot(BaseBot):
                     return getattr(self, command['function']), groups
         return None, None
 
-    async def show_campaign_tasks(self, message, prefix, lang):
+    async def show_campaign_tasks(self, message, prefix, lang, tier):
         task_categories = self.expander.get_campaign_tasks(lang)
         e = discord.Embed(title='Campaign Tasks', color=self.WHITE)
 
         for category, tasks in task_categories.items():
+            if tier and category.lower() != tier.lower():
+                continue
             category_lines = []
             for task in tasks:
-                category_lines.append(f'**{task["title"]}**: {task["name"]}')
+                task_name = task["name"].replace('{Value1}', '`?`')
+                category_lines.append(f'**{task["title"]}**: {task_name}')
             e.add_field(name=f'__**{category}**__', value='\n'.join(category_lines), inline=False)
+        e.add_field(name='`?`', value='will be set by the game\'s progress.')
         await self.answer(message, e)
 
     async def show_spoilers(self, message, prefix, lang, filter):
