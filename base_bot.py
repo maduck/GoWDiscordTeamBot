@@ -60,6 +60,16 @@ class BaseBot(discord.Client):
             if not has_permission:
                 log.info(f'Missing permission {permission} in channel {message.guild} / {message.channel}.')
 
+    async def react(self, message, reaction: discord.Emoji):
+        if message.guild:
+            await self.check_for_needed_permissions(message)
+        try:
+            await message.add_reaction(emoji=reaction)
+        except discord.errors.Forbidden:
+            log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
+        except EmbedLimitsExceed as e:
+            log.warning(f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.')
+
     async def answer(self, message, embed: discord.Embed):
         if message.guild:
             await self.check_for_needed_permissions(message)

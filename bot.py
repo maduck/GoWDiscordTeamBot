@@ -11,16 +11,17 @@ from discord.ext import tasks
 
 from base_bot import BaseBot, log
 from game_constants import RARITY_COLORS
-from help import get_help_text
+from help import get_help_text, get_tower_help_text
 from jobs.news_downloader import NewsDownloader
 from language import Language
 from prefix import Prefix
 from subscriptions import Subscriptions
 from team_expando import TeamExpander
+from tower_data import TowerOfDoomData
 from translations import Translations
+from util import format_bool
 
 TOKEN = os.getenv('DISCORD_TOKEN')
-
 
 def chunks(iterable, chunk_size):
     for i in range(0, len(iterable), chunk_size):
@@ -46,8 +47,8 @@ class DiscordBot(BaseBot):
     DEFAULT_PREFIX = '!'
     DEFAULT_LANGUAGE = 'en'
     BOT_NAME = 'garyatrics.com'
-    BASE_GUILD = 'Garyatrics'
-    VERSION = '0.6'
+    BASE_GUILD = "Eric's Test Server"
+    VERSION = '0.7'
     GRAPHICS_URL = 'https://garyatrics.com/gow_assets'
     NEEDED_PERMISSIONS = [
         'add_reactions',
@@ -114,6 +115,38 @@ class DiscordBot(BaseBot):
             'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)prefix (?P<new_prefix>.+)$', re.IGNORECASE)
         },
         {
+            'function': 'show_tower_help',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)towerhelp$', re.IGNORECASE)
+        },
+        {
+            'function': 'show_tower_config',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig$', re.IGNORECASE)
+        },
+        {
+            'function': 'set_tower_config_alias',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig (?P<category>[^ ]+) (?P<field>[^ ]+) (?P<values>.+)$', re.IGNORECASE)
+        },
+        {
+            'function': 'set_tower_config_option',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig (?P<option>[^ ]+) (?P<value>.+)$', re.IGNORECASE)
+        },
+        {
+            'function': 'show_tower_data',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)tower$', re.IGNORECASE)
+        },
+                {
+            'function': 'clear_tower_data',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)towerclear$', re.IGNORECASE)
+        },
+        {
+            'function': 'edit_tower_single',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)tower (?P<floor>[^ ]+) (?P<room>[^ ]+) (?P<scroll>[^ ]+)$', re.IGNORECASE)
+        },
+        {
+            'function': 'edit_tower_floor',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)tower (?P<floor>[^ ]+) (?P<scrollA>[^ ]+) (?P<scrollB>[^ ]+) (?P<scrollC>[^ ]+) (?P<scrollD>[^ ]+) ?(?P<scrollE>[^ ]+)?$', re.IGNORECASE)
+        },
+        {
             'function': 'handle_team_code',
             'pattern': re.compile(
                 r'.*?' + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})\].*',
@@ -155,6 +188,7 @@ class DiscordBot(BaseBot):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
 
         self.expander = TeamExpander()
+        self.tower_data = TowerOfDoomData()
         self.prefix = Prefix(self.DEFAULT_PREFIX)
         self.language = Language(self.DEFAULT_LANGUAGE)
         self.subscriptions = Subscriptions()
@@ -258,6 +292,21 @@ class DiscordBot(BaseBot):
         e = discord.Embed(title=help_title, color=self.WHITE)
         for section, text in help_text.items():
             e.add_field(name=section, value=text, inline=False)
+        await self.answer(message, e)
+
+    async def show_tower_help(self, message, prefix, lang):
+        help_title, help_text = get_tower_help_text(prefix, lang)
+
+        e = discord.Embed(title=help_title, color=self.WHITE)
+        for section, text in help_text.items():
+            e.add_field(name=section, value=text, inline=False)
+        await self.answer(message, e)
+
+    async def clear_tower_data(self, message, prefix, lang):
+        self.tower_data.clear_data(prefix, message.guild, message)
+
+        e = discord.Embed(title="Tower of Doom", color=self.WHITE)
+        e.add_field(name="Success", value=f"Cleared tower data for #{message.channel.name}", inline=False)
         await self.answer(message, e)
 
     async def show_quickhelp(self, message, prefix, lang):
@@ -670,6 +719,100 @@ class DiscordBot(BaseBot):
         e.add_field(name='The current prefix is', value=f'`{prefix}`')
         await self.answer(message, e)
 
+    async def show_tower_config(self, message, lang, prefix):
+        e = self.tower_data.format_output_config(prefix=prefix, guild=message.guild, color=self.WHITE)
+        await self.answer(message, e)
+
+    async def set_tower_config_option(self, message, lang, prefix, option, value):
+        if self.is_guild_admin(message):
+            old_value, new_value = self.tower_data.set_option(guild=message.guild, option=option, value=value)
+
+            e = discord.Embed(title='Administrative action', color=self.RED)
+            e.add_field(name='Tower change accepted', value=f'Option {option} changed from `{old_value}` to `{new_value}`')
+            await self.answer(message, e)
+            log.debug(f'[{message.guild.name}] Changed Tower config {option} from {old_value} to {new_value}')
+        else:
+            e = discord.Embed(title='Administrative action', color=self.RED)
+            e.add_field(name='Tower change rejected', value=f'Only admins can change config options.')
+            await self.answer(message, e)
+
+    async def set_tower_config_alias(self, message, lang, prefix, category, field, values):
+        if self.is_guild_admin(message):
+            old_values, new_values = self.tower_data.set_alias(guild=message.guild, category=category, field=field, values=values)
+
+            e = discord.Embed(title='Administrative action', color=self.RED)
+            e.add_field(name='Tower change accepted', value=f'Alias {category}: {field} was changed from `{old_values}` to `{new_values}`')
+            await self.answer(message, e)
+            log.debug(f'[{message.guild.name}] Changed Tower config {category}: {field} from {old_values} to {new_values}')
+        else:
+            e = discord.Embed(title='Administrative action', color=self.RED)
+            e.add_field(name='Tower change rejected', value=f'Only admins can change config options.')
+            await self.answer(message, e)
+
+    async def show_tower_data(self, message, lang, prefix):
+        e = self.tower_data.format_output(guild=message.guild, channel=message.channel,
+            color=self.WHITE)
+        await self.answer(message, e)
+
+    async def edit_tower_single(self, message, lang, prefix, floor, room, scroll):
+        my_data = self.tower_data.get(message.guild)
+
+        short = my_data["short"]
+        
+        r = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
+            message=message, floor=floor, room=room, scroll=scroll)
+        
+        if short:
+            # Respond with a reaction.
+            await self.react(message, format_bool(r[0]))
+        else:
+            # Respond with an embed.
+            e = discord.Embed(title='Tower of Doom', color=self.WHITE)
+            e.add_field(name='Success' if r[0] else 'Failure', value=r[1])
+            await self.answer(message, e)
+            
+    async def edit_tower_floor(self, message, lang, prefix, floor, scrollA, scrollB, scrollC, scrollD, scrollE = None):
+        e = discord.Embed(title='Tower of Doom', color=self.WHITE)
+
+        my_data = self.tower_data.get(message.guild)
+
+        short = my_data["short"]
+
+        rA = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
+            message=message, floor=floor, room="II", scroll=scrollA)
+        rB = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
+            message=message, floor=floor, room="III", scroll=scrollB)
+        rC = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
+            message=message, floor=floor, room="IV", scroll=scrollC)
+        rD = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
+            message=message, floor=floor, room="V", scroll=scrollD)
+        # Mythic Room
+        if scrollE != None:
+            log.info(scrollE)
+            rE = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
+                message=message, floor=floor, room="VI", scroll=scrollE)
+        else:
+            rE = (True, '')
+
+        success = rA[0] and rB[0] and rC[0] and rD[0] and rE[0]
+
+        if short:
+            # This is a reaction.
+            await self.react(message, format_bool(success))
+        else:
+            # It's an embed.
+            e = discord.Embed(title='Tower of Doom', color=self.WHITE)
+            edit_text = '\n'.join([
+                f"{'Success' if rA[0] else 'Failure'}: {rA[1]}",
+                f"{'Success' if rB[0] else 'Failure'}: {rB[1]}",
+                f"{'Success' if rC[0] else 'Failure'}: {rC[1]}",
+                f"{'Success' if rD[0] else 'Failure'}: {rD[1]}",
+                f"{'Success' if rE[0] else 'Failure'}: {rE[1]}" if scrollE != None else ''
+            ])
+
+            e.add_field(name='Edit Tower (Floor)', value=edit_text)
+            await self.answer(message, e)
+
     async def news_subscribe(self, message, prefix):
         if not message.guild:
             return
@@ -801,4 +944,7 @@ async def test_task(discord_client):
 if __name__ == '__main__':
     client = DiscordBot()
     test_task.start(client)
-    client.run(TOKEN)
+    if TOKEN is not None:
+        client.run(TOKEN)
+    else:
+        log.error('FATAL ERROR: DISCORD_TOKEN env var was not specified.')
