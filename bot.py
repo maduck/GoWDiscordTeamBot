@@ -47,8 +47,8 @@ class DiscordBot(BaseBot):
     DEFAULT_PREFIX = '!'
     DEFAULT_LANGUAGE = 'en'
     BOT_NAME = 'garyatrics.com'
-    BASE_GUILD = "Eric's Test Server"
-    VERSION = '0.7'
+    BASE_GUILD = "Garyatrics"
+    VERSION = '0.6'
     GRAPHICS_URL = 'https://garyatrics.com/gow_assets'
     NEEDED_PERMISSIONS = [
         'add_reactions',
@@ -144,7 +144,7 @@ class DiscordBot(BaseBot):
         },
         {
             'function': 'edit_tower_floor',
-            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)tower (?P<floor>[^ ]+) (?P<scrollA>[^ ]+) (?P<scrollB>[^ ]+) (?P<scrollC>[^ ]+) (?P<scrollD>[^ ]+) ?(?P<scrollE>[^ ]+)?$', re.IGNORECASE)
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)tower (?P<floor>[^ ]+) (?P<scroll_ii>[^ ]+) (?P<scroll_iii>[^ ]+) (?P<scroll_iv>[^ ]+) (?P<scroll_v>[^ ]+) ?(?P<scroll_vi>[^ ]+)?$', re.IGNORECASE)
         },
         {
             'function': 'handle_team_code',
@@ -729,7 +729,7 @@ class DiscordBot(BaseBot):
             e.add_field(name='Success' if r[0] else 'Failure', value=r[1])
             await self.answer(message, e)
             
-    async def edit_tower_floor(self, message, lang, prefix, floor, scrollA, scrollB, scrollC, scrollD, scrollE = None):
+    async def edit_tower_floor(self, message, lang, prefix, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi = None):
         e = discord.Embed(title='Tower of Doom', color=self.WHITE)
 
         my_data = self.tower_data.get(message.guild)
@@ -737,18 +737,18 @@ class DiscordBot(BaseBot):
         short = my_data["short"]
 
         rA = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-            message=message, floor=floor, room="II", scroll=scrollA)
+            message=message, floor=floor, room="II", scroll=scroll_ii)
         rB = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-            message=message, floor=floor, room="III", scroll=scrollB)
+            message=message, floor=floor, room="III", scroll=scroll_iii)
         rC = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-            message=message, floor=floor, room="IV", scroll=scrollC)
+            message=message, floor=floor, room="IV", scroll=scroll_iv)
         rD = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-            message=message, floor=floor, room="V", scroll=scrollD)
+            message=message, floor=floor, room="V", scroll=scroll_v)
         # Mythic Room
-        if scrollE != None:
-            log.info(scrollE)
+        if scroll_vi != None:
+            log.info(scroll_vi)
             rE = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-                message=message, floor=floor, room="VI", scroll=scrollE)
+                message=message, floor=floor, room="VI", scroll=scroll_vi)
         else:
             rE = (True, '')
 
@@ -765,7 +765,7 @@ class DiscordBot(BaseBot):
                 f"{'Success' if rB[0] else 'Failure'}: {rB[1]}",
                 f"{'Success' if rC[0] else 'Failure'}: {rC[1]}",
                 f"{'Success' if rD[0] else 'Failure'}: {rD[1]}",
-                f"{'Success' if rE[0] else 'Failure'}: {rE[1]}" if scrollE != None else ''
+                f"{'Success' if rE[0] else 'Failure'}: {rE[1]}" if scroll_vi != None else ''
             ])
 
             e.add_field(name='Edit Tower (Floor)', value=edit_text)
