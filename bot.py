@@ -513,7 +513,7 @@ class DiscordBot(BaseBot):
                 f'**{pet["kingdom_title"]}**: {pet["kingdom"]}',
             ]
             if 'release_date' in pet:
-                message_lines.extend(['', f'**Release date**:'])
+                e.set_footer(text='Release date')
                 e.timestamp = pet["release_date"]
             e.add_field(name=f'{mana} {pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
         else:
@@ -561,7 +561,7 @@ class DiscordBot(BaseBot):
                 f'{requirements} {" ".join(color_requirement)}',
             ]
             if 'release_date' in weapon:
-                message_lines.extend([f'**Release date**:'])
+                e.set_footer(text='Release date')
                 e.timestamp = weapon["release_date"]
             e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
                         value='\n'.join(message_lines))
@@ -618,7 +618,7 @@ class DiscordBot(BaseBot):
 
                 trait_list = [f'**{trait["name"]}**: {trait["description"]}' for trait in troop['traits']]
                 if 'release_date' in troop:
-                    trait_list.extend(['', f'**Release date**:'])
+                    e.set_footer(text='Release date')
                     e.timestamp = troop["release_date"]
                 traits = '\n'.join(trait_list)
                 e.add_field(name=troop["traits_title"], value=traits, inline=False)
