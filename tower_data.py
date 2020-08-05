@@ -205,27 +205,21 @@ class TowerOfDoomData:
         return e
 
     def set_option(self, guild, option, value, boolean=False):
-        if option not in self.DEFAULT_TOWER_DATA:
+        value_map = {
+            'short': value.lower() in ['true', '1', 't', 'y', 'yes', 'on'],
+            'hide': [v.strip() for v in value.split(',') if v.lower().strip() != 'none'],
+        }
+
+        if option.lower() not in value_map.keys():
             return None, None
 
         my_data = self.__data.get(str(guild.id), {})
 
-        if option in ['short']:
-            value_parsed = value.lower() in ['true', '1', 't', 'y', 'yes', 'on']
-        elif option in ['hide']:
-            # String to list.
-            if value.lower() == "none":
-                value_parsed = []
-            else:
-                value_parsed = [v.strip() for v in value.split(',')]
-        else:
-            value_parsed = value
-
         old_value = my_data.get(option, self.DEFAULT_TOWER_DATA[option])
-        my_data[option] = value_parsed
-        new_value = my_data.get(option, '<ERROR>')
+        my_data[option] = value_map[option]
         self.set(guild, my_data)
 
+        new_value = my_data.get(option, '<ERROR>')
         return old_value, new_value
 
     def format_output_config(self, prefix, guild, color):
