@@ -95,6 +95,18 @@ class TowerOfDoomData:
         guild_data = self.__data.get(str(guild.id), {})
         return merge(guild_data, self.DEFAULT_TOWER_DATA)
 
+    def reset_config(self, guild):
+        if not str(guild.id) in self.__data:
+            return
+
+        config_entries = ('rooms', 'scrolls', 'short', 'hide')
+
+        guild_data = self.__data[str(guild.id)]
+        for entry in config_entries:
+            if entry in guild_data:
+                del guild_data[entry]
+            self.set(guild, guild_data)
+
     def clear_data(self, prefix, guild, message):
         if not str(guild.id) in self.__data:
             return

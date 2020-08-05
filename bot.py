@@ -135,6 +135,10 @@ class DiscordBot(BaseBot):
                                   re.IGNORECASE)
         },
         {
+            'function': 'reset_tower_config',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig reset$', re.IGNORECASE)
+        },
+        {
             'function': 'show_tower_data',
             'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)tower$', re.IGNORECASE)
         },
@@ -319,15 +323,6 @@ class DiscordBot(BaseBot):
         e = discord.Embed(title=help_title, color=self.WHITE)
         for section, text in help_text.items():
             e.add_field(name=section, value=text, inline=False)
-        await self.answer(message, e)
-
-    async def clear_tower_data(self, message, prefix, lang):
-        if not message.guild:
-            return
-        self.tower_data.clear_data(prefix, message.guild, message)
-
-        e = discord.Embed(title="Tower of Doom", color=self.WHITE)
-        e.add_field(name="Success", value=f"Cleared tower data for #{message.channel.name}", inline=False)
         await self.answer(message, e)
 
     async def show_quickhelp(self, message, prefix, lang):
@@ -850,6 +845,30 @@ class DiscordBot(BaseBot):
 
             e.add_field(name='Edit Tower (Floor)', value=edit_text)
             await self.answer(message, e)
+
+    async def reset_tower_config(self, message, lang, prefix):
+        if not message.guild:
+            return
+        if not self.is_guild_admin(message):
+            e = discord.Embed(title='Administrative action', color=self.RED)
+            e.add_field(name='Tower config reset rejected', value=f'Only admins can change config options.')
+            await self.answer(message, e)
+            return
+
+        self.tower_data.reset_config(message.guild)
+
+        e = discord.Embed(title='Administrative action', color=self.RED)
+        e.add_field(name="Success", value=f"Cleared tower config", inline=False)
+        await self.answer(message, e)
+
+    async def clear_tower_data(self, message, prefix, lang):
+        if not message.guild:
+            return
+        self.tower_data.clear_data(prefix, message.guild, message)
+
+        e = discord.Embed(title="Tower of Doom", color=self.WHITE)
+        e.add_field(name="Success", value=f"Cleared tower data for #{message.channel.name}", inline=False)
+        await self.answer(message, e)
 
     async def news_subscribe(self, message, prefix):
         if not message.guild:
