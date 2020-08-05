@@ -304,8 +304,13 @@ class DiscordBot(BaseBot):
         help_title, help_text = get_help_text(prefix, lang)
 
         e = discord.Embed(title=help_title, color=self.WHITE)
-        for section, text in help_text.items():
-            e.add_field(name=section, value=text, inline=False)
+        for index, element in enumerate(help_text.items()):
+            section, text = element
+            # get first element and put in the description
+            if index == 0:
+                e.description = f'**{section}**\n{text}'
+            else:
+                e.add_field(name=section, value=text, inline=False)
         await self.answer(message, e)
 
     async def show_tower_help(self, message, prefix, lang):
