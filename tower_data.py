@@ -69,6 +69,11 @@ class TowerOfDoomData:
     def set_alias(self, guild, category, field, values):
         my_data = self.__data.get(str(guild.id), {})
 
+        if category not in self.DEFAULT_TOWER_DATA:
+            return None, None
+        if field not in self.DEFAULT_TOWER_DATA[category]:
+            return None, None
+
         category_data = my_data.setdefault(category.lower(), {})
         old_values = category_data.get(field.lower(), self.DEFAULT_TOWER_DATA[category][field])
 

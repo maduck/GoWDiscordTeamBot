@@ -768,6 +768,12 @@ class DiscordBot(BaseBot):
             old_values, new_values = self.tower_data.set_alias(guild=message.guild, category=category, field=field,
                                                                values=values)
 
+            if old_values is None and new_values is None:
+                e = discord.Embed(title='Administrative action', color=self.RED)
+                e.add_field(name='Tower change rejected', value=f'Invalid data specified.')
+                await self.answer(message, e)
+                return
+
             e = discord.Embed(title='Administrative action', color=self.RED)
             e.add_field(name='Tower change accepted',
                         value=f'Alias {category}: `{field}` was changed from `{old_values}` to `{new_values}`.')
