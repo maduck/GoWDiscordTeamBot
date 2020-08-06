@@ -126,12 +126,14 @@ class DiscordBot(BaseBot):
         {
             'function': 'set_tower_config_alias',
             'pattern': re.compile(
-                r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig (?P<category>[^ ]+) (?P<field>[^ ]+) (?P<values>.+)$',
+                r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig (?P<category>[^ ]+) (?P<field>(rooms|scrolls))'
+                                      r' (?P<values>.+)$',
                 re.IGNORECASE)
         },
         {
             'function': 'set_tower_config_option',
-            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig (?P<option>[^ ]+) (?P<value>.+)$',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig (?P<option>(short|hide))'
+                                                        r' (?P<value>.+)$',
                                   re.IGNORECASE)
         },
         {
