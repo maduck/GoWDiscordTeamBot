@@ -1,12 +1,10 @@
-from collections import ChainMap
-
-import discord
 import json
 import os
 import threading
 
-from base_bot import log
-from util import atoi, merge, natural_keys, bool_to_emoticon
+import discord
+
+from util import atoi, bool_to_emoticon, merge, natural_keys
 
 
 class TowerOfDoomData:
