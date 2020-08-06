@@ -38,3 +38,31 @@ def merge(a, b, path=None):
             # print(f"FILL: {key} : {b[key]}")
             a[key] = b[key]
     return a
+
+
+def flatten(*args):
+    lst = []
+    for arg in args:
+        if type(arg) == str and arg != '':
+            lst.append(arg)
+        elif type(arg) == list:
+            # use for loop instead of extend to check if the entry has a value
+            for entry in arg:
+                if type(arg) == str and entry != '':
+                    lst.append(entry)
+                else:
+                    lst.append(entry)
+    return lst
+
+
+async def pluralize_author(author):
+    if author[-1] == 's':
+        author += "'"
+    else:
+        author += "'s"
+    return author
+
+
+def chunks(iterable, chunk_size):
+    for i in range(0, len(iterable), chunk_size):
+        yield iterable[i:i + chunk_size]

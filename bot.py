@@ -10,6 +10,7 @@ import discord
 from discord.ext import tasks
 
 from base_bot import BaseBot, log
+from discord_helpers import admin_required, guild_required
 from game_constants import RARITY_COLORS
 from help import get_help_text, get_tower_help_text
 from jobs.news_downloader import NewsDownloader
@@ -19,22 +20,9 @@ from subscriptions import Subscriptions
 from team_expando import TeamExpander
 from tower_data import TowerOfDoomData
 from translations import Translations
-from util import bool_to_emoticon
+from util import bool_to_emoticon, chunks, flatten, pluralize_author
 
 TOKEN = os.getenv('DISCORD_TOKEN')
-
-
-def chunks(iterable, chunk_size):
-    for i in range(0, len(iterable), chunk_size):
-        yield iterable[i:i + chunk_size]
-
-
-async def pluralize_author(author):
-    if author[-1] == 's':
-        author += "'"
-    else:
-        author += "'s"
-    return author
 
 
 def debug(message):
@@ -358,42 +346,32 @@ class DiscordBot(BaseBot):
         my_prefix = self.prefix.get(message.guild)
         function, params = await self.get_function_for_command(user_command, my_prefix)
         if function:
-            # handle default language
             if 'lang' in params and params['lang'] is None:
                 params['lang'] = self.language.get(message.guild)
 
             debug(message)
-            await function(message, **params)
+            await function(message=message, **params)
 
     async def show_invite_link(self, message, prefix, lang):
         e = discord.Embed(title='Bot invite link', color=self.WHITE)
         e.add_field(name='Feel free to share!', value=self.invite_url)
         await self.answer(message, e)
 
+    @guild_required
+    @admin_required
     async def change_prefix(self, message, prefix, new_prefix, lang):
         my_prefix = self.prefix.get(message.guild)
-        if not message.guild:
+        if len(new_prefix) != 1:
             e = discord.Embed(title='Prefix change', color=self.RED)
             e.add_field(name='Error',
-                        value=f'Prefix change not possible in direct messages.')
+                        value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
             await self.answer(message, e)
             return
-        if self.is_guild_admin(message):
-            if len(new_prefix) != 1:
-                e = discord.Embed(title='Prefix change', color=self.RED)
-                e.add_field(name='Error',
-                            value=f'Your new prefix has to be 1 characters long, `{new_prefix}` has {len(new_prefix)}.')
-                await self.answer(message, e)
-                return
-            self.prefix.set(message.guild, new_prefix)
-            e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Prefix change', value=f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
-            await self.answer(message, e)
-            log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
-        else:
-            e = discord.Embed(title='There was a problem', color=self.RED)
-            e.add_field(name='Prefix change', value=f'Only the server owner has permission to change the prefix.')
-            await self.answer(message, e)
+        self.prefix.set(message.guild, new_prefix)
+        e = discord.Embed(title='Administrative action', color=self.RED)
+        e.add_field(name='Prefix change', value=f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
+        await self.answer(message, e)
+        log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
 
     async def handle_kingdom_search(self, message, search_term, lang, prefix, shortened):
         result = self.expander.search_kingdom(search_term, lang)
@@ -594,7 +572,7 @@ class DiscordBot(BaseBot):
 
             if shortened:
                 e.description = f'**{mana_display}{troop["name"]}**'
-                attributes = self.get_list(troop["type"], troop["roles"], troop["rarity"], troop["kingdom"])
+                attributes = flatten(troop["type"], troop["roles"], troop["rarity"], troop["kingdom"])
                 e.description += f' ({", ".join(attributes)}) | {troop["spell"]["description"]}'
 
                 trait_list = [f'{trait["name"]}' for trait in troop['traits']]
@@ -674,20 +652,6 @@ class DiscordBot(BaseBot):
 
         await self.answer(message, e)
 
-    def get_list(self, *args):
-        lst = []
-        for arg in args:
-            if type(arg) == str and arg != '':
-                lst.append(arg)
-            elif type(arg) == list:
-                # use for loop instead of extend to check if the entry has a value
-                for entry in arg:
-                    if type(arg) == str and entry != '':
-                        lst.append(entry)
-                    else:
-                        lst.append(entry)
-        return lst
-
     def banner_colors(self, banner):
         return [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
 
@@ -742,59 +706,52 @@ class DiscordBot(BaseBot):
         e.add_field(name='The current prefix is', value=f'`{prefix}`')
         await self.answer(message, e)
 
+    @guild_required
     async def show_tower_config(self, message, lang, prefix):
         e = self.tower_data.format_output_config(prefix=prefix, guild=message.guild, color=self.WHITE)
         await self.answer(message, e)
 
+    @guild_required
+    @admin_required
     async def set_tower_config_option(self, message, lang, prefix, option, value):
-        if self.is_guild_admin(message):
-            old_value, new_value = self.tower_data.set_option(guild=message.guild, option=option, value=value)
+        old_value, new_value = self.tower_data.set_option(guild=message.guild, option=option, value=value)
 
-            if old_value is None and new_value is None:
-                e = discord.Embed(title='Administrative action', color=self.RED)
-                e.add_field(name='Tower change rejected', value=f'Invalid option `{option}` specified.')
-                await self.answer(message, e)
-                return
-
+        if old_value is None and new_value is None:
             e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Tower change accepted',
-                        value=f'Option {option} changed from `{old_value}` to `{new_value}`')
+            e.add_field(name='Tower change rejected', value=f'Invalid option `{option}` specified.')
             await self.answer(message, e)
-        else:
-            e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Tower change rejected', value=f'Only admins can change config options.')
-            await self.answer(message, e)
-
-    async def set_tower_config_alias(self, message, lang, prefix, category, field, values):
-        if self.is_guild_admin(message):
-            old_values, new_values = self.tower_data.set_alias(guild=message.guild, category=category, field=field,
-                                                               values=values)
-
-            if old_values is None and new_values is None:
-                e = discord.Embed(title='Administrative action', color=self.RED)
-                e.add_field(name='Tower change rejected', value=f'Invalid data specified.')
-                await self.answer(message, e)
-                return
-
-            e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Tower change accepted',
-                        value=f'Alias {category}: `{field}` was changed from `{old_values}` to `{new_values}`.')
-            await self.answer(message, e)
-        else:
-            e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Tower change rejected', value=f'Only admins can change config options.')
-            await self.answer(message, e)
-
-    async def show_tower_data(self, message, lang, prefix):
-        if not message.guild:
             return
+
+        e = discord.Embed(title='Administrative action', color=self.RED)
+        e.add_field(name='Tower change accepted',
+                    value=f'Option {option} changed from `{old_value}` to `{new_value}`')
+        await self.answer(message, e)
+
+    @guild_required
+    @admin_required
+    async def set_tower_config_alias(self, message, lang, prefix, category, field, values):
+        old_values, new_values = self.tower_data.set_alias(guild=message.guild, category=category, field=field,
+                                                           values=values)
+
+        if old_values is None and new_values is None:
+            e = discord.Embed(title='Administrative action', color=self.RED)
+            e.add_field(name='Tower change rejected', value=f'Invalid data specified.')
+            await self.answer(message, e)
+            return
+
+        e = discord.Embed(title='Administrative action', color=self.RED)
+        e.add_field(name='Tower change accepted',
+                    value=f'Alias {category}: `{field}` was changed from `{old_values}` to `{new_values}`.')
+        await self.answer(message, e)
+
+    @guild_required
+    async def show_tower_data(self, message, lang, prefix):
         e = self.tower_data.format_output(guild=message.guild, channel=message.channel,
                                           color=self.WHITE)
         await self.answer(message, e)
 
+    @guild_required
     async def edit_tower_single(self, message, lang, prefix, floor, room, scroll):
-        if not message.guild:
-            return
         my_data = self.tower_data.get(message.guild)
 
         short = my_data["short"]
@@ -811,11 +768,9 @@ class DiscordBot(BaseBot):
             e.add_field(name='Success' if r[0] else 'Failure', value=r[1])
             await self.answer(message, e)
 
+    @guild_required
     async def edit_tower_floor(self, message, lang, prefix, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v,
                                scroll_vi=None):
-        if not message.guild:
-            return
-        e = discord.Embed(title='Tower of Doom', color=self.WHITE)
 
         my_data = self.tower_data.get(message.guild)
 
@@ -854,40 +809,26 @@ class DiscordBot(BaseBot):
             e.add_field(name='Edit Tower (Floor)', value=edit_text)
             await self.answer(message, e)
 
+    @guild_required
+    @admin_required
     async def reset_tower_config(self, message, lang, prefix):
-        if not message.guild:
-            return
-        if not self.is_guild_admin(message):
-            e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Tower config reset rejected', value=f'Only admins can change config options.')
-            await self.answer(message, e)
-            return
-
         self.tower_data.reset_config(message.guild)
 
         e = discord.Embed(title='Administrative action', color=self.RED)
         e.add_field(name="Success", value=f"Cleared tower config", inline=False)
         await self.answer(message, e)
 
+    @guild_required
     async def clear_tower_data(self, message, prefix, lang):
-        if not message.guild:
-            return
         self.tower_data.clear_data(prefix, message.guild, message)
 
         e = discord.Embed(title="Tower of Doom", color=self.WHITE)
         e.add_field(name="Success", value=f"Cleared tower data for #{message.channel.name}", inline=False)
         await self.answer(message, e)
 
+    @guild_required
+    @admin_required
     async def news_subscribe(self, message, prefix):
-        if not message.guild:
-            return
-        if not self.is_guild_admin(message):
-            e = discord.Embed(title='News management', color=self.RED)
-            e.add_field(name='Subscribe',
-                        value=f'Only the server owner has permission to change news subscriptions.')
-            await self.answer(message, e)
-            return
-
         self.subscriptions.add(message.guild, message.channel)
 
         e = discord.Embed(title='News management', color=self.WHITE)
@@ -895,16 +836,9 @@ class DiscordBot(BaseBot):
                     value=f'News will now be posted into channel {message.channel.name}.')
         await self.answer(message, e)
 
+    @guild_required
+    @admin_required
     async def news_unsubscribe(self, message, prefix):
-        if not message.guild:
-            return
-        if not self.is_guild_admin(message):
-            e = discord.Embed(title='News management', color=self.RED)
-            e.add_field(name='Unsubscribe',
-                        value=f'Only the server owner has permission to change news subscriptions.')
-            await self.answer(message, e)
-            return
-
         self.subscriptions.remove(message.guild, message.channel)
 
         e = discord.Embed(title='News management', color=self.WHITE)
@@ -912,10 +846,8 @@ class DiscordBot(BaseBot):
                     value=f'News will *not* be posted into channel {message.channel.name}.')
         await self.answer(message, e)
 
+    @guild_required
     async def news_status(self, message, prefix):
-        if not message.guild:
-            return
-
         subscribed = self.subscriptions.is_subscribed(message.guild, message.channel)
         answer_text = f'News will *not* be posted into channel {message.channel.name}.'
         if subscribed:
@@ -953,36 +885,27 @@ class DiscordBot(BaseBot):
         with open(NewsDownloader.NEWS_FILENAME, 'w') as f:
             f.write('[]')
 
+    @guild_required
+    @admin_required
     async def change_language(self, message, new_language, prefix, lang):
         my_language = self.language.get(message.guild)
-        if not message.guild:
+        if new_language not in Translations.LANGUAGES:
             e = discord.Embed(title='Default Language', color=self.RED)
             e.add_field(name='Error',
-                        value=f'Language change not possible in direct messages.')
+                        value=f'`{new_language}` is not a valid language code.')
+            available_langs = ', '.join([f'`{lang_code}`' for lang_code in Translations.LANGUAGES])
+            e.add_field(name='Available languages', value=available_langs, inline=False)
             await self.answer(message, e)
             return
-        if self.is_guild_admin(message):
-            if new_language not in Translations.LANGUAGES:
-                e = discord.Embed(title='Default Language', color=self.RED)
-                e.add_field(name='Error',
-                            value=f'`{new_language}` is not a valid language code.')
-                available_langs = ', '.join([f'`{lang_code}`' for lang_code in Translations.LANGUAGES])
-                e.add_field(name='Available languages', value=available_langs, inline=False)
-                await self.answer(message, e)
-                return
 
-            self.language.set(message.guild, new_language)
-            e = discord.Embed(title='Default Language', color=self.WHITE)
-            e.add_field(name=f'Default language for {message.guild}',
-                        value=f'Default language was changed from `{my_language}` to `{new_language}`.')
-            await self.answer(message, e)
-            log.debug(f'[{message.guild.name}] Changed language from {my_language} to {new_language}.')
-        else:
-            e = discord.Embed(title='Default Language', color=self.RED)
-            e.add_field(name=f'Default language for {message.guild}',
-                        value='You don\'t have permissions to change the default language on this server.')
-            await self.answer(message, e)
+        self.language.set(message.guild, new_language)
+        e = discord.Embed(title='Default Language', color=self.WHITE)
+        e.add_field(name=f'Default language for {message.guild}',
+                    value=f'Default language was changed from `{my_language}` to `{new_language}`.')
+        await self.answer(message, e)
+        log.debug(f'[{message.guild.name}] Changed language from {my_language} to {new_language}.')
 
+    @guild_required
     async def show_languages(self, message, lang, prefix):
         e = discord.Embed(title='Default Language', color=self.WHITE)
         e.add_field(name=f'Default language for {message.guild}',
