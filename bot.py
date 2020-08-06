@@ -247,7 +247,7 @@ class DiscordBot(BaseBot):
                 task_name = task["name"].replace('{Value1}', '`?`')
                 category_lines.append(f'**{task["title"]}**: {task_name}')
             e.add_field(name=f'__**{category}**__', value='\n'.join(category_lines), inline=False)
-        e.add_field(name='`?`', value='will be set by the game\'s progress.')
+        e.set_footer(text='`?` will be set by the game\'s progress.')
         await self.answer(message, e)
 
     async def show_spoilers(self, message, prefix, lang, filter):
