@@ -536,16 +536,16 @@ class TeamExpander:
         return new_task
 
     def get_spoilers(self, lang):
-        today = datetime.date.today()
+        now = datetime.datetime.utcnow()
         spoilers = [self.translate_spoiler(s, lang) for s in self.spoilers
-                    if today < s['date'] < today + datetime.timedelta(days=60)]
+                    if now < s['date'] < now + datetime.timedelta(days=60)]
         return spoilers
 
     def translate_spoiler(self, spoiler, lang):
         entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {}).copy()
         entry['name'] = _(entry['name'], lang)
         entry['type'] = spoiler['type']
-        entry['date'] = spoiler['date']
+        entry['date'] = spoiler['date'].date()
         if 'rarity' in entry:
             entry['rarity_title'] = _('[RARITY]', lang)
             if entry['rarity'] in TROOP_RARITIES:
