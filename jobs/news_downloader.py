@@ -29,9 +29,10 @@ class NewsDownloader:
                 images.append(source)
 
         forbidden_tags = re.compile(r'</?(a|img|div).*?>')
-        tags_removed = re.sub(forbidden_tags, '', text).replace('\n', '').replace('</em>', '</em> ')
-
-        return images, html2markdown.convert(tags_removed)
+        tags_removed = re.sub(forbidden_tags, '', text) \
+            .replace('\n', '') \
+            .replace('</em>', '</em> ')
+        return images, html2markdown.convert(tags_removed).replace('&amp;', '&')
 
     @staticmethod
     def reformat_html_summary(e):
