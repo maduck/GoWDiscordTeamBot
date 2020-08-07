@@ -756,16 +756,14 @@ class DiscordBot(BaseBot):
 
         short = my_data["short"]
 
-        r = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-                                       message=message, floor=floor, room=room, scroll=scroll)
+        success, response = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
+                                                       message=message, floor=floor, room=room, scroll=scroll)
 
         if short:
-            # Respond with a reaction.
-            await self.react(message, bool_to_emoticon(r[0]))
+            await self.react(message, bool_to_emoticon(success))
         else:
-            # Respond with an embed.
             e = discord.Embed(title='Tower of Doom', color=self.WHITE)
-            e.add_field(name='Success' if r[0] else 'Failure', value=r[1])
+            e.add_field(name='Success' if success else 'Failure', value=response)
             await self.answer(message, e)
 
     @guild_required
