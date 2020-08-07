@@ -508,43 +508,9 @@ class DiscordBot(BaseBot):
     async def handle_weapon_search(self, message, search_term, lang, prefix, shortened):
         result = self.expander.search_weapon(search_term, lang)
         if not result:
-            e = discord.Embed(title='Weapon search', color=self.BLACK)
-            e.add_field(name=search_term, value='did not yield any result')
+            e = self.generate_response('Weapon search', self.BLACK, search_term, 'did not yield any result')
         elif len(result) == 1:
-            weapon = result[0]
-            rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
-            color = discord.Color.from_rgb(*rarity_color)
-            e = discord.Embed(title='Weapon search', color=color)
-            thumbnail_url = f'{self.GRAPHICS_URL}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
-            e.set_thumbnail(url=thumbnail_url)
-            mana = self.my_emojis.get(weapon['color_code'])
-            color_requirement = []
-            if weapon['requirement'] < 1000:
-                color_requirement = [f'{self.my_emojis.get(c, f":{c}:")}' for c in weapon['colors']]
-            upgrades = '\n'.join([f'**{affix["name"]}**: {affix["description"]}' for affix in weapon['upgrades']])
-            affix_text = ''
-            if weapon['upgrades']:
-                affix_text = f'\n**{weapon["upgrade_title"]}**\n{upgrades}\n'
-
-            requirements = weapon["requirement_text"].replace("erhähltlich", "erhältlich")
-            if weapon['has_mastery_requirement_color'] and ':' in requirements:
-                requirements = '**' + requirements.replace(': ', '**: ')
-
-            message_lines = [
-                weapon['spell']['description'],
-                '',
-                f'**{weapon["kingdom_title"]}**: {weapon["kingdom"]}',
-                f'**{weapon["rarity_title"]}**: {weapon["rarity"]}',
-                f'**{weapon["roles_title"]}**: {", ".join(weapon["roles"])}',
-                f'**{weapon["type_title"]}**: {weapon["type"]}',
-                affix_text,
-                f'{requirements} {" ".join(color_requirement)}',
-            ]
-            if 'release_date' in weapon:
-                e.set_footer(text='Release date')
-                e.timestamp = weapon["release_date"]
-            e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
-                        value='\n'.join(message_lines))
+            e = self.weapon_view(result[0])
         else:
             e = discord.Embed(title=f'Weapon search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             weapons_found = [f'{t["name"]} ({t["id"]})' for t in result]
@@ -554,11 +520,50 @@ class DiscordBot(BaseBot):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
+    @staticmethod
+    def generate_response(title, color, name, value):
+        e = discord.Embed(title=title, color=color)
+        e.add_field(name=name, value=value)
+        return e
+
+    def weapon_view(self, weapon):
+        rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
+        color = discord.Color.from_rgb(*rarity_color)
+        e = discord.Embed(title='Weapon search', color=color)
+        thumbnail_url = f'{self.GRAPHICS_URL}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
+        e.set_thumbnail(url=thumbnail_url)
+        mana = self.my_emojis.get(weapon['color_code'])
+        color_requirement = []
+        if weapon['requirement'] < 1000:
+            color_requirement = [f'{self.my_emojis.get(c, f":{c}:")}' for c in weapon['colors']]
+        upgrades = '\n'.join([f'**{affix["name"]}**: {affix["description"]}' for affix in weapon['upgrades']])
+        affix_text = ''
+        if weapon['upgrades']:
+            affix_text = f'\n**{weapon["upgrade_title"]}**\n{upgrades}\n'
+        requirements = weapon["requirement_text"].replace("erhähltlich", "erhältlich")
+        if weapon['has_mastery_requirement_color'] and ':' in requirements:
+            requirements = '**' + requirements.replace(': ', '**: ')
+        message_lines = [
+            weapon['spell']['description'],
+            '',
+            f'**{weapon["kingdom_title"]}**: {weapon["kingdom"]}',
+            f'**{weapon["rarity_title"]}**: {weapon["rarity"]}',
+            f'**{weapon["roles_title"]}**: {", ".join(weapon["roles"])}',
+            f'**{weapon["type_title"]}**: {weapon["type"]}',
+            affix_text,
+            f'{requirements} {" ".join(color_requirement)}',
+        ]
+        if 'release_date' in weapon:
+            e.set_footer(text='Release date')
+            e.timestamp = weapon["release_date"]
+        e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
+                    value='\n'.join(message_lines))
+        return e
+
     async def handle_troop_search(self, message, prefix, search_term, lang, shortened):
         result = self.expander.search_troop(search_term, lang)
         if not result:
-            e = discord.Embed(title='Troop search', color=self.BLACK)
-            e.add_field(name=search_term, value='did not yield any result')
+            e = self.generate_response('Troop search', self.BLACK, search_term, 'did not yield any result')
         elif len(result) == 1:
             troop = result[0]
             rarity_color = RARITY_COLORS.get(troop['raw_rarity'], RARITY_COLORS['Mythic'])
@@ -615,8 +620,7 @@ class DiscordBot(BaseBot):
     async def handle_talent_search(self, message, search_term, lang, prefix, shortened):
         result = self.expander.search_talent_tree(search_term, lang)
         if not result:
-            e = discord.Embed(title='Talent search', color=self.BLACK)
-            e.add_field(name=search_term, value='did not yield any result')
+            e = self.generate_response('Talent search', self.BLACK, search_term, 'did not yield any result')
         elif len(result) == 1:
             tree = result[0]
             e = discord.Embed(title='Talent search', color=self.WHITE)
@@ -639,7 +643,7 @@ class DiscordBot(BaseBot):
     async def handle_team_code(self, message, lang, team_code, shortened=''):
         team = self.expander.get_team_from_message(team_code, lang)
         if not team or not team['troops']:
-            log.debug(f'nothing found in message {team_code}')
+            log.debug(f'nothing found in message {team_code}.')
             return
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         author = message.author.display_name
@@ -695,15 +699,13 @@ class DiscordBot(BaseBot):
         return e
 
     async def waffles(self, message, prefix):
-        e = discord.Embed(title='Waffles', color=self.WHITE)
         waffle_no = random.randint(0, 66)
-        e.add_field(name='random waffle', value=f'number {waffle_no}')
+        e = self.generate_response('Waffles', self.WHITE, 'random waffle', f'number {waffle_no}')
         e.set_image(url=f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg')
         await self.answer(message, e)
 
     async def show_prefix(self, message, lang, prefix):
-        e = discord.Embed(title='Prefix', color=self.WHITE)
-        e.add_field(name='The current prefix is', value=f'`{prefix}`')
+        e = self.generate_response('Prefix', self.WHITE, 'The current prefix is', f'`{prefix}`')
         await self.answer(message, e)
 
     @guild_required
@@ -717,14 +719,13 @@ class DiscordBot(BaseBot):
         old_value, new_value = self.tower_data.set_option(guild=message.guild, option=option, value=value)
 
         if old_value is None and new_value is None:
-            e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Tower change rejected', value=f'Invalid option `{option}` specified.')
+            e = self.generate_response('Administrative action', self.RED,
+                                       'Tower change rejected', f'Invalid option `{option}` specified.')
             await self.answer(message, e)
             return
 
-        e = discord.Embed(title='Administrative action', color=self.RED)
-        e.add_field(name='Tower change accepted',
-                    value=f'Option {option} changed from `{old_value}` to `{new_value}`')
+        e = self.generate_response('Administrative action', self.RED, 'Tower change accepted',
+                                   f'Option {option} changed from `{old_value}` to `{new_value}`')
         await self.answer(message, e)
 
     @guild_required
@@ -734,14 +735,13 @@ class DiscordBot(BaseBot):
                                                            values=values)
 
         if old_values is None and new_values is None:
-            e = discord.Embed(title='Administrative action', color=self.RED)
-            e.add_field(name='Tower change rejected', value=f'Invalid data specified.')
+            e = self.generate_response('Administrative action', self.RED, 'Tower change rejected',
+                                       f'Invalid data specified.')
             await self.answer(message, e)
             return
 
-        e = discord.Embed(title='Administrative action', color=self.RED)
-        e.add_field(name='Tower change accepted',
-                    value=f'Alias {category}: `{field}` was changed from `{old_values}` to `{new_values}`.')
+        e = self.generate_response('Administrative action', self.RED, 'Tower change accepted',
+                                   f'Alias {category}: `{field}` was changed from `{old_values}` to `{new_values}`.')
         await self.answer(message, e)
 
     @guild_required
@@ -753,17 +753,13 @@ class DiscordBot(BaseBot):
     @guild_required
     async def edit_tower_single(self, message, lang, prefix, floor, room, scroll):
         my_data = self.tower_data.get(message.guild)
-
         short = my_data["short"]
-
         success, response = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
                                                        message=message, floor=floor, room=room, scroll=scroll)
-
         if short:
             await self.react(message, bool_to_emoticon(success))
         else:
-            e = discord.Embed(title='Tower of Doom', color=self.WHITE)
-            e.add_field(name='Success' if success else 'Failure', value=response)
+            e = self.generate_response('Tower of Doom', self.WHITE, 'Success' if success else 'Failure', response)
             await self.answer(message, e)
 
     @guild_required
@@ -771,7 +767,6 @@ class DiscordBot(BaseBot):
                                scroll_vi=None):
 
         my_data = self.tower_data.get(message.guild)
-
         short = my_data["short"]
 
         room_a = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
@@ -812,16 +807,15 @@ class DiscordBot(BaseBot):
     async def reset_tower_config(self, message, lang, prefix):
         self.tower_data.reset_config(message.guild)
 
-        e = discord.Embed(title='Administrative action', color=self.RED)
-        e.add_field(name="Success", value=f"Cleared tower config", inline=False)
+        e = self.generate_response('Administrative action', self.RED, 'Success', 'Cleared tower config')
         await self.answer(message, e)
 
     @guild_required
     async def clear_tower_data(self, message, prefix, lang):
         self.tower_data.clear_data(prefix, message.guild, message)
 
-        e = discord.Embed(title="Tower of Doom", color=self.WHITE)
-        e.add_field(name="Success", value=f"Cleared tower data for #{message.channel.name}", inline=False)
+        e = self.generate_response('Tower of Doom', self.WHITE, 'Success',
+                                   f'Cleared tower data for #{message.channel.name}')
         await self.answer(message, e)
 
     @guild_required
@@ -829,9 +823,8 @@ class DiscordBot(BaseBot):
     async def news_subscribe(self, message, prefix):
         self.subscriptions.add(message.guild, message.channel)
 
-        e = discord.Embed(title='News management', color=self.WHITE)
-        e.add_field(name='Subscribe',
-                    value=f'News will now be posted into channel {message.channel.name}.')
+        e = self.generate_response('News management', self.WHITE,
+                                   'Subscribe', f'News will now be posted into channel {message.channel.name}.')
         await self.answer(message, e)
 
     @guild_required
@@ -839,9 +832,8 @@ class DiscordBot(BaseBot):
     async def news_unsubscribe(self, message, prefix):
         self.subscriptions.remove(message.guild, message.channel)
 
-        e = discord.Embed(title='News management', color=self.WHITE)
-        e.add_field(name='Unsubscribe',
-                    value=f'News will *not* be posted into channel {message.channel.name}.')
+        e = self.generate_response('News management', self.WHITE, 'Unsubscribe',
+                                   f'News will *not* be posted into channel {message.channel.name}.')
         await self.answer(message, e)
 
     @guild_required
@@ -851,8 +843,7 @@ class DiscordBot(BaseBot):
         if subscribed:
             answer_text = f'News will be posted into channel {message.channel.name}.'
 
-        e = discord.Embed(title='News management', color=self.WHITE)
-        e.add_field(name='Status', value=answer_text)
+        e = self.generate_response('News management', self.WHITE, 'Status', answer_text)
         await self.answer(message, e)
 
     async def show_latest_news(self):
@@ -897,9 +888,8 @@ class DiscordBot(BaseBot):
             return
 
         self.language.set(message.guild, new_language)
-        e = discord.Embed(title='Default Language', color=self.WHITE)
-        e.add_field(name=f'Default language for {message.guild}',
-                    value=f'Default language was changed from `{my_language}` to `{new_language}`.')
+        e = self.generate_response('Default Language', self.WHITE, f'Default language for {message.guild}',
+                                   f'Default language was changed from `{my_language}` to `{new_language}`.')
         await self.answer(message, e)
         log.debug(f'[{message.guild.name}] Changed language from {my_language} to {new_language}.')
 
