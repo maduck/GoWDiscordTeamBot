@@ -10,7 +10,7 @@ from team_expando import TeamExpander, update_translations
 from translations import LANG_FILES
 
 
-@tasks.loop(seconds=20, reconnect=False)
+@tasks.loop(minutes=5, reconnect=False)
 async def task_check_for_news(discord_client):
     lock = asyncio.Lock()
     async with lock:
