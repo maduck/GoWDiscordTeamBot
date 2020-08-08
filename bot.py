@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import asyncio
+import datetime
 import json
 import operator
 import os
@@ -17,9 +18,9 @@ from jobs.news_downloader import NewsDownloader
 from language import Language
 from prefix import Prefix
 from subscriptions import Subscriptions
-from team_expando import TeamExpander
+from team_expando import TeamExpander, update_translations
 from tower_data import TowerOfDoomData
-from translations import Translations
+from translations import LANG_FILES, Translations
 from util import bool_to_emoticon, chunks, pluralize_author
 from views import Views
 
@@ -731,7 +732,7 @@ class DiscordBot(BaseBot):
 
 
 @tasks.loop(minutes=5, reconnect=False)
-async def test_task(discord_client):
+async def task_check_for_news(discord_client):
     lock = asyncio.Lock()
     async with lock:
         try:
@@ -743,9 +744,26 @@ async def test_task(discord_client):
             log.exception(e)
 
 
+@tasks.loop(seconds=20, reconnect=False)
+async def task_check_for_data_updates(discord_client):
+    filenames = LANG_FILES + ['World.json']
+    modified = False
+    now = datetime.datetime.now()
+    for filename in filenames:
+        modification_time = datetime.datetime.fromtimestamp(os.path.getmtime(filename))
+        modified |= now - modification_time <= datetime.timedelta(seconds=20)
+    if modified:
+        lock = asyncio.Lock()
+        async with lock:
+            del discord_client.expander
+            discord_client.expander = TeamExpander()
+            update_translations()
+
+
 if __name__ == '__main__':
     client = DiscordBot()
-    test_task.start(client)
+    task_check_for_news.start(client)
+    task_check_for_data_updates.start(client)
     if TOKEN is not None:
         client.run(TOKEN)
     else:

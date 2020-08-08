@@ -1,21 +1,24 @@
 import json
 
+LANGUAGES = {
+    'en': 'English',
+    'fr': 'French',
+    'de': 'German',
+    'ru': 'Russian',
+    'it': 'Italian',
+    'es': 'Spanish',
+    'cn': 'Chinese',
+}
+
+LANG_FILES = [f'GemsOfWar_{language}.json' for language in LANGUAGES.values()]
+
 
 class Translations:
     BASE_LANG = 'en'
-    LANGUAGES = {
-        'en': 'English',
-        'fr': 'French',
-        'de': 'German',
-        'ru': 'Russian',
-        'it': 'Italian',
-        'es': 'Spanish',
-        'cn': 'Chinese',
-    }
 
     def __init__(self):
         self.translations = {}
-        for lang_code, language in self.LANGUAGES.items():
+        for lang_code, language in LANGUAGES.items():
             filename = f'GemsOfWar_{language}.json'
             with open(filename, encoding='utf8') as f:
                 self.translations[lang_code] = json.load(f)
@@ -25,7 +28,3 @@ class Translations:
             lang = self.BASE_LANG
 
         return self.translations[lang].get(key, key)
-
-
-t = Translations()
-_ = t.get

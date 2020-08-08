@@ -1,9 +1,10 @@
 import datetime
+import importlib
 import logging
 
+import translations
 from data_source.game_data import GameData
 from game_constants import TROOP_RARITIES, WEAPON_RARITIES
-from translations import _
 
 LOGLEVEL = logging.DEBUG
 
@@ -15,6 +16,15 @@ log = logging.getLogger(__name__)
 
 log.setLevel(LOGLEVEL)
 log.addHandler(handler)
+
+_ = translations.Translations().get
+
+
+def update_translations():
+    global _
+    importlib.reload('translations')
+    del _
+    _ = translations.Translations().get
 
 
 def extract_search_tag(search_term):
@@ -29,7 +39,6 @@ class TeamExpander:
     def __init__(self):
         world = GameData()
         world.populate_world_data()
-        log.debug('Done populating world data.')
         self.troops = world.troops
         self.spells = world.spells
         self.weapons = world.weapons
