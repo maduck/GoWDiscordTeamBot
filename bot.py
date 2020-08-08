@@ -747,12 +747,15 @@ async def task_check_for_news(discord_client):
 @tasks.loop(seconds=20, reconnect=False)
 async def task_check_for_data_updates(discord_client):
     filenames = LANG_FILES + ['World.json']
-    modified = False
     now = datetime.datetime.now()
+    modified_files = []
     for filename in filenames:
         modification_time = datetime.datetime.fromtimestamp(os.path.getmtime(filename))
-        modified |= now - modification_time <= datetime.timedelta(seconds=20)
-    if modified:
+        modified = now - modification_time <= datetime.timedelta(seconds=20)
+        if modified:
+            modified_files.append(filename)
+    if modified_files:
+        log.debug(f'Game file modification detected, reloading {", ".join(modified_files)}.')
         lock = asyncio.Lock()
         async with lock:
             del discord_client.expander

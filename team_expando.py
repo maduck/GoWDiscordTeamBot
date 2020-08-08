@@ -22,7 +22,7 @@ _ = translations.Translations().get
 
 def update_translations():
     global _
-    importlib.reload('translations')
+    importlib.reload(translations)
     del _
     _ = translations.Translations().get
 
