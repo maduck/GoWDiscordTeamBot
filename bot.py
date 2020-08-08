@@ -20,7 +20,7 @@ from prefix import Prefix
 from subscriptions import Subscriptions
 from team_expando import TeamExpander, update_translations
 from tower_data import TowerOfDoomData
-from translations import LANG_FILES, Translations
+from translations import LANGUAGES, LANG_FILES
 from util import bool_to_emoticon, chunks, pluralize_author
 from views import Views
 
@@ -705,11 +705,11 @@ class DiscordBot(BaseBot):
     @admin_required
     async def change_language(self, message, new_language, prefix, lang):
         my_language = self.language.get(message.guild)
-        if new_language not in Translations.LANGUAGES:
+        if new_language not in LANGUAGES:
             e = discord.Embed(title='Default Language', color=self.RED)
             e.add_field(name='Error',
                         value=f'`{new_language}` is not a valid language code.')
-            available_langs = ', '.join([f'`{lang_code}`' for lang_code in Translations.LANGUAGES])
+            available_langs = ', '.join([f'`{lang_code}`' for lang_code in LANGUAGES])
             e.add_field(name='Available languages', value=available_langs, inline=False)
             await self.answer(message, e)
             return
@@ -726,7 +726,7 @@ class DiscordBot(BaseBot):
         e.add_field(name=f'Default language for {message.guild}',
                     value=f'`{self.language.get(message.guild)}`', inline=False)
 
-        available_langs = ', '.join([f'`{lang_code}`' for lang_code in Translations.LANGUAGES])
+        available_langs = ', '.join([f'`{lang_code}`' for lang_code in LANGUAGES])
         e.add_field(name='Available languages', value=available_langs, inline=False)
         await self.answer(message, e)
 
