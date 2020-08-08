@@ -182,12 +182,15 @@ tower_help_texts = {
 }
 
 
+def get_help_texts(prefix, lang, titles, texts):
+    translated_title = titles.get(lang, titles['en'])
+    translated_text = texts.get(lang, texts['en'])
+    return translated_title, {section: text.format(prefix) for section, text in translated_text.items()}
+
+
 def get_tower_help_text(prefix, lang):
-    tower_help_title = tower_help_titles.get(lang, tower_help_titles['en'])
-    tower_help_content = tower_help_texts.get(lang, tower_help_texts['en'])
-    return tower_help_title, {section: text.format(prefix) for section, text in tower_help_content.items()}
+    return get_help_texts(prefix, lang, tower_help_titles, tower_help_texts)
+
 
 def get_help_text(prefix, lang):
-    help_title = help_titles.get(lang, help_titles['en'])
-    help_content = help_texts.get(lang, help_texts['en'])
-    return help_title, {section: text.format(prefix) for section, text in help_content.items()}
+    return get_help_texts(prefix, lang, help_titles, help_texts)
