@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-import asyncio
-import datetime
 import json
 import operator
 import os
@@ -8,8 +6,8 @@ import random
 import re
 
 import discord
-from discord.ext import tasks
 
+import bot_tasks
 from base_bot import BaseBot, log
 from discord_helpers import admin_required, guild_required
 from game_constants import RARITY_COLORS
@@ -18,9 +16,9 @@ from jobs.news_downloader import NewsDownloader
 from language import Language
 from prefix import Prefix
 from subscriptions import Subscriptions
-from team_expando import TeamExpander, update_translations
+from team_expando import TeamExpander
 from tower_data import TowerOfDoomData
-from translations import LANGUAGES, LANG_FILES
+from translations import LANGUAGES
 from util import bool_to_emoticon, chunks, pluralize_author
 from views import Views
 
@@ -684,15 +682,20 @@ class DiscordBot(BaseBot):
         if articles:
             log.debug(f'Distributing {len(articles)} news articles to {len(pc_subscriptions)} channels.')
         for article in articles:
+            e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
+            content = self.trim_news_to_length(article['content'], article['url'])
+            e.add_field(name=article['title'], value=content)
+            for image_url in article['images']:
+                e.set_image(url=image_url)
+
             for subscription in pc_subscriptions:
+                log.debug(f'Sending out {article["title"]} to'
+                          f' {subscription["guild_name"]}/{subscription["channel_name"]}')
                 channel = self.get_channel(subscription['channel_id'])
-                e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
-                log.debug(
-                    f'Sending out {article["title"]} to {subscription["guild_name"]}/{subscription["channel_name"]}')
-                content = self.trim_news_to_length(article['content'], article['url'])
-                e.add_field(name=article['title'], value=content)
-                for image_url in article['images']:
-                    e.set_image(url=image_url)
+                if not await self.is_writable(channel):
+                    message = 'is not writable' if channel else 'does not exist'
+                    log.debug(f'Channel {message}.')
+                    continue
                 try:
                     await channel.send(embed=e)
                 except Exception as e:
@@ -731,42 +734,10 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
 
-@tasks.loop(minutes=5, reconnect=False)
-async def task_check_for_news(discord_client):
-    lock = asyncio.Lock()
-    async with lock:
-        try:
-            downloader = NewsDownloader()
-            downloader.process_news_feed()
-            await discord_client.show_latest_news()
-        except Exception as e:
-            log.error('Could not update news. Stacktrace follows.')
-            log.exception(e)
-
-
-@tasks.loop(seconds=20, reconnect=False)
-async def task_check_for_data_updates(discord_client):
-    filenames = LANG_FILES + ['World.json']
-    now = datetime.datetime.now()
-    modified_files = []
-    for filename in filenames:
-        modification_time = datetime.datetime.fromtimestamp(os.path.getmtime(filename))
-        modified = now - modification_time <= datetime.timedelta(seconds=20)
-        if modified:
-            modified_files.append(filename)
-    if modified_files:
-        log.debug(f'Game file modification detected, reloading {", ".join(modified_files)}.')
-        lock = asyncio.Lock()
-        async with lock:
-            del discord_client.expander
-            discord_client.expander = TeamExpander()
-            update_translations()
-
-
 if __name__ == '__main__':
     client = DiscordBot()
-    task_check_for_news.start(client)
-    task_check_for_data_updates.start(client)
+    bot_tasks.task_check_for_news.start(client)
+    bot_tasks.task_check_for_data_updates.start(client)
     if TOKEN is not None:
         client.run(TOKEN)
     else:

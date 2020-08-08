@@ -60,6 +60,14 @@ class BaseBot(discord.Client):
             if not has_permission:
                 log.info(f'Missing permission {permission} in channel {message.guild} / {message.channel}.')
 
+    @staticmethod
+    async def is_writable(channel):
+        if not channel:
+            return False
+        me = channel.guild.me
+        permissions = channel.permissions_for(me)
+        return permissions.send_messages
+
     async def react(self, message, reaction: discord.Emoji):
         if message.guild:
             await self.check_for_needed_permissions(message)
