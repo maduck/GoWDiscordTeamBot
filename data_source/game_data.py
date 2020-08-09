@@ -1,7 +1,6 @@
 import datetime
 import json
 import operator
-import os
 
 
 class U(str):
@@ -283,8 +282,7 @@ class GameData:
         for release in self.user_data['pEconomyModel']['PetReleaseDates']:
             pet_id = release['PetId']
             release_date = self.get_datetime(release['Date'])
-            if pet_id in self.pets:
-                self.pets[pet_id]['release_date'] = release_date
+            self.pets.setdefault(pet_id, {'id': pet_id})['release_date'] = release_date
             self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
         for release in self.user_data['pEconomyModel']['KingdomReleaseDates']:
             kingdom_id = release['KingdomId']
