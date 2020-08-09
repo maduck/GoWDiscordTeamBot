@@ -551,7 +551,7 @@ class TeamExpander:
 
     def translate_spoiler(self, spoiler, lang):
         entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {}).copy()
-        entry['name'] = _(entry['name'], lang) if 'name' in entry else '?'
+        entry['name'] = _(entry['name'], lang)
         entry['type'] = spoiler['type']
         entry['date'] = spoiler['date'].date()
         if 'rarity' in entry:

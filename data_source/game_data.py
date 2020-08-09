@@ -282,7 +282,14 @@ class GameData:
         for release in self.user_data['pEconomyModel']['PetReleaseDates']:
             pet_id = release['PetId']
             release_date = self.get_datetime(release['Date'])
-            self.pets.setdefault(pet_id, {'id': pet_id})['release_date'] = release_date
+            broken_pet = {'id': pet_id,
+                          'name': '?',
+                          'kingdom': self.kingdoms[3000],
+                          'colors': [''],
+                          'effect': '[PETTYPE_NOEFFECT]',
+                          'filename': 'K00',
+                          'effect_data': None}
+            self.pets.setdefault(pet_id, broken_pet)['release_date'] = release_date
             self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
         for release in self.user_data['pEconomyModel']['KingdomReleaseDates']:
             kingdom_id = release['KingdomId']
