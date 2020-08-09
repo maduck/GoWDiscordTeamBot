@@ -36,7 +36,7 @@ class BaseBot(discord.Client):
         message_text = ''
         field_title = subtitle
         for line in message_lines:
-            if len(message_text) + len(line) > 1024:
+            if len(field_title) + len(message_text) + len(line) + len('``````') > 1024:
                 e.add_field(name=field_title, value=f'```{message_text}```', inline=False)
                 message_text = f'{line}\n'
                 field_title = 'Continuation'
