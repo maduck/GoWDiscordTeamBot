@@ -283,7 +283,8 @@ class GameData:
         for release in self.user_data['pEconomyModel']['PetReleaseDates']:
             pet_id = release['PetId']
             release_date = self.get_datetime(release['Date'])
-            self.pets[pet_id]['release_date'] = release_date
+            if pet_id in self.pets:
+                self.pets[pet_id]['release_date'] = release_date
             self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
         for release in self.user_data['pEconomyModel']['KingdomReleaseDates']:
             kingdom_id = release['KingdomId']
@@ -326,7 +327,7 @@ class GameData:
         for event in week_long_events:
             # print([w['kingdom']['id'] for w in self.weapons.values()])
             kingdom_weapons = [w['id'] for w in self.weapons.values()
-                               if w['kingdom']['id'] == event['kingdom_id']
+                               if 'kingdom' in w and w['kingdom']['id'] == event['kingdom_id']
                                and w['id'] not in non_craftable_wepon_ids
                                and w.get('release_date', datetime.datetime.min).date() < event['end']]
             self.soulforge_weapons.append({
