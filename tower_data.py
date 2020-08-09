@@ -170,7 +170,7 @@ class TowerOfDoomData:
 
     def format_floor(self, my_data, display, floor, floor_data):
         rooms = [
-            f'{my_data["rooms"][r][0]} = {my_data["scrolls"].get(floor_data.get(r, "unknown"))[0]}, '
+            f'{my_data["rooms"][r][0]} = {my_data["scrolls"].get(floor_data.get(r, "unknown"))[0]}'
             for r in self.DEFAULT_TOWER_DATA['rooms'].keys()
         ]
         for i, room in enumerate(self.DEFAULT_TOWER_DATA['rooms'].keys()):
@@ -181,7 +181,7 @@ class TowerOfDoomData:
         if int(floor) <= 25:
             del rooms[4]
 
-        return ' '.join(rooms)
+        return ', '.join(rooms)
 
     def format_output(self, guild, color, channel):
         my_data = self.get(guild)
@@ -196,27 +196,31 @@ class TowerOfDoomData:
 
         tower_data = sorted(tower_data, key=natural_keys)
 
-        # Get the display strings for rooms and scrolls.
         display = {}
         for key in my_data["rooms"].keys():
             display[key] = my_data["rooms"][key][0]
         for key in my_data["scrolls"].keys():
             display[key] = my_data["scrolls"][key][0]
 
-        tower_text = '\n'.join([
-            f'Floor {floor}: {self.format_floor(my_data, display, floor, floor_data)}' for floor, floor_data in
-            tower_data
-        ])
-
-        if tower_text == "":
-            e = discord.Embed(title='Tower of Doom', color=color)
-            e.add_field(name=f'Failure',
-                        value=f'Couldn\'t any data for #{channel.name}.\nPlease use `!towerhelp` for more info.')
-            return e
-
         e = discord.Embed(title='Tower of Doom', color=color)
-        e.add_field(name=f'#{channel.name}', value=tower_text)
-        # log.warn(e.fields)
+
+        field_lines = []
+        starting_floor = tower_data[0][0]
+        field_header = channel.name
+        for floor, floor_data in tower_data:
+            line = f'Floor {floor}: {self.format_floor(my_data, display, floor, floor_data)}'
+            if len(field_header) + len(line) + sum([len(fl) for fl in field_lines]) < 1024:
+                field_lines.append(line)
+            else:
+                tower_text = '\n'.join(field_lines)
+                e.add_field(name=field_header, value=tower_text, inline=False)
+                field_lines = [line]
+                starting_floor = floor
+            field_header = f'Floors {starting_floor} - {floor}'
+            if floor == starting_floor:
+                field_header = f'Floor {floor}'
+        tower_text = '\n'.join(field_lines)
+        e.add_field(name=field_header, value=tower_text, inline=False)
         return e
 
     def set_option(self, guild, option, value, boolean=False):
