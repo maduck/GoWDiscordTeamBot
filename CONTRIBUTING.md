@@ -38,9 +38,9 @@ Include details about your configuration and environment:
 ## Submitting Code
 
 ### Workflow
- 1. Fork this repositoryK
- 2. Commit your changes into master
- 3. File a pull request
+ 1. Fork this repository.
+ 2. Commit your changes into a branch of your choice.
+ 3. File a pull request.
  4. Gary will have a proper look and discards everything that is not of proper quality, see below.
  
 ### Code Quality Rules
