@@ -7,6 +7,9 @@
 you're on your own installing and using this.
 Keep in mind I will not be providing the needed game files (World.json and translations).
 
+## contributions
+see [CONTRIBUTIONS](CONTRIBUTING.md)
+
 ## install
 * install python 3.8
 * create a virtualenv "venv"
