@@ -196,7 +196,7 @@ class DiscordBot(BaseBot):
         self.prefix = Prefix(self.DEFAULT_PREFIX)
         self.language = Language(self.DEFAULT_LANGUAGE)
         self.subscriptions = Subscriptions()
-        self.views = Views(emojis=None)
+        self.views = Views(emojis={})
 
     async def on_ready(self):
         self.invite_url = f'https://discordapp.com/api/oauth2/authorize' \
