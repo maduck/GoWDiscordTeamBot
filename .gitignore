@@ -3,4 +3,4 @@
 **/*.dat
 __pycache__
 .vscode
-
+.idea
