@@ -137,7 +137,7 @@ class BaseBot(discord.Client):
         return lines[:breakdown.index(False) - 1]
 
     @staticmethod
-    def trim_news_to_length(text, link, max_length=1000):
+    def trim_news_to_length(text, link, max_length=900):
         break_character = '\n'
         input_text = f'{text}{break_character}'
         trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
