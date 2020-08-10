@@ -247,7 +247,6 @@ class GameData:
                        if e['end'] - e['start'] == datetime.timedelta(days=7)
                        and e['start'] <= today <= e['end']
                        and e['kingdom_id']][0]
-        print('world event:', world_event)
         event_kingdom_id = world_event['kingdom_id']
         return event_kingdom_id
 

@@ -520,24 +520,29 @@ class TeamExpander:
         color = kingdom['primary_color'].upper()
 
         replacements = {
-            'UsingWeaponType': ['{WeaponType}', '[WEAPONTYPE_{c:u}]', '[WEAPONTYPE_{c:u}]'],
-            'OfKingdom': ['{Kingdom}', '[{d:u}_NAME]', '[{d:u}_NAME]'],
-            'UsingBanner': ['{Banner}', '[{c:u}_BANNERNAME]', '[{c:u}_BANNERNAME]'],
-            'AtCampaignDifficulty': ['{Kingdom}', '[{d:u}_NAME]', '[{d:u}_NAME]'],
-            'UsingClass': ['{Class}', '[HEROCLASS_{c:l}_NAME]', '[HEROCLASS_{c:l}_NAME]'],
-            'CampaignTroopColor': ['{Color}', f'[GEM_{color}]', f'[GEM_{color}]'],
-            'CampaignTroopType': ['{TroopType}', '`?`', '`?`'],
-            'CampaignTroopId': ['{Troop}', '`?`', '`?`'],
+            '{WeaponType}': '[WEAPONTYPE_{c:u}]',
+            '{Kingdom}': '[{d:u}_NAME]',
+            '{Banner}': '[{c:u}_BANNERNAME]',
+            '{Class}': '[HEROCLASS_{c:l}_NAME]',
+            '{Color}': f'[GEM_{color}]',
+            '{TroopType}': '`?`',
+            '{Troop}': '`?`',
         }
-        replacement = replacements.get(task['condition'], ['', '', ''])
-        title_replace = _(replacement[2].format(**new_task), lang)
-        new_task['title'] = _(new_task['title'], lang).replace(replacement[0], title_replace)
-
-        name_replace = _(replacement[1].format(**new_task), lang)
-
-        new_task['name'] = _(new_task["name"], lang).replace(replacement[0], name_replace)
+        new_task['title'] = _(new_task['title'], lang)
+        new_task['name'] = _(new_task["name"], lang)
+        for before, after in replacements.items():
+            if before in new_task['title']:
+                translated = _(after.format(**new_task), lang)
+                new_task['title'] = new_task['title'].replace(before, translated)
+            if before in new_task['name']:
+                translated = _(after.format(**new_task), lang)
+                new_task['name'] = new_task['name'].replace(before, translated)
         if '{0}' in new_task['name']:
             new_task['name'] = new_task['name'].replace('{0}', str(new_task['x']))
+        elif '{2}' in new_task['name']:
+            unit = _(f'[{new_task["y"].upper()}]', lang)
+            replacement = f'{new_task["x"]} {unit}'
+            new_task['name'] = new_task['name'].replace('{2}', replacement)
         else:
             new_task['name'] = f'{task["x"]}x ' + new_task['name']
 
