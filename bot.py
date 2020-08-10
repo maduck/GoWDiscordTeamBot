@@ -114,7 +114,7 @@ class DiscordBot(BaseBot):
         {
             'function': 'set_tower_config_alias',
             'pattern': re.compile(
-                r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig (?P<category>[^ ]+) (?P<field>(rooms|scrolls))'
+                r'^' + LANG_PATTERN + r'(?P<prefix>.)towerconfig (?P<category>(rooms|scrolls)) (?P<field>[^ ]+)'
                                       r' (?P<values>.+)$',
                 re.IGNORECASE)
         },
