@@ -261,7 +261,7 @@ class DiscordBot(BaseBot):
                                      f'({troop["id"]})')
 
             if len(message_lines) > 1:
-                result = '\n'.join(self.trim_text_lines_to_length(message_lines, 1000))
+                result = '\n'.join(self.trim_text_lines_to_length(message_lines, 900))
                 e.add_field(name=troop_title, value=f'```{result}```', inline=False)
 
         categories = ('kingdom', 'pet', 'weapon')
@@ -273,7 +273,7 @@ class DiscordBot(BaseBot):
                 if spoiler['type'] == spoil_type:
                     message_lines.append(f'{spoiler["date"]}  {spoiler["name"]} ({spoiler["id"]})')
             if len(message_lines) > 1:
-                result = '\n'.join(self.trim_text_lines_to_length(message_lines, 1000))
+                result = '\n'.join(self.trim_text_lines_to_length(message_lines, 900))
                 e.add_field(name=translated[spoil_type], value=f'```{result}```', inline=False)
         await self.answer(message, e)
 
