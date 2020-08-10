@@ -277,30 +277,27 @@ class GameData:
         for release in self.user_data['pEconomyModel']['TroopReleaseDates']:
             troop_id = release['TroopId']
             release_date = self.get_datetime(release['Date'])
-            self.troops[troop_id]['release_date'] = release_date
-            self.spoilers.append({'type': 'troop', 'date': release_date, 'id': troop_id})
+            if troop_id in self.troops:
+                self.troops[troop_id]['release_date'] = release_date
+                self.spoilers.append({'type': 'troop', 'date': release_date, 'id': troop_id})
         for release in self.user_data['pEconomyModel']['PetReleaseDates']:
             pet_id = release['PetId']
             release_date = self.get_datetime(release['Date'])
-            broken_pet = {'id': pet_id,
-                          'name': '?',
-                          'kingdom': self.kingdoms[3000],
-                          'colors': [''],
-                          'effect': '[PETTYPE_NOEFFECT]',
-                          'filename': 'K00',
-                          'effect_data': None}
-            self.pets.setdefault(pet_id, broken_pet)['release_date'] = release_date
-            self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
+            if pet_id in self.pets:
+                self.pets[pet_id]['release_date'] = release_date
+                self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
         for release in self.user_data['pEconomyModel']['KingdomReleaseDates']:
             kingdom_id = release['KingdomId']
             release_date = self.get_datetime(release['Date'])
-            self.kingdoms[kingdom_id]['release_date'] = release_date
-            self.spoilers.append({'type': 'kingdom', 'date': release_date, 'id': kingdom_id})
+            if kingdom_id in self.kingdoms:
+                self.kingdoms[kingdom_id]['release_date'] = release_date
+                self.spoilers.append({'type': 'kingdom', 'date': release_date, 'id': kingdom_id})
         for release in self.user_data['pEconomyModel']['HeroClassReleaseDates']:
             class_id = release['HeroClassId']
             release_date = self.get_datetime(release['Date'])
-            self.classes[class_id]['release_date'] = release_date
-            self.spoilers.append({'type': 'class', 'date': release_date, 'id': class_id})
+            if class_id in self.classes:
+                self.classes[class_id]['release_date'] = release_date
+                self.spoilers.append({'type': 'class', 'date': release_date, 'id': class_id})
         for release in self.user_data['pEconomyModel']['RoomReleaseDates']:
             room_id = release['RoomId']
             release_date = self.get_datetime(release['Date'])
@@ -309,8 +306,9 @@ class GameData:
         for release in self.user_data['pEconomyModel']['WeaponReleaseDates']:
             weapon_id = release['WeaponId']
             release_date = self.get_datetime(release['Date'])
-            self.weapons.setdefault(weapon_id, {})['release_date'] = release_date
-            self.spoilers.append({'type': 'weapon', 'date': release_date, 'id': weapon_id})
+            if weapon_id in self.weapons:
+                self.weapons[weapon_id]['release_date'] = release_date
+                self.spoilers.append({'type': 'weapon', 'date': release_date, 'id': weapon_id})
         for release in self.user_data['BasicLiveEventArray']:
             result = {'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
                       'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
