@@ -261,7 +261,8 @@ class DiscordBot(BaseBot):
                                      f'({troop["id"]})')
 
             if len(message_lines) > 1:
-                result = '\n'.join(self.trim_text_lines_to_length(message_lines, 900))
+                limit = 1024 - len(troop_title) - len('``````')
+                result = '\n'.join(self.trim_text_lines_to_length(message_lines, limit))
                 e.add_field(name=troop_title, value=f'```{result}```', inline=False)
 
         categories = ('kingdom', 'pet', 'weapon')
