@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import datetime
 import json
 import operator
 import os
@@ -6,6 +7,7 @@ import random
 import re
 
 import discord
+import humanize
 
 import bot_tasks
 from base_bot import BaseBot, log
@@ -50,6 +52,10 @@ class DiscordBot(BaseBot):
     LANG_PATTERN = r'(?P<lang>en|fr|de|ру|ru|it|es|cn)?'
     SEARCH_PATTERN = r'^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.){0} #?(?P<search_term>.*)$'
     COMMAND_REGISTRY = [
+        {
+            'function': 'show_uptime',
+            'pattern': re.compile(r'^' + LANG_PATTERN + '(?P<prefix>.)uptime$')
+        },
         {
             'function': 'handle_troop_search',
             'pattern': re.compile(SEARCH_PATTERN.format('troop'), re.IGNORECASE)
@@ -152,7 +158,7 @@ class DiscordBot(BaseBot):
         {
             'function': 'handle_team_code',
             'pattern': re.compile(
-                r'.*?' + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})\].*',
+                r'.*?' + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})].*',
                 re.IGNORECASE | re.DOTALL)
         },
         {
@@ -199,6 +205,7 @@ class DiscordBot(BaseBot):
         self.views = Views(emojis={})
 
     async def on_ready(self):
+        self.bot_connect = datetime.datetime.now()
         self.invite_url = f'https://discordapp.com/api/oauth2/authorize' \
                           f'?client_id={self.user.id}' \
                           f'&scope=bot' \
@@ -215,6 +222,15 @@ class DiscordBot(BaseBot):
         await self.change_presence(status=discord.Status.online, activity=game)
         await self.update_base_emojis()
         self.views.my_emojis = self.my_emojis
+
+    async def on_disconnect(self):
+        if self.bot_connect > self.bot_disconnect:
+            self.bot_disconnect = datetime.datetime.now()
+
+    async def on_resumed(self):
+        if self.bot_disconnect > self.bot_connect:
+            self.bot_connect = datetime.datetime.now()
+            self.downtimes += (self.bot_connect - self.bot_disconnect).seconds
 
     async def get_function_for_command(self, user_command, user_prefix):
         for command in self.COMMAND_REGISTRY:
@@ -274,8 +290,25 @@ class DiscordBot(BaseBot):
                 if spoiler['type'] == spoil_type:
                     message_lines.append(f'{spoiler["date"]}  {spoiler["name"]} ({spoiler["id"]})')
             if len(message_lines) > 1:
-                result = '\n'.join(self.trim_text_lines_to_length(message_lines, 900))
+                result = '\n'.join(self.views.trim_text_lines_to_length(message_lines, 900))
                 e.add_field(name=translated[spoil_type], value=f'```{result}```', inline=False)
+        await self.answer(message, e)
+
+    async def show_uptime(self, message, prefix, lang):
+        now = datetime.datetime.now()
+        bot_uptime = now - self.bot_start
+        bot_connect = now - self.bot_connect
+        e = discord.Embed(title='Uptime', color=self.WHITE)
+        if lang == 'cn':
+            lang = 'zh'
+        if lang != 'en':
+            _t = humanize.i18n.activate(lang)
+        e.add_field(name='Bot uptime', value=humanize.naturaldelta(bot_uptime), inline=False)
+        e.add_field(name='Online for', value=humanize.naturaldelta(bot_connect), inline=False)
+        bot_runtime = (datetime.datetime.now() - self.bot_start).seconds
+        availability = (bot_runtime - self.downtimes) / bot_runtime
+        e.add_field(name='Availability', value=f'{availability:.3%}')
+        humanize.i18n.deactivate()
         await self.answer(message, e)
 
     async def show_events(self, message, prefix, lang):
@@ -292,7 +325,7 @@ class DiscordBot(BaseBot):
                                  f'{event["type"]}'
                                  f'{":" if event["extra_info"] else ""} '
                                  f'{event["extra_info"]}')
-        message_lines = self.trim_text_lines_to_length(message_lines, 900)
+        message_lines = self.views.trim_text_lines_to_length(message_lines, 900)
         message_lines.append('```')
         e.add_field(name='Upcoming Events', value='\n'.join(message_lines))
         await self.answer(message, e)
@@ -684,7 +717,7 @@ class DiscordBot(BaseBot):
             log.debug(f'Distributing {len(articles)} news articles to {len(pc_subscriptions)} channels.')
         for article in articles:
             e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
-            content = self.trim_news_to_length(article['content'], article['url'])
+            content = self.views.trim_news_to_length(article['content'], article['url'])
             e.add_field(name=article['title'], value=content)
             for image_url in article['images']:
                 e.set_image(url=image_url)

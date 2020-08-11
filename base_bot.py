@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 import discord
@@ -30,6 +31,10 @@ class BaseBot(discord.Client):
         self.permissions = self.generate_permissions()
         self.invite_url = ''
         self.my_emojis = {}
+        self.bot_disconnect = datetime.datetime.now()
+        self.bot_start = datetime.datetime.now()
+        self.bot_connect = datetime.datetime.now()
+        self.downtimes = 0
 
     async def generate_embed_from_text(self, message_lines, title, subtitle):
         e = discord.Embed(title=title, color=self.WHITE)

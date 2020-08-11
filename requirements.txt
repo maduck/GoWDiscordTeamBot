@@ -3,4 +3,4 @@ discord
 feedparser
 beautifulsoup4
 html2markdown
-html5lib
+humanize
