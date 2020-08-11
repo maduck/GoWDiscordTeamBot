@@ -129,20 +129,3 @@ class BaseBot(discord.Client):
         if len(embed) > 6000:
             raise EmbedLimitsExceed('total length of embed')
 
-    @staticmethod
-    def trim_text_lines_to_length(lines, limit):
-        breakdown = [sum([len(c) for c in lines[0:i]]) < limit for i in range(len(lines))]
-        if all(breakdown):
-            return lines
-        return lines[:breakdown.index(False) - 1]
-
-    @staticmethod
-    def trim_news_to_length(text, link, max_length=900):
-        break_character = '\n'
-        input_text = f'{text}{break_character}'
-        trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
-        read_more = ''
-        if len(trimmed_text + break_character) != len(input_text):
-            read_more = '[...] '
-        result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
-        return result

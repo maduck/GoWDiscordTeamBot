@@ -202,3 +202,39 @@ class Views:
             talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree]
             e.add_field(name=f'__{_class["trees"][i]}__', value='\n'.join(talents), inline=True)
         return e
+
+    @staticmethod
+    def trim_text_lines_to_length(lines, limit):
+        breakdown = [sum([len(c) for c in lines[0:i]]) < limit for i in range(len(lines))]
+        if all(breakdown):
+            return lines
+        return lines[:breakdown.index(False) - 1]
+
+    @staticmethod
+    def trim_news_to_length(text, link, max_length=900):
+        break_character = '\n'
+        input_text = f'{text}{break_character}'
+        trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
+        read_more = ''
+        if len(trimmed_text + break_character) != len(input_text):
+            read_more = '[...] '
+        result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
+        return result
+
+    def render_events(self, events):
+        e = discord.Embed(title='Spoilers', color=self.WHITE)
+        message_lines = ['```']
+        last_event_date = events[0]['start']
+        for event in events:
+            if event['start'] > last_event_date and event['start'].weekday() == 0:
+                message_lines.append('')
+            last_event_date = event['start']
+            message_lines.append(f'{event["start"].strftime("%b %d")} - '
+                                 f'{event["end"].strftime("%b %d")} '
+                                 f'{event["type"]}'
+                                 f'{":" if event["extra_info"] else ""} '
+                                 f'{event["extra_info"]}')
+        message_lines = self.trim_text_lines_to_length(message_lines, 900)
+        message_lines.append('```')
+        e.add_field(name='Upcoming Events', value='\n'.join(message_lines))
+        return e
