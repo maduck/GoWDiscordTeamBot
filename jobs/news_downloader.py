@@ -43,7 +43,7 @@ class NewsDownloader:
     def get_last_post_date(self):
         if os.path.exists(self.LAST_POST_DATE_FILENAME):
             with open(self.LAST_POST_DATE_FILENAME) as f:
-                self.last_post_date = datetime.datetime.fromisoformat(f.read())
+                self.last_post_date = datetime.datetime.fromisoformat(f.read().strip())
 
     def process_news_feed(self):
         url = f'{self.GOW_FEED_URL}?{int(time.time())}'
