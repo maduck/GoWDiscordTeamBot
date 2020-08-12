@@ -205,7 +205,7 @@ class Views:
 
     @staticmethod
     def trim_text_lines_to_length(lines, limit):
-        breakdown = [sum([len(c) for c in lines[0:i]]) < limit for i in range(len(lines))]
+        breakdown = [sum([len(c) + 2 for c in lines[0:i]]) < limit for i in range(len(lines))]
         if all(breakdown):
             return lines
         return lines[:breakdown.index(False) - 1]
