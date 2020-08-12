@@ -205,7 +205,8 @@ class DiscordBot(BaseBot):
         self.views = Views(emojis={})
 
     async def on_ready(self):
-        self.bot_connect = datetime.datetime.now()
+        if not self.bot_connect:
+            self.bot_connect = datetime.datetime.now()
         self.invite_url = f'https://discordapp.com/api/oauth2/authorize' \
                           f'?client_id={self.user.id}' \
                           f'&scope=bot' \
