@@ -376,7 +376,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def on_message(self, message):
-        if message.author.id == self.user.id:
+        if message.author.bot:
             return
 
         user_command = message.content.lower().strip()
