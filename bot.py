@@ -207,6 +207,7 @@ class DiscordBot(BaseBot):
     async def on_ready(self):
         if not self.bot_connect:
             self.bot_connect = datetime.datetime.now()
+            log.debug(f'on_ready set connection time to {self.bot_connect}.')
         self.invite_url = f'https://discordapp.com/api/oauth2/authorize' \
                           f'?client_id={self.user.id}' \
                           f'&scope=bot' \
@@ -227,11 +228,13 @@ class DiscordBot(BaseBot):
     async def on_disconnect(self):
         if self.bot_connect > self.bot_disconnect:
             self.bot_disconnect = datetime.datetime.now()
+            log.debug(f'on_discconect set disconnect time to {self.bot_disconnect}.')
 
     async def on_resumed(self):
         if self.bot_disconnect > self.bot_connect:
             self.bot_connect = datetime.datetime.now()
             self.downtimes += (self.bot_connect - self.bot_disconnect).seconds
+            log.debug(f'on_resume set connect time to {self.bot_connect}, and increased downtime to {self.downtimes}.')
 
     async def get_function_for_command(self, user_command, user_prefix):
         for command in self.COMMAND_REGISTRY:
@@ -296,16 +299,18 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def show_uptime(self, message, prefix, lang):
-        now = datetime.datetime.now()
-        bot_uptime = now - self.bot_start
-        bot_connect = now - self.bot_connect
         e = discord.Embed(title='Uptime', color=self.WHITE)
         if lang == 'cn':
             lang = 'zh'
         if lang != 'en':
             _t = humanize.i18n.activate(lang)
-        e.add_field(name='Bot uptime', value=humanize.naturaldelta(bot_uptime), inline=False)
-        e.add_field(name='Online for', value=humanize.naturaldelta(bot_connect), inline=False)
+        now = datetime.datetime.now()
+        bot_uptime = now - self.bot_start
+        bot_offline = datetime.timedelta(seconds=self.downtimes)
+        uptime = f'{humanize.naturaltime(self.bot_start)} ({humanize.naturaldelta(bot_uptime)})'
+        e.add_field(name='Bot running since', value=uptime, inline=False)
+        if bot_offline:
+            e.add_field(name='Offline for', value=humanize.naturaldelta(bot_offline), inline=False)
         bot_runtime = (datetime.datetime.now() - self.bot_start).seconds
         availability = (bot_runtime - self.downtimes) / bot_runtime
         e.add_field(name='Availability', value=f'{availability:.3%}')

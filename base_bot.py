@@ -35,6 +35,7 @@ class BaseBot(discord.Client):
         self.bot_start = datetime.datetime.now()
         self.bot_connect = None
         self.downtimes = 0
+        log.debug(f'__init__ reset uptime to {self.bot_start}.')
 
     async def generate_embed_from_text(self, message_lines, title, subtitle):
         e = discord.Embed(title=title, color=self.WHITE)
