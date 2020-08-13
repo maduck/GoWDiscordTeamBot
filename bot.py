@@ -208,6 +208,8 @@ class DiscordBot(BaseBot):
         if not self.bot_connect:
             self.bot_connect = datetime.datetime.now()
             log.debug(f'on_ready set connection time to {self.bot_connect}.')
+        else:
+            await self.on_resumed()
         self.invite_url = f'https://discordapp.com/api/oauth2/authorize' \
                           f'?client_id={self.user.id}' \
                           f'&scope=bot' \
