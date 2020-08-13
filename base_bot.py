@@ -126,12 +126,9 @@ class BaseBot(discord.Client):
                 raise EmbedLimitsExceed('field.name', field)
             if len(field.value) > 1024:
                 raise EmbedLimitsExceed('field.value', field)
-        if getattr(embed, '_footer', None):
-            if len(embed.footer.text) > 2048:
-                raise EmbedLimitsExceed('embed.footer.text')
-        if getattr(embed, '__author', None):
-            if len(embed.author.name) > 256:
-                raise EmbedLimitsExceed('embed.author.name')
+        if getattr(embed, '_footer', None) and len(embed.footer.text) > 2048:
+            raise EmbedLimitsExceed('embed.footer.text')
+        if getattr(embed, '__author', None) and len(embed.author.name) > 256:
+            raise EmbedLimitsExceed('embed.author.name')
         if len(embed) > 6000:
             raise EmbedLimitsExceed('total length of embed')
-
