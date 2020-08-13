@@ -4,7 +4,7 @@ import threading
 
 import discord
 
-from util import atoi, bool_to_emoticon, merge, natural_keys
+from util import bool_to_emoticon, merge, natural_keys
 
 
 class TowerOfDoomData:
@@ -138,13 +138,12 @@ class TowerOfDoomData:
 
         channel = str(message.channel.id)
 
-        floor_number = atoi(floor)
+        floor_number = int(floor)
 
         try:
             room_key = self.get_key_from_alias(my_data, 'rooms', room)
             room_display = my_data['rooms'][room_key][0]
         except KeyError:
-            # log.debug(f"Couldn't find room {room} in {my_data['rooms']}")
             return False, f'Couldn\'t find room `{room}`'
 
         # Mythic room below floor 25? always a scroll.

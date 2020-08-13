@@ -633,17 +633,20 @@ class DiscordBot(BaseBot):
     async def edit_tower_floor(self, message, lang, prefix, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v,
                                scroll_vi=None):
 
+        if not floor.isdigit():
+            return
+
         my_data = self.tower_data.get(message.guild)
         short = my_data["short"]
 
-        room_a = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-                                            message=message, floor=floor, room="II", scroll=scroll_ii)
-        room_b = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-                                            message=message, floor=floor, room="III", scroll=scroll_iii)
-        room_c = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-                                            message=message, floor=floor, room="IV", scroll=scroll_iv)
-        room_d = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-                                            message=message, floor=floor, room="V", scroll=scroll_v)
+        rooms = ('ii', 'iii', 'iv', 'v')
+        scrolls = (scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi)
+
+        rooms = [
+            self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
+                                       message=message, floor=floor, room=room, scroll=scrolls[room_id])
+            for room_id, room in enumerate(rooms)
+        ]
         # Mythic Room
         if scroll_vi is not None:
             log.info(scroll_vi)
@@ -652,19 +655,17 @@ class DiscordBot(BaseBot):
         else:
             room_e = (True, '')
 
-        success = all([room_a[0], room_b[0], room_c[0], room_d[0], room_e[0]])
+        success = all([r[0] for r in rooms])
 
         if short:
             await self.react(message, bool_to_emoticon(success))
         else:
             e = discord.Embed(title='Tower of Doom', color=self.WHITE)
             edit_text = '\n'.join([
-                f"{'Success' if room_a[0] else 'Failure'}: {room_a[1]}",
-                f"{'Success' if room_b[0] else 'Failure'}: {room_b[1]}",
-                f"{'Success' if room_c[0] else 'Failure'}: {room_c[1]}",
-                f"{'Success' if room_d[0] else 'Failure'}: {room_d[1]}",
-                f"{'Success' if room_e[0] else 'Failure'}: {room_e[1]}" if scroll_vi is not None else ''
-            ])
+                f"{'Success' if room[0] else 'Failure'}: {room[1]}"
+                for room in rooms])
+            if scroll_vi:
+                edit_text += f"{'Success' if room_e[0] else 'Failure'}: {room_e[1]}"
 
             e.add_field(name='Edit Tower (Floor)', value=edit_text)
             await self.answer(message, e)

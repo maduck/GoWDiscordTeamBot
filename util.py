@@ -6,7 +6,7 @@ def atoi(text):
 
 
 def bool_to_emoticon(value):
-    return "✅" if value else "❌"
+    return value and "✅" or "❌"
 
 
 def natural_keys(text):
