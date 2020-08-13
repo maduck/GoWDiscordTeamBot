@@ -157,7 +157,7 @@ class Views:
         e.description = '\n'.join(descriptions)
         return e
 
-    def render_kingdom(self, kingdom):
+    def render_kingdom(self, kingdom, shortened=False):
         e = discord.Embed(title='Kingdom search', color=self.WHITE)
         underworld = 'underworld' if kingdom['underworld'] else ''
         thumbnail_url = f'{self.GRAPHICS_URL}/Maplocations{underworld}_{kingdom["filename"]}_thumb.png'
@@ -165,11 +165,13 @@ class Views:
         kingdom_troops = ', '.join([f'{troop["name"]} `{troop["id"]}`' for troop in kingdom['troops']])
         colors = [f'{self.my_emojis.get(c, f":{c}:")}' for c in kingdom['colors']]
         banner_colors = self.banner_colors(kingdom['banner'])
-        message_lines = [
-            kingdom['punchline'],
-            kingdom['description'],
-            f'**{kingdom["banner_title"]}**: {kingdom["banner"]["name"]} {" ".join(banner_colors)}',
-        ]
+        message_lines = []
+        if not shortened:
+            message_lines.append(kingdom['punchline'])
+            message_lines.append(kingdom['description'])
+
+        message_lines.append(f'**{kingdom["banner_title"]}**: {kingdom["banner"]["name"]} {" ".join(banner_colors)}')
+
         if 'primary_color' in kingdom and 'primary_stat' in kingdom:
             primary_mana = self.my_emojis.get(kingdom['primary_color'])
             deed_emoji = self.my_emojis.get(f'deed_{kingdom["primary_color"]}')
@@ -177,10 +179,10 @@ class Views:
                 f'**{kingdom["color_title"]}**: {primary_mana} / {deed_emoji} {kingdom["deed"]}',
                 f'**{kingdom["stat_title"]}**: {kingdom["primary_stat"]}',
             ])
-        message_lines.extend([
-            f'\n**{kingdom["linked_map"]}**: {kingdom["linked_kingdom"]}' if kingdom['linked_kingdom'] else '',
-            f'**{kingdom["troop_title"]}**: {kingdom_troops}',
-        ])
+        message_lines.append(f'\n**{kingdom["linked_map"]}**: {kingdom["linked_kingdom"]}'
+                             if kingdom['linked_kingdom'] else '')
+        if not shortened:
+            message_lines.append(f'**{kingdom["troop_title"]}**: {kingdom_troops}')
         e.add_field(name=f'{kingdom["name"]} `#{kingdom["id"]}` {"".join(colors)} ({kingdom["map"]})',
                     value='\n'.join(message_lines))
         return e

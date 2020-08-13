@@ -422,7 +422,7 @@ class DiscordBot(BaseBot):
             e = self.generate_response('Kingdom search', self.BLACK, search_term, 'did not yield any result')
         elif len(result) == 1:
             kingdom = result[0]
-            e = self.views.render_kingdom(kingdom)
+            e = self.views.render_kingdom(kingdom, shortened)
         elif search_term == 'summary':
             result.sort(key=operator.itemgetter('name'))
             name_width = max([len(k['name']) for k in result])
