@@ -498,7 +498,7 @@ class DiscordBot(BaseBot):
         if not result:
             e = self.generate_response('Weapon search', self.BLACK, search_term, 'did not yield any result')
         elif len(result) == 1:
-            e = self.views.render_weapon(result[0])
+            e = self.views.render_weapon(result[0], shortened)
         else:
             e = discord.Embed(title=f'Weapon search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             weapons_found = [f'{t["name"]} ({t["id"]})' for t in result]

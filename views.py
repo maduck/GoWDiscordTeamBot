@@ -13,7 +13,7 @@ class Views:
     def __init__(self, emojis):
         self.my_emojis = emojis
 
-    def render_weapon(self, weapon):
+    def render_weapon(self, weapon, shortened=False):
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
         color = discord.Color.from_rgb(*rarity_color)
         e = discord.Embed(title='Weapon search', color=color)
@@ -25,7 +25,7 @@ class Views:
             color_requirement = [f'{self.my_emojis.get(c, f":{c}:")}' for c in weapon['colors']]
         upgrades = '\n'.join([f'**{affix["name"]}**: {affix["description"]}' for affix in weapon['upgrades']])
         affix_text = ''
-        if weapon['upgrades']:
+        if weapon['upgrades'] and not shortened:
             affix_text = f'\n**{weapon["upgrade_title"]}**\n{upgrades}\n'
         requirements = weapon["requirement_text"].replace("erhähltlich", "erhältlich")
         if weapon['has_mastery_requirement_color'] and ':' in requirements:
