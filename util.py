@@ -28,8 +28,6 @@ def merge(a, b, path=None):
         if key in a:
             if isinstance(a[key], dict) and isinstance(b[key], dict):
                 merge(a[key], b[key], path + [str(key)])
-            else:
-                pass
         else:
             a[key] = b[key]
     return a
@@ -41,12 +39,7 @@ def flatten(*args):
         if type(arg) == str and arg != '':
             lst.append(arg)
         elif type(arg) == list:
-            # use for loop instead of extend to check if the entry has a value
-            for entry in arg:
-                if type(arg) == str and entry != '':
-                    lst.append(entry)
-                else:
-                    lst.append(entry)
+            lst.extend(arg)
     return lst
 
 
