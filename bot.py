@@ -235,7 +235,7 @@ class DiscordBot(BaseBot):
     async def on_resumed(self):
         if self.bot_disconnect > self.bot_connect:
             self.bot_connect = datetime.datetime.now()
-            self.downtimes += (self.bot_connect - self.bot_disconnect).seconds
+            self.downtimes += (self.bot_connect - self.bot_disconnect).microseconds / 1000000
             log.debug(f'on_resume set connect time to {self.bot_connect}, and increased downtime to {self.downtimes}.')
 
     async def get_function_for_command(self, user_command, user_prefix):
