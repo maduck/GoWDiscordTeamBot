@@ -37,6 +37,18 @@ class BaseBot(discord.Client):
         self.downtimes = 0
         log.debug(f'__init__ reset uptime to {self.bot_start}.')
 
+    async def on_disconnect(self):
+        if self.bot_connect > self.bot_disconnect:
+            self.bot_disconnect = datetime.datetime.now()
+            log.debug(f'Disconnected at {self.bot_disconnect}.')
+
+    async def on_resumed(self):
+        if self.bot_disconnect > self.bot_connect:
+            self.bot_connect = datetime.datetime.now()
+            added_downtime = (self.bot_connect - self.bot_disconnect).microseconds / 1000000
+            self.downtimes += added_downtime
+            log.debug(f'Reconnected at {self.bot_connect}, increased downtime by {added_downtime} to {self.downtimes}.')
+
     async def generate_embed_from_text(self, message_lines, title, subtitle):
         e = discord.Embed(title=title, color=self.WHITE)
         message_text = ''

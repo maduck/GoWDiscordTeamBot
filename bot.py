@@ -207,7 +207,7 @@ class DiscordBot(BaseBot):
     async def on_ready(self):
         if not self.bot_connect:
             self.bot_connect = datetime.datetime.now()
-            log.debug(f'on_ready set connection time to {self.bot_connect}.')
+            log.debug(f'Connected at {self.bot_connect}.')
         else:
             await self.on_resumed()
         self.invite_url = f'https://discordapp.com/api/oauth2/authorize' \
@@ -226,17 +226,6 @@ class DiscordBot(BaseBot):
         await self.change_presence(status=discord.Status.online, activity=game)
         await self.update_base_emojis()
         self.views.my_emojis = self.my_emojis
-
-    async def on_disconnect(self):
-        if self.bot_connect > self.bot_disconnect:
-            self.bot_disconnect = datetime.datetime.now()
-            log.debug(f'on_discconect set disconnect time to {self.bot_disconnect}.')
-
-    async def on_resumed(self):
-        if self.bot_disconnect > self.bot_connect:
-            self.bot_connect = datetime.datetime.now()
-            self.downtimes += (self.bot_connect - self.bot_disconnect).microseconds / 1000000
-            log.debug(f'on_resume set connect time to {self.bot_connect}, and increased downtime to {self.downtimes}.')
 
     async def get_function_for_command(self, user_command, user_prefix):
         for command in self.COMMAND_REGISTRY:
