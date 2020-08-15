@@ -11,7 +11,7 @@ import humanize
 
 import bot_tasks
 from base_bot import BaseBot, log
-from config import CONFIG
+from configurations import CONFIG
 from discord_helpers import admin_required, guild_required
 from game_constants import RARITY_COLORS
 from help import get_help_text, get_tower_help_text
