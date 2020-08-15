@@ -1,4 +1,4 @@
-import json
+from game_assets import GameAssets
 
 LANGUAGES = {
     'en': 'English',
@@ -26,9 +26,8 @@ class Translations:
     def __init__(self):
         self._translations = {}
         for lang_code, language in LANGUAGES.items():
-            filename = f'GemsOfWar_{language}.json'
-            with open(filename, encoding='utf8') as f:
-                self._translations[lang_code] = json.load(f)
+            self._translations[lang_code] = GameAssets.load(
+                f'GemsOfWar_{language}.json')
 
     def get(self, key, lang=''):
         if lang not in self._translations:

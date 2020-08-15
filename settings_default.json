@@ -3,5 +3,6 @@
   "base_guild": "Garyatrics",
   "default_prefix": "!",
   "default_language": "en",
-  "default_news_platform": "pc"
+  "default_news_platform": "pc",
+  "game_assets": "../game_assets/"
 }
