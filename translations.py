@@ -1,3 +1,5 @@
+import humanize
+
 from game_assets import GameAssets
 
 LANGUAGES = {
@@ -34,3 +36,15 @@ class Translations:
             lang = self.BASE_LANG
 
         return self._translations[lang].get(key, key)
+
+
+class HumanizeTranslator:
+    def __init__(self, lang):
+        self.lang = lang
+
+    def __enter__(self):
+        if self.lang.lower() != 'en':
+            return humanize.i18n.activate(self.lang)
+
+    def __exit__(self, exception_type, exception_value, traceback):
+        humanize.i18n.deactivate()
