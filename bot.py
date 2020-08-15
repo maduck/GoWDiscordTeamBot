@@ -11,6 +11,7 @@ import humanize
 
 import bot_tasks
 from base_bot import BaseBot, log
+from config import CONFIG
 from discord_helpers import admin_required, guild_required
 from game_constants import RARITY_COLORS
 from help import get_help_text, get_tower_help_text
@@ -196,10 +197,10 @@ class DiscordBot(BaseBot):
 
         self.expander = TeamExpander()
         self.tower_data = TowerOfDoomData()
-        self.prefix = Prefix(self.config.get('default_prefix'))
-        self.language = Language(self.config.get('default_language'))
+        self.prefix = Prefix(CONFIG.get('default_prefix'))
+        self.language = Language(CONFIG.get('default_language'))
         self.subscriptions = Subscriptions()
-        self.views = Views(emojis={}, config=self.config)
+        self.views = Views(emojis={})
 
     async def on_ready(self):
         if not self.bot_connect:
@@ -671,7 +672,7 @@ class DiscordBot(BaseBot):
     @admin_required
     async def news_subscribe(self, message, prefix, platform):
         if not platform:
-            platform = self.config.get('default_news_platform')
+            platform = CONFIG.get('default_news_platform')
         self.subscriptions.add(message.guild, message.channel, platform)
 
         e = self.generate_response('News management', self.WHITE,

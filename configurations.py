@@ -18,3 +18,6 @@ class Configurations:
 
     def get(self, key, default=None):
         return self.config.get(key, default)
+
+
+CONFIG = Configurations()

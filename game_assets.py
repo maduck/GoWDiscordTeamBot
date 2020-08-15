@@ -1,6 +1,7 @@
 import json
 import os
-from config import CONFIG
+
+from configurations import CONFIG
 
 
 class GameAssets:

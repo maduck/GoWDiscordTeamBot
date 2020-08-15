@@ -3,7 +3,7 @@ import logging
 
 import discord
 
-from configurations import Configurations
+from configurations import CONFIG
 
 LOGLEVEL = logging.DEBUG
 
@@ -29,7 +29,6 @@ class BaseBot(discord.Client):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.config = Configurations()
 
         self.permissions = self.generate_permissions()
         self.invite_url = ''
@@ -117,7 +116,7 @@ class BaseBot(discord.Client):
         log.debug(f'Guild {guild} (id {guild.id}) kicked me out. Now in {len(self.guilds)} guilds.')
 
     async def update_base_emojis(self):
-        home_guild = discord.utils.find(lambda g: g.name == self.config.get('base_guild'), self.guilds)
+        home_guild = discord.utils.find(lambda g: g.name == CONFIG.get('base_guild'), self.guilds)
         for emoji in home_guild.emojis:
             self.my_emojis[emoji.name] = str(emoji)
 
