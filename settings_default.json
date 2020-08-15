@@ -4,5 +4,5 @@
   "default_prefix": "!",
   "default_language": "en",
   "default_news_platform": "pc",
-  "game_assets": "../game_assets/"
+  "game_assets": ""
 }
