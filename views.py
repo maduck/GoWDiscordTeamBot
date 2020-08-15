@@ -5,19 +5,19 @@ from util import flatten
 
 
 class Views:
-    GRAPHICS_URL = 'https://garyatrics.com/gow_assets'
     WHITE = discord.Color.from_rgb(254, 254, 254)
     BLACK = discord.Color.from_rgb(0, 0, 0)
     RED = discord.Color.from_rgb(255, 0, 0)
 
-    def __init__(self, emojis):
+    def __init__(self, emojis, config):
         self.my_emojis = emojis
+        self.config = config
 
     def render_weapon(self, weapon, shortened=False):
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
         color = discord.Color.from_rgb(*rarity_color)
         e = discord.Embed(title='Weapon search', color=color)
-        thumbnail_url = f'{self.GRAPHICS_URL}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
+        thumbnail_url = f'{self.config.get("graphics_url")}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
         mana = self.my_emojis.get(weapon['color_code'])
         color_requirement = []
@@ -49,7 +49,7 @@ class Views:
 
     def render_pet(self, pet):
         e = discord.Embed(title='Pet search', color=self.WHITE)
-        thumbnail_url = f'{self.GRAPHICS_URL}/Pets/Cards_{pet["filename"]}_thumb.png'
+        thumbnail_url = f'{self.config.get("graphics_url")}/Pets/Cards_{pet["filename"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
         mana = self.my_emojis.get(pet['color_code'])
         effect_data = ''
@@ -81,7 +81,7 @@ class Views:
             trait_list = [f'{trait["name"]}' for trait in troop['traits']]
             e.description += f'\n{", ".join(trait_list)}'
         else:
-            thumbnail_url = f'{self.GRAPHICS_URL}/Troops/Cards_{troop["filename"]}_thumb.png'
+            thumbnail_url = f'{self.config.get("graphics_url")}/Troops/Cards_{troop["filename"]}_thumb.png'
             e.set_thumbnail(url=thumbnail_url)
             message_lines = [
                 f'**{troop["spell"]["name"]}**: {troop["spell"]["description"]}',
@@ -124,7 +124,7 @@ class Views:
         team_text = '\n'.join(troops)
         e.add_field(name=team['troops_title'], value=team_text, inline=True)
         if team['banner']:
-            banner_url = f'{self.GRAPHICS_URL}/Banners/Banners_{team["banner"]["filename"]}_thumb.png'
+            banner_url = f'{self.config.get("graphics_url")}/Banners/Banners_{team["banner"]["filename"]}_thumb.png'
             e.set_thumbnail(url=banner_url)
             banner_colors = self.banner_colors(team['banner'])
             e.add_field(name=team['banner']['name'], value='\n'.join(banner_colors), inline=True)
@@ -160,7 +160,7 @@ class Views:
     def render_kingdom(self, kingdom, shortened=False):
         e = discord.Embed(title='Kingdom search', color=self.WHITE)
         underworld = 'underworld' if kingdom['underworld'] else ''
-        thumbnail_url = f'{self.GRAPHICS_URL}/Maplocations{underworld}_{kingdom["filename"]}_thumb.png'
+        thumbnail_url = f'{self.config.get("graphics_url")}/Maplocations{underworld}_{kingdom["filename"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
         kingdom_troops = ', '.join([f'{troop["name"]} `{troop["id"]}`' for troop in kingdom['troops']])
         colors = [f'{self.my_emojis.get(c, f":{c}:")}' for c in kingdom['colors']]
@@ -189,7 +189,7 @@ class Views:
 
     def render_class(self, _class):
         e = discord.Embed(title='Class search', color=self.WHITE)
-        thumbnail_url = f'{self.GRAPHICS_URL}/Classes_{_class["code"]}_thumb.png'
+        thumbnail_url = f'{self.config.get("graphics_url")}/Classes_{_class["code"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
         class_lines = [
             f'**{_class["kingdom_title"]}**: {_class["kingdom"]}',

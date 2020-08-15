@@ -3,6 +3,8 @@ import logging
 
 import discord
 
+from configurations import Configurations
+
 LOGLEVEL = logging.DEBUG
 
 formatter = logging.Formatter('%(asctime)-15s [%(levelname)s] %(message)s')
@@ -24,10 +26,11 @@ class BaseBot(discord.Client):
     BLACK = discord.Color.from_rgb(0, 0, 0)
     RED = discord.Color.from_rgb(255, 0, 0)
     NEEDED_PERMISSIONS = []
-    BASE_GUILD = ''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.config = Configurations()
+
         self.permissions = self.generate_permissions()
         self.invite_url = ''
         self.my_emojis = {}
@@ -114,7 +117,7 @@ class BaseBot(discord.Client):
         log.debug(f'Guild {guild} (id {guild.id}) kicked me out. Now in {len(self.guilds)} guilds.')
 
     async def update_base_emojis(self):
-        home_guild = discord.utils.find(lambda g: g.name == self.BASE_GUILD, self.guilds)
+        home_guild = discord.utils.find(lambda g: g.name == self.config.get('base_guild'), self.guilds)
         for emoji in home_guild.emojis:
             self.my_emojis[emoji.name] = str(emoji)
 

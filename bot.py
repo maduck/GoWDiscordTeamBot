@@ -35,12 +35,8 @@ def debug(message):
 
 
 class DiscordBot(BaseBot):
-    DEFAULT_PREFIX = '!'
-    DEFAULT_LANGUAGE = 'en'
     BOT_NAME = 'garyatrics.com'
-    BASE_GUILD = "Garyatrics"
-    VERSION = '0.7'
-    GRAPHICS_URL = 'https://garyatrics.com/gow_assets'
+    VERSION = '0.8'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -199,10 +195,10 @@ class DiscordBot(BaseBot):
 
         self.expander = TeamExpander()
         self.tower_data = TowerOfDoomData()
-        self.prefix = Prefix(self.DEFAULT_PREFIX)
-        self.language = Language(self.DEFAULT_LANGUAGE)
+        self.prefix = Prefix(self.config.get('default_prefix'))
+        self.language = Language(self.config.get('default_language'))
         self.subscriptions = Subscriptions()
-        self.views = Views(emojis={})
+        self.views = Views(emojis={}, config=self.config)
 
     async def on_ready(self):
         if not self.bot_connect:
