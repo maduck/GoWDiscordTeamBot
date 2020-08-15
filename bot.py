@@ -159,7 +159,8 @@ class DiscordBot(BaseBot):
         },
         {
             'function': 'news_subscribe',
-            'pattern': re.compile(r'^(?P<prefix>.)news subscribe$')
+            'pattern': re.compile(r'^(?P<prefix>.)news subscribe( (?P<platform>pc|switch))?$',
+                                  re.IGNORECASE | re.DOTALL)
         },
         {
             'function': 'news_unsubscribe',
@@ -673,11 +674,14 @@ class DiscordBot(BaseBot):
 
     @guild_required
     @admin_required
-    async def news_subscribe(self, message, prefix):
-        self.subscriptions.add(message.guild, message.channel)
+    async def news_subscribe(self, message, prefix, platform):
+        if not platform:
+            platform = self.config.get('default_news_platform')
+        self.subscriptions.add(message.guild, message.channel, platform)
 
         e = self.generate_response('News management', self.WHITE,
-                                   'Subscribe', f'News will now be posted into channel {message.channel.name}.')
+                                   f'Subscribe for {platform.title()}',
+                                   f'News will now be posted into channel {message.channel.name}.')
         await self.answer(message, e)
 
     @guild_required
@@ -694,7 +698,10 @@ class DiscordBot(BaseBot):
         subscribed = self.subscriptions.is_subscribed(message.guild, message.channel)
         answer_text = f'News will *not* be posted into channel {message.channel.name}.'
         if subscribed:
-            answer_text = f'News will be posted into channel {message.channel.name}.'
+            platforms = ('PC', 'Switch')
+            subscribed_platforms = [p for p in platforms if subscribed.get(p.lower())]
+            platforms_text = ' and '.join(subscribed_platforms)
+            answer_text = f'{platforms_text} news for will be posted into channel {message.channel.name}.'
 
         e = self.generate_response('News management', self.WHITE, 'Status', answer_text)
         await self.answer(message, e)
@@ -706,9 +713,8 @@ class DiscordBot(BaseBot):
         with open(NewsDownloader.NEWS_FILENAME) as f:
             articles = json.load(f)
             articles.reverse()
-        pc_subscriptions = [s for s in self.subscriptions if s.get('pc', True)]
         if articles:
-            log.debug(f'Distributing {len(articles)} news articles to {len(pc_subscriptions)} channels.')
+            log.debug(f'Distributing {len(articles)} news articles to {len(self.subscriptions)} channels.')
         for article in articles:
             e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
             content = self.views.trim_news_to_length(article['content'], article['url'])
@@ -716,8 +722,11 @@ class DiscordBot(BaseBot):
             for image_url in article['images']:
                 e.set_image(url=image_url)
 
-            for subscription in pc_subscriptions:
-                log.debug(f'Sending out {article["title"]} to'
+            for subscription in self.subscriptions:
+                relevant_news = subscription.get(article['platform'])
+                if not relevant_news:
+                    continue
+                log.debug(f'Sending out [{article["platform"]}] {article["title"]} to'
                           f' {subscription["guild_name"]}/{subscription["channel_name"]}')
                 channel = self.get_channel(subscription['channel_id'])
                 if not await self.is_writable(channel):

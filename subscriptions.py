@@ -29,20 +29,21 @@ class Subscriptions:
         return f'{guild.id}-{channel.id}'
 
     @staticmethod
-    def get_subscription(guild, channel):
+    def get_subscription(guild, channel, platform=''):
         subscription_id = Subscriptions.get_subscription_id(guild, channel)
         subscription = {
             'guild_name': guild.name,
             'guild_id': guild.id,
             'channel_id': channel.id,
             'channel_name': channel.name,
+            platform.lower(): True,
         }
         return subscription_id, subscription
 
-    def add(self, guild, channel):
-        s_id, subscription = self.get_subscription(guild, channel)
+    def add(self, guild, channel, platform):
+        s_id, subscription = self.get_subscription(guild, channel, platform)
         if s_id in self._subscriptions:
-            self._subscriptions[s_id]['pc'] = True
+            self._subscriptions[s_id][platform.lower()] = True
         else:
             self._subscriptions[s_id] = subscription
         self.save_subscriptions()
@@ -50,13 +51,15 @@ class Subscriptions:
     def remove(self, guild, channel):
         s_id, subscription = self.get_subscription(guild, channel)
         if self.is_subscribed(guild, channel):
-            self._subscriptions[s_id]['pc'] = False
-            self._subscriptions[s_id]['switch'] = False
+            del self._subscriptions[s_id]
             self.save_subscriptions()
 
     def is_subscribed(self, guild, channel):
-        subscription = self.get_subscription_id(guild, channel)
-        return subscription in self._subscriptions
+        subscription_id = self.get_subscription_id(guild, channel)
+        if subscription_id in self._subscriptions:
+            subscription = self._subscriptions[subscription_id]
+            return subscription
+        return False
 
     def __len__(self):
         return len(self._subscriptions)

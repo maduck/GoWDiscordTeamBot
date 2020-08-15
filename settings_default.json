@@ -2,5 +2,6 @@
   "graphics_url": "https://garyatrics.com/gow_assets",
   "base_guild": "Garyatrics",
   "default_prefix": "!",
-  "default_language": "en"
+  "default_language": "en",
+  "default_news_platform": "pc"
 }

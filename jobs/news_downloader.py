@@ -52,22 +52,21 @@ class NewsDownloader:
 
         posts = []
         for entry in feed['entries']:
-            is_nintendo = 'Nintendo Switch' in entry.title
-            is_pc = not is_nintendo
+            platform = 'switch' if 'Nintendo Switch' in entry.title else 'pc'
 
             posted_date = datetime.datetime.fromtimestamp(time.mktime(entry.published_parsed))
             if posted_date <= self.last_post_date:
                 continue
 
-            if is_pc:
-                images, content = self.reformat_html_summary(entry)
-                posts.append({
-                    'author': entry.author,
-                    'title': entry.title,
-                    'url': entry.link,
-                    'content': content,
-                    'images': images,
-                })
+            images, content = self.reformat_html_summary(entry)
+            posts.append({
+                'author': entry.author,
+                'title': entry.title,
+                'url': entry.link,
+                'content': content,
+                'images': images,
+                'platform': platform,
+            })
             new_last_post_date = max(new_last_post_date, posted_date)
 
         if posts:
