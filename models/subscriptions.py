@@ -4,7 +4,7 @@ import threading
 
 
 class Subscriptions:
-    SUBSCRIPTION_CONFIG_FILE = 'subscriptions.json'
+    SUBSCRIPTION_CONFIG_FILE = '../subscriptions.json'
 
     def __init__(self):
         self._subscriptions = {}

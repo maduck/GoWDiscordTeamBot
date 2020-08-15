@@ -10,15 +10,13 @@ import discord
 import humanize
 
 import bot_tasks
+import models
 from base_bot import BaseBot, log
 from configurations import CONFIG
 from discord_helpers import admin_required, guild_required
 from game_constants import RARITY_COLORS
 from help import get_help_text, get_tower_help_text
 from jobs.news_downloader import NewsDownloader
-from language import Language
-from prefix import Prefix
-from subscriptions import Subscriptions
 from team_expando import TeamExpander
 from tower_data import TowerOfDoomData
 from translations import HumanizeTranslator, LANGUAGES, LANGUAGE_CODE_MAPPING
@@ -197,9 +195,9 @@ class DiscordBot(BaseBot):
 
         self.expander = TeamExpander()
         self.tower_data = TowerOfDoomData()
-        self.prefix = Prefix(CONFIG.get('default_prefix'))
-        self.language = Language(CONFIG.get('default_language'))
-        self.subscriptions = Subscriptions()
+        self.prefix = models.Prefix(CONFIG.get('default_prefix'))
+        self.language = models.Language(CONFIG.get('default_language'))
+        self.subscriptions = models.Subscriptions()
         self.views = Views(emojis={})
 
     async def on_ready(self):
