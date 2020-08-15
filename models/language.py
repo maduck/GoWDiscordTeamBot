@@ -1,5 +1,5 @@
-from base_json_storage import BaseGuildStorage
+from models import BaseGuildStorage
 
 
 class Language(BaseGuildStorage):
-    FILENAME = '../languages.json'
+    FILENAME = 'languages.json'

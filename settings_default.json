@@ -4,5 +4,6 @@
   "default_prefix": "!",
   "default_language": "en",
   "default_news_platform": "pc",
-  "game_assets_folder": ""
+  "game_assets_folder": "",
+  "database": "db.sqlite3"
 }

@@ -1,6 +1,7 @@
-requests
+aiosqlite
+beautifulsoup4
 discord
 feedparser
-beautifulsoup4
 html2markdown
 humanize
+requests

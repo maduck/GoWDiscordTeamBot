@@ -12,3 +12,4 @@ subscriptions.json
 towerofdoom.json
 settings.json
 jobs/*.json
+db.sqlite3
