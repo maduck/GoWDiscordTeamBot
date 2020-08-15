@@ -1,6 +1,7 @@
 import datetime
-import json
 import operator
+
+from game_assets import GameAssets
 
 
 class U(str):
@@ -67,10 +68,8 @@ class GameData:
         return [c.replace('Color', '').lower() for c, v in data_object['ManaColors'].items() if v]
 
     def read_json_data(self):
-        with open('World.json') as f:
-            self.data = json.load(f)
-        with open('User.json', encoding='utf8') as f:
-            self.user_data = json.load(f)
+        self.data = GameAssets.load('World.json')
+        self.user_data = GameAssets.load('User.json')
 
     def populate_world_data(self):
         self.read_json_data()

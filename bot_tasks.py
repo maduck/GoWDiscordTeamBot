@@ -5,6 +5,7 @@ import os
 from discord.ext import tasks
 
 from base_bot import log
+from game_assets import GameAssets
 from jobs.news_downloader import NewsDownloader
 from team_expando import TeamExpander, update_translations
 from translations import LANG_FILES
@@ -29,7 +30,8 @@ async def task_check_for_data_updates(discord_client):
     now = datetime.datetime.now()
     modified_files = []
     for filename in filenames:
-        modification_time = datetime.datetime.fromtimestamp(os.path.getmtime(filename))
+        file_path = GameAssets.path(filename)
+        modification_time = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
         modified = now - modification_time <= datetime.timedelta(seconds=20)
         if modified:
             modified_files.append(filename)
