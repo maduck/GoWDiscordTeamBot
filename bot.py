@@ -45,7 +45,7 @@ class DiscordBot(BaseBot):
         'attach_files',
         'external_emojis',
     ]
-    LANG_PATTERN = r'(?P<lang>en|fr|de|ру|ru|it|es|cn)?'
+    LANG_PATTERN = r'(?P<lang>' + '|'.join(LANGUAGES) + ')?'
     SEARCH_PATTERN = r'^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.){0} #?(?P<search_term>.*)$'
     COMMAND_REGISTRY = [
         {

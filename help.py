@@ -9,7 +9,7 @@ help_texts = {
                       '14007]`. The bot will automatically answer with the troops posted in the code. The code '
                       'can be embedded within more text, and does not need to stand alone.\n\n'
                       '• __Language support__: All GoW languages are supported, put the two country code letters '
-                      '(en, fr, de, ru, it, es, cn) in front of the team code, e.g. `cn[1075,6251,6699,6007,3010,'
+                      '(en, fr, de, ru, it, es, zh) in front of the team code, e.g. `zh[1075,6251,6699,6007,3010,'
                       '3,1,1,1,3,1,1,14007]`\n\n'
                       '• __Mini format__: Put a "-" in front of the code to make it appear in a small box, '
                       'e.g. `-[1075,6251,6699,6007]`, or with language `de-[1075,6251,6699,6007]`.',
@@ -27,7 +27,7 @@ help_texts = {
                     '  - Multiple results will show a list of matched troops.\n'
                     'If one matching item is found, the side color will reflect the troop\'s base rarity.\n\n'
                     '• __Language support__: All GoW languages are supported, put the two country code letters '
-                    '(en, fr, de, ru, it, es, cn) in front of the command, e.g. `de{0}troop '
+                    '(en, fr, de, ru, it, es, zh) in front of the command, e.g. `de{0}troop '
                     'elemaugrim`. Localized searches will only look for troop names with their respective '
                     'translations.',
         'Other commands': '• __Prefix__: enter `{0}prefix <new_prefix>` to set a new prefix. Only the server owner '
@@ -39,7 +39,7 @@ help_texts = {
                       '14007]`. Der Bot wird automatisch mit den richtigen Truppen antworten. Der Code kann in einer '
                       'Zeile mit anderem Text stehen.\n\n'
                       '• __Sprachen__: Alle GoW Sprachen werden unterstützt. Einfach die Ländercodes (en, fr, de, ru, '
-                      'it, es, cn) vor dem Teamcode einfügen, z.B. `cn[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
+                      'it, es, zh) vor dem Teamcode einfügen, z.B. `zh[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,'
                       '14007]`\n\n '
                       '• __Kompaktansicht__: Ein "-" vor dem Teamcode macht die Ansicht kleiner, '
                       'z.B. `-[1075,6251,6699,6007]`, oder mit Sprache `ru-[1075,6251,6699,6007]`.',
@@ -68,7 +68,7 @@ help_texts = {
                           '14007]`. Il bot risponderà automaticamente con le truppe inserite nel codice. Il codice '
                           'può essere inserito assieme ad altro testo e non ha bisogno di essere scritto da solo.\n\n'
                           '• __Supporto Lingua__: Tutte le lingue di GoW sono supportate, inserendo le due lettere del codice nazione '
-                          '(en, fr, de, ru, it, es, cn) prima del codice della squadra, es. `it[1075,6251,6699,6007,3010,'
+                          '(en, fr, de, ru, it, es, zh) prima del codice della squadra, es. `it[1075,6251,6699,6007,3010,'
                           '3,1,1,1,3,1,1,14007]`\n\n'
                           '• __Formato Mini__: Inserisci un "-" prima del codice squadra per farlo apparire in un piccolo riquadro, '
                           'es. `-[1075,6251,6699,6007]`, o con il codice linguaggio `it-[1075,6251,6699,6007]`.',
@@ -86,7 +86,7 @@ help_texts = {
                     '  - Possono essere mostrati risultati multipli con una lista delle truppe corrispondenti.\n'
                     'Se viene trovato un solo elemento corrispondente, il colore del bordo indicherà la rarità base della truppa.\n\n'
                     '• __Supporto Lingua__: Tutte le lingue di GoW sono supportate, inserendo le due lettere del codice nazione '
-                    '(en, fr, de, ru, it, es, cn) prima del comando, es. `it{0}troop '
+                    '(en, fr, de, ru, it, es, zh) prima del comando, es. `it{0}troop '
                     'elemaugrim`. Le ricerche nel linguaggio corrispondente avverranno solamente sui nomi delle truppe nelle rispettive '
                     'traduzioni.',
         'Altri comandi': '• __Prefisso__: inserisci `{0}prefix <nuovo_prefisso>` per impostare un nuovo prefisso. Solo il proprietario '
@@ -100,7 +100,7 @@ help_texts = {
                            'nécessite pas d\'être seul sur une ligne.\n\n '
                            '• __Support linguistique__: Toutes les langues utilisées dans GoW sont supportées. '
                            'Préfixez simplement votre code avec les deux lettres de votre code pays (en, fr, de, ru, '
-                           'it, es, cn),par exemple: fr[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]\n\n '
+                           'it, es, zh),par exemple: fr[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]\n\n '
                            '• __Format raccourci__: Utilisez le caractère "-" (tiret) en début de code pour que le '
                            'résultat apparaisse en mode minimal et condensé, par exemple -[1075,6251,6699,6007], '
                            'ou avec le code langue fr-[1075,6251,6699,6007].',
@@ -121,7 +121,7 @@ help_texts = {
                       'montrera la rareté de base de la troupe.\n\n '
                       '• __Support linguistique__: Toutes les langues utilisées dans GoW sont supportées. Préfixez '
                       'simplement votre code avec les deux lettres de votre code pays (en, fr, de, ru, it, es, '
-                      'cn). Les recherches dans la langue correspondante s\'effectueront uniquement sur les noms '
+                      'zh). Les recherches dans la langue correspondante s\'effectueront uniquement sur les noms '
                       'de troupes dans la langue choisie.',
         'Préfixe': '• __Les Bases__: tapez `{0}prefix <nouveau_préfixe>` pour configurer un nouveau '
                    'préfixe. Seul le propriétaire du serveur peut faire ce changement.',
@@ -132,7 +132,7 @@ help_texts = {
                              '1,1,14007]. El bot contestará automáticamente con las tropas asociadas al código. El '
                              'código puede ser utilizado con mas texto, no es necesario que esté solo.\n '
                              '• Soporte de idioma: Todos los idiomas incluidos en GoW tienen soporte, indique las dos '
-                             'letras del código de su país (en, fr, de, ru, it, es, cn) delante del código del '
+                             'letras del código de su país (en, fr, de, ru, it, es, zh) delante del código del '
                              'equipo, ej. es[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]\n'
                              '• __Formato Mini__: Utilice un "-" delante del código para que aparezca en un pequeño '
                              'recuadro, ej. -[1075,6251,6699,6007], o también con el código del idioma, ej. es-[1075,'
@@ -151,7 +151,7 @@ help_texts = {
                      '- En caso de haber múltiples resultados se mostrará una lista con las tropas coincidentes. Si '
                      'solo hay un resultado, el color del borde reflejará la rareza base de dicha tropa.\n\n '
                      '• __Soporte de idioma__: Todos los idiomas incluidos en GoW tienen soporte, indique las dos '
-                     'letras del código de su país (en, fr, de, ru, it, es, cn) delante del código del equipo, '
+                     'letras del código de su país (en, fr, de, ru, it, es, zh) delante del código del equipo, '
                      'ej. es{0}troop Elemaugrim. En las búsquedas se deberán escribir los nombres según su respectiva '
                      'traducción en el idioma seleccionado.',
         'Otros comandos': '• __Prefijo__: Utilice {0}prefix <nuevo_prefijo> para fijar un nuevo prefijo. Solamente '

@@ -5,8 +5,10 @@ LANGUAGES = {
     'fr': 'French',
     'de': 'German',
     'ru': 'Russian',
+    'ру': 'Russian',
     'it': 'Italian',
     'es': 'Spanish',
+    'zh': 'Chinese',
     'cn': 'Chinese',
 }
 
