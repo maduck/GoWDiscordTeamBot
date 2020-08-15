@@ -20,7 +20,7 @@ from prefix import Prefix
 from subscriptions import Subscriptions
 from team_expando import TeamExpander
 from tower_data import TowerOfDoomData
-from translations import LANGUAGES
+from translations import LANGUAGES, LANGUAGE_CODE_MAPPING
 from util import bool_to_emoticon, chunks, pluralize_author
 from views import Views
 
@@ -288,21 +288,18 @@ class DiscordBot(BaseBot):
 
     async def show_uptime(self, message, prefix, lang):
         e = discord.Embed(title='Uptime', color=self.WHITE)
-        if lang == 'cn':
-            lang = 'zh'
+        lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
+        bot_offline = datetime.timedelta(seconds=self.downtimes)
         if lang != 'en':
             _t = humanize.i18n.activate(lang)
-        now = datetime.datetime.now()
-        bot_uptime = now - self.bot_start
-        bot_offline = datetime.timedelta(seconds=self.downtimes)
-        uptime = f'{humanize.naturaltime(self.bot_start)} ({humanize.naturaldelta(bot_uptime)})'
+        uptime = f'{humanize.naturaltime(self.bot_start)}'
         e.add_field(name='Bot running since', value=uptime, inline=False)
         if bot_offline:
             e.add_field(name='Offline for', value=humanize.naturaldelta(bot_offline), inline=False)
+        humanize.i18n.deactivate()
         bot_runtime = (datetime.datetime.now() - self.bot_start).seconds
         availability = (bot_runtime - self.downtimes) / bot_runtime
         e.add_field(name='Availability', value=f'{availability:.3%}')
-        humanize.i18n.deactivate()
         await self.answer(message, e)
 
     async def show_events(self, message, prefix, lang):

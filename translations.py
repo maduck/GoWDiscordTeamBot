@@ -12,6 +12,11 @@ LANGUAGES = {
     'cn': 'Chinese',
 }
 
+LANGUAGE_CODE_MAPPING = {
+    'ру': 'ru',
+    'cn': 'zh',
+}
+
 LANG_FILES = [f'GemsOfWar_{language}.json' for language in LANGUAGES.values()]
 
 
