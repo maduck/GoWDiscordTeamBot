@@ -14,7 +14,6 @@ import models
 from base_bot import BaseBot, log
 from configurations import CONFIG
 from discord_helpers import admin_required, guild_required
-from game_constants import RARITY_COLORS
 from help import get_help_text, get_tower_help_text
 from jobs.news_downloader import NewsDownloader
 from team_expando import TeamExpander
@@ -188,6 +187,7 @@ class DiscordBot(BaseBot):
                                   re.IGNORECASE)
         }
     ]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')

@@ -1,4 +1,3 @@
-aiosqlite
 beautifulsoup4
 discord
 feedparser
