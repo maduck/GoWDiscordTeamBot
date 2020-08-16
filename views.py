@@ -19,6 +19,7 @@ class Views:
         self.jinja_env.filters['emoji'] = self.my_emojis.get
         self.jinja_env.globals.update({
             'emoji': self.my_emojis.get,
+            'flatten': flatten
         })
 
         template = self.jinja_env.get_template(template_name)
@@ -63,42 +64,17 @@ class Views:
         rarity_color = RARITY_COLORS.get(troop['raw_rarity'], RARITY_COLORS['Mythic'])
         if 'Boss' in troop['raw_types']:
             rarity_color = RARITY_COLORS['Doomed']
-        color = discord.Color.from_rgb(*rarity_color)
-        mana = self.my_emojis.get(troop['color_code'])
-        mana_display = f'{troop["spell"]["cost"]}{mana} '
-        e = discord.Embed(title='Troop search', color=color)
+        e = discord.Embed(title='Troop search', color=discord.Color.from_rgb(*rarity_color))
         if shortened:
-            e.description = f'**{mana_display}{troop["name"]}**'
-            attributes = flatten(troop["type"], troop["roles"], troop["rarity"], troop["kingdom"])
-            e.description += f' ({", ".join(attributes)}) | {troop["spell"]["description"]}'
-
-            trait_list = [f'{trait["name"]}' for trait in troop['traits']]
-            e.description += f'\n{", ".join(trait_list)}'
+            return self.render_embed(e, 'troop_shortened.jinja', troop=troop)
         else:
             thumbnail_url = f'{CONFIG.get("graphics_url")}/Troops/Cards_{troop["filename"]}_thumb.png'
             e.set_thumbnail(url=thumbnail_url)
-            message_lines = [
-                f'**{troop["spell"]["name"]}**: {troop["spell"]["description"]}',
-                '',
-                f'**{troop["kingdom_title"]}**: {troop["kingdom"]}',
-                f'**{troop["rarity_title"]}**: {troop["rarity"]}',
-                f'**{troop["roles_title"]}**: {", ".join(troop["roles"])}',
-                f'**{troop["type_title"]}**: {troop["type"]}',
-            ]
-
-            description = ''
-            if troop['description']:
-                description = f' **{troop["description"]}**'
-
-            e.description = f'**{mana_display}{troop["name"]}** `#{troop["id"]}`{description}'
-            e.description += '\n' + '\n'.join(message_lines)
-
-            trait_list = [f'**{trait["name"]}**: {trait["description"]}' for trait in troop['traits']]
             if 'release_date' in troop:
                 e.set_footer(text='Release date')
                 e.timestamp = troop["release_date"]
-            traits = '\n'.join(trait_list)
-            e.add_field(name=troop["traits_title"], value=traits, inline=False)
+            return self.render_embed(e, 'troop.jinja', troop=troop)
+
         return e
 
     def render_talent_tree(self, tree, shortened):

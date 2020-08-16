@@ -1,0 +1,12 @@
+**{{ troop.spell.cost }}{{ troop.color_code|emoji }} {{ troop.name }}** `#{{ troop.id }}`{% if troop.description %} **{{ troop.description }}**{% endif %}
+**{{ troop.spell.name }}**: {{ troop.spell.description }}
+
+**{{ troop.kingdom_title }}**: {{ troop.kingdom }}
+**{{ troop.rarity_title }}**: {{ troop.rarity }}
+**{{ troop.roles_title }}**: {{ troop.roles|join(', ') }}
+**{{ troop.type_title }}**: {{ troop.type }}
+
+<T>{{ troop.traits_title }}</T>
+{%- for trait in troop.traits %}
+    **{{ trait.name }}**: {{ trait.description }}
+{%- endfor -%}
