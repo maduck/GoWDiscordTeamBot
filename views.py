@@ -1,9 +1,9 @@
 import discord
+from jinja2 import Environment, FileSystemLoader
 
 from configurations import CONFIG
 from game_constants import RARITY_COLORS
 from util import flatten
-from jinja2 import Environment, FileSystemLoader
 
 
 class Views:
@@ -34,10 +34,11 @@ class Views:
                 embed.description = splitted
             else:
                 title_end = splitted.index('</T>')
+                inline = splitted.startswith('inline')
                 embed.add_field(
-                    name=splitted[:title_end],
-                    value=splitted[title_end+4:],
-                    inline=True)
+                    name=splitted[inline * len('inline'):title_end],
+                    value=splitted[title_end + 4:],
+                    inline=inline)
         return embed
 
     def render_weapon(self, weapon, shortened):
