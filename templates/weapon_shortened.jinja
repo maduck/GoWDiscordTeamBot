@@ -1,0 +1,27 @@
+**{{ weapon.spell.cost }}{{ weapon.color_code|emoji(":" + weapon.color_code + ":") }} {{ weapon.name }} `#{{ weapon.id }}`**
+{{ weapon.spell.description }}
+
+**{{ weapon.kingdom_title }}**: {{ weapon.kingdom }}
+**{{ weapon.rarity_title }}**: {{ weapon.rarity }}
+**{{ weapon.roles_title }}**: {{ weapon.roles|join(", ") }}
+**{{ weapon.type_title }}**: {{ weapon.type }}
+
+{% if weapon.upgrades -%}
+    **{{ weapon.upgrade_title }}**
+    {%- for affix in weapon.upgrades %}
+        **{{ affix.name }}**: {{ affix.description }}
+    {%- endfor -%}
+{% endif %}
+
+{% set requirement_text = weapon.requirement_text|replace('erhähltlich', 'erhältlich') -%}
+
+{% if weapon.has_mastery_requirement_color and ':' in weapon.requirement_text -%}
+    **{{ requirement_text|replace(': ', '**: ') -}}
+{% else -%}
+    {{ requirement_text -}}
+{% endif -%}
+{% if weapon.has_mastery_requirement_color -%}
+    {%- for color in weapon.colors -%}
+        {{ color|emoji(":" + color + ":") }}
+    {%- endfor -%}
+{% endif -%}
