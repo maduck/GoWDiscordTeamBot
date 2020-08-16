@@ -44,11 +44,11 @@ class Views:
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
         color = discord.Color.from_rgb(*rarity_color)
         e = discord.Embed(title='Weapon search', color=color)
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
+        e.set_thumbnail(url=thumbnail_url)
         if shortened:
             return self.render_embed(e, 'weapon_shortened.jinja', weapon=weapon)
 
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
-        e.set_thumbnail(url=thumbnail_url)
         if 'release_date' in weapon:
             e.set_footer(text='Release date')
             e.timestamp = weapon["release_date"]
@@ -56,11 +56,11 @@ class Views:
 
     def render_pet(self, pet, shortened):
         e = discord.Embed(title='Pet search', color=self.WHITE)
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_thumb.png'
+        e.set_thumbnail(url=thumbnail_url)
         if shortened:
             return self.render_embed(e, 'pet_shortened.jinja', pet=pet)
 
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_thumb.png'
-        e.set_thumbnail(url=thumbnail_url)
         if 'release_date' in pet:
             e.set_footer(text='Release date')
             e.timestamp = pet["release_date"]
@@ -71,11 +71,10 @@ class Views:
         if 'Boss' in troop['raw_types']:
             rarity_color = RARITY_COLORS['Doomed']
         e = discord.Embed(title='Troop search', color=discord.Color.from_rgb(*rarity_color))
-        if shortened:
-            return self.render_embed(e, 'troop_shortened.jinja', troop=troop)
-
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Troops/Cards_{troop["filename"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
+        if shortened:
+            return self.render_embed(e, 'troop_shortened.jinja', troop=troop)
 
         if 'release_date' in troop:
             e.set_footer(text='Release date')
@@ -94,16 +93,16 @@ class Views:
     def render_team(self, team, author, shortened):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(color=color)
+        if team['banner']:
+            thumbnail_url = f'{CONFIG.get("graphics_url")}/Banners/Banners_{team["banner"]["filename"]}_thumb.png'
+            e.set_thumbnail(url=thumbnail_url)
+
         if shortened:
             troops = [f'{t[1]}' for t in team['troops']]
             e.title = ', '.join(troops)
             return self.render_embed(e, 'team_shortened.jinja', team=team)
 
-        if team['banner']:
-            thumbnail_url = f'{CONFIG.get("graphics_url")}/Banners/Banners_{team["banner"]["filename"]}_thumb.png'
-            e.set_thumbnail(url=thumbnail_url)
-
-        e.title=f"{author} team"
+        e.title = f"{author} team"
         return self.render_embed(e, 'team.jinja', team=team)
 
     def render_kingdom(self, kingdom, shortened):
@@ -118,11 +117,11 @@ class Views:
 
     def render_class(self, _class, shortened):
         e = discord.Embed(title='Class search', color=self.WHITE)
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Classes_{_class["code"]}_thumb.png'
+        e.set_thumbnail(url=thumbnail_url)
         if shortened:
             return self.render_embed(e, 'class_shortened.jinja', _class=_class)
 
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Classes_{_class["code"]}_thumb.png'
-        e.set_thumbnail(url=thumbnail_url)
         return self.render_embed(e, 'class.jinja', _class=_class)
 
     @staticmethod
