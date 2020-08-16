@@ -534,14 +534,10 @@ class DiscordBot(BaseBot):
         if not team or not team['troops']:
             log.debug(f'nothing found in message {team_code}.')
             return
-        color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         author = message.author.display_name
         author = await pluralize_author(author)
 
-        if shortened:
-            e = self.views.format_output_team_shortened(team, color)
-        else:
-            e = self.views.format_output_team(team, color, author)
+        e = self.views.render_team(team, author, shortened)
 
         await self.answer(message, e)
 
