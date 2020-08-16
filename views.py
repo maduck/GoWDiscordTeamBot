@@ -3,7 +3,7 @@ import discord
 from configurations import CONFIG
 from game_constants import RARITY_COLORS
 from util import flatten
-
+from jinja2 import Environment, FileSystemLoader
 
 class Views:
     WHITE = discord.Color.from_rgb(254, 254, 254)
@@ -47,7 +47,7 @@ class Views:
                     value='\n'.join(message_lines))
         return e
 
-    def render_pet(self, pet):
+    def render_pet(self, pet, shortened):
         e = discord.Embed(title='Pet search', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
@@ -107,7 +107,7 @@ class Views:
             e.add_field(name=troop["traits_title"], value=traits, inline=False)
         return e
 
-    def render_talent_tree(self, tree):
+    def render_talent_tree(self, tree, shortened):
         e = discord.Embed(title='Talent search', color=self.WHITE)
         talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree['talents']]
         e.add_field(name=f'__{tree["name"]}__', value='\n'.join(talents), inline=True)
@@ -187,23 +187,27 @@ class Views:
                     value='\n'.join(message_lines))
         return e
 
-    def render_class(self, _class):
+    def render_embed(self, embed, template_name, **kwargs):
+        env = Environment(loader=FileSystemLoader('templates'))
+        template = env.get_template(template_name)
+        content = template.render(**kwargs)
+
+        for i, splitted in enumerate(content.split('<T>')):
+            if i == 0:
+                embed.description = splitted
+            else:
+                title_end = splitted.index('</T>')
+                embed.add_field(
+                    name=splitted[:title_end],
+                    value=splitted[title_end+4:],
+                    inline=True)
+        return embed
+
+    def render_class(self, _class, shortened):
         e = discord.Embed(title='Class search', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Classes_{_class["code"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
-        class_lines = [
-            f'**{_class["kingdom_title"]}**: {_class["kingdom"]}',
-            f'**{_class["weapon_title"]}**: {_class["weapon"]}',
-            _class['type'],
-        ]
-        e.add_field(name=f'{_class["name"]} `#{_class["id"]}`', value='\n'.join(class_lines), inline=False)
-        trait_list = [f'**{trait["name"]}**: {trait["description"]}' for trait in _class['traits']]
-        traits = '\n'.join(trait_list)
-        e.add_field(name=_class["traits_title"], value=traits, inline=False)
-        for i, tree in enumerate(_class['talents']):
-            talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree]
-            e.add_field(name=f'__{_class["trees"][i]}__', value='\n'.join(talents), inline=True)
-        return e
+        return self.render_embed(e, 'class.txt', _class=_class)
 
     @staticmethod
     def trim_text_lines_to_length(lines, limit):

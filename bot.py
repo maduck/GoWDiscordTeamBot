@@ -432,7 +432,7 @@ class DiscordBot(BaseBot):
             e.add_field(name=search_term, value='did not yield any result.')
         elif len(result) == 1:
             _class = result[0]
-            e = self.views.render_class(_class)
+            e = self.views.render_class(_class, shortened)
         elif search_term == 'summary':
             result.sort(key=operator.itemgetter('name'))
             name_width = max([len(c['name']) for c in result])
@@ -463,7 +463,7 @@ class DiscordBot(BaseBot):
             e = discord.Embed(title='Pet search', color=self.BLACK)
             e.add_field(name=search_term, value='did not yield any result')
         elif len(result) == 1:
-            e = self.views.render_pet(result[0])
+            e = self.views.render_pet(result[0], shortened)
         else:
             e = discord.Embed(title=f'Pet search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             pets_found = [f'{pet["name"]} ({pet["id"]})' for pet in result]
@@ -516,7 +516,7 @@ class DiscordBot(BaseBot):
         if not result:
             e = self.generate_response('Talent search', self.BLACK, search_term, 'did not yield any result')
         elif len(result) == 1:
-            e = self.views.render_talent_tree(result[0])
+            e = self.views.render_talent_tree(result[0], shortened)
         else:
             e = discord.Embed(title=f'Talent search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
             talent_found = []
