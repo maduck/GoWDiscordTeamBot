@@ -1,4 +1,4 @@
-**{{ weapon.spell.cost }}{{ weapon.color_code|emoji(":" + weapon.color_code + ":") }} {{ weapon.name }} `#{{ weapon.id }}`**
+<T>**{{ weapon.spell.cost }}{{ weapon.color_code|emoji(":" + weapon.color_code + ":") }} {{ weapon.name }} `#{{ weapon.id }}`**</T>
 {{ weapon.spell.description }}
 
 **{{ weapon.kingdom_title }}**: {{ weapon.kingdom }}
@@ -7,7 +7,7 @@
 **{{ weapon.type_title }}**: {{ weapon.type }}
 
 {% if weapon.upgrades -%}
-    **{{ weapon.upgrade_title }}**
+    <T>**{{ weapon.upgrade_title }}**</T>
     {%- for affix in weapon.upgrades %}
         **{{ affix.name }}**: {{ affix.description }}
     {%- endfor -%}

@@ -1,15 +1,15 @@
-**{{ _class.name }} `#{{ _class.id }}`**
+<T>**{{ _class.name }} `#{{ _class.id }}`**</T>
 **{{ _class.kingdom_title }}**: {{ _class.kingdom }}
 **{{ _class.weapon_title }}**: {{ _class.weapon }}
 {{ _class.type }}
 
-**{{ _class.traits_title }}**
+<T>**{{ _class.traits_title }}**</T>
 {%- for trait in _class.traits %}
     **{{ trait.name }}**: {{ trait.description }}
 {%- endfor -%}
 
 {%- for tree in _class.talents %}
-    <T>__{{ _class.trees[loop.index - 1] }}__</T>
+    <T>inline__{{ _class.trees[loop.index - 1] }}__</T>
     {%- for t in tree %}
         **{{ t.name }}**: ({{ t.description }})
     {%- endfor -%}
