@@ -1,0 +1,7 @@
+**{{ troop.spell.cost }}{{ troop.color_code|emoji }} {{ troop.name }}** (
+{{- flatten(troop.type, troop.roles, troop.rarity, troop.kingdom)|join(', ') -}}
+) | {{ troop.spell.description }}
+
+{%- for trait in troop.traits -%}
+    {% if loop.index != 1 %}, {% else %} {% endif %}{{ trait.name }}
+{%- endfor-%}
