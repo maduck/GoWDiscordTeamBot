@@ -145,4 +145,18 @@ class Views:
 
     def render_events(self, events):
         e = discord.Embed(title='Spoilers', color=self.WHITE)
-        return self.render_embed(e, 'events.jinja', events=events)
+        message_lines = ['```']
+        last_event_date = events[0]['start']
+        for event in events:
+            if event['start'] > last_event_date and event['start'].weekday() == 0:
+                message_lines.append('')
+            last_event_date = event['start']
+            message_lines.append(f'{event["start"].strftime("%b %d")} - '
+                                 f'{event["end"].strftime("%b %d")} '
+                                 f'{event["type"]}'
+                                 f'{":" if event["extra_info"] else ""} '
+                                 f'{event["extra_info"]}')
+        message_lines = self.trim_text_lines_to_length(message_lines, 900)
+        message_lines.append('```')
+        e.add_field(name='Upcoming Events', value='\n'.join(message_lines))
+        return e
