@@ -52,19 +52,12 @@ class Views:
         e = discord.Embed(title='Pet search', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
-        mana = self.my_emojis.get(pet['color_code'])
-        effect_data = ''
-        if pet['effect_data']:
-            effect_data = f' ({pet["effect_data"]})'
-        message_lines = [
-            f'**{pet["effect_title"]}**: {pet["effect"]}{effect_data}',
-            f'**{pet["kingdom_title"]}**: {pet["kingdom"]}',
-        ]
+
         if 'release_date' in pet:
             e.set_footer(text='Release date')
             e.timestamp = pet["release_date"]
-        e.add_field(name=f'{mana} {pet["name"]} `#{pet["id"]}`', value='\n'.join(message_lines))
-        return e
+
+        return self.render_embed(e, 'pet.jinja', pet=pet)
 
     def render_troop(self, troop, shortened):
         rarity_color = RARITY_COLORS.get(troop['raw_rarity'], RARITY_COLORS['Mythic'])
