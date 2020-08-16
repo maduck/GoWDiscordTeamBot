@@ -1,0 +1,8 @@
+{%- for talent in tree.talents -%}
+    {% if loop.index != 1 %},{% endif %} {{ talent.name }}
+{%- endfor -%}
+
+<T>__Classes using this Talent Tree:__</T>
+{%- for class in tree.classes -%}
+    {% if loop.index != 1 %},{% endif %} {{ class.name }} `#{{ class.id }}`
+{%- endfor -%}
