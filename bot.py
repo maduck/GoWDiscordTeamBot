@@ -188,7 +188,6 @@ class DiscordBot(BaseBot):
                                   re.IGNORECASE)
         }
     ]
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
@@ -225,7 +224,7 @@ class DiscordBot(BaseBot):
 
     async def get_function_for_command(self, user_command, user_prefix):
         for command in self.COMMAND_REGISTRY:
-            match = command['pattern'].match(user_command)
+            match = command['pattern'].search(user_command)
             if match:
                 groups = match.groupdict()
                 if groups.get('prefix', user_prefix) == user_prefix:
