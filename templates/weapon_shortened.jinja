@@ -6,13 +6,6 @@
 **{{ weapon.roles_title }}**: {{ weapon.roles|join(", ") }}
 **{{ weapon.type_title }}**: {{ weapon.type }}
 
-{% if weapon.upgrades -%}
-    **{{ weapon.upgrade_title }}**
-    {%- for affix in weapon.upgrades %}
-        **{{ affix.name }}**: {{ affix.description }}
-    {%- endfor -%}
-{% endif %}
-
 {% set requirement_text = weapon.requirement_text|replace('erhähltlich', 'erhältlich') -%}
 
 {% if weapon.has_mastery_requirement_color and ':' in weapon.requirement_text -%}
