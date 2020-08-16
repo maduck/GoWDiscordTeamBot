@@ -3,4 +3,5 @@ discord
 feedparser
 html2markdown
 humanize
+jinja2
 requests
