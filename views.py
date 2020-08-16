@@ -44,9 +44,11 @@ class Views:
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
         color = discord.Color.from_rgb(*rarity_color)
         e = discord.Embed(title='Weapon search', color=color)
+        if shortened:
+            return self.render_embed(e, 'weapon_shortened.jinja', weapon=weapon)
+
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
-
         if 'release_date' in weapon:
             e.set_footer(text='Release date')
             e.timestamp = weapon["release_date"]
@@ -54,9 +56,11 @@ class Views:
 
     def render_pet(self, pet, shortened):
         e = discord.Embed(title='Pet search', color=self.WHITE)
+        if shortened:
+            return self.render_embed(e, 'pet_shortened.jinja', pet=pet)
+
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
-
         if 'release_date' in pet:
             e.set_footer(text='Release date')
             e.timestamp = pet["release_date"]
@@ -79,12 +83,13 @@ class Views:
         return self.render_embed(e, 'troop.jinja', troop=troop)
 
     def render_talent_tree(self, tree, shortened):
-        e = discord.Embed(title='Talent search', color=self.WHITE)
-        talents = [f'**{t["name"]}**: ({t["description"]})' for t in tree['talents']]
-        e.add_field(name=f'__{tree["name"]}__', value='\n'.join(talents), inline=True)
-        classes = [f'{c["name"]} `#{c["id"]}`' for c in tree['classes']]
-        e.add_field(name='__Classes using this Talent Tree:__', value=', '.join(classes), inline=False)
-        return e
+        e = discord.Embed(color=self.WHITE)
+        if shortened:
+            e.title = tree["name"]
+            return self.render_embed(e, 'talent_shortened.jinja', tree=tree)
+
+        e.title = 'Talent search'
+        return self.render_embed(e, 'talent.jinja', tree=tree)
 
     def render_team(self, team, author, shortened):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
@@ -113,6 +118,9 @@ class Views:
 
     def render_class(self, _class, shortened):
         e = discord.Embed(title='Class search', color=self.WHITE)
+        if shortened:
+            return self.render_embed(e, 'class_shortened.jinja', _class=_class)
+
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Classes_{_class["code"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
         return self.render_embed(e, 'class.jinja', _class=_class)
@@ -137,18 +145,4 @@ class Views:
 
     def render_events(self, events):
         e = discord.Embed(title='Spoilers', color=self.WHITE)
-        message_lines = ['```']
-        last_event_date = events[0]['start']
-        for event in events:
-            if event['start'] > last_event_date and event['start'].weekday() == 0:
-                message_lines.append('')
-            last_event_date = event['start']
-            message_lines.append(f'{event["start"].strftime("%b %d")} - '
-                                 f'{event["end"].strftime("%b %d")} '
-                                 f'{event["type"]}'
-                                 f'{":" if event["extra_info"] else ""} '
-                                 f'{event["extra_info"]}')
-        message_lines = self.trim_text_lines_to_length(message_lines, 900)
-        message_lines.append('```')
-        e.add_field(name='Upcoming Events', value='\n'.join(message_lines))
-        return e
+        return self.render_embed(e, 'events.jinja', events=events)
