@@ -14,5 +14,5 @@
 
 **{{ kingdom.troop_title }}**:
 {%- for troop in kingdom.troops -%}
-    {% if loop.index != 1 %},{% endif %} {{ troop.name }} `{{troop.id }}`
+    {% if loop.index != 1 %},{% endif %} {{ troop.name }} `#{{ troop.id }}`
 {%- endfor -%}
