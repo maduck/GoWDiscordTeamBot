@@ -5,6 +5,7 @@ from game_constants import RARITY_COLORS
 from util import flatten
 from jinja2 import Environment, FileSystemLoader
 
+
 class Views:
     WHITE = discord.Color.from_rgb(254, 254, 254)
     BLACK = discord.Color.from_rgb(0, 0, 0)
@@ -12,6 +13,27 @@ class Views:
 
     def __init__(self, emojis):
         self.my_emojis = emojis
+        self.jinja_env = Environment(loader=FileSystemLoader('templates'))
+
+    def render_embed(self, embed, template_name, **kwargs):
+        self.jinja_env.filters['emoji'] = self.my_emojis.get
+        self.jinja_env.globals.update({
+            'emoji': self.my_emojis.get,
+        })
+
+        template = self.jinja_env.get_template(template_name)
+        content = template.render(**kwargs)
+
+        for i, splitted in enumerate(content.split('<T>')):
+            if i == 0:
+                embed.description = splitted
+            else:
+                title_end = splitted.index('</T>')
+                embed.add_field(
+                    name=splitted[:title_end],
+                    value=splitted[title_end+4:],
+                    inline=True)
+        return embed
 
     def render_weapon(self, weapon, shortened=False):
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
@@ -19,33 +41,12 @@ class Views:
         e = discord.Embed(title='Weapon search', color=color)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
-        mana = self.my_emojis.get(weapon['color_code'])
-        color_requirement = []
-        if weapon['requirement'] < 1000:
-            color_requirement = [f'{self.my_emojis.get(c, f":{c}:")}' for c in weapon['colors']]
-        upgrades = '\n'.join([f'**{affix["name"]}**: {affix["description"]}' for affix in weapon['upgrades']])
-        affix_text = ''
-        if weapon['upgrades'] and not shortened:
-            affix_text = f'\n**{weapon["upgrade_title"]}**\n{upgrades}\n'
-        requirements = weapon["requirement_text"].replace("erhähltlich", "erhältlich")
-        if weapon['has_mastery_requirement_color'] and ':' in requirements:
-            requirements = '**' + requirements.replace(': ', '**: ')
-        message_lines = [
-            weapon['spell']['description'],
-            '',
-            f'**{weapon["kingdom_title"]}**: {weapon["kingdom"]}',
-            f'**{weapon["rarity_title"]}**: {weapon["rarity"]}',
-            f'**{weapon["roles_title"]}**: {", ".join(weapon["roles"])}',
-            f'**{weapon["type_title"]}**: {weapon["type"]}',
-            affix_text,
-            f'{requirements} {" ".join(color_requirement)}',
-        ]
+
         if 'release_date' in weapon:
             e.set_footer(text='Release date')
             e.timestamp = weapon["release_date"]
-        e.add_field(name=f'{weapon["spell"]["cost"]}{mana} {weapon["name"]} `#{weapon["id"]}`',
-                    value='\n'.join(message_lines))
-        return e
+
+        return self.render_embed(e, 'weapon.jinja', weapon=weapon)
 
     def render_pet(self, pet, shortened):
         e = discord.Embed(title='Pet search', color=self.WHITE)
@@ -187,27 +188,11 @@ class Views:
                     value='\n'.join(message_lines))
         return e
 
-    def render_embed(self, embed, template_name, **kwargs):
-        env = Environment(loader=FileSystemLoader('templates'))
-        template = env.get_template(template_name)
-        content = template.render(**kwargs)
-
-        for i, splitted in enumerate(content.split('<T>')):
-            if i == 0:
-                embed.description = splitted
-            else:
-                title_end = splitted.index('</T>')
-                embed.add_field(
-                    name=splitted[:title_end],
-                    value=splitted[title_end+4:],
-                    inline=True)
-        return embed
-
     def render_class(self, _class, shortened):
         e = discord.Embed(title='Class search', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Classes_{_class["code"]}_thumb.png'
         e.set_thumbnail(url=thumbnail_url)
-        return self.render_embed(e, 'class.txt', _class=_class)
+        return self.render_embed(e, 'class.jinja', _class=_class)
 
     @staticmethod
     def trim_text_lines_to_length(lines, limit):
