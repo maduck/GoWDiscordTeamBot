@@ -1,0 +1,10 @@
+<T>**{{ _class.name }} `#{{ _class.id }}`**</T>
+**{{ _class.kingdom_title }}**: {{ _class.kingdom }}
+**{{ _class.weapon_title }}**: {{ _class.weapon }}
+{{ _class.type }}
+
+<T>**{{ _class.traits_title }}**</T>
+{%- for trait in _class.traits -%}{% if loop.index != 1 %}, {% endif %}{{ trait.name }}{%- endfor -%}
+
+<T>**{{ _class.talents_title }}**</T>
+{{ ", ".join(_class.trees) }}

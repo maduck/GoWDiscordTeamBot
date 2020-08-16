@@ -270,6 +270,7 @@ class TeamExpander:
                     'description': _(talent['description'], lang)
                 })
             translated_trees.append(translated_talents)
+        _class['talents_title'] = _('[TALENT_TREES]', lang)
         _class['kingdom_title'] = _('[KINGDOM]', lang)
         _class['traits_title'] = _('[TRAITS]', lang)
         _class['traits'] = self.enrich_traits(_class['traits'], lang)
