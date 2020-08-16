@@ -1,5 +1,5 @@
-from models import BaseGuildStorage
+from models.base_sqlite_storage import BaseGuildStorage
 
 
 class Prefix(BaseGuildStorage):
-    FILENAME = 'prefixes.json'
+    pass

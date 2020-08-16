@@ -390,7 +390,7 @@ class DiscordBot(BaseBot):
                                        f' `{new_prefix}` has {len(new_prefix)}.')
             await self.answer(message, e)
             return
-        self.prefix.set(message.guild, new_prefix)
+        await self.prefix.set(message.guild, new_prefix)
         e = self.generate_response('Administrative action', self.RED, 'Prefix change',
                                    f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
         await self.answer(message, e)
@@ -671,7 +671,7 @@ class DiscordBot(BaseBot):
     async def news_subscribe(self, message, prefix, platform):
         if not platform:
             platform = CONFIG.get('default_news_platform')
-        self.subscriptions.add(message.guild, message.channel, platform)
+        await self.subscriptions.add(message.guild, message.channel, platform)
 
         e = self.generate_response('News management', self.WHITE,
                                    f'Subscribe for {platform.title()}',
@@ -681,7 +681,7 @@ class DiscordBot(BaseBot):
     @guild_required
     @admin_required
     async def news_unsubscribe(self, message, prefix):
-        self.subscriptions.remove(message.guild, message.channel)
+        await self.subscriptions.remove(message.guild, message.channel)
 
         e = self.generate_response('News management', self.WHITE, 'Unsubscribe',
                                    f'News will *not* be posted into channel {message.channel.name}.')
@@ -748,7 +748,7 @@ class DiscordBot(BaseBot):
             await self.answer(message, e)
             return
 
-        self.language.set(message.guild, new_language)
+        await self.language.set(message.guild, new_language)
         e = self.generate_response('Default Language', self.WHITE, f'Default language for {message.guild}',
                                    f'Default language was changed from `{my_language}` to `{new_language}`.')
         await self.answer(message, e)

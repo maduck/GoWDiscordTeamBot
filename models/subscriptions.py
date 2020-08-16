@@ -1,6 +1,6 @@
-import json
-import os
-import threading
+import asyncio
+
+from models import DB
 
 
 class Subscriptions:
@@ -10,19 +10,20 @@ class Subscriptions:
         self._subscriptions = {}
         self.load_subscriptions()
 
-    def save_subscriptions(self):
-        lock = threading.Lock()
-        with lock:
-            with open(self.SUBSCRIPTION_CONFIG_FILE, 'w') as f:
-                json.dump(self._subscriptions, f, sort_keys=True, indent=2)
-
     def load_subscriptions(self):
-        if not os.path.exists(self.SUBSCRIPTION_CONFIG_FILE):
-            return
-        lock = threading.Lock()
-        with lock:
-            with open(self.SUBSCRIPTION_CONFIG_FILE) as f:
-                self._subscriptions = json.load(f)
+        db = DB()
+        result = db.cursor.execute(f'SELECT * FROM Subscription;')
+        subscriptions = result.fetchall()
+        self._subscriptions = {f'{s["guild_id"]}-{s["channel_id"]}': {
+            'guild_id': s['guild_id'],
+            'guild_name': s['guild'],
+            'channel_id': s['channel_id'],
+            'channel_name': s['channel'],
+            'pc': bool(s['pc']),
+            'switch': bool(s['switch'])
+        }
+            for s in subscriptions}
+        db.close()
 
     @staticmethod
     def get_subscription_id(guild, channel):
@@ -40,19 +41,38 @@ class Subscriptions:
         }
         return subscription_id, subscription
 
-    def add(self, guild, channel, platform):
+    async def add(self, guild, channel, platform):
         s_id, subscription = self.get_subscription(guild, channel, platform)
         if s_id in self._subscriptions:
             self._subscriptions[s_id][platform.lower()] = True
         else:
             self._subscriptions[s_id] = subscription
-        self.save_subscriptions()
+        s = self._subscriptions[s_id]
+        lock = asyncio.Lock()
+        async with lock:
+            db = DB()
+            db.cursor.execute('REPLACE INTO Subscription (channel_id, guild_id, guild, channel, pc, switch) '
+                              'VALUES (?, ?, ?, ?, ?, ?)',
+                              (s['channel_id'],
+                               s['guild_id'],
+                               s['guild_name'],
+                               s['channel_name'],
+                               s.get('pc', False),
+                               s.get('switch', False),
+                               ))
+            db.commit()
+            db.close()
 
-    def remove(self, guild, channel):
+    async def remove(self, guild, channel):
         s_id, subscription = self.get_subscription(guild, channel)
         if self.is_subscribed(guild, channel):
             del self._subscriptions[s_id]
-            self.save_subscriptions()
+        lock = asyncio.Lock()
+        async with lock:
+            db = DB()
+            db.cursor.execute('DELETE FROM Subscription WHERE channel_id = ?', (subscription['channel_id'],))
+            db.commit()
+            db.close()
 
     def is_subscribed(self, guild, channel):
         subscription_id = self.get_subscription_id(guild, channel)

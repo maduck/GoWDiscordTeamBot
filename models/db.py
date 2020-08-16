@@ -1,16 +1,22 @@
-import aiosqlite
+import sqlite3
+
+from configurations import CONFIG
 
 
 class DB:
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self):
+        self.filename = CONFIG.get('database')
         self.conn = None
         self.cursor = None
+        self.connect()
 
-    async def connect(self):
-        self.conn = await aiosqlite.connect(self.filename)
-        self.cursor = await self.conn.cursor()
+    def connect(self):
+        self.conn = sqlite3.connect(self.filename)
+        self.conn.row_factory = sqlite3.Row
+        self.cursor = self.conn.cursor()
 
-    async def disconnect(self):
-        await self.cursor.close()
-        await self.conn.close()
+    def commit(self):
+        self.conn.commit()
+
+    def close(self):
+        self.conn.close()
