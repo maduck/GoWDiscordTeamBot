@@ -53,15 +53,15 @@ class DiscordBot(BaseBot):
         },
         {
             'function': 'handle_troop_search',
-            'pattern': re.compile(SEARCH_PATTERN.format('troop'), re.IGNORECASE)
+            'pattern': re.compile(SEARCH_PATTERN.format('troop'), re.IGNORECASE | re.MULTILINE)
         },
         {
             'function': 'handle_weapon_search',
-            'pattern': re.compile(SEARCH_PATTERN.format('weapon'), re.IGNORECASE)
+            'pattern': re.compile(SEARCH_PATTERN.format('weapon'), re.IGNORECASE | re.MULTILINE)
         },
         {
             'function': 'handle_kingdom_search',
-            'pattern': re.compile(SEARCH_PATTERN.format('kingdom'), re.IGNORECASE)
+            'pattern': re.compile(SEARCH_PATTERN.format('kingdom'), re.IGNORECASE | re.MULTILINE)
         },
         {
             'function': 'handle_pet_search',
@@ -69,11 +69,11 @@ class DiscordBot(BaseBot):
         },
         {
             'function': 'handle_class_search',
-            'pattern': re.compile(SEARCH_PATTERN.format('class'), re.IGNORECASE)
+            'pattern': re.compile(SEARCH_PATTERN.format('class'), re.IGNORECASE | re.MULTILINE)
         },
         {
             'function': 'handle_talent_search',
-            'pattern': re.compile(SEARCH_PATTERN.format('talent'), re.IGNORECASE)
+            'pattern': re.compile(SEARCH_PATTERN.format('talent'), re.IGNORECASE | re.MULTILINE)
         },
         {
             'function': 'show_spoilers',
