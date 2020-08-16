@@ -3,5 +3,5 @@
 ) | {{ troop.spell.description }}
 
 {%- for trait in troop.traits -%}
-    {% if loop.index != 1 %}, {% else %} {% endif %}{{ trait.name }}
+    {% if loop.index != 1 %},{% endif %} {{ trait.name }}
 {%- endfor-%}

@@ -15,8 +15,12 @@ class Views:
         self.my_emojis = emojis
         self.jinja_env = Environment(loader=FileSystemLoader('templates'))
 
+    def banner_colors(self, banner):
+        return [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
+
     def render_embed(self, embed, template_name, **kwargs):
         self.jinja_env.filters['emoji'] = self.my_emojis.get
+        self.jinja_env.filters['banner_colors'] = self.banner_colors
         self.jinja_env.globals.update({
             'emoji': self.my_emojis.get,
             'flatten': flatten
@@ -36,7 +40,7 @@ class Views:
                     inline=True)
         return embed
 
-    def render_weapon(self, weapon, shortened=False):
+    def render_weapon(self, weapon, shortened):
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
         color = discord.Color.from_rgb(*rarity_color)
         e = discord.Embed(title='Weapon search', color=color)
@@ -67,13 +71,14 @@ class Views:
         e = discord.Embed(title='Troop search', color=discord.Color.from_rgb(*rarity_color))
         if shortened:
             return self.render_embed(e, 'troop_shortened.jinja', troop=troop)
-        else:
-            thumbnail_url = f'{CONFIG.get("graphics_url")}/Troops/Cards_{troop["filename"]}_thumb.png'
-            e.set_thumbnail(url=thumbnail_url)
-            if 'release_date' in troop:
-                e.set_footer(text='Release date')
-                e.timestamp = troop["release_date"]
-            return self.render_embed(e, 'troop.jinja', troop=troop)
+
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Troops/Cards_{troop["filename"]}_thumb.png'
+        e.set_thumbnail(url=thumbnail_url)
+
+        if 'release_date' in troop:
+            e.set_footer(text='Release date')
+            e.timestamp = troop["release_date"]
+        return self.render_embed(e, 'troop.jinja', troop=troop)
 
         return e
 
@@ -85,49 +90,22 @@ class Views:
         e.add_field(name='__Classes using this Talent Tree:__', value=', '.join(classes), inline=False)
         return e
 
-    def banner_colors(self, banner):
-        return [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
-
-    def format_output_team(self, team, color, author):
-        e = discord.Embed(title=f"{author} team", color=color)
-        troops = [f'{self.my_emojis.get(t[0], f":{t[0]}:")} {t[1]}' for t in team['troops']]
-        team_text = '\n'.join(troops)
-        e.add_field(name=team['troops_title'], value=team_text, inline=True)
-        if team['banner']:
-            banner_url = f'{CONFIG.get("graphics_url")}/Banners/Banners_{team["banner"]["filename"]}_thumb.png'
-            e.set_thumbnail(url=banner_url)
-            banner_colors = self.banner_colors(team['banner'])
-            e.add_field(name=team['banner']['name'], value='\n'.join(banner_colors), inline=True)
-        if team['class']:
-            talents = '\n'.join(team['talents'])
-            if all([t == '-' for t in team['talents']]):
-                talents = '-'
-            e.add_field(name=f'{team["class_title"]}: {team["class"]}', value=talents,
-                        inline=False)
-        return e
-
-    def format_output_team_shortened(self, team, color):
+    def render_team(self, team, author, shortened):
+        color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(color=color)
-        troops = [f'{t[1]}' for t in team['troops']]
-        e.title = ', '.join(troops)
-        descriptions = []
+        if shortened:
+            troops = [f'{t[1]}' for t in team['troops']]
+            e.title = ', '.join(troops)
+            return self.render_embed(e, 'team_shortened.jinja', team=team)
 
         if team['banner']:
-            banner_texts = [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in
-                            team['banner']['colors']]
-            banner = '{banner_name} {banner_texts}'.format(
-                banner_name=team['banner']['name'],
-                banner_texts=' '.join(banner_texts)
-            )
-            descriptions.append(banner)
-        if team['class']:
-            descriptions.append(team["class"])
-        if team['talents'] and not all([i == '-' for i in team['talents']]):
-            descriptions.append(', '.join(team['talents']))
-        e.description = '\n'.join(descriptions)
-        return e
+            thumbnail_url = f'{CONFIG.get("graphics_url")}/Banners/Banners_{team["banner"]["filename"]}_thumb.png'
+            e.set_thumbnail(url=thumbnail_url)
 
-    def render_kingdom(self, kingdom, shortened=False):
+        e.title=f"{author} team"
+        return self.render_embed(e, 'team.jinja', team=team)
+
+    def render_kingdom(self, kingdom, shortened):
         e = discord.Embed(title='Kingdom search', color=self.WHITE)
         underworld = 'underworld' if kingdom['underworld'] else ''
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations{underworld}_{kingdom["filename"]}_thumb.png'
