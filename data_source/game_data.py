@@ -346,3 +346,6 @@ class GameData:
         for kingdom_id, kingdom_data in self.user_data['pEconomyModel']['KingdomLevelData'].items():
             self.kingdoms[int(kingdom_id)]['primary_color'] = self.COLORS[kingdom_data['Color']]
             self.kingdoms[int(kingdom_id)]['primary_stat'] = kingdom_data['Stat']
+
+        for kingdom_id, pet_id in self.user_data['pEconomyModel']['FactionRenownRewardPetIds'].items():
+            self.kingdoms[int(kingdom_id)]['pet'] = self.pets[pet_id]

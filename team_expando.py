@@ -234,6 +234,11 @@ class TeamExpander:
         kingdom['stat_title'] = _('[STAT_BONUS]', lang)
         if 'primary_stat' in kingdom:
             kingdom['primary_stat'] = _(f'[{kingdom["primary_stat"].upper()}]', lang)
+        if 'pet' in kingdom:
+            kingdom['pet_title'] = _('[PET_RESCUE_PET]', lang)
+            pet = kingdom['pet'].copy()
+            self.translate_pet(pet, lang)
+            kingdom['pet'] = pet
 
     def search_class(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.classes:
