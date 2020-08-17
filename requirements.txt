@@ -2,6 +2,7 @@ beautifulsoup4
 discord
 feedparser
 html2markdown
+html5lib
 humanize
 jinja2
 requests

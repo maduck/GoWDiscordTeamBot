@@ -708,8 +708,11 @@ class DiscordBot(BaseBot):
             e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
             content = self.views.trim_news_to_length(article['content'], article['url'])
             e.add_field(name=article['title'], value=content)
+            embeds = [e]
             for image_url in article['images']:
+                e = discord.Embed(type='image', color=self.WHITE)
                 e.set_image(url=image_url)
+                embeds.append(e)
 
             for subscription in self.subscriptions:
                 relevant_news = subscription.get(article['platform'])
@@ -723,7 +726,8 @@ class DiscordBot(BaseBot):
                     log.debug(f'Channel {message}.')
                     continue
                 try:
-                    await channel.send(embed=e)
+                    for e in embeds:
+                        await channel.send(embed=e)
                 except Exception as e:
                     log.error('Could not send out news, exception follows')
                     log.exception(e)
