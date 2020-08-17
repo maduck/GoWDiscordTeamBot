@@ -7,8 +7,8 @@
 **{{ kingdom.stat_title }}**: {{ kingdom.primary_stat }}{% endif %}
 {% if kingdom.linked_kingdom -%}
 **{{ kingdom.linked_map }}**: {{ kingdom.linked_kingdom }}
-{% endif %}
-{% if 'pet' in kingdom %}**{{ kingdom.pet_title }}**: {{ kingdom.pet.name }} `#{{ kingdom.pet.id }}`{% endif %}
+{% endif %}{% if 'pet' in kingdom %}
+**{{ kingdom.pet_title }}**: {{ kingdom.pet.name }} `#{{ kingdom.pet.id }}`{% endif %}
 **{{ kingdom.troop_title }}**:
 {%- for troop in kingdom.troops -%}
 {% if loop.index != 1 %},{% endif %} {{ troop.name }} `#{{ troop.id }}`
