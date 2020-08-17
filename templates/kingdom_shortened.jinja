@@ -2,10 +2,10 @@
 **{{ kingdom.banner_title }}**: {{ kingdom.banner.name }} {{ kingdom['banner']|banner_colors|join(' ') }}
 
 {%- if kingdom.primary_color and kingdom.primary_stat %}
-    **{{ kingdom.color_title }}**: {{ kingdom.primary_color|emoji }} / {{ ('deed_' + kingdom.primary_color)|emoji }} {{ kingdom.deed }}
-    **{{ kingdom.stat_title }}**: {{ kingdom.primary_stat }}
+**{{ kingdom.color_title }}**: {{ kingdom.primary_color|emoji }} / {{ ('deed_' + kingdom.primary_color)|emoji }} {{ kingdom.deed }}
+**{{ kingdom.stat_title }}**: {{ kingdom.primary_stat }}
 {% endif %}
 
 {%- if kingdom.linked_kingdom %}
-    **{{ kingdom.linked_map }}**: {{ kingdom.linked_kingdom }}
+**{{ kingdom.linked_map }}**: {{ kingdom.linked_kingdom }}
 {% endif -%}

@@ -1,24 +1,24 @@
 <T>inline**{{ team.troops_title }}**</T>
 {%- for troop in team.troops %}
-    {{ troop[0]|emoji(':'+ troop[0] + ':') }} {{ troop[1] }}
+{{ troop[0]|emoji(':'+ troop[0] + ':') }} {{ troop[1] }}
 {%- endfor -%}
 
 {%- if team.banner %}
-    <T>inline**{{ team.banner.name }}**</T>
-    {%- for color in team.banner|banner_colors %}
-        {{ color }}
-    {%- endfor -%}
+<T>inline**{{ team.banner.name }}**</T>
+{%- for color in team.banner|banner_colors %}
+{{ color }}
+{%- endfor -%}
 {% endif %}
 {%- if team.class %}
-    <T>{{ team.class_title }}: {{ team.class }}</T>
-    {% set talents = team.talents|join('-') %}
-    {% if talents|replace('-', '') == '' %}
-        -
-    {% else %}
-        {%- for talent in team.talents %}
-            {{ talent }}
-        {%- endfor -%}
-    {% endif %}
+<T>{{ team.class_title }}: {{ team.class }}</T>
+{% set talents = team.talents|join('-') %}
+{% if talents|replace('-', '') == '' %}
+-
+{% else %}
+{%- for talent in team.talents %}
+    {{ talent }}
+{%- endfor -%}
+{% endif %}
 
 {% endif %}
 

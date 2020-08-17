@@ -1,14 +1,14 @@
 {%- if team.banner -%}
-    {{ team.banner.name }} {{ team.banner|banner_colors|join(' ') }}
+{{ team.banner.name }} {{ team.banner|banner_colors|join(' ') }}
 {%- endif -%}
 
 {%- if team.class %}
-    {{ team.class }}
+{{ team.class }}
 {%- endif -%}
 
 {%- if team.talents -%}
-    {% set talents = team.talents|join('-') %}
-    {%- if talents|replace('-', '') != '' %}
-        {{ team.talents|join(', ') }}
-    {% endif %}
+{% set talents = team.talents|join('-') %}
+{%- if talents|replace('-', '') != '' %}
+{{ team.talents|join(', ') }}
+{% endif %}
 {%- endif -%}

@@ -5,12 +5,12 @@
 
 <T>**{{ _class.traits_title }}**</T>
 {%- for trait in _class.traits %}
-    **{{ trait.name }}**: {{ trait.description }}
+**{{ trait.name }}**: {{ trait.description }}
 {%- endfor -%}
 
 {%- for tree in _class.talents %}
-    <T>inline__{{ _class.trees[loop.index - 1] }}__</T>
-    {%- for t in tree %}
-        **{{ t.name }}**: ({{ t.description }})
-    {%- endfor -%}
+<T>inline__{{ _class.trees[loop.index - 1] }}__</T>
+{%- for t in tree %}
+**{{ t.name }}**: ({{ t.description }})
+{%- endfor -%}
 {%- endfor -%}

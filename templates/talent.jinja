@@ -1,9 +1,9 @@
 <T>**__{{ tree.name }}__**</T>
 {%- for talent in tree.talents %}
-    **{{ talent.name }}**: ({{ talent.description }})
+**{{ talent.name }}**: ({{ talent.description }})
 {%- endfor -%}
 
 <T>__Classes using this Talent Tree:__</T>
 {%- for class in tree.classes -%}
-    {% if loop.index != 1 %},{% endif %} {{ class.name }} `#{{ class.id }}`
+{% if loop.index != 1 %},{% endif %} {{ class.name }} `#{{ class.id }}`
 {%- endfor -%}

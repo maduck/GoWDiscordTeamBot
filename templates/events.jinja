@@ -2,11 +2,11 @@
 ```
 {% set last_event_date = events[0].start %}
 {% for event in events %}
-    {% if event.start > last_event_date and event['start'].weekday() == 0:}
-    {% endif %}
-    {% set last_event_date = event.start %}
-    {{ event.start|strftime("%b %d") }} - {{ event.end|strftime("%b %d")}} {{ event.type }}
-    {%- if event.extra_info %}:{{ event.extra_info }}{% endif %}
+{% if event.start > last_event_date and event['start'].weekday() == 0:}
+{% endif %}
+{% set last_event_date = event.start %}
+{{ event.start|strftime("%b %d") }} - {{ event.end|strftime("%b %d")}} {{ event.type }}
+{%- if event.extra_info %}:{{ event.extra_info }}{% endif %}
 {% endfor %}
 ```
 

@@ -7,21 +7,21 @@
 **{{ weapon.type_title }}**: {{ weapon.type }}
 
 {% if weapon.upgrades -%}
-    <T>**{{ weapon.upgrade_title }}**</T>
-    {%- for affix in weapon.upgrades %}
-        **{{ affix.name }}**: {{ affix.description }}
-    {%- endfor -%}
+<T>**{{ weapon.upgrade_title }}**</T>
+{%- for affix in weapon.upgrades %}
+**{{ affix.name }}**: {{ affix.description }}
+{%- endfor -%}
 {% endif %}
 
 {% set requirement_text = weapon.requirement_text|replace('erhähltlich', 'erhältlich') -%}
 
 {% if weapon.has_mastery_requirement_color and ':' in weapon.requirement_text -%}
-    **{{ requirement_text|replace(': ', '**: ') -}}
+**{{ requirement_text|replace(': ', '**: ') -}}
 {% else -%}
-    {{ requirement_text -}}
+{{ requirement_text -}}
 {% endif -%}
 {% if weapon.has_mastery_requirement_color -%}
-    {%- for color in weapon.colors -%}
-        {{ color|emoji(":" + color + ":") }}
-    {%- endfor -%}
+{%- for color in weapon.colors -%}
+{{ color|emoji(":" + color + ":") }}
+{%- endfor -%}
 {% endif -%}
