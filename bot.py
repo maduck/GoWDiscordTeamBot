@@ -254,7 +254,7 @@ class DiscordBot(BaseBot):
         if not filter or filter.lower() == 'troop':
             troop_spoilers = [s for s in spoilers if s['type'] == 'troop']
 
-            extra_spacing = 2
+            extra_spacing = 3
             rarity_width = max([len(t['rarity']) for t in troop_spoilers]) + extra_spacing
             header_widths = [12, rarity_width, 5]
             header = ''.join([f'{h.ljust(header_widths[i])}' for i, h in enumerate(headers)])
