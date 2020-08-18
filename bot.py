@@ -449,7 +449,7 @@ class DiscordBot(BaseBot):
             e = await self.generate_embed_from_text(message_lines, 'Classes', 'Summary')
         else:
             e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
-            classes_found = [f'{_class["name"]} ({_class["id"]})' for _class in result]
+            classes_found = [f'{_class["name"]} `#{_class["id"]}`' for _class in result]
             class_chunks = chunks(classes_found, 30)
             for i, chunk in enumerate(class_chunks):
                 chunk_message = '\n'.join(chunk)
@@ -465,7 +465,7 @@ class DiscordBot(BaseBot):
             e = self.views.render_pet(result[0], shortened)
         else:
             e = discord.Embed(title=f'Pet search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
-            pets_found = [f'{pet["name"]} ({pet["id"]})' for pet in result]
+            pets_found = [f'{pet["name"]} `#{pet["id"]}`' for pet in result]
             pet_chunks = chunks(pets_found, 30)
             for i, chunk in enumerate(pet_chunks):
                 chunk_message = '\n'.join(chunk)
@@ -480,7 +480,7 @@ class DiscordBot(BaseBot):
             e = self.views.render_weapon(result[0], shortened)
         else:
             e = discord.Embed(title=f'Weapon search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
-            weapons_found = [f'{t["name"]} ({t["id"]})' for t in result]
+            weapons_found = [f'{t["name"]} `#{t["id"]}`' for t in result]
             weapon_chunks = chunks(weapons_found, 30)
             for i, chunk in enumerate(weapon_chunks):
                 chunk_message = '\n'.join(chunk)
@@ -502,7 +502,7 @@ class DiscordBot(BaseBot):
             e = self.views.render_troop(troop, shortened)
         else:
             e = discord.Embed(title=f'Troop search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
-            troops_found = [f'{t["name"]} ({t["id"]})' for t in result]
+            troops_found = [f'{t["name"]} `#{t["id"]}`' for t in result]
             troop_chunks = chunks(troops_found, 30)
             for i, chunk in enumerate(troop_chunks):
                 chunk_message = '\n'.join(chunk)
