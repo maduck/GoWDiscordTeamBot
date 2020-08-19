@@ -254,7 +254,7 @@ class DiscordBot(BaseBot):
         if not filter or filter.lower() == 'troop':
             troop_spoilers = [s for s in spoilers if s['type'] == 'troop']
 
-            extra_spacing = 3
+            extra_spacing = 1
             rarity_width = max([len(t['rarity']) for t in troop_spoilers]) + extra_spacing
             header_widths = [12, rarity_width, 5]
             header = ''.join([f'{h.ljust(header_widths[i])}' for i, h in enumerate(headers)])
@@ -267,7 +267,7 @@ class DiscordBot(BaseBot):
                                      f'({troop["id"]})')
 
             if len(message_lines) > 1:
-                limit = 1024 - len(troop_title) - len('``````')
+                limit = 1000 - len(troop_title) - len('``````')
                 result = '\n'.join(self.views.trim_text_lines_to_length(message_lines, limit))
                 e.add_field(name=troop_title, value=f'```{result}```', inline=False)
 
