@@ -126,19 +126,22 @@ class Views:
         return self.render_embed(e, 'class.jinja', _class=_class)
 
     @staticmethod
-    def trim_text_lines_to_length(lines, limit):
-        breakdown = [sum([len(c) + 2 for c in lines[0:i]]) < limit for i in range(len(lines))]
-        if all(breakdown):
-            return lines
-        return lines[:breakdown.index(False) - 1]
-
-    @staticmethod
-    def trim_news_to_length(text, link, max_length=900):
-        break_character = '\n'
+    def trim_text_to_length(text, limit, break_character='\n'):
         input_text = f'{text}{break_character}'
-        trimmed_text = input_text[:input_text[:max_length].rfind(break_character)]
+        trimmed_text = input_text[:input_text[:limit].rfind(break_character)]
+        return trimmed_text
+
+    @classmethod
+    def trim_text_lines_to_length(cls, lines, limit, break_character='\n'):
+        input_text = break_character.join(lines) + break_character
+        trimmed_text = cls.trim_text_to_length(input_text, limit)
+        return trimmed_text.split(break_character)
+
+    @classmethod
+    def trim_news_to_length(cls, text, link, max_length=900):
+        trimmed_text = cls.trim_text_to_length(text, max_length)
         read_more = ''
-        if len(trimmed_text + break_character) != len(input_text):
+        if len(trimmed_text) != len(text):
             read_more = '[...] '
         result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
         return result
