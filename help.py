@@ -73,9 +73,9 @@ help_texts = {
                           '• __Formato Mini__: Inserisci un "-" prima del codice squadra per farlo apparire in un piccolo riquadro, '
                           'es. `-[1075,6251,6699,6007]`, o con il codice linguaggio `it-[1075,6251,6699,6007]`.',
         'Ricerche': '• __Basi__: le seguenti ricerche sono supportate:\n'
-                    ' - `{0}troop <ricerca>`\n'
-                    ' - `{0}weapon <ricerca>`\n'
-                    ' - `{0}pet <ricerca>`\n'
+                    ' - `{0}troop <ricerca>`, es. `{0}troop elemaugrim`.\n'
+                    ' - `{0}weapon <ricerca>`, es. `{0}weapon mang`.\n'
+                    ' - `{0}pet <ricerca>`.\n'
                     ' - `{0}class summary|<ricerca>`, es. `{0}class arciere`.\n'
                     ' - `{0}talent <ricerca>`, es. `{0}talent fonte del mana`.\n'
                     ' - `{0}kingdom summary|<ricerca>`, es. `{0}kingdom karakoth`.\n'
@@ -175,8 +175,10 @@ tower_help_texts = {
         'Clearing Data': 'To clear the tower data, simply use the `{0}towerclear` command with no arguments.',
         'Configuration': 'To configure the tower utility, use `{0}towerconfig`.\n'
                          '`{0}towerconfig short true` for short responses to edits.\n'
-                         '`{0}towerconfig rooms III iii,r,rare,green` to set the room aliases. Comma separated values.\n'
-                         '`{0}towerconfig scrolls armor :shield:,ar,Armor` to set scroll aliases. First value will be used for display.\n',
+                         '`{0}towerconfig rooms III iii,r,rare,green` to set the room aliases. '
+                         'Comma separated values.\n'
+                         '`{0}towerconfig scrolls armor :shield:,ar,Armor` to set scroll aliases. '
+                         'First value will be used for display.\n',
 
     }
 }
