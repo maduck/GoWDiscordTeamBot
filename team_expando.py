@@ -53,6 +53,7 @@ class TeamExpander:
         self.events = world.events
         self.colors = world.COLORS
         self.campaign_tasks = world.campaign_tasks
+        self.rooms = {}
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -556,13 +557,19 @@ class TeamExpander:
         return new_task
 
     def get_spoilers(self, lang):
+        spoilers = []
         now = datetime.datetime.utcnow()
-        spoilers = [self.translate_spoiler(s, lang) for s in self.spoilers
-                    if now < s['date'] < now + datetime.timedelta(days=60)]
+        near_term_spoilers = [s for s in self.spoilers if now <= s['date'] <= now + datetime.timedelta(days=180)]
+        for spoiler in near_term_spoilers:
+            translated = self.translate_spoiler(spoiler, lang)
+            if translated:
+                spoilers.append(translated)
         return spoilers
 
     def translate_spoiler(self, spoiler, lang):
         entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {}).copy()
+        if not entry:
+            return None
         entry['name'] = _(entry['name'], lang)
         entry['type'] = spoiler['type']
         entry['date'] = spoiler['date'].date()
