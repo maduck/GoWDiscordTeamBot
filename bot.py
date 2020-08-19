@@ -77,7 +77,7 @@ class DiscordBot(BaseBot):
         {
             'function': 'show_spoilers',
             'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)spoilers?( '
-                                                        r'(?P<filter>(weapon|pet|kingdom|troop))s?)?', re.IGNORECASE)
+                                                        r'(?P<_filter>(weapon|pet|kingdom|troop))s?)?', re.IGNORECASE)
         },
         {
             'function': 'show_events',
@@ -246,12 +246,12 @@ class DiscordBot(BaseBot):
         e.set_footer(text='`?` will be set by the game\'s progress.')
         await self.answer(message, e)
 
-    async def show_spoilers(self, message, prefix, lang, filter):
+    async def show_spoilers(self, message, prefix, lang, _filter):
         spoilers = self.expander.get_spoilers(lang)
         e = discord.Embed(title='Spoilers', color=self.WHITE)
         troop_title = self.expander.translate_categories(['troop'], lang)['troop']
         headers = ['Date', 'Rarity', 'Name (ID)']
-        if not filter or filter.lower() == 'troop':
+        if not _filter or _filter.lower() == 'troop':
             troop_spoilers = [s for s in spoilers if s['type'] == 'troop']
 
             extra_spacing = 2
@@ -274,7 +274,7 @@ class DiscordBot(BaseBot):
         categories = ('kingdom', 'pet', 'weapon')
         translated = self.expander.translate_categories(categories, lang)
 
-        for spoil_type in [c for c in categories if (not filter or filter.lower() == c)]:
+        for spoil_type in [c for c in categories if (not _filter or _filter.lower() == c)]:
             message_lines = ['Date        Name (ID)']
             for spoiler in spoilers:
                 if spoiler['type'] == spoil_type:
@@ -334,26 +334,36 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def show_quickhelp(self, message, prefix, lang):
-        e = discord.Embed(title='quickhelp', color=self.WHITE)
-        e.description = (
-            f'`{prefix}help` complete help\n'
-            f'`{prefix}quickhelp` this command\n'
-            f'`{prefix}invite`\n'
-            f'`[<troopcode>]` post team\n'
-            f'`-[<troopcode>]` post team (short)\n'
-            f'`{prefix}troop <search>`\n'
-            f'`{prefix}weapon <search>`\n'
-            f'`{prefix}pet <search>`\n'
-            f'`{prefix}class summary|<search>`\n'
-            f'`{prefix}kingdom summary|<search>`\n'
-            f'`{prefix}talent <search>`\n'
-            f'`{prefix}spoilers [pets|troops|weapons|kingdoms]`\n'
-            f'`{prefix}events`\n'
-            f'`<language><command>` Admin command.\n\n'
-            f'`{prefix}news [[un]subscribe [pc|switch]]` Admin command.\n'
-            f'`{prefix}prefix [new_prefix]` Admin command.\n'
-            f'`{prefix}language [new_language]` Admin command.\n'
-        )
+        e = discord.Embed(title='Quick Help', color=self.WHITE)
+        langs = '|'.join(LANGUAGES)
+        e.add_field(name='How to read',
+                    value='Square brackets `[]` show optional parameters, except for troop code.\n'
+                          'Vertical lines `|` mean "or": this|that.\n'
+                          f'possible language codes are `{langs}`.')
+        e.add_field(name='Commands',
+                    value=f'`{prefix}help`\n'
+                          f'`{prefix}quickhelp`\n'
+                          f'`{prefix}invite`\n'
+                          f'`[lang][-][<troopcode>]`\n'
+                          f'`[lang][-]{prefix}troop <search>`\n'
+                          f'`[lang][-]{prefix}weapon <search>`\n'
+                          f'`[lang][-]{prefix}pet <search>`\n'
+                          f'`[lang][-]{prefix}class summary|<search>`\n'
+                          f'`[lang][-]{prefix}kingdom summary|<search>`\n'
+                          f'`[lang][-]{prefix}talent <search>`\n'
+                          f'`[lang]{prefix}spoilers [pets|troops|weapons|kingdoms|events]`\n'
+                          f'`[lang]{prefix}events`\n'
+                          f'`[lang]{prefix}campaign [bronze|silver|gold]`\n'
+                          f'`{prefix}towerhelp`\n'
+                          f'`{prefix}towerclear`',
+                    inline=False
+                    )
+        e.add_field(name='Admin Commands',
+                    value=f'`{prefix}towerconfig`\n'
+                          f'`{prefix}news [[un]subscribe [pc|switch]]`\n'
+                          f'`{prefix}prefix [new_prefix]`\n'
+                          f'`{prefix}language [new_language]`',
+                    inline=False)
         await self.answer(message, e)
 
     async def on_message(self, message):
