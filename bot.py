@@ -75,13 +75,13 @@ class DiscordBot(BaseBot):
             'pattern': re.compile(SEARCH_PATTERN.format('talent'), re.IGNORECASE | re.MULTILINE)
         },
         {
+            'function': 'show_events',
+            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)(spoilers? )?events?$', re.IGNORECASE)
+        },
+        {
             'function': 'show_spoilers',
             'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)spoilers?( '
                                                         r'(?P<_filter>(weapon|pet|kingdom|troop))s?)?', re.IGNORECASE)
-        },
-        {
-            'function': 'show_events',
-            'pattern': re.compile(r'^' + LANG_PATTERN + r'(?P<prefix>.)events?$', re.IGNORECASE)
         },
         {
             'function': 'show_help',
