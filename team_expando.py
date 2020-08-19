@@ -28,7 +28,7 @@ def update_translations():
 
 
 def extract_search_tag(search_term):
-    ignored_characters = ' -\''
+    ignored_characters = ' -\'’'
     for char in ignored_characters:
         search_term = search_term.replace(char, '')
     return search_term.lower()
@@ -290,8 +290,9 @@ class TeamExpander:
         for tree in self.talent_trees.values():
             translated_name = extract_search_tag(_(tree['name'], lang))
             translated_talents = [_(t['name'], lang) for t in tree['talents']]
+            talents_search_tags = [extract_search_tag(t) for t in translated_talents]
             real_search = extract_search_tag(search_term)
-            if real_search == translated_name or real_search in translated_talents:
+            if real_search == translated_name or real_search in talents_search_tags:
                 result = tree.copy()
                 self.translate_talent_tree(result, lang)
                 return [result]
@@ -300,7 +301,7 @@ class TeamExpander:
                 self.translate_talent_tree(result, lang)
                 possible_matches.append(result)
             else:
-                talent_matches = [t for t in translated_talents if real_search in extract_search_tag(t)]
+                talent_matches = [t for t in talents_search_tags if real_search in t]
                 if talent_matches:
                     result = tree.copy()
                     result['talent_matches'] = talent_matches
