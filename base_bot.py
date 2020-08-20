@@ -21,7 +21,7 @@ class EmbedLimitsExceed(Exception):
     pass
 
 
-class BaseBot(discord.AutoShardedClient):
+class BaseBot(discord.Client):
     WHITE = discord.Color.from_rgb(254, 254, 254)
     BLACK = discord.Color.from_rgb(0, 0, 0)
     RED = discord.Color.from_rgb(255, 0, 0)
