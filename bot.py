@@ -210,12 +210,11 @@ class DiscordBot(BaseBot):
                           f'&scope=bot' \
                           f'&permissions={self.permissions.value}'
         log.info(f'Logged in as {self.user.name}')
-        log.info(f'Invite with: {self.invite_url}')
 
         subscriptions = sum([s.get('pc', True) for s in self.subscriptions])
         log.info(f'{subscriptions} channels subscribed to news.')
         guilds = [g.name for g in self.guilds if g]
-        log.info(f'Active in {len(guilds)} guilds: {", ".join(guilds)}')
+        log.info(f'Active in {len(guilds)} guilds.')
 
         game = discord.Game("Gems of War")
         await self.change_presence(status=discord.Status.online, activity=game)
