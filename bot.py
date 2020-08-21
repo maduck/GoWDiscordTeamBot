@@ -287,13 +287,12 @@ class DiscordBot(BaseBot):
     async def show_uptime(self, message, prefix, lang):
         e = discord.Embed(title='Uptime', color=self.WHITE)
         lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
-        bot_offline = datetime.timedelta(seconds=self.downtimes)
         with HumanizeTranslator(lang) as _t:
-            uptime = f'{humanize.naturaltime(self.bot_start)}'
-            downtime = humanize.naturaldelta(bot_offline)
+            uptime = humanize.naturaltime(self.bot_start)
+            downtime = humanize.naturaldelta(self.downtimes)
         e.add_field(name='Bot running since', value=uptime, inline=False)
         e.add_field(name='Offline for', value=downtime, inline=False)
-        bot_runtime = (datetime.datetime.now() - self.bot_start).seconds
+        bot_runtime = datetime.datetime.now() - self.bot_start
         availability = (bot_runtime - self.downtimes) / bot_runtime
         e.add_field(name='Availability', value=f'{availability:.3%}')
         await self.answer(message, e)
