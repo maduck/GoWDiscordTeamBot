@@ -26,7 +26,7 @@ async def task_check_for_news(discord_client):
 
 @tasks.loop(seconds=20, reconnect=False)
 async def task_check_for_data_updates(discord_client):
-    filenames = LANG_FILES + ['World.json']
+    filenames = LANG_FILES + ['World.json', 'User.json']
     now = datetime.datetime.now()
     modified_files = []
     for filename in filenames:
