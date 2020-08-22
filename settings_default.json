@@ -4,6 +4,8 @@
   "default_prefix": "!",
   "default_language": "en",
   "default_news_platform": "pc",
+  "news_check_interval_minutes": 5,
   "game_assets_folder": "",
-  "database": "db.sqlite3"
+  "database": "db.sqlite3",
+  "file_update_check_seconds": 10
 }

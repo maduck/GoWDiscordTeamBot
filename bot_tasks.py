@@ -5,13 +5,14 @@ import os
 from discord.ext import tasks
 
 from base_bot import log
+from configurations import CONFIG
 from game_assets import GameAssets
 from jobs.news_downloader import NewsDownloader
 from team_expando import TeamExpander, update_translations
 from translations import LANG_FILES
 
 
-@tasks.loop(minutes=5, reconnect=False)
+@tasks.loop(minutes=CONFIG.get('news_check_interval_minutes'), reconnect=False)
 async def task_check_for_news(discord_client):
     lock = asyncio.Lock()
     async with lock:
@@ -24,7 +25,7 @@ async def task_check_for_news(discord_client):
             log.exception(e)
 
 
-@tasks.loop(seconds=20, reconnect=False)
+@tasks.loop(seconds=CONFIG.get('file_update_check_seconds'), reconnect=False)
 async def task_check_for_data_updates(discord_client):
     filenames = LANG_FILES + ['World.json', 'User.json']
     now = datetime.datetime.now()
@@ -32,7 +33,7 @@ async def task_check_for_data_updates(discord_client):
     for filename in filenames:
         file_path = GameAssets.path(filename)
         modification_time = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
-        modified = now - modification_time <= datetime.timedelta(seconds=20)
+        modified = now - modification_time <= datetime.timedelta(seconds=CONFIG.get('file_update_check_seconds'))
         if modified:
             modified_files.append(filename)
     if modified_files:
