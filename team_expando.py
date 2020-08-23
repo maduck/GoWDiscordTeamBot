@@ -456,7 +456,7 @@ class TeamExpander:
         description = _(spell['description'], lang)
 
         for i, (multiplier, amount) in enumerate(spell['effects'], start=1):
-            spell_amount = f' + {amount}'
+            spell_amount = f' + {amount}' if amount else ''
             multiplier_text = ''
             if multiplier > 1:
                 multiplier_text = f'{int(multiplier)} ⨯ '

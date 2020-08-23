@@ -215,8 +215,8 @@ class GameData:
             boost = 0
             last_type = ""
             for step in spell['SpellSteps']:
-                if 'Amount' in step and 'Type' in step and 'SpellPowerMultiplier' in step:
-                    amount = step.get('Amount')
+                if 'Type' in step and 'SpellPowerMultiplier' in step:
+                    amount = step.get('Amount', 0)
                     multiplier = step.get('SpellPowerMultiplier', 1)
                     if last_type != step['Type']:
                         spell_effects.append([multiplier, amount])
