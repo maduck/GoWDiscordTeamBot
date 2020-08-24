@@ -25,7 +25,7 @@ async def task_check_for_news(discord_client):
             log.exception(e)
 
 
-@tasks.loop(seconds=CONFIG.get('file_update_check_seconds'), reconnect=False)
+@tasks.loop(seconds=CONFIG.get('file_update_check_seconds'))
 async def task_check_for_data_updates(discord_client):
     filenames = LANG_FILES + ['World.json', 'User.json']
     now = datetime.datetime.now()
