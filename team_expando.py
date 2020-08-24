@@ -465,7 +465,12 @@ class TeamExpander:
                 number = int(round(1 / multiplier))
                 divisor = f' / {number}'
             damage = f'[{multiplier_text}{magic}{divisor}{spell_amount}]'
-            description = description.replace(f'{{{i}}}', damage)
+            if '{2}' in description and len(spell['effects']) == 1:
+                half_damage = f'[0.5 ⨯ {multiplier_text}{magic}{divisor} + {amount / 2}]'
+                description = description.replace('{1}', half_damage)
+                description = description.replace('{2}', damage)
+            else:
+                description = description.replace(f'{{{i}}}', damage)
 
         boost = ''
         if spell['boost'] and spell['boost'] > 100:
