@@ -293,7 +293,7 @@ class GameData:
                 self.kingdoms[kingdom_id]['release_date'] = release_date
                 self.spoilers.append({'type': 'kingdom', 'date': release_date, 'id': kingdom_id})
         for release in self.user_data['pEconomyModel']['HeroClassReleaseDates']:
-            class_id = release['HeroClassId']
+            class_id = release['QuestId']
             release_date = self.get_datetime(release['Date'])
             if class_id in self.classes:
                 self.classes[class_id]['release_date'] = release_date
