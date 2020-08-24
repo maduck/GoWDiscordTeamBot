@@ -32,7 +32,10 @@ async def task_check_for_data_updates(discord_client):
     modified_files = []
     for filename in filenames:
         file_path = GameAssets.path(filename)
-        modification_time = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
+        try:
+            modification_time = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
+        except FileNotFoundError:
+            return
         modified = now - modification_time <= datetime.timedelta(seconds=CONFIG.get('file_update_check_seconds'))
         if modified:
             modified_files.append(filename)
