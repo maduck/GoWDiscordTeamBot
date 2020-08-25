@@ -34,7 +34,7 @@ def debug(message):
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.8'
+    VERSION = '0.9'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -234,6 +234,7 @@ class DiscordBot(BaseBot):
         task_categories = self.expander.get_campaign_tasks(lang)
         e = discord.Embed(title='Campaign Tasks', color=self.WHITE)
 
+        has_content = False
         for category, tasks in task_categories.items():
             if tier and category.lower() != tier.lower():
                 continue
@@ -241,8 +242,13 @@ class DiscordBot(BaseBot):
             for task in tasks:
                 task_name = task["name"].replace('{Value1}', '`?`')
                 category_lines.append(f'**{task["title"]}**: {task_name}')
-            e.add_field(name=f'__**{category}**__', value='\n'.join(category_lines), inline=False)
-        e.set_footer(text='`?` will be set by the game\'s progress.')
+            if category_lines:
+                e.add_field(name=f'__**{category}**__', value='\n'.join(category_lines), inline=False)
+                has_content = True
+        if not has_content:
+            e.add_field(name='Nothing to display', value='There is no active campaign available.')
+        else:
+            e.set_footer(text='`?` will be set by the game\'s progress.')
         await self.answer(message, e)
 
     async def show_spoilers(self, message, prefix, lang, _filter):
