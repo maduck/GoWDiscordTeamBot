@@ -459,14 +459,21 @@ class TeamExpander:
             spell_amount = f' + {amount}' if amount else ''
             multiplier_text = ''
             if multiplier > 1:
-                multiplier_text = f'{int(multiplier)} ⨯ '
+                if multiplier == int(multiplier):
+                    multiplier_text = f'{multiplier:.0f} ⨯ '
+                else:
+                    multiplier_text = f'{multiplier} ⨯ '
             divisor = ''
             if multiplier < 1:
                 number = int(round(1 / multiplier))
                 divisor = f' / {number}'
             damage = f'[{multiplier_text}{magic}{divisor}{spell_amount}]'
             if '{2}' in description and len(spell['effects']) == 1:
-                half_damage = f'[0.5 ⨯ {multiplier_text}{magic}{divisor} + {amount / 2}]'
+                multiplier *= 0.5
+                amount *= 0.5
+                if amount == int(amount):
+                    amount = int(amount)
+                half_damage = f'[{multiplier} ⨯ {magic}{divisor} + {amount}]'
                 description = description.replace('{1}', half_damage)
                 description = description.replace('{2}', damage)
             else:
