@@ -47,6 +47,10 @@ class DiscordBot(BaseBot):
     SEARCH_PATTERN = r'^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.){0} #?(?P<search_term>.*)$'
     COMMAND_REGISTRY = [
         {
+            'function': 'show_version',
+            'pattern': re.compile(r'^' + LANG_PATTERN + '(?P<prefix>.)version$')
+        },
+        {
             'function': 'show_uptime',
             'pattern': re.compile(r'^' + LANG_PATTERN + '(?P<prefix>.)uptime$')
         },
@@ -300,6 +304,10 @@ class DiscordBot(BaseBot):
         bot_runtime = datetime.datetime.now() - self.bot_start
         availability = (bot_runtime - self.downtimes) / bot_runtime
         e.add_field(name='Availability', value=f'{availability:.3%}')
+        await self.answer(message, e)
+
+    async def show_version(self, message, prefix, lang):
+        e = discord.Embed(title='Version', description=self.VERSION, color=self.WHITE)
         await self.answer(message, e)
 
     async def show_events(self, message, prefix, lang):
