@@ -41,6 +41,7 @@ async def task_check_for_data_updates(discord_client):
             modified_files.append(filename)
     if modified_files:
         log.debug(f'Game file modification detected, reloading {", ".join(modified_files)}.')
+        await asyncio.sleep(5)
         lock = asyncio.Lock()
         async with lock:
             try:
