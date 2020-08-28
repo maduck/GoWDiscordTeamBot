@@ -27,7 +27,7 @@ async def task_check_for_news(discord_client):
 
 @tasks.loop(seconds=CONFIG.get('file_update_check_seconds'))
 async def task_check_for_data_updates(discord_client):
-    filenames = LANG_FILES + ['World.json', 'User.json']
+    filenames = LANG_FILES + ['World.json', 'User.json', 'Campaign.json']
     now = datetime.datetime.now()
     modified_files = []
     for filename in filenames:
@@ -35,7 +35,7 @@ async def task_check_for_data_updates(discord_client):
         try:
             modification_time = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
         except FileNotFoundError:
-            return
+            continue
         modified = now - modification_time <= datetime.timedelta(seconds=CONFIG.get('file_update_check_seconds'))
         if modified:
             modified_files.append(filename)
@@ -43,6 +43,12 @@ async def task_check_for_data_updates(discord_client):
         log.debug(f'Game file modification detected, reloading {", ".join(modified_files)}.')
         lock = asyncio.Lock()
         async with lock:
-            del discord_client.expander
-            discord_client.expander = TeamExpander()
-            update_translations()
+            try:
+                old_expander = discord_client.expander
+                del discord_client.expander
+                discord_client.expander = TeamExpander()
+                update_translations()
+            except Exception as e:
+                log.error('Could not update game file. Stacktrace follows.')
+                log.exception(e)
+                discord_client.expander = old_expander
