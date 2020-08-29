@@ -547,6 +547,8 @@ class TeamExpander:
             '{Color}': f'[GEM_{color}]',
             '{TroopType}': '[TROOPTYPE_{value1:u}]',
             '{Troop}': '[TROOPTYPE_{value1:u}]',
+            '{Value0}': task['value0'],
+            '{Value1}': task['value1'],
         }
         new_task['title'] = _(new_task['title'], lang)
         new_task['name'] = _(new_task["name"], lang)
