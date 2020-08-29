@@ -62,6 +62,7 @@ class GameData:
         self.events = []
         self.soulforge_weapons = []
         self.campaign_tasks = {}
+        self.campaign_data = {}
 
     @staticmethod
     def _convert_color_array(data_object):
@@ -70,6 +71,8 @@ class GameData:
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
         self.user_data = GameAssets.load('User.json')
+        if GameAssets.exists('Campaign.json'):
+            self.campaign_data = GameAssets.load('Campaign.json')
 
     def populate_world_data(self):
         self.read_json_data()
@@ -232,14 +235,6 @@ class GameData:
                 'boost': boost,
             }
 
-    def populate_campaign_tasks(self):
-        event_kingdom_id = self.get_current_event_kingdom()
-
-        tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
-        self.campaign_tasks['bronze'] = [self.transform_campaign_task(t, event_kingdom_id) for t in tasks['Bronze']]
-        self.campaign_tasks['silver'] = [self.transform_campaign_task(t, event_kingdom_id) for t in tasks['Silver']]
-        self.campaign_tasks['gold'] = [self.transform_campaign_task(t, event_kingdom_id) for t in tasks['Gold']]
-
     def get_current_event_kingdom(self):
         today = datetime.date.today()
         world_event = [e for e in self.events
@@ -249,17 +244,34 @@ class GameData:
         event_kingdom_id = world_event['kingdom_id']
         return event_kingdom_id
 
-    @staticmethod
-    def transform_campaign_task(task, kingdom_id):
+    def populate_campaign_tasks(self):
+        event_kingdom_id = self.get_current_event_kingdom()
+
+        tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
+        for level in ('Bronze', 'Silver', 'Gold'):
+            self.campaign_tasks[level.lower()] = sorted([self.transform_campaign_task(task, event_kingdom_id, level)
+                                                         for task in tasks[level]], key=operator.itemgetter('order'))
+
+    def transform_campaign_task(self, task, kingdom_id, level):
+        extra_data = {}
+        order = 0
+        for i, t in enumerate(self.campaign_data.get(f'Campaign{level}', [])):
+            if t['Id'] == task['Id']:
+                extra_data = t
+                order = i
+
         translated_task = {
             'reward': task['Rewards'][0]['Amount'],
             'condition': task.get('Condition'),
+            'order': order,
             'task': task['Task'],
             'name': task['TaskName'],
             'title': task['TaskTitle'],
             'tags': task['Tag'].split(','),
             'x': task.get('XValue'),
             'y': task.get('YValue'),
+            'value0': U(extra_data.get('Value0', '`?`')),
+            'value1': U(extra_data.get('Value1', '`?`')),
             'c': U(task.get('CValue')),
             'd': U(task.get('DValue')),
             'kingdom_id': int(kingdom_id),

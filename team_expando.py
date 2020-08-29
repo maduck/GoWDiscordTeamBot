@@ -545,17 +545,18 @@ class TeamExpander:
             '{Banner}': '[{c:u}_BANNERNAME]',
             '{Class}': '[HEROCLASS_{c:l}_NAME]',
             '{Color}': f'[GEM_{color}]',
-            '{TroopType}': '`?`',
-            '{Troop}': '`?`',
+            '{TroopType}': '[TROOPTYPE_{value1:u}]',
+            '{Troop}': '[TROOPTYPE_{value1:u}]',
         }
         new_task['title'] = _(new_task['title'], lang)
         new_task['name'] = _(new_task["name"], lang)
         for before, after in replacements.items():
+            translated = _(after.format(**new_task), lang)
+            if '`?`' in translated:
+                translated = '`?`'
             if before in new_task['title']:
-                translated = _(after.format(**new_task), lang)
                 new_task['title'] = new_task['title'].replace(before, translated)
             if before in new_task['name']:
-                translated = _(after.format(**new_task), lang)
                 new_task['name'] = new_task['name'].replace(before, translated)
         if '{0}' in new_task['name']:
             new_task['name'] = new_task['name'].replace('{0}', str(new_task['x']))

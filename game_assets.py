@@ -14,3 +14,8 @@ class GameAssets:
     @staticmethod
     def path(filename):
         return os.path.join(CONFIG.get('game_assets_folder'), filename)
+
+    @staticmethod
+    def exists(filename):
+        path = os.path.join(CONFIG.get('game_assets_folder'), filename)
+        return os.path.exists(path)

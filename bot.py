@@ -244,8 +244,7 @@ class DiscordBot(BaseBot):
                 continue
             category_lines = []
             for task in tasks:
-                task_name = task["name"].replace('{Value1}', '`?`')
-                category_lines.append(f'**{task["title"]}**: {task_name}')
+                category_lines.append(f'**{task["title"]}**: {task["name"]}')
             if category_lines:
                 e.add_field(name=f'__**{category}**__', value='\n'.join(category_lines), inline=False)
                 has_content = True
