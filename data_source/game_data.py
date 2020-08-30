@@ -286,7 +286,8 @@ class GameData:
 
         return translated_task
 
-    def get_datetime(self, val):
+    @staticmethod
+    def get_datetime(val):
         date_format = '%m/%d/%Y %I:%M:%S %p %Z'
         return datetime.datetime.strptime(val, date_format)
 
