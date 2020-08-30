@@ -1,5 +1,6 @@
 import datetime
 import operator
+import re
 
 from game_assets import GameAssets
 
@@ -249,21 +250,26 @@ class GameData:
 
         tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
         for level in ('Bronze', 'Silver', 'Gold'):
-            self.campaign_tasks[level.lower()] = sorted([self.transform_campaign_task(task, event_kingdom_id, level)
-                                                         for task in tasks[level]], key=operator.itemgetter('order'))
+            task_list = [self.transform_campaign_task(task) for task in tasks[level]]
+            self.campaign_tasks[level.lower()] = sorted(task_list, key=operator.itemgetter('order'))
 
-    def transform_campaign_task(self, task, kingdom_id, level):
+    def transform_campaign_task(self, task):
         extra_data = {}
-        order = 0
+        m = re.match(r'Campaign_(?P<kingdom_id>\d+)_(?P<level>.+)_(?P<order>\d+)', task['Id'])
+        task_id = m.groupdict()
+        task_order = int(task_id['order'])
+        kingdom_id = task_id['kingdom_id']
+        level = task_id['level']
+
         for i, t in enumerate(self.campaign_data.get(f'Campaign{level}', [])):
             if t['Id'] == task['Id']:
                 extra_data = t
-                order = i
+                task_order = i
 
         translated_task = {
             'reward': task['Rewards'][0]['Amount'],
             'condition': task.get('Condition'),
-            'order': order,
+            'order': task_order,
             'task': task['Task'],
             'name': task['TaskName'],
             'title': task['TaskTitle'],
