@@ -236,17 +236,17 @@ class GameData:
                 'boost': boost,
             }
 
-    def get_current_event_kingdom(self):
+    def get_current_event_kingdom_id(self):
         today = datetime.date.today()
         world_event = [e for e in self.events
                        if e['end'] - e['start'] == datetime.timedelta(days=7)
                        and e['start'] <= today <= e['end']
                        and e['kingdom_id']][0]
         event_kingdom_id = world_event['kingdom_id']
-        return event_kingdom_id
+        return int(event_kingdom_id)
 
     def populate_campaign_tasks(self):
-        event_kingdom_id = self.get_current_event_kingdom()
+        event_kingdom_id = self.get_current_event_kingdom_id()
 
         tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
         for level in ('Bronze', 'Silver', 'Gold'):
@@ -258,7 +258,7 @@ class GameData:
         m = re.match(r'Campaign_(?P<kingdom_id>\d+)_(?P<level>.+)_(?P<order>\d+)', task['Id'])
         task_id = m.groupdict()
         task_order = int(task_id['order'])
-        kingdom_id = task_id['kingdom_id']
+        kingdom_id = int(task_id['kingdom_id'])
         level = task_id['level']
 
         for i, t in enumerate(self.campaign_data.get(f'Campaign{level}', [])):
@@ -280,7 +280,7 @@ class GameData:
             'value1': U(extra_data.get('Value1', '`?`')),
             'c': U(task.get('CValue')),
             'd': U(task.get('DValue')),
-            'kingdom_id': int(kingdom_id),
+            'kingdom_id': kingdom_id,
             'orig': task,
         }
 
