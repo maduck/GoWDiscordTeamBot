@@ -235,8 +235,8 @@ class DiscordBot(BaseBot):
         return None, None
 
     async def show_campaign_tasks(self, message, prefix, lang, tier):
-        task_categories = self.expander.get_campaign_tasks(lang)
-        e = discord.Embed(title='Campaign Tasks', color=self.WHITE)
+        heading, task_categories = self.expander.get_campaign_tasks(lang)
+        e = discord.Embed(title=heading, color=self.WHITE)
 
         has_content = False
         for category, tasks in task_categories.items():

@@ -528,10 +528,11 @@ class TeamExpander:
         return entry
 
     def get_campaign_tasks(self, lang):
-        return {
-            _('[MEDAL_LEVEL_0]'): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['bronze']],
-            _('[MEDAL_LEVEL_1]'): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['silver']],
-            _('[MEDAL_LEVEL_2]'): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['gold']],
+        heading = f'{_("[CAMPAIGN]", lang)}: {_("[TASKS]", lang)}'
+        return heading, {
+            _('[MEDAL_LEVEL_0]', lang): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['bronze']],
+            _('[MEDAL_LEVEL_1]', lang): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['silver']],
+            _('[MEDAL_LEVEL_2]', lang): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['gold']],
         }
 
     def translate_campaign_task(self, task, lang):
