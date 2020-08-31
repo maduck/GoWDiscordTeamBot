@@ -257,7 +257,7 @@ class GameData:
         extra_data = {}
         m = re.match(r'Campaign_(?P<kingdom_id>\d+)_(?P<level>.+)_(?P<order>\d+)', task['Id'])
         task_id = m.groupdict()
-        task_order = int(task_id['order'])
+        task_order = 1000 + int(task_id['order'])
         kingdom_id = int(task_id['kingdom_id'])
         level = task_id['level']
 
