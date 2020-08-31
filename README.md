@@ -10,6 +10,9 @@ Keep in mind I will not be providing the needed game files (World.json and trans
 ## contributions
 see [CONTRIBUTIONS](CONTRIBUTING.md)
 
+## copying
+see [LICENSE](LICENSE.md)
+
 ## install
 * install python 3.8
 * create a virtualenv "venv"
