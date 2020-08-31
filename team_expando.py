@@ -286,7 +286,7 @@ class TeamExpander:
         _class['type_short'] = _(f'[TROOPTYPE_{_class["type"].upper()}]', lang)
         _class['type'] = _(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
 
-    def search_talent_tree(self, search_term, lang):
+    def search_talent(self, search_term, lang):
         possible_matches = []
         for tree in self.talent_trees.values():
             translated_name = extract_search_tag(_(tree['name'], lang))

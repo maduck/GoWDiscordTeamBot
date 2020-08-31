@@ -82,7 +82,7 @@ class Views:
             e.timestamp = troop["release_date"]
         return self.render_embed(e, 'troop.jinja', troop=troop)
 
-    def render_talent_tree(self, tree, shortened):
+    def render_talent(self, tree, shortened):
         e = discord.Embed(color=self.WHITE)
         if shortened:
             e.title = tree["name"]

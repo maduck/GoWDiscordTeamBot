@@ -472,36 +472,30 @@ class DiscordBot(BaseBot):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
-    async def handle_pet_search(self, message, search_term, lang, prefix, shortened):
-        result = self.expander.search_pet(search_term, lang)
+    async def handle_search(self, message, search_term, lang, title, formatter, shortened):
+        search_function = getattr(self.expander, 'search_{}'.format(title.lower()))
+        result = search_function(search_term, lang)
         if not result:
-            e = discord.Embed(title='Pet search', color=self.BLACK)
+            e = discord.Embed(title=f'{title} search', color=self.BLACK)
             e.add_field(name=search_term, value='did not yield any result')
         elif len(result) == 1:
-            e = self.views.render_pet(result[0], shortened)
+            view = getattr(self.views, 'render_{}'.format(title.lower()))
+            e = view(result[0], shortened)
         else:
-            e = discord.Embed(title=f'Pet search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
-            pets_found = [f'{pet["name"]} `#{pet["id"]}`' for pet in result]
-            pet_chunks = chunks(pets_found, 30)
-            for i, chunk in enumerate(pet_chunks):
+            e = discord.Embed(title=f'{title} search for `{search_term}` found {len(result)} matches.',
+                              color=self.WHITE)
+            items_found = [formatter.format(item) for item in result]
+            item_chunks = chunks(items_found, 30)
+            for i, chunk in enumerate(item_chunks):
                 chunk_message = '\n'.join(chunk)
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
+    async def handle_pet_search(self, message, search_term, lang, prefix, shortened):
+        await self.handle_search(message, search_term, lang, 'Pet', '{0[name]} `#{0[id]}`', shortened)
+
     async def handle_weapon_search(self, message, search_term, lang, prefix, shortened):
-        result = self.expander.search_weapon(search_term, lang)
-        if not result:
-            e = self.generate_response('Weapon search', self.BLACK, search_term, 'did not yield any result')
-        elif len(result) == 1:
-            e = self.views.render_weapon(result[0], shortened)
-        else:
-            e = discord.Embed(title=f'Weapon search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
-            weapons_found = [f'{t["name"]} `#{t["id"]}`' for t in result]
-            weapon_chunks = chunks(weapons_found, 30)
-            for i, chunk in enumerate(weapon_chunks):
-                chunk_message = '\n'.join(chunk)
-                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
-        await self.answer(message, e)
+        await self.handle_search(message, search_term, lang, 'Weapon', '{0[name]} `#{0[id]}`', shortened)
 
     @staticmethod
     def generate_response(title, color, name, value):
@@ -510,39 +504,10 @@ class DiscordBot(BaseBot):
         return e
 
     async def handle_troop_search(self, message, prefix, search_term, lang, shortened):
-        result = self.expander.search_troop(search_term, lang)
-        if not result:
-            e = self.generate_response('Troop search', self.BLACK, search_term, 'did not yield any result')
-        elif len(result) == 1:
-            troop = result[0]
-            e = self.views.render_troop(troop, shortened)
-        else:
-            e = discord.Embed(title=f'Troop search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
-            troops_found = [f'{t["name"]} `#{t["id"]}`' for t in result]
-            troop_chunks = chunks(troops_found, 30)
-            for i, chunk in enumerate(troop_chunks):
-                chunk_message = '\n'.join(chunk)
-                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
-
-        await self.answer(message, e)
+        await self.handle_search(message, search_term, lang, 'Troop', '{0[name]} `#{0[id]}`', shortened)
 
     async def handle_talent_search(self, message, search_term, lang, prefix, shortened):
-        result = self.expander.search_talent_tree(search_term, lang)
-        if not result:
-            e = self.generate_response('Talent search', self.BLACK, search_term, 'did not yield any result')
-        elif len(result) == 1:
-            e = self.views.render_talent_tree(result[0], shortened)
-        else:
-            e = discord.Embed(title=f'Talent search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
-            talent_found = []
-            for t in result:
-                talents_matches = f'({", ".join(t["talent_matches"])})' if 'talent_matches' in t else ''
-                talent_found.append(f'{t["name"]} {talents_matches}')
-            troop_chunks = chunks(talent_found, 30)
-            for i, chunk in enumerate(troop_chunks):
-                chunk_message = '\n'.join(chunk)
-                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
-        await self.answer(message, e)
+        await self.handle_search(message, search_term, lang, 'Talent', '{0[name]}', shortened)
 
     async def handle_team_code(self, message, lang, team_code, shortened=''):
         team = self.expander.get_team_from_message(team_code, lang)
