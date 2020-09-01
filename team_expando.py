@@ -519,7 +519,7 @@ class TeamExpander:
             entry['extra_info'] = _(self.classes[entry['gacha']]['name'], lang)
         elif entry['type'] == '[DELVE_EVENT]':
             entry['extra_info'] = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
-        elif entry['type'] in ('[INVASION]', '[ADVENTURE_BOARD_SPECIAL_EVENT]') and entry['gacha']:
+        elif entry['type'] in ('[INVASION]', '[ADVENTURE_BOARD_SPECIAL_EVENT]', '[RARITY_5]') and entry['gacha']:
             troop = _(self.troops[entry['gacha']]['name'], lang)
             kingdom = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
             entry['extra_info'] = f'{troop} ({kingdom})'

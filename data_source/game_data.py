@@ -299,6 +299,15 @@ class GameData:
             if troop_id in self.troops:
                 self.troops[troop_id]['release_date'] = release_date
                 self.spoilers.append({'type': 'troop', 'date': release_date, 'id': troop_id})
+                if self.troops[troop_id]['rarity'] == 'Mythic' and 'Id' in self.troops[troop_id]['kingdom']:
+                    self.events.append(
+                        {'start': release_date.date(),
+                         'end': release_date.date() + datetime.timedelta(days=7),
+                         'type': '[RARITY_5]',
+                         'names': self.troops[troop_id]['name'],
+                         'gacha': troop_id,
+                         'kingdom_id': self.troops[troop_id]['kingdom']['Id']}
+                    )
         for release in self.user_data['pEconomyModel']['PetReleaseDates']:
             pet_id = release['PetId']
             release_date = self.get_datetime(release['Date'])
