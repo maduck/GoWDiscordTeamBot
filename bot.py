@@ -76,6 +76,11 @@ class DiscordBot(BaseBot):
             'pattern': re.compile(SEARCH_PATTERN.format('pet'), re.IGNORECASE | re.MULTILINE)
         },
         {
+            'function': 'show_class_summary',
+            'pattern': re.compile('^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.)class summary$',
+                                  re.IGNORECASE | re.MULTILINE)
+        },
+        {
             'function': 'handle_class_search',
             'pattern': re.compile(SEARCH_PATTERN.format('class'), re.IGNORECASE | re.MULTILINE)
         },
@@ -416,57 +421,6 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
         log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
 
-    async def handle_kingdom_search(self, message, search_term, lang, prefix, shortened):
-        await self.handle_search(message, search_term, lang, 'Kingdom', '{0[name]} `#{0[id]}`', shortened)
-
-    async def show_kingdom_summary(self, message, prefix, lang, shortened):
-        result = self.expander.search_kingdom('summary', lang)
-        result.sort(key=operator.itemgetter('name'))
-        name_width = max([len(k['name']) for k in result])
-        col_widths = [name_width, 6, 16]
-        message_lines = [
-            f'{"Name".ljust(col_widths[0])} {"Troops".ljust(col_widths[1])} Linked Faction',
-            ' '.join('-' * col for col in col_widths),
-        ]
-        message_lines.extend([f'{kingdom["name"].ljust(col_widths[0])} '
-                              f'{str(len(kingdom["troops"])).ljust(col_widths[1])} '
-                              f'{kingdom["linked_kingdom"] or "-"}'
-                              for kingdom in result])
-        e = await self.generate_embed_from_text(message_lines, 'Kingdoms', 'Summary')
-        await self.answer(message, e)
-
-    async def handle_class_search(self, message, search_term, lang, prefix, shortened):
-        result = self.expander.search_class(search_term, lang)
-        if not result:
-            e = discord.Embed(title='Class search', color=self.BLACK)
-            e.add_field(name=search_term, value='did not yield any result.')
-        elif len(result) == 1:
-            _class = result[0]
-            e = self.views.render_class(_class, shortened)
-        elif search_term == 'summary':
-            result.sort(key=operator.itemgetter('name'))
-            name_width = max([len(c['name']) for c in result])
-            type_width = max([len(c['type_short']) for c in result])
-            col_widths = [name_width, type_width, 16]
-            message_lines = [
-                f'{"Name".ljust(col_widths[0])} {"Type".ljust(col_widths[1])} Kingdom',
-                ' '.join('-' * col for col in col_widths),
-            ]
-            message_lines.extend([f'{_class["name"].ljust(col_widths[0])} '
-                                  f'{_class["type_short"].ljust(col_widths[1])} '
-                                  f'{_class["kingdom"]}'
-                                  for _class in result])
-
-            e = await self.generate_embed_from_text(message_lines, 'Classes', 'Summary')
-        else:
-            e = discord.Embed(title=f'Class search for `{search_term}` found {len(result)} matches.', color=self.WHITE)
-            classes_found = [f'{_class["name"]} `#{_class["id"]}`' for _class in result]
-            class_chunks = chunks(classes_found, 30)
-            for i, chunk in enumerate(class_chunks):
-                chunk_message = '\n'.join(chunk)
-                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
-        await self.answer(message, e)
-
     async def handle_search(self, message, search_term, lang, title, formatter, shortened):
         search_function = getattr(self.expander, 'search_{}'.format(title.lower()))
         result = search_function(search_term, lang)
@@ -486,23 +440,62 @@ class DiscordBot(BaseBot):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
+    async def handle_class_search(self, message, search_term, lang, prefix, shortened):
+        await self.handle_search(message, search_term, lang, 'Class', '{0[name]} `#{0[id]}`', shortened)
+
+    async def handle_kingdom_search(self, message, search_term, lang, prefix, shortened):
+        await self.handle_search(message, search_term, lang, 'Kingdom', '{0[name]} `#{0[id]}`', shortened)
+
     async def handle_pet_search(self, message, search_term, lang, prefix, shortened):
         await self.handle_search(message, search_term, lang, 'Pet', '{0[name]} `#{0[id]}`', shortened)
 
     async def handle_weapon_search(self, message, search_term, lang, prefix, shortened):
         await self.handle_search(message, search_term, lang, 'Weapon', '{0[name]} `#{0[id]}`', shortened)
 
-    @staticmethod
-    def generate_response(title, color, name, value):
-        e = discord.Embed(title=title, color=color)
-        e.add_field(name=name, value=value)
-        return e
-
     async def handle_troop_search(self, message, prefix, search_term, lang, shortened):
         await self.handle_search(message, search_term, lang, 'Troop', '{0[name]} `#{0[id]}`', shortened)
 
     async def handle_talent_search(self, message, search_term, lang, prefix, shortened):
         await self.handle_search(message, search_term, lang, 'Talent', '{0[name]}', shortened)
+
+    async def show_class_summary(self, message, lang, prefix, shortened):
+        result = self.expander.search_class('summary', lang)
+        result.sort(key=operator.itemgetter('name'))
+        name_width = max([len(c['name']) for c in result])
+        type_width = max([len(c['type_short']) for c in result])
+        col_widths = [name_width, type_width, 16]
+        message_lines = [
+            f'{"Name".ljust(col_widths[0])} {"Type".ljust(col_widths[1])} Kingdom',
+            ' '.join('-' * col for col in col_widths),
+        ]
+        message_lines.extend([f'{_class["name"].ljust(col_widths[0])} '
+                              f'{_class["type_short"].ljust(col_widths[1])} '
+                              f'{_class["kingdom"]}'
+                              for _class in result])
+        e = await self.generate_embed_from_text(message_lines, 'Classes', 'Summary')
+        await self.answer(message, e)
+
+    async def show_kingdom_summary(self, message, prefix, lang, shortened):
+        result = self.expander.search_kingdom('summary', lang)
+        result.sort(key=operator.itemgetter('name'))
+        name_width = max([len(k['name']) for k in result])
+        col_widths = [name_width, 6, 16]
+        message_lines = [
+            f'{"Name".ljust(col_widths[0])} {"Troops".ljust(col_widths[1])} Linked Faction',
+            ' '.join('-' * col for col in col_widths),
+        ]
+        message_lines.extend([f'{kingdom["name"].ljust(col_widths[0])} '
+                              f'{str(len(kingdom["troops"])).ljust(col_widths[1])} '
+                              f'{kingdom["linked_kingdom"] or "-"}'
+                              for kingdom in result])
+        e = await self.generate_embed_from_text(message_lines, 'Kingdoms', 'Summary')
+        await self.answer(message, e)
+
+    @staticmethod
+    def generate_response(title, color, name, value):
+        e = discord.Embed(title=title, color=color)
+        e.add_field(name=name, value=value)
+        return e
 
     async def handle_team_code(self, message, lang, team_code, shortened=''):
         team = self.expander.get_team_from_message(team_code, lang)
@@ -511,9 +504,7 @@ class DiscordBot(BaseBot):
             return
         author = message.author.display_name
         author = await pluralize_author(author)
-
         e = self.views.render_team(team, author, shortened)
-
         await self.answer(message, e)
 
     async def waffles(self, message, prefix):
