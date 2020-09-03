@@ -45,7 +45,7 @@ class Views:
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
         color = discord.Color.from_rgb(*rarity_color)
         e = discord.Embed(title='Weapon search found one exact match', color=color)
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Spells/Cards_{weapon["spell_id"]}_thumb.png'
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Spells/Cards_{weapon["spell_id"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
         if shortened:
             return self.render_embed(e, 'weapon_shortened.jinja', weapon=weapon)
@@ -57,7 +57,7 @@ class Views:
 
     def render_pet(self, pet, shortened):
         e = discord.Embed(title='Pet search found one exact match', color=self.WHITE)
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_thumb.png'
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
         if shortened:
             return self.render_embed(e, 'pet_shortened.jinja', pet=pet)
@@ -72,7 +72,7 @@ class Views:
         if 'Boss' in troop['raw_types']:
             rarity_color = RARITY_COLORS['Doomed']
         e = discord.Embed(title='Troop search found one exact match', color=discord.Color.from_rgb(*rarity_color))
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Troops/Cards_{troop["filename"]}_thumb.png'
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Troops/Cards_{troop["filename"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
         if shortened:
             return self.render_embed(e, 'troop_shortened.jinja', troop=troop)
@@ -95,7 +95,7 @@ class Views:
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(color=color)
         if team['banner']:
-            thumbnail_url = f'{CONFIG.get("graphics_url")}/Banners/Banners_{team["banner"]["filename"]}_thumb.png'
+            thumbnail_url = f'{CONFIG.get("graphics_url")}/Banners/Banners_{team["banner"]["filename"]}_full.png'
             e.set_thumbnail(url=thumbnail_url)
 
         if shortened:
@@ -109,7 +109,7 @@ class Views:
     def render_kingdom(self, kingdom, shortened):
         e = discord.Embed(title='Kingdom search found one exact match', color=self.WHITE)
         underworld = 'underworld' if kingdom['underworld'] else ''
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations{underworld}_{kingdom["filename"]}_thumb.png'
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations{underworld}_{kingdom["filename"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
 
         if shortened:
@@ -118,7 +118,7 @@ class Views:
 
     def render_class(self, _class, shortened):
         e = discord.Embed(title='Class search found one exact match', color=self.WHITE)
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Classes_{_class["code"]}_thumb.png'
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Classes_{_class["code"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
         if shortened:
             return self.render_embed(e, 'class_shortened.jinja', _class=_class)
