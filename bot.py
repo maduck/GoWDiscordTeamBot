@@ -34,7 +34,7 @@ def debug(message):
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.9'
+    VERSION = '0.10'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
