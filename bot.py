@@ -163,7 +163,7 @@ class DiscordBot(BaseBot):
         {
             'function': 'handle_team_code',
             'pattern': re.compile(
-                r'.*?' + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})].*',
+                r'^([^>].*)?' + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})].*',
                 MATCH_OPTIONS | re.DOTALL)
         },
         {
