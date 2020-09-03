@@ -276,7 +276,6 @@ class DiscordBot(BaseBot):
         headers = ['Date', 'Rarity', 'Name (ID)']
         if not _filter or _filter.lower() == 'troop':
             troop_spoilers = [s for s in spoilers if s['type'] == 'troop']
-
             extra_spacing = 2
             rarity_width = max([len(t['rarity']) for t in troop_spoilers]) + extra_spacing
             header_widths = [12, rarity_width, 5]
@@ -430,8 +429,9 @@ class DiscordBot(BaseBot):
         search_function = getattr(self.expander, 'search_{}'.format(title.lower()))
         result = search_function(search_term, lang)
         if not result:
-            e = discord.Embed(title=f'{title} search', color=self.BLACK)
-            e.add_field(name=search_term, value='did not yield any result')
+            e = discord.Embed(title=f'{title} search for `{search_term}` did not yield any result',
+                              description=':(',
+                              color=self.BLACK)
         elif len(result) == 1:
             view = getattr(self.views, 'render_{}'.format(title.lower()))
             e = view(result[0], shortened)
