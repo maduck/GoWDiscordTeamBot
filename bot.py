@@ -163,7 +163,7 @@ class DiscordBot(BaseBot):
         {
             'function': 'handle_team_code',
             'pattern': re.compile(
-                r'^([^>].*)?' + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})].*',
+                r'^([^>]*?)?' + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})].*',
                 MATCH_OPTIONS | re.DOTALL)
         },
         {
@@ -379,7 +379,7 @@ class DiscordBot(BaseBot):
         my_prefix = self.prefix.get(message.guild)
         function, params = await self.get_function_for_command(user_command, my_prefix)
         if function:
-            if 'lang' in params and params['lang'] is None:
+            if params.get('lang') is None:
                 params['lang'] = self.language.get(message.guild)
 
             debug(message)
