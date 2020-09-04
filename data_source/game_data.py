@@ -64,6 +64,8 @@ class GameData:
         self.soulforge_weapons = []
         self.campaign_tasks = {}
         self.campaign_data = {}
+        self.soulforge = {}
+        self.soulforge_raw_data = []
 
     @staticmethod
     def _convert_color_array(data_object):
@@ -74,6 +76,8 @@ class GameData:
         self.user_data = GameAssets.load('User.json')
         if GameAssets.exists('Campaign.json'):
             self.campaign_data = GameAssets.load('Campaign.json')
+        if GameAssets.exists('Soulforge.json'):
+            self.soulforge_raw_data = GameAssets.load('Soulforge.json')
 
     def populate_world_data(self):
         self.read_json_data()
@@ -89,6 +93,7 @@ class GameData:
         self.populate_release_dates()
         self.enrich_kingdoms()
         self.populate_campaign_tasks()
+        self.populate_soulforge()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -377,3 +382,30 @@ class GameData:
 
         for kingdom_id, pet_id in self.user_data['pEconomyModel']['FactionRenownRewardPetIds'].items():
             self.kingdoms[int(kingdom_id)]['pet'] = self.pets[pet_id]
+
+    def populate_soulforge(self):
+        tabs = [
+            '[SOULFORGE_TAB_LEVEL]',
+            '[SOULFORGE_TAB_JEWELS]',
+            '[SOULFORGE_TAB_TRAITSTONES]',
+            '[SOULFORGE_TAB_TROOPS]',
+            '[SOULFORGE_TAB_WEAPONS]',
+            '[SOULFORGE_TAB_OTHER]',
+        ]
+
+        for recipe in self.soulforge_raw_data['pRecipeArray']:
+            always_available_gachas = [6428, 6529, 1104, 1176, 1177, 1111, 1112, 1175, 1113]
+            if recipe['Tab'] in (3, 4):
+                recipe_id = recipe['Target']['Data']
+                if recipe_id < 1000 or recipe_id in always_available_gachas:
+                    continue
+                if not recipe['Name']:
+                    recipe['Name'] = self.troops.get(recipe_id)['name']
+                category = tabs[recipe['Tab']]
+                self.soulforge.setdefault(category, []).append({
+                    'name': recipe['Name'],
+                    'id': recipe_id,
+                    'costs': recipe['Source'],
+                    'start': recipe['StartDate'],
+                    'end': recipe['EndDate'],
+                })

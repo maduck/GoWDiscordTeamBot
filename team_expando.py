@@ -53,6 +53,7 @@ class TeamExpander:
         self.events = world.events
         self.colors = world.COLORS
         self.campaign_tasks = world.campaign_tasks
+        self.soulforge = world.soulforge
         self.rooms = {}
 
     @classmethod
@@ -600,6 +601,18 @@ class TeamExpander:
             kingdom = self.kingdoms[kingdom_id]
             entry['kingdom'] = _(kingdom['name'], lang)
         return entry
+
+    def get_soulforge(self, lang):
+        craftable_items = {}
+        for category, recipes in self.soulforge.items():
+            recipe_type = _(category, lang)
+            craftable_items[recipe_type] = [self.translate_recipe(r, lang) for r in recipes]
+        return craftable_items
+
+    def translate_recipe(self, recipe, lang):
+        new_recipe = recipe.copy()
+        new_recipe['name'] = _(recipe['name'], lang)
+        return new_recipe
 
     @staticmethod
     def translate_categories(categories, lang):

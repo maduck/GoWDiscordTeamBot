@@ -193,6 +193,10 @@ class DiscordBot(BaseBot):
         {
             'function': 'show_campaign_tasks',
             'pattern': re.compile(DEFAULT_PATTERN + 'campaign( (?P<tier>bronze|silver|gold))?$', MATCH_OPTIONS)
+        },
+        {
+            'function': 'show_soulforge',
+            'pattern': re.compile(DEFAULT_PATTERN + 'soulforge', MATCH_OPTIONS)
         }
     ]
 
@@ -298,6 +302,14 @@ class DiscordBot(BaseBot):
             if len(message_lines) > 1:
                 result = '\n'.join(self.views.trim_text_lines_to_length(message_lines, 900))
                 e.add_field(name=translated[spoil_type], value=f'```{result}```', inline=False)
+        await self.answer(message, e)
+
+    async def show_soulforge(self, message, lang, **kwargs):
+        craftable_items = self.expander.get_soulforge(lang)
+        e = discord.Embed(title='Soulforge', color=self.WHITE)
+        for category, recipes in craftable_items.items():
+            message_lines = '\n'.join([f'{r["name"]} `{r["id"]}`' for r in recipes])
+            e.add_field(name=category, value=message_lines, inline=False)
         await self.answer(message, e)
 
     async def show_uptime(self, message, lang, **kwargs):
