@@ -267,7 +267,7 @@ class GameData:
         level = task_id['level']
 
         for i, t in enumerate(self.campaign_data.get(f'Campaign{level}', [])):
-            if t['Id'] == task['Id']:
+            if t and t['Id'] == task['Id']:
                 extra_data = t
                 task_order = i
 
