@@ -14,6 +14,7 @@ import models
 from base_bot import BaseBot, log
 from configurations import CONFIG
 from discord_helpers import admin_required, guild_required
+from game_constants import CAMPAIGN_COLORS
 from help import get_help_text, get_tower_help_text
 from jobs.news_downloader import NewsDownloader
 from team_expando import TeamExpander
@@ -245,11 +246,6 @@ class DiscordBot(BaseBot):
     async def show_campaign_tasks(self, message, lang, tier, **kwargs):
         heading, task_categories = self.expander.get_campaign_tasks(lang)
         e = discord.Embed(title=heading, color=self.WHITE)
-        campaign_colors = {
-            'Bronze': discord.Color.from_rgb(164, 73, 32),
-            'Silver': discord.Color.from_rgb(159, 159, 159),
-            'Gold': discord.Color.from_rgb(238, 191, 15),
-        }
 
         has_content = False
         for category, tasks in task_categories.items():
@@ -260,7 +256,7 @@ class DiscordBot(BaseBot):
                 category_lines.append(f'**{task["title"]}**: {task["name"]}')
             if category_lines:
                 has_content = True
-                color = campaign_colors.get(category, self.WHITE)
+                color = CAMPAIGN_COLORS.get(category, self.WHITE)
                 e = discord.Embed(title=f'__**{category}**__', description='\n'.join(category_lines), color=color)
                 await self.answer(message, e)
         if not has_content:

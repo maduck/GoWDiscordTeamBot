@@ -1,3 +1,5 @@
+import discord
+
 TROOP_RARITIES = (
     'Common',
     'Uncommon',
@@ -25,4 +27,9 @@ RARITY_COLORS = {
     'Legendary': (19, 227, 246),
     'Mythic': (19, 227, 246),
     'Doomed': (186, 0, 0),
+}
+CAMPAIGN_COLORS = {
+    'Bronze': discord.Color.from_rgb(164, 73, 32),
+    'Silver': discord.Color.from_rgb(159, 159, 159),
+    'Gold': discord.Color.from_rgb(238, 191, 15),
 }
