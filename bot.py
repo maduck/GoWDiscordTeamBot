@@ -244,23 +244,16 @@ class DiscordBot(BaseBot):
         return None, None
 
     async def show_campaign_tasks(self, message, lang, tier, **kwargs):
-        heading, task_categories = self.expander.get_campaign_tasks(lang)
-        e = discord.Embed(title=heading, color=self.WHITE)
-
-        has_content = False
-        for category, tasks in task_categories.items():
-            if tier and category.lower() != tier.lower():
-                continue
-            category_lines = []
-            for task in tasks:
-                category_lines.append(f'**{task["title"]}**: {task["name"]}')
-            if category_lines:
-                has_content = True
-                color = CAMPAIGN_COLORS.get(category, self.WHITE)
-                e = discord.Embed(title=f'__**{category}**__', description='\n'.join(category_lines), color=color)
-                await self.answer(message, e)
-        if not has_content:
+        campaign_data = self.expander.get_campaign_tasks(lang, tier)
+        if not campaign_data['has_content']:
+            e = discord.Embed(title=campaign_data['heading'], color=self.WHITE)
             e.add_field(name='Nothing to display', value='There is no active campaign available.')
+            return await self.answer(message, e)
+
+        for category, tasks in campaign_data['campaigns'].items():
+            category_lines = [f'**{task["title"]}**: {task["name"]}' for task in tasks]
+            color = CAMPAIGN_COLORS.get(category, self.WHITE)
+            e = discord.Embed(title=f'__**{category}**__', description='\n'.join(category_lines), color=color)
             await self.answer(message, e)
 
     async def show_spoilers(self, message, lang, _filter, **kwargs):

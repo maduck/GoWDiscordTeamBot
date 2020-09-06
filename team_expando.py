@@ -528,13 +528,15 @@ class TeamExpander:
         entry['type'] = _(entry['type'], lang)
         return entry
 
-    def get_campaign_tasks(self, lang):
-        heading = f'{_("[CAMPAIGN]", lang)}: {_("[TASKS]", lang)}'
-        return heading, {
-            _('[MEDAL_LEVEL_0]', lang): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['bronze']],
-            _('[MEDAL_LEVEL_1]', lang): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['silver']],
-            _('[MEDAL_LEVEL_2]', lang): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks['gold']],
+    def get_campaign_tasks(self, lang, _filter=None):
+        result = {'heading': f'{_("[CAMPAIGN]", lang)}: {_("[TASKS]", lang)}'}
+        tiers = ['bronze', 'silver', 'gold']
+        result['campaigns'] = {
+            _(f'[MEDAL_LEVEL_{i}]', lang): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks[tier]]
+            for i, tier in enumerate(tiers) if _filter is None or tier.lower() == _filter.lower()
         }
+        result['has_content'] = any([len(c) > 0 for c in result['campaigns'].values()])
+        return result
 
     def translate_campaign_task(self, task, lang):
         new_task = task.copy()
