@@ -539,8 +539,7 @@ class DiscordBot(BaseBot):
             e = discord.Embed(title='Default Language', color=self.RED)
             e.add_field(name='Error',
                         value=f'`{new_language}` is not a valid language code.')
-            available_langs = ', '.join([f'`{lang_code}`' for lang_code in LANGUAGES])
-            e.add_field(name='Available languages', value=available_langs, inline=False)
+            self.add_available_languages(e)
             await self.answer(message, e)
             return
 
@@ -556,9 +555,13 @@ class DiscordBot(BaseBot):
         e.add_field(name=f'Default language for {message.guild}',
                     value=f'`{self.language.get(message.guild)}`', inline=False)
 
+        self.add_available_languages(e)
+        await self.answer(message, e)
+
+    @staticmethod
+    def add_available_languages(e):
         available_langs = ', '.join([f'`{lang_code}`' for lang_code in LANGUAGES])
         e.add_field(name='Available languages', value=available_langs, inline=False)
-        await self.answer(message, e)
 
 
 if __name__ == '__main__':
