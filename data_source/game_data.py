@@ -246,6 +246,7 @@ class GameData:
         world_event = [e for e in self.events
                        if e['end'] - e['start'] == datetime.timedelta(days=7)
                        and e['start'] <= today <= e['end']
+                       and e['start'].weekday() == 0
                        and e['kingdom_id']][0]
         event_kingdom_id = world_event['kingdom_id']
         return int(event_kingdom_id)
