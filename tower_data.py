@@ -168,7 +168,7 @@ class TowerOfDoomData:
             scroll_old_display = my_data["scrolls"][scroll_old_key][0]
             return True, f'Replaced floor {floor} room {room_display} to {scroll_new_display} (was {scroll_old_display})'
 
-    def format_floor(self, my_data, display, floor, floor_data):
+    def format_floor(self, my_data, floor, floor_data):
         rooms = [
             f'{my_data["rooms"][r][0]} = {my_data["scrolls"].get(floor_data.get(r, "unknown"))[0]}'
             for r in self.DEFAULT_TOWER_DATA['rooms'].keys()
@@ -208,7 +208,7 @@ class TowerOfDoomData:
         starting_floor = tower_data[0][0]
         field_header = channel.name
         for floor, floor_data in tower_data:
-            line = f'Floor {floor}: {self.format_floor(my_data, display, floor, floor_data)}'
+            line = f'Floor {floor}: {self.format_floor(my_data, floor, floor_data)}'
             if len(field_header) + len(line) + sum([len(fl) for fl in field_lines]) < 1024:
                 field_lines.append(line)
             else:
@@ -223,7 +223,7 @@ class TowerOfDoomData:
         e.add_field(name=field_header, value=tower_text, inline=False)
         return e
 
-    def set_option(self, guild, option, value, boolean=False):
+    def set_option(self, guild, option, value):
         value_map = {
             'short': value.lower() in ['true', '1', 't', 'y', 'yes', 'on'],
             'hide': [v.strip() for v in value.split(',') if v.lower().strip() != 'none'],
