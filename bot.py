@@ -20,17 +20,10 @@ from jobs.news_downloader import NewsDownloader
 from team_expando import TeamExpander
 from tower_data import TowerOfDoomData
 from translations import HumanizeTranslator, LANGUAGES, LANGUAGE_CODE_MAPPING
-from util import bool_to_emoticon, chunks, pluralize_author
+from util import bool_to_emoticon, chunks, debug, pluralize_author
 from views import Views
 
 TOKEN = os.getenv('DISCORD_TOKEN')
-
-
-def debug(message):
-    guild = '-'
-    if message.guild:
-        guild = message.guild.name
-    log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
 
 
 class DiscordBot(BaseBot):

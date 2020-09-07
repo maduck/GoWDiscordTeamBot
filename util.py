@@ -54,3 +54,10 @@ async def pluralize_author(author):
 def chunks(iterable, chunk_size):
     for i in range(0, len(iterable), chunk_size):
         yield iterable[i:i + chunk_size]
+
+
+def debug(message):
+    guild = '-'
+    if message.guild:
+        guild = message.guild.name
+    log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
