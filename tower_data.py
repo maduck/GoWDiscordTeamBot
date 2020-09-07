@@ -1,10 +1,11 @@
 import json
+import operator
 import os
 import threading
 
 import discord
 
-from util import bool_to_emoticon, merge, natural_keys
+from util import bool_to_emoticon, merge
 
 
 class TowerOfDoomData:
@@ -139,7 +140,7 @@ class TowerOfDoomData:
 
         channel = str(message.channel.id)
 
-        floor_number = int(floor)
+        floor = int(floor)
 
         try:
             room_key = self.get_key_from_alias(my_data, 'rooms', room)
@@ -148,7 +149,7 @@ class TowerOfDoomData:
             return False, f'Couldn\'t find room `{room}`'
 
         # Mythic room below floor 25? always a scroll.
-        if floor_number <= 25 and room_key == "VI":
+        if floor <= 25 and room_key == "VI":
             return False, f'The boss room on floor {floor_number} always contains a Forge Scroll.'
 
         try:
@@ -169,6 +170,7 @@ class TowerOfDoomData:
             return True, f'Replaced floor {floor} room {room_display} to {scroll_new_display} (was {scroll_old_display})'
 
     def format_floor(self, my_data, floor, floor_data):
+        floor = int(floor)
         rooms = [
             f'{my_data["rooms"][r][0]} = {my_data["scrolls"].get(floor_data.get(r, "unknown"))[0]}'
             for r in self.DEFAULT_TOWER_DATA['rooms'].keys()
@@ -178,7 +180,7 @@ class TowerOfDoomData:
                 rooms[i] = f'||{rooms[i]}||'
 
         # Hide the boss room (always a scroll)
-        if int(floor) <= 25:
+        if floor <= 25:
             del rooms[4]
 
         return ', '.join(rooms)
@@ -194,7 +196,7 @@ class TowerOfDoomData:
                         value=f'Couldn\'t any data for #{channel.name}.\nPlease use `!towerhelp` for more info.')
             return e
 
-        tower_data = sorted(tower_data, key=natural_keys)
+        tower_data = sorted(tower_data, key=operator.itemgetter(0))
 
         display = {}
         for key in my_data["rooms"].keys():
