@@ -429,7 +429,7 @@ class DiscordBot(BaseBot):
 
     @guild_required
     async def clear_tower_data(self, message, prefix, **kwargs):
-        self.tower_data.clear_data(prefix, message.guild, message)
+        self.tower_data.clear_data(message)
 
         e = self.generate_response('Tower of Doom', self.WHITE, 'Success',
                                    f'Cleared tower data for #{message.channel.name}')

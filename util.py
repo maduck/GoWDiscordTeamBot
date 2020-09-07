@@ -1,5 +1,7 @@
 import re
 
+from base_bot import log
+
 
 def atoi(text):
     return int(text) if text.isdigit() else text

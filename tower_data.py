@@ -110,15 +110,16 @@ class TowerOfDoomData:
                 del guild_data[entry]
             self.set(guild, guild_data)
 
-    def clear_data(self, prefix, guild, message):
-        if not str(guild.id) in self.__data:
+    def clear_data(self, message):
+        guild_id = str(message.guild.id)
+        if guild_id not in self.__data:
             return
-        guild_data = self.__data[str(guild.id)]
+        guild_data = self.__data[guild_id]
         channel = str(message.channel.id)
         if channel in guild_data:
             del guild_data[channel]
 
-        self.set(guild, guild_data)
+        self.set(message.guild, guild_data)
 
     def get_key_from_alias(self, data, category, value):
         keys = self.DEFAULT_TOWER_DATA[category].keys()
