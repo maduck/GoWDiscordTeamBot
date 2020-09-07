@@ -3,7 +3,7 @@ import importlib
 import logging
 
 import translations
-from data_source.game_data import GameData
+from data_source.game_data import GameData, U
 from game_constants import TROOP_RARITIES, WEAPON_RARITIES
 
 LOGLEVEL = logging.DEBUG
@@ -550,17 +550,16 @@ class TeamExpander:
             '{Class}': '[HEROCLASS_{c:l}_NAME]',
             '{Color}': f'[GEM_{color}]',
             '{TroopType}': '[TROOPTYPE_{value1:u}]',
-            '{Troop}': '{troop}',
+            '{Troop}': '{value1}',
             '{Value0}': task['value0'],
             '{Value1}': task['value1'],
         }
         new_task['title'] = _(new_task['title'], lang)
         new_task['name'] = _(new_task["name"], lang)
-        new_task['troop'] = None
 
         for before, after in replacements.items():
-            if '{Troop}' in new_task['title'] or '{Troop}' in new_task['name']:
-                new_task['troop'] = self.troops[int(new_task['value1'])]['name']
+            if new_task['value1'].isdigit() and ('{Troop}' in new_task['title'] or '{Troop}' in new_task['name']):
+                new_task['value1'] = U(self.troops[int(new_task['value1'])]['name'])
             translated = _(after.format(**new_task), lang)
             if '`?`' in translated:
                 translated = '`?`'
