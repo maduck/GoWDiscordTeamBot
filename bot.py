@@ -70,8 +70,7 @@ class DiscordBot(BaseBot):
 
         subscriptions = sum([s.get('pc', True) for s in self.subscriptions])
         log.info(f'{subscriptions} channels subscribed to news.')
-        guilds = [g.name for g in self.guilds if g]
-        log.info(f'Active in {len(guilds)} guilds.')
+        log.info(f'Active in {len(self.guilds)} guilds.')
 
         game = discord.Game("Gems of War")
         await self.change_presence(status=discord.Status.online, activity=game)
