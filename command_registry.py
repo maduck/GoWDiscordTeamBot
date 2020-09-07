@@ -115,7 +115,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'edit_tower_floor',
         'pattern': re.compile(
-            r'^' + LANG_PATTERN + r'(?P<prefix>.)tower (?P<floor>[^ ]+) (?P<scroll_ii>[^ ]+) (?P<scroll_iii>[^ ]+) '
+            r'^' + LANG_PATTERN + r'(?P<prefix>.)tower (?P<floor>\d+) (?P<scroll_ii>[^ ]+) (?P<scroll_iii>[^ ]+) '
                                   r'(?P<scroll_iv>[^ ]+) (?P<scroll_v>[^ ]+) ?(?P<scroll_vi>[^ ]+)?$',
             MATCH_OPTIONS)
     },

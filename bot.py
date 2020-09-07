@@ -390,11 +390,10 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     @guild_required
-    async def edit_tower_single(self, message, prefix, floor, room, scroll, *kwargs):
+    async def edit_tower_single(self, message, floor, room, scroll, **kwargs):
         my_data = self.tower_data.get(message.guild)
         short = my_data["short"]
-        success, response = self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-                                                       message=message, floor=floor, room=room, scroll=scroll)
+        success, response = self.tower_data.edit_floor(message=message, floor=floor, room=room, scroll=scroll)
         if short:
             await self.react(message, bool_to_emoticon(success))
         else:
@@ -402,45 +401,31 @@ class DiscordBot(BaseBot):
             await self.answer(message, e)
 
     @guild_required
-    async def edit_tower_floor(self, message, prefix, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v,
-                               scroll_vi=None, **kwargs):
-
-        if not floor.isdigit():
-            return
+    async def edit_tower_floor(self, message, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi=None,
+                               **kwargs):
 
         my_data = self.tower_data.get(message.guild)
-        short = my_data["short"]
+        short = my_data['short']
 
-        rooms = ('ii', 'iii', 'iv', 'v')
+        rooms = ('ii', 'iii', 'iv', 'v', 'vi')
         scrolls = (scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi)
 
         rooms = [
-            self.tower_data.edit_floor(prefix=prefix, guild=message.guild,
-                                       message=message, floor=floor, room=room, scroll=scrolls[room_id])
-            for room_id, room in enumerate(rooms)
+            self.tower_data.edit_floor(message=message, floor=floor, room=room, scroll=scrolls[room_id])
+            for room_id, room in enumerate(rooms[:-1])
         ]
-        # Mythic Room
-        if scroll_vi is not None:
-            log.info(scroll_vi)
-            room_e = self.tower_data.edit_floor(prefix=prefix, guild=message.guild, message=message, floor=floor,
-                                                room="VI", scroll=scroll_vi)
-        else:
-            room_e = (True, '')
-
         success = all([r[0] for r in rooms])
 
         if short:
-            await self.react(message, bool_to_emoticon(success))
-        else:
-            e = discord.Embed(title='Tower of Doom', color=self.WHITE)
-            edit_text = '\n'.join([
-                f"{'Success' if room[0] else 'Failure'}: {room[1]}"
-                for room in rooms])
-            if scroll_vi:
-                edit_text += f"{'Success' if room_e[0] else 'Failure'}: {room_e[1]}"
+            return await self.react(message, bool_to_emoticon(success))
 
-            e.add_field(name='Edit Tower (Floor)', value=edit_text)
-            await self.answer(message, e)
+        e = discord.Embed(title='Tower of Doom', color=self.WHITE)
+        edit_text = '\n'.join([
+            f"{'Success' if room[0] else 'Failure'}: {room[1]}"
+            for room in rooms])
+
+        e.add_field(name='Edit Tower (Floor)', value=edit_text)
+        await self.answer(message, e)
 
     @guild_required
     @admin_required

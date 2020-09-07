@@ -130,11 +130,11 @@ class TowerOfDoomData:
 
         return result[0]
 
-    def edit_floor(self, prefix, guild, message, floor, room, scroll):
+    def edit_floor(self, message, floor, room, scroll):
         # Returns tuple (Success, Message)
 
         # Includes default and server-custom data.
-        my_data = self.get(guild)
+        my_data = self.get(message.guild)
 
         channel = str(message.channel.id)
 
@@ -157,7 +157,7 @@ class TowerOfDoomData:
             #
             # ACTUALLY SET THE DATA HERE.
             #
-            scroll_old_key, scroll_new_key = self.set_scroll(guild, channel, floor, room_key, scroll_key)
+            scroll_old_key, scroll_new_key = self.set_scroll(message.guild, channel, floor, room_key, scroll_key)
         except KeyError as e:
             return False, f'Couldn\'t find scroll {scroll}'
 
