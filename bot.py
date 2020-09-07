@@ -536,7 +536,7 @@ class DiscordBot(BaseBot):
     async def change_language(self, message, new_language, **kwargs):
         my_language = self.language.get(message.guild)
         if new_language not in LANGUAGES:
-            e = discord.Embed(title='Default Language', color=self.RED)
+            e = discord.Embed(title='Default Language', color=self.BLACK)
             e.add_field(name='Error',
                         value=f'`{new_language}` is not a valid language code.')
             self.add_available_languages(e)
