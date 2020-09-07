@@ -19,7 +19,7 @@ see [LICENSE](LICENSE.md)
 * install all packages from requirements.txt
 
 ## configure
-* run update_lang_files.py
+* provide fitting World.json and language files to the path specified in settings as `game_assets_folder`.
 
 ## run
 * export the ENV DISCORD_TOKEN (register the app on discord to get a token)
