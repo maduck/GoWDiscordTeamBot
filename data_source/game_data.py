@@ -7,7 +7,9 @@ from game_assets import GameAssets
 
 class U(str):
     def __format__(self, fmt):
-        if fmt[0] == 'u':
+        if not fmt:
+            s = str(self)
+        elif fmt[0] == 'u':
             s = self.upper()
             fmt = fmt[1:]
         elif fmt[0] == 'l':
