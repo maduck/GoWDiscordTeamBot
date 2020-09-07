@@ -1,5 +1,3 @@
-import re
-
 from base_bot import log
 
 
@@ -9,17 +7,6 @@ def atoi(text):
 
 def bool_to_emoticon(value):
     return value and "✅" or "❌"
-
-
-def natural_keys(text):
-    """
-    alist.sort(key=natural_keys) sorts in human order
-    http://nedbatchelder.com/blog/200712/human_sorting.html
-    (See Toothy's implementation in the comments)
-    """
-    if type(text) in [tuple, list]:
-        return [atoi(c) for c in re.split(r'(\d+)', text[0])]
-    return [atoi(c) for c in re.split(r'(\d+)', text)]
 
 
 # https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries
