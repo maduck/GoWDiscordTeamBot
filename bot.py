@@ -515,9 +515,8 @@ class DiscordBot(BaseBot):
                 relevant_news = subscription.get(article['platform'])
                 if not relevant_news:
                     continue
-                log.debug(f'Sending out [{article["platform"]}] {article["title"]} to'
-                          f' {subscription["guild_name"]}/{subscription["channel_name"]}')
                 channel = self.get_channel(subscription['channel_id'])
+                log.debug(f'Sending [{article["platform"]}] {article["title"]} to {channel.guild.name}/{channel.name}.')
                 if not await self.is_writable(channel):
                     message = 'is not writable' if channel else 'does not exist'
                     log.debug(f'Channel {message}.')
