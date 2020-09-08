@@ -190,7 +190,7 @@ class TowerOfDoomData:
 
         tower_data = my_data.get(str(channel.id), {}).items()
 
-        if len(tower_data) == 0:
+        if not tower_data:
             e = discord.Embed(title='Tower of Doom', color=color)
             e.add_field(name=f'Failure',
                         value=f'Couldn\'t any data for #{channel.name}.\nPlease use `!towerhelp` for more info.')
