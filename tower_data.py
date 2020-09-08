@@ -247,32 +247,20 @@ class TowerOfDoomData:
         my_data = self.get(guild)
 
         e = discord.Embed(title='Tower of Doom Config', color=color)
-
         help_text = '\n'.join([
             "To configure the aliases, provide a category and a list of values separated by commas.",
             f"`{prefix}towerconfig rooms rare r,rare,ii`"
         ])
-
         e.add_field(name='Help', value=help_text, inline=False)
-
-        rooms_text = '\n'.join([
-            f'II: {", ".join(my_data["rooms"]["ii"])}',
-            f'III: {", ".join(my_data["rooms"]["iii"])}',
-            f'IV: {", ".join(my_data["rooms"]["iv"])}',
-            f'V: {", ".join(my_data["rooms"]["v"])}',
-            f'VI: {", ".join(my_data["rooms"]["vi"])}',
-        ])
-
+        rooms_text = '\n'.join([f'{r.upper()}: {", ".join(my_data["rooms"][r])}'
+                                for r in ('ii', 'iii', 'iv', 'v', 'vi')])
         e.add_field(name='Rooms', value=rooms_text, inline=True)
 
-        # TODO: Revise get() to make this cleaner.
-        # f'Life: {", ".join(my_data["scrolls"]["life"])}',
         scrolls_text = '\n'.join(
             [
                 f'{key.title()}: {", ".join(my_data["scrolls"][key.lower()])}'
                 for key in self.DEFAULT_TOWER_DATA['scrolls'].keys()
             ])
-
         e.add_field(name='Scrolls', value=scrolls_text, inline=True)
 
         options_text = '\n'.join([
@@ -281,7 +269,5 @@ class TowerOfDoomData:
             f'**Hide Values**: {"None" if my_data["hide"] == [] else ",".join(my_data["hide"])}',
             'Hide unimportant scrolls with spoilers.'
         ])
-
         e.add_field(name='Options', value=options_text, inline=False)
-
         return e
