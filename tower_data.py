@@ -54,6 +54,15 @@ class TowerOfDoomData:
         with lock:
             with open(self.TOWER_CONFIG_FILE) as f:
                 self.__data = json.load(f)
+        self.make_floors_numeric()
+
+    def make_floors_numeric(self):
+        for guild in self.__data.keys():
+            for channel in self.__data[guild].keys():
+                # FIXME split up config and tower data, so those checks can be removed
+                if isinstance(self.__data[guild][channel], dict):
+                    self.__data[guild][channel] = {int(k): v for k, v in self.__data[guild][channel].items()
+                                                   if k.isdigit()}
 
     def save_data(self):
         lock = threading.Lock()
@@ -135,13 +144,9 @@ class TowerOfDoomData:
     def edit_floor(self, message, floor, room, scroll):
         # Returns tuple (Success, Message)
 
-        # Includes default and server-custom data.
         my_data = self.get(message.guild)
-
         channel = str(message.channel.id)
-
         floor = int(floor)
-
         try:
             room_key = self.get_key_from_alias(my_data, 'rooms', room)
             room_display = my_data['rooms'][room_key][0]
@@ -150,15 +155,11 @@ class TowerOfDoomData:
 
         # Mythic room below floor 25? always a scroll.
         if floor <= 25 and room_key == "VI":
-            return False, f'The boss room on floor {floor_number} always contains a Forge Scroll.'
+            return False, f'The boss room on floor {floor} always contains a Forge Scroll.'
 
         try:
             scroll_key = self.get_key_from_alias(my_data, 'scrolls', scroll)
-            # Store the floor data.
             scroll_new_display = my_data["scrolls"][scroll_key][0]
-            #
-            # ACTUALLY SET THE DATA HERE.
-            #
             scroll_old_key, scroll_new_key = self.set_scroll(message.guild, channel, floor, room_key, scroll_key)
         except KeyError as e:
             return False, f'Couldn\'t find scroll {scroll}'
