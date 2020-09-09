@@ -3,7 +3,7 @@ import importlib
 import logging
 
 import translations
-from data_source.game_data import GameData, U
+from data_source.game_data import GameData
 from game_constants import TROOP_RARITIES, WEAPON_RARITIES
 
 LOGLEVEL = logging.DEBUG
@@ -542,6 +542,8 @@ class TeamExpander:
         new_task = task.copy()
         kingdom = self.kingdoms[task['kingdom_id']]
         color = kingdom['primary_color'].upper()
+        if new_task.get('y'):
+            new_task['y'] = _(f'[{new_task["y"].upper()}]', lang)
 
         replacements = {
             '{WeaponType}': '[WEAPONTYPE_{c:u}]',
@@ -550,31 +552,25 @@ class TeamExpander:
             '{Class}': '[HEROCLASS_{c:l}_NAME]',
             '{Color}': f'[GEM_{color}]',
             '{TroopType}': '[TROOPTYPE_{value1:u}]',
-            '{Troop}': '{value1}',
+            '{Troop}': '{{[{value1}][name]}}',
             '{Value0}': task['value0'],
             '{Value1}': task['value1'],
+            '{0}': '{x}',
+            '{2}': '{x} {y}',
         }
         new_task['title'] = _(new_task['title'], lang)
         new_task['name'] = _(new_task["name"], lang)
 
-        for before, after in replacements.items():
-            if new_task['value1'].isdigit() and ('{Troop}' in new_task['title'] or '{Troop}' in new_task['name']):
-                new_task['value1'] = U(self.troops[int(new_task['value1'])]['name'])
-            translated = _(after.format(**new_task), lang)
-            if '`?`' in translated:
-                translated = '`?`'
-            if before in new_task['title']:
-                new_task['title'] = new_task['title'].replace(before, translated)
-            if before in new_task['name']:
-                new_task['name'] = new_task['name'].replace(before, translated)
-        if '{0}' in new_task['name']:
-            new_task['name'] = new_task['name'].replace('{0}', str(new_task['x']))
-        elif '{2}' in new_task['name']:
-            unit = _(f'[{new_task["y"].upper()}]', lang)
-            replacement = f'{new_task["x"]} {unit}'
-            new_task['name'] = new_task['name'].replace('{2}', replacement)
-        else:
+        if '{0}' not in new_task['name'] and '{2}' not in new_task['name']:
             new_task['name'] = f'{task["x"]}x ' + new_task['name']
+
+        for before, after in replacements.items():
+            if before in new_task['title'] or before in new_task['name']:
+                translated = _(after.format(**new_task).format(self.troops), lang)
+                if '`?`' in translated:
+                    translated = '`?`'
+                new_task['title'] = new_task['title'].replace(before, translated)
+                new_task['name'] = new_task['name'].replace(before, translated)
 
         return new_task
 

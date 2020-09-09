@@ -109,7 +109,7 @@ class TowerOfDoomData:
         return merge(guild_data, self.DEFAULT_TOWER_DATA)
 
     def reset_config(self, guild):
-        if not str(guild.id) in self.__data:
+        if str(guild.id) not in self.__data:
             return
 
         config_entries = ('rooms', 'scrolls', 'short', 'hide')
