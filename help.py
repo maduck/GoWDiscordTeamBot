@@ -175,9 +175,9 @@ tower_help_texts = {
         'Clearing Data': 'To clear the tower data, simply use the `{0}towerclear` command with no arguments.',
         'Configuration': 'To configure the tower utility, use `{0}towerconfig`.\n'
                          '`{0}towerconfig short true` for short responses to edits.\n'
-                         '`{0}towerconfig rooms III iii,r,rare,green` to set the room aliases. '
+                         '`{0}towerconfig rooms III iii,rare,green` to set the room aliases. '
                          'Comma separated values.\n'
-                         '`{0}towerconfig scrolls armor :shield:,ar,Armor` to set scroll aliases. '
+                         '`{0}towerconfig scrolls armor :shield:,Armor` to set scroll aliases. '
                          'First value will be used for display.\n',
 
     }

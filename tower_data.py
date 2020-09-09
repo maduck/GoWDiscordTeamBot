@@ -262,11 +262,12 @@ class TowerOfDoomData:
                 for key in self.DEFAULT_TOWER_DATA['scrolls'].keys()
             ])
         e.add_field(name='Scrolls', value=scrolls_text, inline=True)
+        hidden_values = ', '.join(v.title() for v in my_data['hide']) if my_data['hide'] else 'None'
 
         options_text = '\n'.join([
             f'**Short Format**: {bool_to_emoticon(my_data["short"])}',
             'Only respond to edits with a :thumbsup: instead of a full message.',
-            f'**Hide Values**: {"None" if my_data["hide"] == [] else ",".join(my_data["hide"])}',
+            f'**Hide Values**: {hidden_values}',
             'Hide unimportant scrolls with spoilers.'
         ])
         e.add_field(name='Options', value=options_text, inline=False)
