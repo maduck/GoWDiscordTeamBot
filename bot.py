@@ -73,10 +73,12 @@ class DiscordBot(BaseBot):
     async def get_function_for_command(self, user_command, user_prefix):
         for command in COMMAND_REGISTRY:
             match = command['pattern'].search(user_command)
-            if match:
-                groups = match.groupdict()
-                if groups.get('prefix', user_prefix) == user_prefix:
-                    return getattr(self, command['function']), groups
+            if not match:
+                continue
+            groups = match.groupdict()
+
+            if groups.get('prefix', user_prefix) == user_prefix:
+                return getattr(self, command['function']), groups
         return None, None
 
     async def show_campaign_tasks(self, message, lang, tier, **kwargs):
@@ -215,12 +217,12 @@ class DiscordBot(BaseBot):
         user_command = message.content.lower().strip()
         my_prefix = self.prefix.get(message.guild)
         function, params = await self.get_function_for_command(user_command, my_prefix)
-        if function:
-            if params.get('lang') is None:
-                params['lang'] = self.language.get(message.guild)
+        if not function:
+            return
 
-            debug(message)
-            await function(message=message, **params)
+        params['lang'] = params.get('lang', self.language.get(message.guild))
+        debug(message)
+        await function(message=message, **params)
 
     async def show_invite_link(self, message, **kwargs):
         e = self.generate_response('Bot invite link', self.WHITE, 'Feel free to share!', self.invite_url)
