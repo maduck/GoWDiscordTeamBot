@@ -13,23 +13,23 @@ class TowerOfDoomData:
 
     DEFAULT_TOWER_DATA = {
         'rooms': {
-            "ii": ["II", "r", "Rare"],
-            "iii": ["III", "u", "ur", "ultrarare", "Ultra-Rare"],
-            "iv": ["IV", "e", "Epic"],
-            "v": ["V", "l", "Legendary"],
-            "vi": ["VI", "m", "Mythic"]
+            "ii": ["II", "Rare"],
+            "iii": ["III", "Ultra-Rare"],
+            "iv": ["IV", "Epic"],
+            "v": ["V", "Legendary"],
+            "vi": ["VI", "Mythic"]
         },
         'scrolls': {
-            "armor": ["🛡️", "ar", "Armor"],
-            "attack": ["⚔️", "at", "Attack"],
-            "life": ["❤️", "li", "Life"],
-            "magic": ["🔮", "ma", "Magic"],
-            "haste": ["💨", "ha", "Haste"],
-            "luck": ["🍀", "lu", "Luck"],
-            "power": ["⚡", "po", "Power"],
-            "unlock": ["🆙", "un", "Unlock"],
-            "heroism": ["🦸", "he", "Heroism"],
-            "fireball": ["🔥", "fi", "Fireball"],
+            "armor": ["🛡️", "Armor"],
+            "attack": ["⚔️", "Attack"],
+            "life": ["❤️", "Life"],
+            "magic": ["🔮", "Magic"],
+            "haste": ["💨", "Haste"],
+            "luck": ["🍀", "Luck"],
+            "power": ["⚡", "Power"],
+            "unlock": ["🆙", "Unlock"],
+            "heroism": ["🦸", "Heroism"],
+            "fireball": ["🔥", "Fireball"],
             "unknown": ["❓", "?", "unknown"]
         },
         # Options.
@@ -131,44 +131,43 @@ class TowerOfDoomData:
 
         self.set(message.guild, guild_data)
 
-    def get_key_from_alias(self, data, category, value):
+    def match_input_with_aliases(self, data, category, input_value):
         keys = self.DEFAULT_TOWER_DATA[category].keys()
 
-        # Get the key from the alias.
-        result = list(filter(lambda key: value.lower() in [i.lower() for i in data[category].get(key, [])], keys))
-        if not result:
-            return
+        def matching_key(key):
+            aliases = data[category].get(key, [])
+            return any(a.lower().startswith(input_value.lower()) for a in aliases)
 
-        return result[0]
+        return next(filter(matching_key, keys))
 
     def edit_floor(self, message, floor, room, scroll):
-        # Returns tuple (Success, Message)
+        """
+        :rtype: tuple[bool, str]
+        """
 
         my_data = self.get(message.guild)
         channel = str(message.channel.id)
         floor = int(floor)
         try:
-            room_key = self.get_key_from_alias(my_data, 'rooms', room)
+            room_key = self.match_input_with_aliases(my_data, 'rooms', room)
             room_display = my_data['rooms'][room_key][0]
-        except KeyError:
+        except StopIteration:
             return False, f'Couldn\'t find room `{room}`'
 
-        # Mythic room below floor 25? always a scroll.
-        if floor <= 25 and room_key == "VI":
+        if floor <= 25 and room_key.lower() == "vi":
             return False, f'The boss room on floor {floor} always contains a Forge Scroll.'
 
         try:
-            scroll_key = self.get_key_from_alias(my_data, 'scrolls', scroll)
+            scroll_key = self.match_input_with_aliases(my_data, 'scrolls', scroll)
             scroll_new_display = my_data["scrolls"][scroll_key][0]
             scroll_old_key, scroll_new_key = self.set_scroll(message.guild, channel, floor, room_key, scroll_key)
-        except KeyError as e:
-            return False, f'Couldn\'t find scroll {scroll}'
+        except StopIteration:
+            return False, f'Couldn\'t find scroll `{scroll}`.'
 
         if scroll_old_key == 'unknown':
             return True, f'Set floor {floor} room {room_display} to {scroll_new_display}'
-        else:
-            scroll_old_display = my_data["scrolls"][scroll_old_key][0]
-            return True, f'Replaced floor {floor} room {room_display} to {scroll_new_display} (was {scroll_old_display})'
+        scroll_old_display = my_data["scrolls"][scroll_old_key][0]
+        return True, f'Replaced floor {floor} room {room_display} to {scroll_new_display} (was {scroll_old_display})'
 
     def format_floor(self, my_data, floor, floor_data):
         floor = int(floor)
