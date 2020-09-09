@@ -253,7 +253,7 @@ class TowerOfDoomData:
         ])
         e.add_field(name='Help', value=help_text, inline=False)
         rooms_text = '\n'.join([f'{r.upper()}: {", ".join(my_data["rooms"][r])}'
-                                for r in ('ii', 'iii', 'iv', 'v', 'vi')])
+                                for r in self.DEFAULT_TOWER_DATA['rooms']])
         e.add_field(name='Rooms', value=rooms_text, inline=True)
 
         scrolls_text = '\n'.join(
