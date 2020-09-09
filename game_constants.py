@@ -1,5 +1,7 @@
 import discord
 
+COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown')
+
 TROOP_RARITIES = (
     'Common',
     'Uncommon',

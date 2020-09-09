@@ -4,7 +4,7 @@ import logging
 
 import translations
 from data_source.game_data import GameData
-from game_constants import TROOP_RARITIES, WEAPON_RARITIES
+from game_constants import COLORS, TROOP_RARITIES, WEAPON_RARITIES
 
 LOGLEVEL = logging.DEBUG
 
@@ -51,7 +51,6 @@ class TeamExpander:
         self.talent_trees = world.talent_trees
         self.spoilers = world.spoilers
         self.events = world.events
-        self.colors = world.COLORS
         self.campaign_tasks = world.campaign_tasks
         self.soulforge = world.soulforge
         self.rooms = {}
@@ -230,7 +229,7 @@ class TeamExpander:
             kingdom['map'] = _('[MAPNAME_UNDERWORLD]', lang)
             kingdom['linked_map'] = _('[MAPNAME_MAIN]', lang)
         if 'primary_color' in kingdom:
-            deed_num = self.colors.index(kingdom['primary_color'])
+            deed_num = COLORS.index(kingdom['primary_color'])
             kingdom['deed'] = _(f'[DEED{deed_num:02d}]', lang)
         kingdom['color_title'] = _('[GEM_MASTERY]', lang)
         kingdom['stat_title'] = _('[STAT_BONUS]', lang)
@@ -286,6 +285,8 @@ class TeamExpander:
         _class['trees'] = [_(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
         _class['type_short'] = _(f'[TROOPTYPE_{_class["type"].upper()}]', lang)
         _class['type'] = _(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
+        _class['weapon_bonus'] = _('[MAGIC_BONUS]', lang) + " " \
+                                 + _(f'[MAGIC_BONUS_{COLORS.index(_class["weapon_color"])}]', lang)
 
     def search_talent(self, search_term, lang):
         possible_matches = []

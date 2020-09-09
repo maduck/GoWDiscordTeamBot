@@ -3,6 +3,7 @@ import operator
 import re
 
 from game_assets import GameAssets
+from game_constants import COLORS
 
 
 class U(str):
@@ -21,7 +22,6 @@ class U(str):
 
 
 class GameData:
-    COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown')
 
     def __init__(self):
         self.EVENT_TYPES = {
@@ -109,6 +109,8 @@ class GameData:
                 'weapon_id': _class['ClassWeaponId'],
                 'kingdom_id': _class['KingdomId'],
                 'type': _class['Augment'][0],
+                'magic_color': _class['BonusColor'],
+                'weapon_color': _class['BonusWeapon'],
             }
             self.weapons[_class['ClassWeaponId']]['class'] = _class['Name']
             for tree in _class['TalentTrees']:
@@ -170,7 +172,7 @@ class GameData:
 
     def populate_kingdoms(self):
         for kingdom in self.data['Kingdoms']:
-            colors = [f'[GEM_{c.upper()}]' for c in self.COLORS]
+            colors = [f'[GEM_{c.upper()}]' for c in COLORS]
             colors = zip(colors, kingdom['BannerColors'])
             colors = sorted(colors, key=operator.itemgetter(1), reverse=True)
             self.banners[kingdom['Id']] = {
@@ -380,7 +382,7 @@ class GameData:
 
     def enrich_kingdoms(self):
         for kingdom_id, kingdom_data in self.user_data['pEconomyModel']['KingdomLevelData'].items():
-            self.kingdoms[int(kingdom_id)]['primary_color'] = self.COLORS[kingdom_data['Color']]
+            self.kingdoms[int(kingdom_id)]['primary_color'] = COLORS[kingdom_data['Color']]
             self.kingdoms[int(kingdom_id)]['primary_stat'] = kingdom_data['Stat']
 
         for kingdom_id, pet_id in self.user_data['pEconomyModel']['FactionRenownRewardPetIds'].items():

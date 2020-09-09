@@ -1,7 +1,8 @@
-<T>**{{ _class.name }} `#{{ _class.id }}`**</T>
+<T>** {{ _class.magic_color|emoji }} {{ _class.name }} `#{{ _class.id }}`**</T>
 **{{ _class.kingdom_title }}**: {{ _class.kingdom }}
 **{{ _class.weapon_title }}**: {{ _class.weapon }}
 {{ _class.type }}
+{{ _class.weapon_bonus }}
 
 <T>**{{ _class.traits_title }}**</T>
 {%- for trait in _class.traits %}
