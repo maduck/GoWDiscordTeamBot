@@ -67,7 +67,7 @@ class GameData:
         self.campaign_tasks = {}
         self.campaign_data = {}
         self.soulforge = {}
-        self.soulforge_raw_data = []
+        self.soulforge_raw_data = {}
 
     @staticmethod
     def _convert_color_array(data_object):
@@ -398,7 +398,7 @@ class GameData:
             '[SOULFORGE_TAB_OTHER]',
         ]
 
-        for recipe in self.soulforge_raw_data['pRecipeArray']:
+        for recipe in self.soulforge_raw_data.get('pRecipeArray', []):
             always_available_gachas = [6428, 6529, 1104, 1176, 1177, 1111, 1112, 1175, 1113]
             if recipe['Tab'] in (3, 4):
                 recipe_id = recipe['Target']['Data']
