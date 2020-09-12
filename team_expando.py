@@ -592,6 +592,7 @@ class TeamExpander:
         entry['name'] = _(entry['name'], lang)
         entry['type'] = spoiler['type']
         entry['date'] = spoiler['date'].date()
+        entry['event'] = _('[GLOG_EVENT]', lang) + ': ' if entry.get('event') else ''
         if 'rarity' in entry:
             entry['rarity_title'] = _('[RARITY]', lang)
             if entry['rarity'] in TROOP_RARITIES:

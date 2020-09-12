@@ -110,6 +110,7 @@ class DiscordBot(BaseBot):
             for troop in troop_spoilers:
                 message_lines.append(f'{troop["date"]}  '
                                      f'{troop["rarity"].ljust(rarity_width)}'
+                                     f'{troop["event"]}'
                                      f'{troop["name"]} '
                                      f'({troop["id"]})')
 
