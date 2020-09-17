@@ -543,7 +543,7 @@ class TeamExpander:
         new_task = task.copy()
         kingdom = self.kingdoms[task['kingdom_id']]
         color = kingdom['primary_color'].upper()
-        if new_task.get('y'):
+        if isinstance(new_task.get('y'), str):
             new_task['y'] = _(f'[{new_task["y"].upper()}]', lang)
 
         replacements = {
@@ -557,6 +557,7 @@ class TeamExpander:
             '{Value0}': task['value0'],
             '{Value1}': task['value1'],
             '{0}': '{x}',
+            '{1}': task['c'],
             '{2}': '{x} {y}',
         }
         new_task['title'] = _(new_task['title'], lang)

@@ -51,7 +51,7 @@ class GameData:
             }
         }
 
-        self.troops = {}
+        self.troops = {'`?`': {'name': '`?`'}}
         self.spells = {}
         self.weapons = {}
         self.classes = {}
