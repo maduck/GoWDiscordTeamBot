@@ -136,11 +136,11 @@ class TeamExpander:
             for troop in self.troops.values():
                 translated_name = extract_search_tag(_(troop['name'], lang))
                 real_search = extract_search_tag(search_term)
-                if real_search == translated_name:
+                if real_search == translated_name and translated_name != '`?`':
                     result = troop.copy()
                     self.translate_troop(result, lang)
                     return [result]
-                elif real_search in translated_name:
+                elif real_search in translated_name and translated_name != '`?`':
                     result = troop.copy()
                     self.translate_troop(result, lang)
                     possible_matches.append(result)
