@@ -4,6 +4,7 @@ import re
 
 from game_assets import GameAssets
 from game_constants import COLORS
+from util import convert_color_array
 
 
 class U(str):
@@ -69,10 +70,6 @@ class GameData:
         self.soulforge = {}
         self.soulforge_raw_data = {}
 
-    @staticmethod
-    def _convert_color_array(data_object):
-        return [c.replace('Color', '').lower() for c, v in data_object['ManaColors'].items() if v]
-
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
         self.user_data = GameAssets.load('User.json')
@@ -137,7 +134,7 @@ class GameData:
             '[PETTYPE_NOEFFECT]',
         )
         for pet in self.data['Pets']:
-            colors = self._convert_color_array(pet)
+            colors = convert_color_array(pet)
             self.pets[pet['Id']] = {
                 'id': pet['Id'],
                 'name': pet['Name'],
@@ -151,7 +148,7 @@ class GameData:
 
     def populate_weapons(self):
         for weapon in self.data['Weapons']:
-            colors = self._convert_color_array(weapon)
+            colors = convert_color_array(weapon)
             self.weapons[weapon['Id']] = {
                 'id': weapon['Id'],
                 'name': f'[SPELL{weapon["SpellId"]}_NAME]',
@@ -181,7 +178,7 @@ class GameData:
                 'filename': kingdom['FileBase'],
             }
             kingdom_troops = [troop_id for troop_id in kingdom['TroopIds'] if troop_id != -1]
-            kingdom_colors = self._convert_color_array(kingdom)
+            kingdom_colors = convert_color_array(kingdom)
             self.kingdoms[kingdom['Id']] = {
                 'id': kingdom['Id'],
                 'name': kingdom['Name'],
@@ -201,7 +198,7 @@ class GameData:
 
     def populate_troops(self):
         for troop in self.data['Troops']:
-            colors = self._convert_color_array(troop)
+            colors = convert_color_array(troop)
             self.troops[troop['Id']] = {
                 'id': troop['Id'],
                 'name': troop['Name'],

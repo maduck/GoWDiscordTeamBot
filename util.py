@@ -50,3 +50,7 @@ def debug(message):
     if message.guild:
         guild = message.guild.name
     log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
+
+
+def convert_color_array(data_object):
+    return [c.replace('Color', '').lower() for c, v in data_object['ManaColors'].items() if v]
