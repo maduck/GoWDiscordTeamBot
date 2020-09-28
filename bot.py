@@ -17,7 +17,7 @@ from discord_helpers import admin_required, guild_required
 from game_constants import CAMPAIGN_COLORS
 from help import get_help_text, get_tower_help_text
 from jobs.news_downloader import NewsDownloader
-from team_expando import TeamExpander
+from team_expando import TeamExpander, _
 from tower_data import TowerOfDoomData
 from translations import HumanizeTranslator, LANGUAGES, LANGUAGE_CODE_MAPPING
 from util import bool_to_emoticon, chunks, debug, pluralize_author
@@ -84,8 +84,9 @@ class DiscordBot(BaseBot):
     async def show_campaign_tasks(self, message, lang, tier, **kwargs):
         campaign_data = self.expander.get_campaign_tasks(lang, tier)
         if not campaign_data['has_content']:
-            e = discord.Embed(title=campaign_data['heading'], color=self.WHITE)
-            e.add_field(name='Nothing to display', value='There is no active campaign available.')
+            title = _('[NO_CURRENT_TASK]', lang)
+            description = _('[CAMPAIGN_COMING_SOON]', lang)
+            e = discord.Embed(title=title, description=description, color=self.WHITE)
             return await self.answer(message, e)
 
         for category, tasks in campaign_data['campaigns'].items():
