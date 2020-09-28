@@ -118,7 +118,7 @@ class TowerOfDoomData:
         for entry in config_entries:
             if entry in guild_data:
                 del guild_data[entry]
-            self.set(guild, guild_data)
+        self.set(guild, guild_data)
 
     def clear_data(self, message):
         guild_id = str(message.guild.id)
