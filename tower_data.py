@@ -236,7 +236,7 @@ class TowerOfDoomData:
 
         my_data = self.__data.get(str(guild.id), {})
 
-        old_value = my_data.get(option, self.DEFAULT_TOWER_DATA[option])
+        old_value = my_data.get(option, self.DEFAULT_TOWER_DATA[option].copy())
         my_data[option] = value_map[option]
         self.set(guild, my_data)
 
