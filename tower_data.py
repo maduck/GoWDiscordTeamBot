@@ -185,7 +185,7 @@ class TowerOfDoomData:
 
         return ', '.join(rooms)
 
-    def format_output(self, guild, color, channel):
+    def format_output(self, guild, color, channel, prefix='!'):
         my_data = self.get(guild)
 
         tower_data = my_data.get(str(channel.id), {}).items()
@@ -193,7 +193,8 @@ class TowerOfDoomData:
         if not tower_data:
             e = discord.Embed(title='Tower of Doom', color=color)
             e.add_field(name=f'Failure',
-                        value=f'Couldn\'t any data for #{channel.name}.\nPlease use `!towerhelp` for more info.')
+                        value=f'Couldn\'t find any data for #{channel.name}.\n'
+                              f'Please use `{prefix}towerhelp` for more info.')
             return e
 
         tower_data = sorted(tower_data, key=operator.itemgetter(0))

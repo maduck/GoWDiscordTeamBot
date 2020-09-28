@@ -381,7 +381,7 @@ class DiscordBot(BaseBot):
     @guild_required
     async def show_tower_data(self, message, **kwargs):
         e = self.tower_data.format_output(guild=message.guild, channel=message.channel,
-                                          color=self.WHITE)
+                                          color=self.WHITE, prefix=kwargs['prefix'])
         await self.answer(message, e)
 
     @guild_required
