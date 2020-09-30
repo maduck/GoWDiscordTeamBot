@@ -212,7 +212,7 @@ class TowerOfDoomData:
         field_header = channel.name
         for floor, floor_data in tower_data:
             line = f'Floor {floor}: {self.format_floor(my_data, floor, floor_data)}'
-            if len(field_header) + len(line) + sum([len(fl) for fl in field_lines]) < 1024:
+            if len(field_header) + len(line) + sum([len(fl) + 1 for fl in field_lines]) < 1024:
                 field_lines.append(line)
             else:
                 tower_text = '\n'.join(field_lines)
