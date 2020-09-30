@@ -1,3 +1,4 @@
+import copy
 import json
 import operator
 import os
@@ -237,7 +238,8 @@ class TowerOfDoomData:
 
         my_data = self.__data.get(str(guild.id), {})
 
-        old_value = my_data.get(option, self.DEFAULT_TOWER_DATA[option].copy())
+        defaults = copy.deepcopy(self.DEFAULT_TOWER_DATA)
+        old_value = my_data.get(option, defaults[option])
         my_data[option] = value_map[option]
         self.set(guild, my_data)
 
