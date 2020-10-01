@@ -1,7 +1,7 @@
 help_titles = {
-    'en': 'Help',
-    'fr': 'Aide',
-    'de': 'Hilfe',
+    'en': 'garyatrics.com bot Help',
+    'fr': 'garyatrics.com bot Aide',
+    'de': 'garyatrics.com bot Hilfe',
 }
 help_texts = {
     'en': {
