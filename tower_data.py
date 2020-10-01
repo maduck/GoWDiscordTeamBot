@@ -190,9 +190,10 @@ class TowerOfDoomData:
         my_data = self.get(guild)
 
         tower_data = my_data.get(str(channel.id), {}).items()
+        title = f'Tower of Doom overview for {channel}'
 
         if not tower_data:
-            e = discord.Embed(title='Tower of Doom', color=color)
+            e = discord.Embed(title=title, color=color)
             e.add_field(name=f'Failure',
                         value=f'Couldn\'t find any data for #{channel.name}.\n'
                               f'Please use `{prefix}towerhelp` for more info.')
@@ -206,7 +207,7 @@ class TowerOfDoomData:
         for key in my_data["scrolls"].keys():
             display[key] = my_data["scrolls"][key][0]
 
-        e = discord.Embed(title='Tower of Doom', color=color)
+        e = discord.Embed(title=title, color=color)
 
         field_lines = []
         starting_floor = tower_data[0][0]
