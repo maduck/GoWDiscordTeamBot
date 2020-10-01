@@ -147,7 +147,7 @@ class Views:
         return result
 
     def render_events(self, events):
-        e = discord.Embed(title='Spoilers', color=self.WHITE)
+        e = discord.Embed(title='Upcoming GoW Events', color=self.WHITE)
         message_lines = ['```']
         last_event_date = events[0]['start']
         for event in events:
@@ -161,5 +161,5 @@ class Views:
                                  f'{event["extra_info"]}')
         message_lines = self.trim_text_lines_to_length(message_lines, 900)
         message_lines.append('```')
-        e.add_field(name='Upcoming Events', value='\n'.join(message_lines))
+        e.add_field(name='Spoilers', value='\n'.join(message_lines))
         return e
