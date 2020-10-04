@@ -35,3 +35,17 @@ CAMPAIGN_COLORS = {
     'Silver': discord.Color.from_rgb(159, 159, 159),
     'Gold': discord.Color.from_rgb(238, 191, 15),
 }
+EVENT_TYPES = {
+    0: '[GUILD_WARS]',
+    1: '[RAIDBOSS]',
+    2: '[INVASION]',
+    3: '[VAULT]',
+    4: '[BOUNTY]',
+    5: '[PETRESCUE]',
+    6: '[CLASS_EVENT]',
+    7: '[DELVE_EVENT]',
+    8: '[TOWER_OF_DOOM]',
+    9: '[HIJACK]',
+    10: '[ADVENTURE_BOARD_SPECIAL_EVENT]',
+    11: '[CAMPAIGN]',
+}

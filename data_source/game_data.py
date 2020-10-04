@@ -3,7 +3,7 @@ import operator
 import re
 
 from game_assets import GameAssets
-from game_constants import COLORS
+from game_constants import COLORS, EVENT_TYPES
 from util import convert_color_array
 
 
@@ -25,20 +25,6 @@ class U(str):
 class GameData:
 
     def __init__(self):
-        self.EVENT_TYPES = {
-            0: '[GUILD_WARS]',
-            1: '[RAIDBOSS]',
-            2: '[INVASION]',
-            3: '[VAULT]',
-            4: '[BOUNTY]',
-            5: '[PETRESCUE]',
-            6: '[CLASS_EVENT]',
-            7: '[DELVE_EVENT]',
-            8: '[TOWER_OF_DOOM]',
-            9: '[HIJACK]',
-            10: '[ADVENTURE_BOARD_SPECIAL_EVENT]',
-            11: '[CAMPAIGN]',
-        }
         self.data = None
         self.user_data = {
             'pEconomyModel': {
@@ -349,7 +335,7 @@ class GameData:
             result = {'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
                       'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
                       # 'id': release['Id'],
-                      'type': self.EVENT_TYPES.get(release['Type'], release['Type']),
+                      'type': EVENT_TYPES.get(release['Type'], release['Type']),
                       'names': release.get('Name'),
                       'gacha': gacha_troop,
                       'kingdom_id': release.get('Kingdom')}
