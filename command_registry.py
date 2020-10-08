@@ -53,7 +53,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'show_spoilers',
-        'pattern': re.compile(DEFAULT_PATTERN + 'spoilers?( (?P<_filter>(weapon|pet|kingdom|troop))s?)?',
+        'pattern': re.compile(DEFAULT_PATTERN + 'spoilers?( (?P<_filter>(weapon|pet|kingdom|troop))s?)?$',
                               MATCH_OPTIONS)
     },
     {
