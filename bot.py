@@ -197,6 +197,7 @@ class DiscordBot(BaseBot):
                           f'`[lang][-]{prefix}class summary|<search>`\n'
                           f'`[lang][-]{prefix}kingdom summary|<search>`\n'
                           f'`[lang][-]{prefix}talent <search>`\n'
+                          f'`[lang][-]{prefix}trait <search>`\n'
                           f'`[lang]{prefix}spoilers [pets|troops|weapons|kingdoms|events]`\n'
                           f'`[lang]{prefix}events`\n'
                           f'`[lang]{prefix}campaign [bronze|silver|gold]`\n'

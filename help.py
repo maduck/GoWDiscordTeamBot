@@ -19,6 +19,7 @@ help_texts = {
                     ' - `{0}pet <search>`, e.g. `{0}pet puddling`.\n'
                     ' - `{0}class summary|<search>`, e.g. `{0}class archer`.\n'
                     ' - `{0}talent <search>`, e.g. `{0}talent mana source`.\n'
+                    ' - `{0}trait <search>`, e.g. `{0}trait impervious`.\n'
                     ' - `{0}kingdom summary|<search>`, e.g. `{0}kingdom karakoth`.\n'
                     '• __Rules__:\n'
                     '  - Search both works for ids and parts of their names.\n'
