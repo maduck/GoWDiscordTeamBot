@@ -20,6 +20,10 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(SEARCH_PATTERN.format('troop'), MATCH_OPTIONS)
     },
     {
+        'function': 'handle_trait_search',
+        'pattern': re.compile(SEARCH_PATTERN.format('trait'), MATCH_OPTIONS)
+    },
+    {
         'function': 'handle_weapon_search',
         'pattern': re.compile(SEARCH_PATTERN.format('weapon'), MATCH_OPTIONS)
     },

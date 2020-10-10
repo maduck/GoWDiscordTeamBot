@@ -191,7 +191,8 @@ class GameData:
                 'colors': sorted(colors),
                 'description': troop['Description'],
                 'spell_id': troop['SpellId'],
-                'traits': [self.traits.get(trait, {'name': trait, 'description': '-'}) for trait in troop['Traits']],
+                'traits': [self.traits.get(trait, {'code': '', 'name': trait, 'description': '-'}) for trait in
+                           troop['Traits']],
                 'rarity': troop['TroopRarity'],
                 'types': [troop['TroopType']],
                 'roles': troop['TroopRoleArray'],
@@ -203,7 +204,12 @@ class GameData:
 
     def populate_traits(self):
         for trait in self.data['Traits']:
-            self.traits[trait['Code']] = {'name': trait['Name'], 'description': trait['Description']}
+            self.traits[trait['Code']] = {
+                'code': trait['Code'],
+                'name': trait['Name'],
+                'description': trait['Description'],
+                'image': trait['Image'],
+            }
 
     def populate_spells(self):
         for spell in self.data['Spells']:

@@ -178,10 +178,10 @@ class TeamExpander:
             name_to_translate = trait['name']
             if name_to_translate == 'none':
                 name_to_translate = '[NONE]'
-            new_traits.append({
-                'name': _(name_to_translate, lang),
-                'description': _(trait['description'], lang)
-            })
+            new_trait = trait.copy()
+            new_trait['name'] = _(name_to_translate, lang)
+            new_trait['description'] = _(trait['description'], lang)
+            new_traits.append(new_trait)
         return new_traits
 
     def search_kingdom(self, search_term, lang):
@@ -327,6 +327,34 @@ class TeamExpander:
              }
             for c in tree['classes']
         ]
+
+    def get_troops_with_trait(self, trait, lang):
+        troops = []
+        for troop in self.troops.values():
+            trait_codes = [t['code'] for t in troop['traits']] if 'traits' in troop else []
+            if trait['code'] in trait_codes:
+                translated_troop = troop.copy()
+                self.translate_troop(translated_troop, lang)
+                troops.append(translated_troop)
+        return troops
+
+    def search_trait(self, search_term, lang):
+        possible_matches = []
+        for code, trait in self.traits.items():
+            translated_name = extract_search_tag(_(trait['name'], lang))
+            real_search = extract_search_tag(search_term)
+            if real_search == translated_name:
+                result = trait.copy()
+                result['troops'] = self.get_troops_with_trait(trait, lang)
+                result['troops_title'] = _('[TROOPS]', lang)
+                possible_matches.append(result)
+                break
+            elif real_search in translated_name:
+                result = trait.copy()
+                result['troops'] = self.get_troops_with_trait(trait, lang)
+                result['troops_title'] = _('[TROOPS]', lang)
+                possible_matches.append(result)
+        return self.enrich_traits(possible_matches, lang)
 
     def search_pet(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.pets:

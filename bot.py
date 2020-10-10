@@ -281,6 +281,9 @@ class DiscordBot(BaseBot):
     async def handle_troop_search(self, message, search_term, lang, shortened, **kwargs):
         await self.handle_search(message, search_term, lang, 'Troop', '{0[name]} `#{0[id]}`', shortened)
 
+    async def handle_trait_search(self, message, search_term, lang, shortened, **kwargs):
+        await self.handle_search(message, search_term, lang, 'Trait', '{0[name]}', shortened)
+
     async def handle_talent_search(self, message, search_term, lang, shortened, **kwargs):
         await self.handle_search(message, search_term, lang, 'Talent', '{0[name]}', shortened)
 
