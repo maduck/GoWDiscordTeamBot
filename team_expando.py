@@ -348,13 +348,15 @@ class TeamExpander:
                 result = trait.copy()
                 result['troops'] = self.get_troops_with_trait(trait, lang)
                 result['troops_title'] = _('[TROOPS]', lang)
-                possible_matches.append(result)
-                break
+                if result['troops']:
+                    possible_matches.append(result)
+                    break
             elif real_search in translated_name or real_search in translated_description:
                 result = trait.copy()
                 result['troops'] = self.get_troops_with_trait(trait, lang)
                 result['troops_title'] = _('[TROOPS]', lang)
-                possible_matches.append(result)
+                if result['troops']:
+                    possible_matches.append(result)
         return self.enrich_traits(possible_matches, lang)
 
     def search_pet(self, search_term, lang):
