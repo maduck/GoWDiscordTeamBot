@@ -2,4 +2,4 @@
 {{ trait.description }}
 
 <T>**{{ trait.troops_title }}**</T>
-{% for troop in trait.troops %}{{ troop.name }} `#{{ troop.id }}`{% if not loop.last %}, {% endif %}{% else %}-{% endfor %}
+{% for troop in trait.troops %}{{ troop.name }}{% if not loop.last %}, {% endif %}{% else %}-{% endfor %}
