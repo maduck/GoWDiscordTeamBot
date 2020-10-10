@@ -342,6 +342,7 @@ class TeamExpander:
         possible_matches = []
         for code, trait in self.traits.items():
             translated_name = extract_search_tag(_(trait['name'], lang))
+            translated_description = extract_search_tag(_(trait['description'], lang))
             real_search = extract_search_tag(search_term)
             if real_search == translated_name:
                 result = trait.copy()
@@ -349,7 +350,7 @@ class TeamExpander:
                 result['troops_title'] = _('[TROOPS]', lang)
                 possible_matches.append(result)
                 break
-            elif real_search in translated_name:
+            elif real_search in translated_name or real_search in translated_description:
                 result = trait.copy()
                 result['troops'] = self.get_troops_with_trait(trait, lang)
                 result['troops_title'] = _('[TROOPS]', lang)
