@@ -175,11 +175,8 @@ class TeamExpander:
     def enrich_traits(self, traits, lang):
         new_traits = []
         for trait in traits:
-            name_to_translate = trait['name']
-            if name_to_translate == 'none':
-                name_to_translate = '[NONE]'
             new_trait = trait.copy()
-            new_trait['name'] = _(name_to_translate, lang)
+            new_trait['name'] = _(trait['name'], lang)
             new_trait['description'] = _(trait['description'], lang)
             new_traits.append(new_trait)
         return new_traits

@@ -185,13 +185,14 @@ class GameData:
     def populate_troops(self):
         for troop in self.data['Troops']:
             colors = convert_color_array(troop)
+            no_trait = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
             self.troops[troop['Id']] = {
                 'id': troop['Id'],
                 'name': troop['Name'],
                 'colors': sorted(colors),
                 'description': troop['Description'],
                 'spell_id': troop['SpellId'],
-                'traits': [self.traits.get(trait, {'code': '', 'name': trait, 'description': '-'}) for trait in
+                'traits': [self.traits.get(trait, no_trait) for trait in
                            troop['Traits']],
                 'rarity': troop['TroopRarity'],
                 'types': [troop['TroopType']],
