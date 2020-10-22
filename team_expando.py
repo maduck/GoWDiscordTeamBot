@@ -1,6 +1,7 @@
 import datetime
 import importlib
 import logging
+import re
 
 import translations
 from data_source.game_data import GameData
@@ -498,7 +499,9 @@ class TeamExpander:
                 number = int(round(1 / multiplier))
                 divisor = f' / {number}'
             damage = f'[{multiplier_text}{magic}{divisor}{spell_amount}]'
-            if '{2}' in description and len(spell['effects']) == 1:
+            number_of_replacements = len(re.findall(r'\{\d\}', description))
+            has_half_replacement = len(spell['effects']) == number_of_replacements - 1
+            if '{2}' in description and has_half_replacement:
                 multiplier *= 0.5
                 amount *= 0.5
                 if amount == int(amount):
