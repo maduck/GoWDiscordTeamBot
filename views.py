@@ -55,6 +55,11 @@ class Views:
             e.timestamp = weapon["release_date"]
         return self.render_embed(e, 'weapon.jinja', weapon=weapon)
 
+    def render_affix(self, affix, shortened):
+        e = discord.Embed(title='Affix search found one exact match', color=self.WHITE)
+        affix['weapons'] = [f'{w["name"]} `#{w["id"]}`' for w in affix['weapons']]
+        return self.render_embed(e, 'affix.jinja', affix=affix)
+
     def render_pet(self, pet, shortened):
         e = discord.Embed(title='Pet search found one exact match', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_full.png'

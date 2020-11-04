@@ -480,6 +480,30 @@ class TeamExpander:
         elif weapon['requirement'] == 1003:
             weapon['requirement_text'] = _('[SOULFORGE_WEAPONS_TAB_EMPTY_ERROR]', lang)
 
+    def search_affix(self, search_term, lang):
+        real_search = extract_search_tag(search_term)
+        results = {}
+        for weapon in self.weapons.values():
+            my_weapon = weapon.copy()
+            self.translate_weapon(my_weapon, lang)
+            affixes = [affix for affix in my_weapon['upgrades'] if 'cost' in affix]
+            for affix in affixes:
+                search_name = extract_search_tag(affix['name'])
+                search_desc = extract_search_tag(affix['description'])
+                if real_search == search_name \
+                        or real_search == search_desc \
+                        or real_search in search_name \
+                        or real_search in search_desc:
+                    if affix['name'] in results:
+                        results[affix['name']]['weapons'].append(my_weapon)
+                        results[affix['name']]['num_weapons'] += 1
+                    else:
+                        results[affix['name']] = affix.copy()
+                        results[affix['name']]['weapons_title'] = _('[SOULFORGE_TAB_WEAPONS]', lang)
+                        results[affix['name']]['weapons'] = [my_weapon]
+                        results[affix['name']]['num_weapons'] = 1
+        return list(results.values())
+
     def translate_spell(self, spell_id, lang):
         spell = self.spells[spell_id]
         magic = _('[MAGIC]', lang)

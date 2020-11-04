@@ -279,6 +279,10 @@ class DiscordBot(BaseBot):
     async def handle_weapon_search(self, message, search_term, lang, shortened, **kwargs):
         await self.handle_search(message, search_term, lang, 'Weapon', '{0[name]} `#{0[id]}`', shortened)
 
+    async def handle_affix_search(self, message, search_term, lang, shortened, **kwargs):
+        await self.handle_search(message, search_term, lang, 'Affix', '{0[name]} ({0[num_weapons]} {0[weapons_title]})',
+                                 shortened)
+
     async def handle_troop_search(self, message, search_term, lang, shortened, **kwargs):
         await self.handle_search(message, search_term, lang, 'Troop', '{0[name]} `#{0[id]}`', shortened)
 

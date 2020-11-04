@@ -28,6 +28,10 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(SEARCH_PATTERN.format('weapon'), MATCH_OPTIONS)
     },
     {
+        'function': 'handle_affix_search',
+        'pattern': re.compile(SEARCH_PATTERN.format('affix'), MATCH_OPTIONS)
+    },
+    {
         'function': 'show_kingdom_summary',
         'pattern': re.compile(DEFAULT_PATTERN + 'kingdom summary$', MATCH_OPTIONS)
     },
