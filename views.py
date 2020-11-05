@@ -122,7 +122,7 @@ class Views:
         return self.render_embed(e, 'kingdom.jinja', kingdom=kingdom)
 
     def render_trait(self, trait, shortened):
-        e = discord.Embed(title='Trait search found on exact match', color=self.WHITE)
+        e = discord.Embed(title='Trait search found one exact match', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Troopcardall_Traits/{trait["image"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
         trait['thumbnail'] = thumbnail_url
