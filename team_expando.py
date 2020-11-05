@@ -502,6 +502,9 @@ class TeamExpander:
                         results[affix['name']]['weapons_title'] = _('[SOULFORGE_TAB_WEAPONS]', lang)
                         results[affix['name']]['weapons'] = [my_weapon]
                         results[affix['name']]['num_weapons'] = 1
+        for name, affix in results.items():
+            if real_search == extract_search_tag(name):
+                return [affix]
         return list(results.values())
 
     def translate_spell(self, spell_id, lang):
