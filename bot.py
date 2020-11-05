@@ -4,6 +4,7 @@ import json
 import operator
 import os
 import random
+from functools import partialmethod
 
 import discord
 import humanize
@@ -247,7 +248,8 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
         log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
 
-    async def handle_search(self, message, search_term, lang, title, formatter, shortened):
+    async def handle_search(self, message, search_term, lang, title, shortened, formatter='{0[name]} `#{0[id]}`',
+                            **kwargs):
         search_function = getattr(self.expander, 'search_{}'.format(title.lower()))
         result = search_function(search_term, lang)
         if not result:
@@ -267,30 +269,15 @@ class DiscordBot(BaseBot):
                 e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
-    async def handle_class_search(self, message, search_term, lang, shortened, **kwargs):
-        await self.handle_search(message, search_term, lang, 'Class', '{0[name]} `#{0[id]}`', shortened)
-
-    async def handle_kingdom_search(self, message, search_term, lang, shortened, **kwargs):
-        await self.handle_search(message, search_term, lang, 'Kingdom', '{0[name]} `#{0[id]}`', shortened)
-
-    async def handle_pet_search(self, message, search_term, lang, shortened, **kwargs):
-        await self.handle_search(message, search_term, lang, 'Pet', '{0[name]} `#{0[id]}`', shortened)
-
-    async def handle_weapon_search(self, message, search_term, lang, shortened, **kwargs):
-        await self.handle_search(message, search_term, lang, 'Weapon', '{0[name]} `#{0[id]}`', shortened)
-
-    async def handle_affix_search(self, message, search_term, lang, shortened, **kwargs):
-        await self.handle_search(message, search_term, lang, 'Affix', '{0[name]} ({0[num_weapons]} {0[weapons_title]})',
-                                 shortened)
-
-    async def handle_troop_search(self, message, search_term, lang, shortened, **kwargs):
-        await self.handle_search(message, search_term, lang, 'Troop', '{0[name]} `#{0[id]}`', shortened)
-
-    async def handle_trait_search(self, message, search_term, lang, shortened, **kwargs):
-        await self.handle_search(message, search_term, lang, 'Trait', '{0[name]}', shortened)
-
-    async def handle_talent_search(self, message, search_term, lang, shortened, **kwargs):
-        await self.handle_search(message, search_term, lang, 'Talent', '{0[name]}', shortened)
+    handle_class_search = partialmethod(handle_search, title='Class')
+    handle_kingdom_search = partialmethod(handle_search, title='Kingdom')
+    handle_pet_search = partialmethod(handle_search, title='Pet')
+    handle_weapon_search = partialmethod(handle_search, title='Weapon')
+    handle_affix_search = partialmethod(handle_search, title='Affix',
+                                        formatter='{0[name]} ({0[num_weapons]} {0[weapons_title]})')
+    handle_troop_search = partialmethod(handle_search, title='Troop')
+    handle_trait_search = partialmethod(handle_search, title='Trait', formatter='{0[name]}')
+    handle_talent_search = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
 
     async def show_class_summary(self, message, lang, **kwargs):
         result = self.expander.search_class('summary', lang)
