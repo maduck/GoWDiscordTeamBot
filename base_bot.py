@@ -124,7 +124,7 @@ class BaseBot(discord.Client):
     def is_guild_admin(message):
         has_admin_role = 'admin' in [r.name.lower() for r in message.author.roles]
         is_administrator = any([r.permissions.administrator for r in message.author.roles])
-        is_owner = message.author == message.guild.owner
+        is_owner = message.author.id == message.guild.owner_id
         return is_owner or is_administrator or has_admin_role
 
     @staticmethod
