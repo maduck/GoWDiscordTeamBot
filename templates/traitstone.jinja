@@ -1,4 +1,4 @@
-{% if traitstone.troops %}<T>{{ traitstone.troops | length }} {{ traitstone.troops_title }}</T>
-{{ traitstone.troops[:20]|join(", ") }}{% if traitstone.troops | length > 20 %}, ...{% endif %}{% endif %}
-{% if traitstone.classes %}<T>{{ traitstone.classes | length }} {{ traitstone.classes_title }}</T>
-{{ traitstone.classes[:20]|join(", ") }}{% if traitstone.classes | length > 20 %}, ...{% endif %}{% endif %}
+{% if troops %}<T>{{ traitstone.troops | length }} {{ traitstone.troops_title }}</T>
+{{ troops }}{% endif %}
+{% if classes %}<T>{{ traitstone.classes | length }} {{ traitstone.classes_title }}</T>
+{{ classes }}{% endif %}

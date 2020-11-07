@@ -519,15 +519,19 @@ class TeamExpander:
         return result
 
     def translate_traitstone(self, traitstone, lang):
-        traitstone['name'] = _(traitstone['name'], lang)
         troops = []
         for troop_id in traitstone['troop_ids']:
-            troops.append(_(self.troops[troop_id]['name'], lang))
+            amount = sum([t['amount'] for t in self.troops[troop_id]['traitstones'] if t['id'] == traitstone['id']])
+            troops.append([_(self.troops[troop_id]['name'], lang), amount])
         traitstone['troops'] = troops
+
         classes = []
         for class_id in traitstone['class_ids']:
-            classes.append(_(self.classes[class_id]['name'], lang))
+            amount = sum([t['amount'] for t in self.classes[class_id]['traitstones'] if t['id'] == traitstone['id']])
+            classes.append([_(self.classes[class_id]['name'], lang), amount])
         traitstone['classes'] = classes
+
+        traitstone['name'] = _(traitstone['name'], lang)
         traitstone['troops_title'] = _('[TROOPS]', lang)
         traitstone['classes_title'] = _('[CLASS]', lang)
 

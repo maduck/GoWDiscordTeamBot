@@ -94,7 +94,11 @@ class Views:
         e.title = traitstone['name']
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Runes_Rune{traitstone["id"]:02d}_full.png'
         e.set_thumbnail(url=thumbnail_url)
-        return self.render_embed(e, 'traitstone.jinja', traitstone=traitstone)
+        troop_list = ['{0} ({1})'.format(*troop) for troop in traitstone['troops']]
+        troops = self.trim_text_to_length(", ".join(sorted(troop_list)), 900, ',', ', ...')
+        class_list = ['{0} ({1})'.format(*_class) for _class in traitstone['classes']]
+        classes = self.trim_text_to_length(", ".join(sorted(class_list)), 900, ',', ', ...')
+        return self.render_embed(e, 'traitstone.jinja', traitstone=traitstone, troops=troops, classes=classes)
 
     def render_talent(self, tree, shortened):
         e = discord.Embed(color=self.WHITE)
@@ -147,9 +151,11 @@ class Views:
         return self.render_embed(e, 'class.jinja', _class=_class)
 
     @staticmethod
-    def trim_text_to_length(text, limit, break_character='\n'):
+    def trim_text_to_length(text, limit, break_character='\n', indicator=''):
         input_text = f'{text}{break_character}'
         trimmed_text = input_text[:input_text[:limit].rfind(break_character)]
+        if trimmed_text != text:
+            trimmed_text += indicator
         return trimmed_text
 
     @classmethod

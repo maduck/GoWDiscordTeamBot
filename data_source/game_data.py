@@ -413,13 +413,6 @@ class GameData:
     def populate_traitstones(self):
         for traits in self.user_data['pTraitsTable']:
             runes = self.extract_runes(traits['Runes'])
-            class_id = 0
-            if 'ClassCode' in traits:
-                class_id = [_class for _class in self.classes.values()
-                            if _class['code'] == traits['ClassCode']][0]['id']
-                self.classes[class_id]['traitstones'] = runes
-            else:
-                self.troops[traits['Troop']]['traitstones'] = runes
             for rune in runes:
                 if rune['name'] in self.traitstones:
                     self.traitstones[rune['name']]['total_amount'] += rune['amount']
@@ -431,9 +424,13 @@ class GameData:
                         'class_ids': [],
                         'total_amount': rune['amount'],
                     }
-                if class_id:
+                if 'ClassCode' in traits:
+                    class_id = [_class for _class in self.classes.values()
+                                if _class['code'] == traits['ClassCode']][0]['id']
+                    self.classes[class_id]['traitstones'] = runes
                     self.traitstones[rune['name']]['class_ids'].append(class_id)
                 else:
+                    self.troops[traits['Troop']]['traitstones'] = runes
                     self.traitstones[rune['name']]['troop_ids'].append(traits['Troop'])
 
     @staticmethod
