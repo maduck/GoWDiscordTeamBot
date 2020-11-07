@@ -55,6 +55,7 @@ class GameData:
         self.campaign_data = {}
         self.soulforge = {}
         self.soulforge_raw_data = {}
+        self.traitstones = {}
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -79,6 +80,7 @@ class GameData:
         self.enrich_kingdoms()
         self.populate_campaign_tasks()
         self.populate_soulforge()
+        self.populate_traitstones()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -407,3 +409,43 @@ class GameData:
                     'start': recipe['StartDate'],
                     'end': recipe['EndDate'],
                 })
+
+    def populate_traitstones(self):
+        for traits in self.user_data['pTraitsTable']:
+            runes = self.extract_runes(traits['Runes'])
+            class_id = 0
+            if 'ClassCode' in traits:
+                class_id = [_class for _class in self.classes.values()
+                            if _class['code'] == traits['ClassCode']][0]['id']
+                self.classes[class_id]['traitstones'] = runes
+            else:
+                self.troops[traits['Troop']]['traitstones'] = runes
+            for rune in runes:
+                if rune['name'] in self.traitstones:
+                    self.traitstones[rune['name']]['total_amount'] += rune['amount']
+                else:
+                    self.traitstones[rune['name']] = {
+                        'troop_ids': [],
+                        'class_ids': [],
+                        'total_amount': rune['amount'],
+                    }
+                if class_id:
+                    self.traitstones[rune['name']]['class_ids'].append(class_id)
+                else:
+                    self.traitstones[rune['name']]['troop_ids'].append(traits['Troop'])
+
+    @staticmethod
+    def extract_runes(runes):
+        result = {}
+        for trait in runes:
+            for rune in trait:
+                rune_id = rune['Id']
+                if rune_id in result:
+                    result[rune_id]['amount'] += rune['Required']
+                else:
+                    result[rune_id] = {
+                        'name': f'[RUNE{rune["Id"]:02d}_NAME]',
+                        'amount': rune['Required'],
+                    }
+
+        return list(result.values())
