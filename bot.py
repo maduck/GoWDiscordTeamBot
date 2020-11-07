@@ -278,6 +278,7 @@ class DiscordBot(BaseBot):
     handle_troop_search = partialmethod(handle_search, title='Troop')
     handle_trait_search = partialmethod(handle_search, title='Trait', formatter='{0[name]}')
     handle_talent_search = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
+    handle_traitstone_search = partialmethod(handle_search, title='Traitstone', formatter='{0[name]}')
 
     async def show_class_summary(self, message, lang, **kwargs):
         result = self.expander.search_class('summary', lang)

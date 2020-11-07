@@ -425,6 +425,8 @@ class GameData:
                     self.traitstones[rune['name']]['total_amount'] += rune['amount']
                 else:
                     self.traitstones[rune['name']] = {
+                        'id': rune['id'],
+                        'name': rune['name'],
                         'troop_ids': [],
                         'class_ids': [],
                         'total_amount': rune['amount'],
@@ -444,6 +446,7 @@ class GameData:
                     result[rune_id]['amount'] += rune['Required']
                 else:
                     result[rune_id] = {
+                        'id': rune['Id'],
                         'name': f'[RUNE{rune["Id"]:02d}_NAME]',
                         'amount': rune['Required'],
                     }

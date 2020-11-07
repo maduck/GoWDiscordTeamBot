@@ -89,6 +89,13 @@ class Views:
             e.timestamp = troop["release_date"]
         return self.render_embed(e, 'troop.jinja', troop=troop)
 
+    def render_traitstone(self, traitstone, shortened):
+        e = discord.Embed(color=self.WHITE)
+        e.title = traitstone['name']
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Runes_Rune{traitstone["id"]:02d}_full.png'
+        e.set_thumbnail(url=thumbnail_url)
+        return self.render_embed(e, 'traitstone.jinja', traitstone=traitstone)
+
     def render_talent(self, tree, shortened):
         e = discord.Embed(color=self.WHITE)
         if shortened:

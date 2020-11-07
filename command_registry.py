@@ -56,6 +56,10 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(SEARCH_PATTERN.format('talent'), MATCH_OPTIONS)
     },
     {
+        'function': 'handle_traitstone_search',
+        'pattern': re.compile(SEARCH_PATTERN.format('traitstone'), MATCH_OPTIONS)
+    },
+    {
         'function': 'show_events',
         'pattern': re.compile(DEFAULT_PATTERN + '(spoilers? )?events?$', MATCH_OPTIONS)
     },

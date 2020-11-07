@@ -54,6 +54,7 @@ class TeamExpander:
         self.events = world.events
         self.campaign_tasks = world.campaign_tasks
         self.soulforge = world.soulforge
+        self.traitstones = world.traitstones
         self.rooms = {}
 
     @classmethod
@@ -506,6 +507,29 @@ class TeamExpander:
             if real_search == extract_search_tag(name):
                 return [affix]
         return list(results.values())
+
+    def search_traitstone(self, search_term, lang):
+        real_search = extract_search_tag(search_term)
+        result = []
+        for traitstone in self.traitstones.values():
+            translated_traitstone = traitstone.copy()
+            self.translate_traitstone(translated_traitstone, lang)
+            if real_search in extract_search_tag(translated_traitstone['name']):
+                result.append(translated_traitstone)
+        return result
+
+    def translate_traitstone(self, traitstone, lang):
+        traitstone['name'] = _(traitstone['name'], lang)
+        troops = []
+        for troop_id in traitstone['troop_ids']:
+            troops.append(_(self.troops[troop_id]['name'], lang))
+        traitstone['troops'] = troops
+        classes = []
+        for class_id in traitstone['class_ids']:
+            classes.append(_(self.classes[class_id]['name'], lang))
+        traitstone['classes'] = classes
+        traitstone['troops_title'] = _('[TROOPS]', lang)
+        traitstone['classes_title'] = _('[CLASS]', lang)
 
     def translate_spell(self, spell_id, lang):
         spell = self.spells[spell_id]
