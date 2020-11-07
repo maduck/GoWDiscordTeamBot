@@ -98,7 +98,10 @@ class Views:
         troops = self.trim_text_to_length(", ".join(sorted(troop_list)), 900, ',', ', ...')
         class_list = ['{0} ({1})'.format(*_class) for _class in traitstone['classes']]
         classes = self.trim_text_to_length(", ".join(sorted(class_list)), 900, ',', ', ...')
-        return self.render_embed(e, 'traitstone.jinja', traitstone=traitstone, troops=troops, classes=classes)
+        kingdom_list = [k for k in traitstone['kingdoms']]
+        kingdoms = self.trim_text_to_length(", ".join(sorted(kingdom_list)), 900, ',', ', ...')
+        return self.render_embed(e, 'traitstone.jinja',
+                                 traitstone=traitstone, troops=troops, classes=classes, kingdoms=kingdoms)
 
     def render_talent(self, tree, shortened):
         e = discord.Embed(color=self.WHITE)

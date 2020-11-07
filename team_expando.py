@@ -531,9 +531,17 @@ class TeamExpander:
             classes.append([_(self.classes[class_id]['name'], lang), amount])
         traitstone['classes'] = classes
 
+        kingdoms = []
+        for kingdom_id in traitstone['kingdom_ids']:
+            kingdoms.append(_(self.kingdoms[int(kingdom_id)]['name'], lang))
+        if not traitstone['kingdom_ids']:
+            kingdoms.append(_('[ALL_KINGDOMS]', lang))
+        traitstone['kingdoms'] = kingdoms
+
         traitstone['name'] = _(traitstone['name'], lang)
         traitstone['troops_title'] = _('[TROOPS]', lang)
         traitstone['classes_title'] = _('[CLASS]', lang)
+        traitstone['kingdoms_title'] = _('[KINGDOMS]', lang)
 
     def translate_spell(self, spell_id, lang):
         spell = self.spells[spell_id]

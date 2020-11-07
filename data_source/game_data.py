@@ -422,6 +422,7 @@ class GameData:
                         'name': rune['name'],
                         'troop_ids': [],
                         'class_ids': [],
+                        'kingdom_ids': [],
                         'total_amount': rune['amount'],
                     }
                 if 'ClassCode' in traits:
@@ -432,9 +433,12 @@ class GameData:
                 else:
                     self.troops[traits['Troop']]['traitstones'] = runes
                     self.traitstones[rune['name']]['troop_ids'].append(traits['Troop'])
+        for kingdom_id, runes in self.user_data['pEconomyModel']['Explore_RunePerKingdom'].items():
+            for rune_id in runes:
+                rune_name = self.get_rune_name_from_id(rune_id)
+                self.traitstones[rune_name]['kingdom_ids'].append(kingdom_id)
 
-    @staticmethod
-    def extract_runes(runes):
+    def extract_runes(self, runes):
         result = {}
         for trait in runes:
             for rune in trait:
@@ -444,8 +448,11 @@ class GameData:
                 else:
                     result[rune_id] = {
                         'id': rune['Id'],
-                        'name': f'[RUNE{rune["Id"]:02d}_NAME]',
+                        'name': self.get_rune_name_from_id(rune['Id']),
                         'amount': rune['Required'],
                     }
-
         return list(result.values())
+
+    @staticmethod
+    def get_rune_name_from_id(rune_id):
+        return f'[RUNE{rune_id:02d}_NAME]'
