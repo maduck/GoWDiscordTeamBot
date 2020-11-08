@@ -29,7 +29,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.15'
+    VERSION = '0.15.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -186,32 +186,43 @@ class DiscordBot(BaseBot):
         e.add_field(name='How to read',
                     value='Square brackets `[]` show optional parameters, except for troop code.\n'
                           'Vertical lines `|` mean "or": this|that.\n'
-                          f'possible language codes are `{langs}`.')
-        e.add_field(name='Commands',
+                          f'valid language codes are `{langs}`.')
+        e.add_field(name='Searches',
                     value=f'`{prefix}help`\n'
                           f'`{prefix}quickhelp`\n'
-                          f'`{prefix}invite`\n'
+                          f'`{prefix}towerhelp`\n'
                           f'`[lang][-][<troopcode>]`\n'
                           f'`[lang][-]{prefix}troop <search>`\n'
                           f'`[lang][-]{prefix}weapon <search>`\n'
                           f'`[lang][-]{prefix}pet <search>`\n'
-                          f'`[lang][-]{prefix}class summary|<search>`\n'
-                          f'`[lang][-]{prefix}kingdom summary|<search>`\n'
+                          f'`[lang][-]{prefix}class <search>`\n'
+                          f'`[lang][-]{prefix}kingdom <search>`\n'
                           f'`[lang][-]{prefix}talent <search>`\n'
                           f'`[lang][-]{prefix}trait <search>`\n'
-                          f'`[lang]{prefix}spoilers [pets|troops|weapons|kingdoms|events]`\n'
-                          f'`[lang]{prefix}events`\n'
+                          f'`[lang][-]{prefix}traitstone <search>`\n',
+                    inline=False)
+        e.add_field(name='Overviews',
+                    value=f'`[lang]{prefix}class summary`\n'
+                          f'`[lang]{prefix}kingdom summary`\n'
+                          f'`[lang]{prefix}spoiler[s] [pet[s]|troop[s]|weapon[s]|kingdom[s]|event[s]]`\n'
+                          f'`[lang]{prefix}event[s]`\n'
                           f'`[lang]{prefix}campaign [bronze|silver|gold]`\n'
-                          f'`{prefix}towerhelp`\n'
-                          f'`{prefix}towerclear`',
-                    inline=False
-                    )
+                          f'`[lang]{prefix}soulforge`\n',
+                    inline=False)
         e.add_field(name='Admin Commands',
                     value=f'`{prefix}towerconfig`\n'
+                          f'`{prefix}towerclear`\n'
                           f'`{prefix}news [[un]subscribe [pc|switch]]`\n'
                           f'`{prefix}prefix [new_prefix]`\n'
-                          f'`{prefix}language [new_language]`',
+                          f'`{prefix}lang[uage[s]] [new_language]`\n',
                     inline=False)
+        e.add_field(name='Bot specific',
+                    value=f'`{prefix}version`\n'
+                          f'`{prefix}uptime`\n'
+                          f'`{prefix}invite`\n'
+                          f'`{prefix}waffles`\n',
+                    inline=False
+                    )
         await self.answer(message, e)
 
     async def on_message(self, message):
