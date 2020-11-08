@@ -428,6 +428,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     @guild_required
+    @admin_required
     async def clear_tower_data(self, message, prefix, **kwargs):
         self.tower_data.clear_data(message)
 
