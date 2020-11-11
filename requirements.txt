@@ -1,8 +1,8 @@
-beautifulsoup4
-discord
-feedparser
-html2markdown
-html5lib
-humanize
-jinja2
-requests
+beautifulsoup4~=4.9.3
+discord.py~=1.5.1
+feedparser~=6.0.2
+html2markdown~=0.1.7
+html5lib~=1.1
+humanize~=3.1.0
+jinja2~=2.11.2
+requests~=2.24.0
