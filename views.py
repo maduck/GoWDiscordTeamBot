@@ -170,6 +170,8 @@ class Views:
     @classmethod
     def trim_news_to_length(cls, text, link, max_length=900):
         trimmed_text = cls.trim_text_to_length(text, max_length)
+        if len(trimmed_text) > max_length:
+            trimmed_text = cls.trim_text_to_length(text, max_length, break_character=' ')
         read_more = ''
         if len(trimmed_text) != len(text):
             read_more = '[...] '
