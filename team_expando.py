@@ -549,7 +549,6 @@ class TeamExpander:
         magic = _('[MAGIC]', lang)
 
         description = _(spell['description'], lang)
-        description = self.fix_flame_of_anu(description)
 
         for i, (multiplier, amount) in enumerate(spell['effects'], start=1):
             spell_amount = f' + {amount}' if amount else ''
@@ -591,10 +590,6 @@ class TeamExpander:
             'description': description,
         }
 
-    @staticmethod
-    def fix_flame_of_anu(description):
-        description = description.replace('[1}', '{1}')
-        return description
 
     @staticmethod
     def translate_banner(banner, lang):
