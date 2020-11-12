@@ -55,6 +55,7 @@ class TeamExpander:
         self.campaign_tasks = world.campaign_tasks
         self.soulforge = world.soulforge
         self.traitstones = world.traitstones
+        self.levels = world.levels
         self.rooms = {}
 
     @classmethod
@@ -729,3 +730,10 @@ class TeamExpander:
 
         translated = [try_different_translated_versions_because_devs_are_stupid(c) for c in categories]
         return dict(zip(categories, translated))
+
+    def get_levels(self, lang):
+        levels = [{
+            'level': level['level'],
+            'bonus': _(level['bonus'], lang),
+        } for level in self.levels]
+        return levels

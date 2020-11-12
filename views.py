@@ -193,3 +193,7 @@ class Views:
         message_lines.append('```')
         e.add_field(name='Spoilers', value='\n'.join(message_lines))
         return e
+
+    def render_levels(self, levels):
+        e = discord.Embed(title='Level progression overview', color=self.WHITE)
+        return self.render_embed(e, 'levels.jinja', levels=levels)

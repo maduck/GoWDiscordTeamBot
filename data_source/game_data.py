@@ -56,6 +56,7 @@ class GameData:
         self.soulforge = {}
         self.soulforge_raw_data = {}
         self.traitstones = {}
+        self.levels = []
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -81,6 +82,7 @@ class GameData:
         self.populate_campaign_tasks()
         self.populate_soulforge()
         self.populate_traitstones()
+        self.populate_levels()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -456,3 +458,11 @@ class GameData:
     @staticmethod
     def get_rune_name_from_id(rune_id):
         return f'[RUNE{rune_id:02d}_NAME]'
+
+    def populate_levels(self):
+        for bonus in self.user_data['pEconomyModel']['HeroLevelUpStats']:
+            level_bonus = {
+                'level': bonus['Level'],
+                'bonus': f'[{bonus["Stat"].upper()}]',
+            }
+            self.levels.append(level_bonus)
