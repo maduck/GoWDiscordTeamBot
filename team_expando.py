@@ -186,7 +186,8 @@ class TeamExpander:
             traitstones.append(f'{_(rune["name"], lang)} ({rune["amount"]})')
         troop['traitstones'] = traitstones
 
-    def enrich_traits(self, traits, lang):
+    @staticmethod
+    def enrich_traits(traits, lang):
         new_traits = []
         for trait in traits:
             new_trait = trait.copy()
@@ -296,8 +297,8 @@ class TeamExpander:
         _class['trees'] = [_(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
         _class['type_short'] = _(f'[TROOPTYPE_{_class["type"].upper()}]', lang)
         _class['type'] = _(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
-        _class['weapon_bonus'] = _('[MAGIC_BONUS]', lang) + " " \
-                                 + _(f'[MAGIC_BONUS_{COLORS.index(_class["weapon_color"])}]', lang)
+        _class['weapon_bonus'] = _('[MAGIC_BONUS]', lang) + " " + _(
+            f'[MAGIC_BONUS_{COLORS.index(_class["weapon_color"])}]', lang)
 
     def search_talent(self, search_term, lang):
         possible_matches = []
@@ -323,7 +324,8 @@ class TeamExpander:
                     possible_matches.append(result)
         return possible_matches
 
-    def translate_talent_tree(self, tree, lang):
+    @staticmethod
+    def translate_talent_tree(tree, lang):
         tree['name'] = _(tree['name'], lang)
         translated_talents = []
         for talent in tree['talents']:
@@ -719,7 +721,8 @@ class TeamExpander:
             craftable_items[recipe_type] = [self.translate_recipe(r, lang) for r in recipes]
         return craftable_items
 
-    def translate_recipe(self, recipe, lang):
+    @staticmethod
+    def translate_recipe(recipe, lang):
         new_recipe = recipe.copy()
         new_recipe['name'] = _(recipe['name'], lang)
         return new_recipe
