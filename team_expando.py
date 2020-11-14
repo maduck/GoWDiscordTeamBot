@@ -252,6 +252,10 @@ class TeamExpander:
             pet = kingdom['pet'].copy()
             self.translate_pet(pet, lang)
             kingdom['pet'] = pet
+        if 'event_weapon' in kingdom:
+            kingdom['event_weapon_title'] = _('[FACTION_WEAPON]', lang)
+            kingdom['event_weapon_id'] = kingdom['event_weapon']['id']
+            kingdom['event_weapon'] = _(kingdom['event_weapon']['name'], lang)
 
     def search_class(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.classes:

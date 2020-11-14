@@ -385,6 +385,18 @@ class GameData:
         for kingdom_id, pet_id in self.user_data['pEconomyModel']['FactionRenownRewardPetIds'].items():
             self.kingdoms[int(kingdom_id)]['pet'] = self.pets[pet_id]
 
+        factions = [(k_id, kingdom) for k_id, kingdom in self.kingdoms.items() if
+                    kingdom['underworld'] and kingdom['troop_ids']]
+        for faction_id, faction_data in factions:
+            kingdom_id = faction_data['linked_kingdom_id']
+            faction_weapon = [w['id'] for w in self.weapons.values()
+                              if w['kingdom']['id'] == kingdom_id
+                              and w['requirement'] == 1000
+                              and sorted(w['colors']) == sorted(faction_data['colors'])
+                              and w['rarity'] == 'Epic'
+                              ][-1]
+            self.kingdoms[faction_id]['event_weapon'] = self.weapons[faction_weapon]
+
     def populate_soulforge(self):
         tabs = [
             '[SOULFORGE_TAB_LEVEL]',

@@ -12,4 +12,5 @@
 **{{ kingdom.troop_title }}**:
 {%- for troop in kingdom.troops -%}
 {% if loop.index != 1 %},{% endif %} {{ troop.name }} `#{{ troop.id }}`
-{%- endfor -%}
+{%- endfor %}
+{% if kingdom.event_weapon %}**{{ kingdom.event_weapon_title }}**: {{ kingdom.event_weapon }} `#{{ kingdom.event_weapon_id }}`{% endif %}
