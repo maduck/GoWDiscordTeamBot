@@ -212,7 +212,8 @@ class DiscordBot(BaseBot):
                           f'`[lang]{prefix}spoiler[s] [pet[s]|troop[s]|weapon[s]|kingdom[s]|event[s]]`\n'
                           f'`[lang]{prefix}event[s]`\n'
                           f'`[lang]{prefix}campaign [bronze|silver|gold]`\n'
-                          f'`[lang]{prefix}soulforge`\n',
+                          f'`[lang]{prefix}soulforge`\n'
+                          f'`[lang]{prefix}levels`\n',
                     inline=False)
         e.add_field(name='Admin Commands',
                     value=f'`{prefix}towerconfig`\n'
