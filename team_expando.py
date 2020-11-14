@@ -179,6 +179,12 @@ class TeamExpander:
         troop['kingdom'] = _(troop['kingdom']['Name'], lang)
         troop['spell'] = self.translate_spell(troop['spell_id'], lang)
         troop['spell_title'] = _('[TROOPHELP_SPELL0]', lang)
+        if 'traitstones' not in troop:
+            troop['traitstones'] = []
+        traitstones = []
+        for rune in troop['traitstones']:
+            traitstones.append(f'{_(rune["name"], lang)} ({rune["amount"]})')
+        troop['traitstones'] = traitstones
 
     def enrich_traits(self, traits, lang):
         new_traits = []
