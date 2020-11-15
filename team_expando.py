@@ -375,7 +375,7 @@ class TeamExpander:
                 result['troops_title'] = _('[TROOPS]', lang)
                 if result['troops']:
                     possible_matches.append(result)
-        return self.enrich_traits(possible_matches, lang)
+        return sorted(self.enrich_traits(possible_matches, lang), key=operator.itemgetter('name'))
 
     def search_pet(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.pets:
