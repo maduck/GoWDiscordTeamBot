@@ -525,7 +525,7 @@ class TeamExpander:
         for name, affix in results.items():
             if real_search == extract_search_tag(name):
                 return [affix]
-        return list(results.values())
+        return sorted(results.values(), key=operator.itemgetter('name'))
 
     def search_traitstone(self, search_term, lang):
         real_search = extract_search_tag(search_term)
