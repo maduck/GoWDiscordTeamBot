@@ -276,7 +276,7 @@ class TeamExpander:
                     result = _class.copy()
                     self.translate_class(result, lang)
                     possible_matches.append(result)
-            return possible_matches
+            return sorted(possible_matches, key=operator.itemgetter('name'))
 
     def translate_class(self, _class, lang):
         kingdom = self.kingdoms[_class['kingdom_id']]
