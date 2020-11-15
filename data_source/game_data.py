@@ -391,13 +391,14 @@ class GameData:
                     kingdom['underworld'] and kingdom['troop_ids']]
         for faction_id, faction_data in factions:
             kingdom_id = faction_data['linked_kingdom_id']
-            faction_weapon = [w['id'] for w in self.weapons.values()
-                              if w['kingdom']['id'] == kingdom_id
-                              and w['requirement'] == 1000
-                              and sorted(w['colors']) == sorted(faction_data['colors'])
-                              and w['rarity'] == 'Epic'
-                              ][-1]
-            self.kingdoms[faction_id]['event_weapon'] = self.weapons[faction_weapon]
+            faction_weapons = [w['id'] for w in self.weapons.values()
+                               if w['kingdom']['id'] == kingdom_id
+                               and w['requirement'] == 1000
+                               and sorted(w['colors']) == sorted(faction_data['colors'])
+                               and w['rarity'] == 'Epic'
+                               ]
+            if faction_weapons:
+                self.kingdoms[faction_id]['event_weapon'] = self.weapons[faction_weapons[-1]]
 
     def populate_soulforge(self):
         tabs = [
