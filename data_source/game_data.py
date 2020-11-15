@@ -241,12 +241,14 @@ class GameData:
 
     def get_current_event_kingdom_id(self):
         today = datetime.date.today()
-        world_event = [e for e in self.events
-                       if e['end'] - e['start'] == datetime.timedelta(days=7)
-                       and e['start'] <= today <= e['end']
-                       and e['start'].weekday() == 0
-                       and e['kingdom_id']][0]
-        event_kingdom_id = world_event['kingdom_id']
+        weekly_events = [e for e in self.events
+                         if e['end'] - e['start'] == datetime.timedelta(days=7)
+                         and e['start'] <= today <= e['end']
+                         and e['start'].weekday() == 0
+                         and e['kingdom_id']]
+        if not weekly_events:
+            return 3000
+        event_kingdom_id = weekly_events[0]['kingdom_id']
         return int(event_kingdom_id)
 
     def populate_campaign_tasks(self):
