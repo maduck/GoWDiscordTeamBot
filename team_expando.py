@@ -327,7 +327,7 @@ class TeamExpander:
                     result['talent_matches'] = talent_matches
                     self.translate_talent_tree(result, lang)
                     possible_matches.append(result)
-        return possible_matches
+        return sorted(possible_matches, key=operator.itemgetter('name'))
 
     @staticmethod
     def translate_talent_tree(tree, lang):
