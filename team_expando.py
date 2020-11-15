@@ -447,7 +447,7 @@ class TeamExpander:
                 result = weapon.copy()
                 self.translate_weapon(result, lang)
                 possible_matches.append(result)
-        return possible_matches
+        return sorted(possible_matches, key=operator.itemgetter('name'))
 
     def translate_weapon(self, weapon, lang):
         weapon['name'] = _(weapon['name'], lang)
