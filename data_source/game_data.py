@@ -414,7 +414,8 @@ class GameData:
                 if recipe_id < 1000 or recipe_id in always_available_gachas:
                     continue
                 if not recipe['Name']:
-                    recipe['Name'] = self.troops.get(recipe_id)['name']
+                    recipe['Name'] = self.troops[recipe_id]['name']
+                    recipe['rarity'] = self.troops[recipe_id]['rarity']
                 category = tabs[recipe['Tab']]
                 self.soulforge.setdefault(category, []).append({
                     'name': recipe['Name'],
@@ -422,6 +423,7 @@ class GameData:
                     'costs': recipe['Source'],
                     'start': recipe['StartDate'],
                     'end': recipe['EndDate'],
+                    'rarity': recipe.get('rarity', 'Z'),
                 })
 
     def populate_traitstones(self):

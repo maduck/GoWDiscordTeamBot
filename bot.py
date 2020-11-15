@@ -29,7 +29,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.17.0'
+    VERSION = '0.17.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -138,6 +138,7 @@ class DiscordBot(BaseBot):
         craftable_items = self.expander.get_soulforge(lang)
         e = discord.Embed(title='Soulforge', color=self.WHITE)
         for category, recipes in craftable_items.items():
+            recipes = sorted(recipes, key=operator.itemgetter('rarity', 'id'))
             message_lines = '\n'.join([f'{r["name"]} `{r["id"]}`' for r in recipes])
             e.add_field(name=category, value=message_lines, inline=False)
         await self.answer(message, e)
