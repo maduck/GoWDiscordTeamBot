@@ -135,8 +135,8 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def show_soulforge(self, message, lang, **kwargs):
-        craftable_items = self.expander.get_soulforge(lang)
-        e = discord.Embed(title='Soulforge', color=self.WHITE)
+        title, craftable_items = self.expander.get_soulforge(lang)
+        e = discord.Embed(title=title, color=self.WHITE)
         for category, recipes in craftable_items.items():
             recipes = sorted(recipes, key=operator.itemgetter('rarity', 'id'))
             message_lines = '\n'.join([f'{r["name"]} `{r["id"]}`' for r in recipes])

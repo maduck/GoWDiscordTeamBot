@@ -720,11 +720,12 @@ class TeamExpander:
         return entry
 
     def get_soulforge(self, lang):
+        title = _('[SOULFORGE]', lang)
         craftable_items = {}
         for category, recipes in self.soulforge.items():
             recipe_type = _(category, lang)
             craftable_items[recipe_type] = [self.translate_recipe(r, lang) for r in recipes]
-        return craftable_items
+        return title, craftable_items
 
     @staticmethod
     def translate_recipe(recipe, lang):
