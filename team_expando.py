@@ -535,7 +535,7 @@ class TeamExpander:
             self.translate_traitstone(translated_traitstone, lang)
             if real_search in extract_search_tag(translated_traitstone['name']):
                 result.append(translated_traitstone)
-        return result
+        return sorted(result, key=operator.itemgetter('name'))
 
     def translate_traitstone(self, traitstone, lang):
         troops = []
