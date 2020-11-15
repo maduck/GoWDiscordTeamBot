@@ -1,6 +1,7 @@
 import datetime
 import importlib
 import logging
+import operator
 import re
 
 import translations
@@ -152,7 +153,7 @@ class TeamExpander:
                 elif real_search in name or real_search in kingdom or real_search in _type or real_search in roles:
                     possible_matches.append(troop)
 
-            return possible_matches
+            return sorted(possible_matches, key=operator.itemgetter('name'))
 
     def translate_troop(self, troop, lang):
         troop['name'] = _(troop['name'], lang)
@@ -222,11 +223,11 @@ class TeamExpander:
         kingdom['description'] = _(kingdom['description'], lang)
         kingdom['punchline'] = _(kingdom['punchline'], lang)
         kingdom['troop_title'] = _('[TROOPS]', lang)
-        kingdom['troops'] = [
+        kingdom['troops'] = sorted([
             {'name': _(self.troops[_id]['name'], lang),
              'id': _id
              } for _id in kingdom['troop_ids']
-        ]
+        ], key=operator.itemgetter('name'))
         kingdom['banner_title'] = _('[BANNERS]', lang)
         kingdom['banner'] = self.translate_banner(self.banners[kingdom['id']], lang)
 
