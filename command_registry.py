@@ -167,10 +167,10 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'show_soulforge',
-        'pattern': re.compile(DEFAULT_PATTERN + 'soulforge', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + 'soulforge$', MATCH_OPTIONS)
     },
     {
         'function': 'show_levels',
-        'pattern': re.compile(DEFAULT_PATTERN + 'levels', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + 'levels$', MATCH_OPTIONS)
     },
 ]
