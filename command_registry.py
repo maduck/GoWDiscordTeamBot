@@ -37,7 +37,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'handle_kingdom_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('kingdom'), MATCH_OPTIONS)
+        'pattern': re.compile(SEARCH_PATTERN.format('(kingdom|faction)'), MATCH_OPTIONS)
     },
     {
         'function': 'handle_pet_search',
