@@ -112,7 +112,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'show_tower_data',
-        'pattern': re.compile(DEFAULT_PATTERN + 'tower$', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + r'tower( (?P<range>\d+-\d+))?$', MATCH_OPTIONS)
     },
     {
         'function': 'clear_tower_data',

@@ -186,7 +186,7 @@ class TowerOfDoomData:
 
         return ', '.join(rooms)
 
-    def format_output(self, guild, color, channel, prefix='!'):
+    def format_output(self, guild, color, channel, prefix='!', _range=None):
         my_data = self.get(guild)
 
         tower_data = my_data.get(str(channel.id), {}).items()
@@ -200,6 +200,9 @@ class TowerOfDoomData:
             return e
 
         tower_data = sorted(tower_data, key=operator.itemgetter(0))
+        if _range:
+            _range = _range.split('-')
+            tower_data = [floor for floor in tower_data if int(_range[0]) <= floor[0] <= int(_range[1])]
 
         display = {}
         for key in my_data["rooms"].keys():
