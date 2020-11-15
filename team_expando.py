@@ -395,7 +395,7 @@ class TeamExpander:
                     result = pet.copy()
                     self.translate_pet(result, lang)
                     possible_matches.append(result)
-            return possible_matches
+            return sorted(possible_matches, key=operator.itemgetter('name'))
 
     def translate_pet(self, pet, lang):
         pet['name'] = _(pet['name'], lang)
