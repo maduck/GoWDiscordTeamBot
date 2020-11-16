@@ -655,7 +655,7 @@ class TeamExpander:
     def translate_campaign_task(self, task, lang):
         new_task = task.copy()
         color_code = int(new_task['value1']) if new_task['value1'].isdigit() else 666
-        color = COLORS[color_code].upper() if color_code <= len(COLORS) else '`?`'
+        color = COLORS[color_code].upper() if color_code < len(COLORS) else '`?`'
         if isinstance(new_task.get('y'), str):
             new_task['y'] = _(f'[{new_task["y"].upper()}]', lang)
 
