@@ -449,7 +449,7 @@ class GameData:
                                 if _class['code'] == traits['ClassCode']][0]['id']
                     self.classes[class_id]['traitstones'] = runes
                     self.traitstones[rune['name']]['class_ids'].append(class_id)
-                else:
+                elif traits['Troop'] in self.troops:
                     self.troops[traits['Troop']]['traitstones'] = runes
                     self.traitstones[rune['name']]['troop_ids'].append(traits['Troop'])
         for kingdom_id, runes in self.user_data['pEconomyModel']['Explore_RunePerKingdom'].items():
