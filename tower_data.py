@@ -186,7 +186,7 @@ class TowerOfDoomData:
 
         return ', '.join(rooms)
 
-    def format_output(self, guild, color, channel, prefix='!', _range=None):
+    def format_output(self, guild, color, channel, prefix='!', _range=None, shortened=False):
         my_data = self.get(guild)
 
         tower_data = my_data.get(str(channel.id), {}).items()
@@ -216,11 +216,17 @@ class TowerOfDoomData:
         starting_floor = tower_data[0][0]
         field_header = channel.name
         for floor, floor_data in tower_data:
-            line = f'Floor {floor}: {self.format_floor(my_data, floor, floor_data)}'
+            line = ''
+            if shortened:
+                line = f'{self.format_short_floor(int(floor), floor_data)}'
+            else:
+                line = f'Floor {floor}: {self.format_floor(my_data, int(floor), floor_data)}'
             if len(field_header) + len(line) + sum([len(fl) + 1 for fl in field_lines]) < 1024:
                 field_lines.append(line)
             else:
                 tower_text = '\n'.join(field_lines)
+                if shortened:
+                    tower_text = '/'.join(field_lines)
                 e.add_field(name=field_header, value=tower_text, inline=False)
                 field_lines = [line]
                 starting_floor = floor
@@ -228,6 +234,8 @@ class TowerOfDoomData:
             if floor == starting_floor:
                 field_header = f'Floor {floor}'
         tower_text = '\n'.join(field_lines)
+        if shortened:
+            tower_text = '/'.join(field_lines)
         e.add_field(name=field_header, value=tower_text, inline=False)
         return e
 
@@ -279,3 +287,11 @@ class TowerOfDoomData:
         ])
         e.add_field(name='Options', value=options_text, inline=False)
         return e
+
+    @staticmethod
+    def format_short_floor(floor, floor_data):
+        unlock_rooms = [room for room, contents in floor_data.items() if contents == 'unlock']
+        unlock_room = '?'
+        if unlock_rooms:
+            unlock_room = unlock_rooms[0]
+        return f'{floor}:{unlock_room}'
