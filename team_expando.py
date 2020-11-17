@@ -598,7 +598,7 @@ class TeamExpander:
         if spell['boost'] and spell['boost'] > 100:
             boost = f' [x{int(round(spell["boost"] / 100))}]'
         elif spell['boost'] and spell['boost'] != 1 and spell['boost'] <= 100:
-            boost = f' [{int(round(1 / (spell["boost"] / 100)))}:1]'
+            boost = f' [{100 / spell["boost"]:0.0f}:1]'
 
         description = f'{description}{boost}'
 
