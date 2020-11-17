@@ -201,8 +201,12 @@ class TowerOfDoomData:
 
         tower_data = sorted(tower_data, key=operator.itemgetter(0))
         if _range:
-            _range = _range.split('-')
-            tower_data = [floor for floor in tower_data if int(_range[0]) <= floor[0] <= int(_range[1])]
+            my_range = _range.split('-')
+            tower_data = [floor for floor in tower_data if int(my_range[0]) <= floor[0] <= int(my_range[1])]
+            if not tower_data:
+                e = discord.Embed(title=title, color=color)
+                e.add_field(name='Failure', value=f'No data for floors {_range}.')
+                return e
 
         display = {}
         for key in my_data["rooms"].keys():
