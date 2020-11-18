@@ -3,6 +3,7 @@ import importlib
 import logging
 import operator
 import re
+from pprint import pprint
 
 import translations
 from data_source.game_data import GameData
@@ -149,6 +150,7 @@ class TeamExpander:
                 real_search = extract_search_tag(search_term)
 
                 if real_search == name:
+                    pprint(self.spells[troop['spell_id']])
                     return [troop]
                 elif real_search in name or real_search in kingdom or real_search in _type or real_search in roles:
                     possible_matches.append(troop)

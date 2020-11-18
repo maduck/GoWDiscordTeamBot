@@ -281,10 +281,11 @@ class DiscordBot(BaseBot):
             e = discord.Embed(title=f'{title} search for `{search_term}` found {len(result)} matches.',
                               color=self.WHITE)
             items_found = [formatter.format(item) for item in result]
-            item_chunks = chunks(items_found, 30)
+            chunk_size = 30
+            item_chunks = chunks(items_found, chunk_size)
             for i, chunk in enumerate(item_chunks):
                 chunk_message = '\n'.join(chunk)
-                e.add_field(name=f'results {30 * i + 1} - {30 * i + len(chunk)}', value=chunk_message)
+                e.add_field(name=f'results {chunk_size * i + 1} - {chunk_size * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
     handle_class_search = partialmethod(handle_search, title='Class')
