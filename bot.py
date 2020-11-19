@@ -315,7 +315,9 @@ class DiscordBot(BaseBot):
         table.vrules = prettytable.NONE
         [table.add_row([_class['name'], _class['type_short'], _class['kingdom']]) for _class in result]
 
-        e = await self.generate_embed_from_text(table.get_string().split('\n'), 'Classes', 'Summary')
+        e = await self.generate_embed_from_text(table.get_string().split('\n'),
+                                                _('[CLASS]', lang),
+                                                _('[OVERVIEW]', lang))
         await self.answer(message, e)
 
     async def show_kingdom_summary(self, message, lang, **kwargs):
