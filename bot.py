@@ -321,17 +321,22 @@ class DiscordBot(BaseBot):
     async def show_kingdom_summary(self, message, lang, **kwargs):
         result = self.expander.search_kingdom('summary', lang)
         result.sort(key=operator.itemgetter('name'))
-        name_width = max([len(k['name']) for k in result])
-        col_widths = [name_width, 6, 16]
-        message_lines = [
-            f'{"Name".ljust(col_widths[0])} {"Troops".ljust(col_widths[1])} Linked Faction',
-            ' '.join('-' * col for col in col_widths),
+
+        table = prettytable.PrettyTable()
+        table.field_names = [
+            _('[NAME_A_Z]', lang),
+            _('[TROOPS]', lang),
+            _('[FACTIONS]', lang),
         ]
-        message_lines.extend([f'{kingdom["name"].ljust(col_widths[0])} '
-                              f'{str(len(kingdom["troops"])).ljust(col_widths[1])} '
-                              f'{kingdom["linked_kingdom"] or "-"}'
-                              for kingdom in result])
-        e = await self.generate_embed_from_text(message_lines, 'Kingdoms', 'Summary')
+        table.align = 'l'
+        table.hrules = prettytable.HEADER
+        table.vrules = prettytable.NONE
+        [table.add_row([kingdom['name'], len(kingdom['troops']), kingdom['linked_kingdom'] or '-']) for kingdom in
+         result]
+
+        e = await self.generate_embed_from_text(table.get_string().split('\n'),
+                                                _('[KINGDOMS]', lang),
+                                                _('[OVERVIEW]', lang))
         await self.answer(message, e)
 
     @staticmethod
