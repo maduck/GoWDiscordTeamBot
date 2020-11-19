@@ -8,6 +8,7 @@ from functools import partialmethod
 
 import discord
 import humanize
+import prettytable
 
 import bot_tasks
 import models
@@ -302,18 +303,19 @@ class DiscordBot(BaseBot):
     async def show_class_summary(self, message, lang, **kwargs):
         result = self.expander.search_class('summary', lang)
         result.sort(key=operator.itemgetter('name'))
-        name_width = max([len(c['name']) for c in result])
-        type_width = max([len(c['type_short']) for c in result])
-        col_widths = [name_width, type_width, 16]
-        message_lines = [
-            f'{"Name".ljust(col_widths[0])} {"Type".ljust(col_widths[1])} Kingdom',
-            ' '.join('-' * col for col in col_widths),
+
+        table = prettytable.PrettyTable()
+        table.field_names = [
+            _('[NAME_A_Z]', lang),
+            _('[FILTER_TROOPTYPE]', lang),
+            _('[FILTER_KINGDOMS]', lang)
         ]
-        message_lines.extend([f'{_class["name"].ljust(col_widths[0])} '
-                              f'{_class["type_short"].ljust(col_widths[1])} '
-                              f'{_class["kingdom"]}'
-                              for _class in result])
-        e = await self.generate_embed_from_text(message_lines, 'Classes', 'Summary')
+        table.align = 'l'
+        table.hrules = prettytable.HEADER
+        table.vrules = prettytable.NONE
+        [table.add_row([_class['name'], _class['type_short'], _class['kingdom']]) for _class in result]
+
+        e = await self.generate_embed_from_text(table.get_string().split('\n'), 'Classes', 'Summary')
         await self.answer(message, e)
 
     async def show_kingdom_summary(self, message, lang, **kwargs):
