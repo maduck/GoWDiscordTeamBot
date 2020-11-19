@@ -474,8 +474,8 @@ class DiscordBot(BaseBot):
         await self.subscriptions.add(message.guild, message.channel, platform)
 
         e = self.generate_response('News management', self.WHITE,
-                                   f'Subscribe for {platform.title()}',
-                                   f'News will now be posted into channel {message.channel.name}.')
+                                   f'News for {platform.title()}',
+                                   f'Channel {message.channel.name} is now subscribed and will receive future news.')
         await self.answer(message, e)
 
     @guild_required
@@ -483,14 +483,15 @@ class DiscordBot(BaseBot):
     async def news_unsubscribe(self, message, **kwargs):
         await self.subscriptions.remove(message.guild, message.channel)
 
-        e = self.generate_response('News management', self.WHITE, 'Unsubscribe',
-                                   f'News will *not* be posted into channel {message.channel.name}.')
+        e = self.generate_response('News management', self.WHITE, f'News for all platforms',
+                                   f'News will *not* be posted into channel {message.channel.name} anymore.')
         await self.answer(message, e)
 
     @guild_required
     async def news_status(self, message, **kwargs):
         subscribed = self.subscriptions.is_subscribed(message.guild, message.channel)
-        answer_text = f'News will *not* be posted into channel {message.channel.name}.'
+        answer_text = f'Channel {message.channel.name} is *not* subscribed to any news, ' \
+                      f'try `{kwargs["prefix"]}news subscribe`.'
         if subscribed:
             platforms = ('PC', 'Switch')
             subscribed_platforms = [p for p in platforms if subscribed.get(p.lower())]
