@@ -413,14 +413,12 @@ class DiscordBot(BaseBot):
 
     @guild_required
     async def edit_tower_single(self, message, floor, room, scroll, **kwargs):
-        my_data = self.tower_data.get(message.guild)
-        short = my_data["short"]
         success, response = self.tower_data.edit_floor(message=message, floor=floor, room=room, scroll=scroll)
-        if short:
-            await self.react(message, bool_to_emoticon(success))
-        else:
-            e = self.generate_response('Tower of Doom', self.WHITE, 'Success' if success else 'Failure', response)
-            await self.answer(message, e)
+        if self.tower_data.get(message.guild)['short']:
+            return await self.react(message, bool_to_emoticon(success))
+
+        e = self.generate_response('Tower of Doom', self.WHITE, 'Success' if success else 'Failure', response)
+        await self.answer(message, e)
 
     @guild_required
     async def edit_tower_floor(self, message, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi=None,
