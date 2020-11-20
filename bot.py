@@ -426,9 +426,6 @@ class DiscordBot(BaseBot):
     async def edit_tower_floor(self, message, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi=None,
                                **kwargs):
 
-        my_data = self.tower_data.get(message.guild)
-        short = my_data['short']
-
         rooms = ('ii', 'iii', 'iv', 'v', 'vi')
         scrolls = (scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi)
 
@@ -438,7 +435,7 @@ class DiscordBot(BaseBot):
         ]
         success = all([r[0] for r in rooms])
 
-        if short:
+        if self.tower_data.get(message.guild)['short']:
             return await self.react(message, bool_to_emoticon(success))
 
         e = discord.Embed(title='Tower of Doom', color=self.WHITE)
