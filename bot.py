@@ -19,7 +19,7 @@ from discord_helpers import admin_required, guild_required
 from game_constants import CAMPAIGN_COLORS
 from help import get_help_text, get_tower_help_text
 from jobs.news_downloader import NewsDownloader
-from team_expando import TeamExpander, _
+from search import TeamExpander, _
 from tower_data import TowerOfDoomData
 from translations import HumanizeTranslator, LANGUAGES, LANGUAGE_CODE_MAPPING
 from util import bool_to_emoticon, chunks, debug, pluralize_author

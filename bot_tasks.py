@@ -8,7 +8,7 @@ from base_bot import log
 from configurations import CONFIG
 from game_assets import GameAssets
 from jobs.news_downloader import NewsDownloader
-from team_expando import TeamExpander, update_translations
+from search import TeamExpander, update_translations
 from translations import LANG_FILES
 
 
