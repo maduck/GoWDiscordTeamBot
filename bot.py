@@ -30,7 +30,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.17.2'
+    VERSION = '0.18.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -45,7 +45,7 @@ class DiscordBot(BaseBot):
         log.debug(f'--------------------------- Starting {self.BOT_NAME} v{self.VERSION} --------------------------')
 
         self.expander = TeamExpander()
-        self.tower_data = TowerOfDoomData()
+        self.tower_data = TowerOfDoomData(self.my_emojis)
         self.prefix = models.Prefix(CONFIG.get('default_prefix'))
         self.language = models.Language(CONFIG.get('default_language'))
         self.subscriptions = models.Subscriptions()

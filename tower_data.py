@@ -44,7 +44,8 @@ class TowerOfDoomData:
         ],
     }
 
-    def __init__(self):
+    def __init__(self, emojis):
+        self.emojis = emojis
         self.__data = {}
         self.load_data()
 
@@ -172,8 +173,16 @@ class TowerOfDoomData:
 
     def format_floor(self, my_data, floor, floor_data):
         floor = int(floor)
+        room_emojis = {
+            'I': self.emojis.get('doomroom1'),
+            'II': self.emojis.get('doomroom2'),
+            'III': self.emojis.get('doomroom3'),
+            'IV': self.emojis.get('doomroom4'),
+            'V': self.emojis.get('doomroomboss'),
+        }
         rooms = [
-            f'{my_data["rooms"][r][0]} = {my_data["scrolls"].get(floor_data.get(r, "unknown"))[0]}'
+            f'{room_emojis.get(my_data["rooms"][r][0], my_data["rooms"][r][0])} = '
+            f'{my_data["scrolls"].get(floor_data.get(r, "unknown"))[0]}'
             for r in self.DEFAULT_TOWER_DATA['rooms'].keys()
         ]
         for i, room in enumerate(self.DEFAULT_TOWER_DATA['rooms'].keys()):
