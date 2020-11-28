@@ -43,7 +43,7 @@ class Views:
         return embed
 
     def render_help(self, prefix, lang):
-        title = f'garyatrics.com bot {_("[HELP]")}'
+        title = f'garyatrics.com bot {_("[HELP]", lang)}'
         e = discord.Embed(title=title, color=self.WHITE)
         return self.render_embed(e, f'help/help-{lang}.jinja', prefix=prefix)
 
