@@ -3,6 +3,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from configurations import CONFIG
 from game_constants import RARITY_COLORS
+from search import _
 from util import flatten
 
 
@@ -40,6 +41,11 @@ class Views:
                     value=splitted[title_end + 4:],
                     inline=inline)
         return embed
+
+    def render_help(self, prefix, lang):
+        title = f'garyatrics.com bot {_("[HELP]")}'
+        e = discord.Embed(title=title, color=self.WHITE)
+        return self.render_embed(e, f'help/help-{lang}.jinja', prefix=prefix)
 
     def render_weapon(self, weapon, shortened):
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
