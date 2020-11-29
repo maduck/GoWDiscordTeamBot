@@ -46,7 +46,7 @@ EVENT_TYPES = {
     7: '[DELVE_EVENT]',
     8: '[TOWER_OF_DOOM]',
     9: '[HIJACK]',
-    10: '[ADVENTURE_BOARD_SPECIAL_EVENT]',
+    10: '[WEEKLY_EVENT]',
     11: '[CAMPAIGN]',
     12: '[ARENA]',
 }
