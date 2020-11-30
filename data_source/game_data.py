@@ -245,7 +245,8 @@ class GameData:
                          if e['end'] - e['start'] == datetime.timedelta(days=7)
                          and e['start'] <= today <= e['end']
                          and e['start'].weekday() == 0
-                         and e['kingdom_id']]
+                         and e['kingdom_id']
+                         and e['type'] == '[WEEKLY_EVENT]']
         if not weekly_events:
             return 3000
         event_kingdom_id = weekly_events[0]['kingdom_id']
