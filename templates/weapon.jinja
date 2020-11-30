@@ -16,7 +16,7 @@
 {% set requirement_text = weapon.requirement_text|replace('erhähltlich', 'erhältlich') -%}
 
 {% if weapon.has_mastery_requirement_color and ':' in weapon.requirement_text -%}
-**{{ requirement_text|replace(': ', '**: ') -}}
+**{{ requirement_text|replace(': ', '') -}}**:
 {% else -%}
 {{ requirement_text -}}
 {% endif -%}
