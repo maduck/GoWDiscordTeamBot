@@ -1,41 +1,44 @@
-<T>**__Team Codes__**</T>
-• __Basics__: Just post your team codes, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. The bot will automatically answer with the troops posted in the code. The code can be embedded within more text, and does not need to stand alone.
-<T>**__Searches__**:</T>
-• `{{ prefix }}troop <search>`, e.g. `{{ prefix }}troop elemaugrim`.
-• `{{ prefix }}weapon <search>`, e.g. `{{ prefix }}weapon mang`.
-• `{{ prefix }}pet <search>`, e.g. `{{ prefix }}pet puddling`.
-• `{{ prefix }}class <search>`, e.g. `{{ prefix }}class archer`.
-• `{{ prefix }}kingdom <search>`, e.g. `{{ prefix }}kingdom karakoth`.
-• `{{ prefix }}talent <search>`, e.g. `{{ prefix }}talent mana source`.
-• `{{ prefix }}trait <search>`, e.g. `{{ prefix }}trait impervious`.
-• `{{ prefix }}affix <search>`, e.g. `{{ prefix }}affix dust`.
-• `{{ prefix }}traitstone <search>`, e.g. `{{ prefix }}traitstone shield`.
-<T>**__Search Rules__**:</T>
-• Search both works for ids and parts of their names.
-• Search is case insensitive.
-• Spaces, apostrophes (') and dashes (-) will be ignored.
-• Multiple results will show a list of matched troops.
-• If one matching item is found, the side color will reflect the troop's base rarity.
-<T>**__Overviews__**:</T>
-• Spoilers: `{{ prefix }}spoilers`. Can be filtered down with the following parameters: `pets`, `troops`, `weapons`, `kingdoms`, `events`: `{{ prefix }}spoilers weapons`, or `{{ prefix }}event[s]`
-• Weekly campaign overview: `{{ prefix }}campaign`. Can be filtered with `bronze`, `silver`, or `gold`: `{{ prefix }}campaign silver`
-• Class overview: `{{ prefix }}class summary`
-• Kingdom overview: `{{ prefix }}kingdom summary`
-• Craftable Soulforge items: `{{ prefix }}soulforge`
-• Player level benefits: `{{ prefix }}levels`
+<T>**__Codici squadra__**</T>
+• __Basics__: Pubblica semplicemente i codici della tua squadra, e.g. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. Il bot risponderà automaticamente con le truppe inserite nel codice. Il codice può essere incorporato in più testo e non ha bisogno di restare da solo.
+<T>**__Ricerche__**:</T>
+• `{{ prefix }}troop <truppa>`, per esempio `{{ prefix }}troop elemaugrim`.
+• `{{ prefix }}weapon <arma>`, per esempio `{{ prefix }}weapon mang`.
+• `{{ prefix }}pet <famiglio>`, per esempio `{{ prefix }}pet melmetta`.
+• `{{ prefix }}class <classe>`, per esempio `{{ prefix }}class arciere`.
+• `{{ prefix }}kingdom <regno>`, per esempio `{{ prefix }}kingdom karakoth`.
+• `{{ prefix }}talent <talento>`, per esempio `{{ prefix }}talent fonte del mana`.
+• `{{ prefix }}trait <abilità>`, per esempio `{{ prefix }}trait impervio`.
+• `{{ prefix }}affix <affix>`, per esempio `{{ prefix }}affix polvere`.
+• `{{ prefix }}traitstone <traitstone>`, per esempio `{{ prefix }}traitstone dello scudo`.
+<T>**__Regole di ricerca__**:</T>
+• La ricerca funziona in entrambe nome completo e parti dei loro nomi.
+• La ricerca non fa distinzione tra maiuscole e minuscole.
+• Spazi, apostrofi (') e trattini (-) verranno ignorati.
+• Più risultati mostreranno un elenco di truppe abbinate.
+• Se viene trovato un oggetto corrispondente, il colore del lato rifletterà la rarità di base della truppa.
+<T>**__Panoramiche__**:</T>
+• Spoilers: `{{ prefix }}spoilers`. Può essere filtrato con i seguenti parametri: `pets`, `troops`, `weapons`, `kingdoms`, `events`: `{{ prefix }}spoilers weapons`, o `{{ prefix }}events`
+• Panoramica settimanale della campagna: `{{ prefix }}campaign`. Può essere filtrato con `bronze`, `silver` o `gold`: `{{ prefix }}campaign silver`
+• Panoramica della classe: `{{ prefix }}class summary`
+• Panoramica dello Regno: `{{ prefix }}kingdom summary`
+• Oggetti costruibili di fucina delle anime: `{{ prefix }}soulforge`
+• Vantaggi a livello di giocatore: `{{ prefix }}levels`
 <T>**__Tower of Doom__**:</T>
 Please consult `{{ prefix }}towerhelp`.
 <T>**__Command Modifiers__**:</T>
-• __Translation__: All GoW languages are supported, put the two country code letters (en, fr, de, ru, it, es, zh) in front of the command, e.g. `de{{ prefix }}troop elemaugrim`. This works the same for team codes. **Localized searches will only look for troop names with their respective translations**.',
-• __Shortened output__: Put a "-" in front of any command to make it appear in condensed format, e.g. `-[1075,6251,6699,6007]`, or with language `de-[1075,6251,6699,6007]`. **Note that the language modifier always comes first.**
-<T>**__Bot Specific Commands__**:</T>
-• Display bot version: `{{ prefix }}version`
-• Display bot runtime & uptime: `{{ prefix }}uptime`
-• Get the bot's invite code: `{{ prefix }}invite`
-• Get a random motivation waffles: `{{ prefix }}waffles`
-• Short help: enter `{{ prefix }}quickhelp` to open a short overview of all commands.
-<T>**__Admin Commands__**:</T>
-Administrative commands can only be issued by either the server owner, a member with administration access granted, or users in a group called "admin".
-• __Prefix__: enter `{{ prefix }}prefix <new_prefix>` to set a new prefix. Only the server owner can do that.
-• __News__: Subscribe to news with `{{ prefix }}news subscribe pc` or `{{ prefix }}news subscribe switch` to subscribe to either news. Check the status with `{{ prefix }}news`.
-• __Default Language__: Change default language for your server with `{{ prefix }}lang <lang>`, e.g. `{{ prefix }}lang fr` (see above for valid language codes).
+• __Traduzione__:
+Sono supportate tutte le lingue GoW, inserisci le due lettere del codice del paese (en, fr, de, ru, it, es, zh) davanti al comando, ad es. `it{{ prefix }}troop elemaugrim`. Funziona allo stesso modo per i codici di squadra. **Le ricerche localizzate cercheranno solo i nomi delle truppe con le rispettive traduzioni**.',
+• __Informazione ridotta__: Metti un "-" davanti a qualsiasi comando per farlo apparire in formato condensato, per esempio `-[1075,6251,6699,6007]`, o con la lingua `it-[1075,6251,6699,6007]`. ** Tieni presente che il modificatore della lingua viene sempre per primo. **
+<T>**__Comandi specifici del bot__**:</T>
+• Visualizza la versione del bot: `{{ prefix }}version`
+• Visualizza runtime e uptime del bot: `{{ prefix }}uptime`
+• Ottieni il codice di invito del bot: `{{ prefix }}invite`
+• Ottieni waffle motivazionali casuali: `{{ prefix }}waffles`
+• Breve aiuto: inserisci  `{{ prefix }}quickhelp` per aprire una breve panoramica di tutti i comandi.
+<T>**__Comandi dell'amministratore__**:</T>
+I comandi amministrativi possono essere impartiti solo dal proprietario del server, da un membro con accesso amministrativo concesso o dagli utenti di un gruppo denominato "admin".
+• __Prefix__: inserisci `{{ prefix }}prefix <nuovo prefisso>` per impostare un nuovo prefisso. Solo il proprietario del server può farlo.
+• __News__: Iscriviti alle notizie con `{{ prefix }}news subscribe pc` o `{{ prefix }}news subscribe switch` per iscriverti a entrambe le notizie. Controlla lo stato con `{{ prefix }}news`.
+• __Lingua di default__: Cambia la lingua predefinita per il tuo server con `{{ prefix }}lang <lang>`, per esempio `{{ prefix }}lang it` (puoi vedere sopra i codici di lingua validi).
+
+Questa meravigliosa traduzione comunitaria è stata fornita da Yara.
