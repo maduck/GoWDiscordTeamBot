@@ -469,6 +469,16 @@ class DiscordBot(BaseBot):
                                    f'Channel {message.channel.name} is now subscribed and will receive future news.')
         await self.answer(message, e)
 
+    async def show_toplist(self, message, toplist_id, lang, **kwargs):
+        toplist = self.expander.translate_toplist(toplist_id, lang)
+        e = self.views.render_toplist(toplist)
+        await self.answer(message, e)
+
+    async def create_toplist(self, message, description, items, lang, **kwargs):
+        toplist = await self.expander.create_toplist(message, description, items, lang)
+        e = self.views.render_toplist(toplist)
+        await self.answer(message, e)
+
     @guild_required
     @admin_required
     async def news_unsubscribe(self, message, **kwargs):

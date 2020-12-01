@@ -205,3 +205,11 @@ class Views:
     def render_levels(self, levels):
         e = discord.Embed(title='Level progression overview', color=self.WHITE)
         return self.render_embed(e, 'levels.jinja', levels=levels)
+
+    def render_toplist(self, toplist):
+        if not toplist:
+            e = discord.Embed(title='Toplist not found.', color=self.BLACK)
+            return e
+        e = discord.Embed(title=f'Toplist ID `{toplist["id"]}` by {toplist["author_name"]}', color=self.WHITE)
+        e.timestamp = toplist['created']
+        return self.render_embed(e, 'toplist.jinja', description=toplist['description'], items=toplist['items'][:5])

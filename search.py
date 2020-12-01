@@ -7,6 +7,7 @@ import re
 import translations
 from data_source.game_data import GameData
 from game_constants import COLORS, TROOP_RARITIES, WEAPON_RARITIES
+from models.toplist import Toplist
 
 LOGLEVEL = logging.DEBUG
 
@@ -58,6 +59,7 @@ class TeamExpander:
         self.traitstones = world.traitstones
         self.levels = world.levels
         self.rooms = {}
+        self.toplists = Toplist()
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -751,3 +753,25 @@ class TeamExpander:
             'bonus': _(level['bonus'], lang),
         } for level in self.levels]
         return levels
+
+    def translate_toplist(self, toplist_id, lang):
+        toplist = self.toplists.get(toplist_id)
+        if not toplist:
+            return None
+        result = toplist.copy()
+        troops = []
+        for troop_id in toplist['items']:
+            troop = self.troops.get(int(troop_id.strip()))
+            if not troop:
+                continue
+            my_troop = troop.copy()
+            self.translate_troop(my_troop, lang)
+            troops.append(my_troop)
+        result['items'] = troops
+        return result
+
+    async def create_toplist(self, message, description, items, lang):
+        toplist_id = await self.toplists.add(message.author.id, message.author.name, description, items)
+        toplist = self.translate_toplist(toplist_id, lang)
+
+        return toplist

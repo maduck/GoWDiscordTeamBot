@@ -173,4 +173,12 @@ COMMAND_REGISTRY = [
         'function': 'show_levels',
         'pattern': re.compile(DEFAULT_PATTERN + 'levels$', MATCH_OPTIONS)
     },
+    {
+        'function': 'create_toplist',
+        'pattern': re.compile(DEFAULT_PATTERN + r'toplist (?P<description>.+)? (?P<items>(\d+,?)+)$', MATCH_OPTIONS)
+    },
+    {
+        'function': 'show_toplist',
+        'pattern': re.compile(DEFAULT_PATTERN + r'toplist (?P<toplist_id>[a-zA-Z0-9]+)$', MATCH_OPTIONS)
+    },
 ]
