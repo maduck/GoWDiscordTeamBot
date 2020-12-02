@@ -770,8 +770,9 @@ class TeamExpander:
         result['items'] = troops
         return result
 
-    async def create_toplist(self, message, description, items, lang):
-        toplist_id = await self.toplists.add(message.author.id, message.author.name, description, items)
+    async def create_toplist(self, message, description, items, lang, update_id):
+        toplist_id = await self.toplists.add(message.author.id, message.author.display_name, description, items,
+                                             update_id)
         toplist = self.translate_toplist(toplist_id, lang)
 
         return toplist

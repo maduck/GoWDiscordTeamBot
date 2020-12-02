@@ -11,7 +11,7 @@ class DB:
         self.connect()
 
     def connect(self):
-        self.conn = sqlite3.connect(self.filename)
+        self.conn = sqlite3.connect(self.filename, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
 

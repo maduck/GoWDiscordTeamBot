@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 from configurations import CONFIG
 from game_constants import RARITY_COLORS
 from search import _
-from util import flatten
+from util import chunks, flatten
 
 
 class Views:
@@ -211,5 +211,28 @@ class Views:
             e = discord.Embed(title='Toplist not found.', color=self.BLACK)
             return e
         e = discord.Embed(title=f'Toplist ID `{toplist["id"]}` by {toplist["author_name"]}', color=self.WHITE)
+        e.set_footer(text='Last modified')
         e.timestamp = toplist['created']
-        return self.render_embed(e, 'toplist.jinja', description=toplist['description'], items=toplist['items'][:5])
+        chunk_size = 5
+        item_chunks = chunks(toplist['items'], chunk_size)
+        for i, chunk in enumerate(item_chunks, start=1):
+            formatted_chunk = [
+                f'**{chunk_size * (i - 1) + j}. {self.my_emojis.get(item["color_code"])} {item["name"]}**'
+                f'({item["kingdom"]} {item["rarity"]}) '
+                f'{item["spell"]["description"]}'
+                for j, item in enumerate(chunk, start=1)]
+            chunk_message = '\n'.join(formatted_chunk)
+            title = f'__{(i - 1) * chunk_size + 1}...{i * chunk_size}__'
+            if i == 1:
+                title = toplist['description']
+            e.add_field(name=title, value=chunk_message, inline=False)
+
+        return e
+
+    def render_my_toplists(self, toplists, author_name):
+        e = discord.Embed(title='Toplists', color=self.WHITE)
+        message_lines = []
+        for toplist in toplists:
+            message_lines.append(f'**{toplist["id"]}** {toplist["description"]}')
+        e.add_field(name=f'Overview for {author_name}', value='\n'.join(message_lines), inline=False)
+        return e

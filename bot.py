@@ -19,6 +19,7 @@ from discord_helpers import admin_required, guild_required
 from game_constants import CAMPAIGN_COLORS
 from help import get_tower_help_text
 from jobs.news_downloader import NewsDownloader
+from models.toplist import ToplistError
 from search import TeamExpander, _
 from tower_data import TowerOfDoomData
 from translations import HumanizeTranslator, LANGUAGES, LANGUAGE_CODE_MAPPING
@@ -30,7 +31,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.18.3'
+    VERSION = '0.19.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -475,8 +476,24 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def create_toplist(self, message, description, items, lang, **kwargs):
-        toplist = await self.expander.create_toplist(message, description, items, lang)
-        e = self.views.render_toplist(toplist)
+        try:
+            toplist = await self.expander.create_toplist(message, description, items, lang, update_id=kwargs.get('_id'))
+            e = self.views.render_toplist(toplist)
+        except ToplistError as te:
+            e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))
+        await self.answer(message, e)
+
+    async def delete_toplist(self, message, _id, **kwargs):
+        try:
+            await self.expander.toplists.remove(message.author.id, _id)
+            e = self.generate_response('Toplist', self.WHITE, 'Deletion', f'Toplist `{_id}` was successfully deleted.')
+        except ToplistError as te:
+            e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))
+        await self.answer(message, e)
+
+    async def show_my_toplists(self, message, **kwargs):
+        toplists = self.expander.toplists.get_my_toplists(message.author.id)
+        e = self.views.render_my_toplists(toplists, message.author.display_name)
         await self.answer(message, e)
 
     @guild_required

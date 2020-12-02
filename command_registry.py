@@ -175,10 +175,26 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'create_toplist',
-        'pattern': re.compile(DEFAULT_PATTERN + r'toplist (?P<description>.+)? (?P<items>(\d+,?)+)$', MATCH_OPTIONS)
+        'pattern': re.compile(
+            DEFAULT_PATTERN + r'toplist update (?P<_id>[a-zA-Z0-9]+) (?P<description>.+)? (?P<items>(\d{4},?)+)$',
+            MATCH_OPTIONS)
+    },
+    {
+        'function': 'delete_toplist',
+        'pattern': re.compile(
+            DEFAULT_PATTERN + r'toplist delete (?P<_id>[a-zA-Z0-9]+)$', MATCH_OPTIONS)
+    },
+    {
+        'function': 'create_toplist',
+        'pattern': re.compile(DEFAULT_PATTERN + r'toplist (?P<description>.+)? (?P<items>(\d{4},?)+)$',
+                              MATCH_OPTIONS)
     },
     {
         'function': 'show_toplist',
         'pattern': re.compile(DEFAULT_PATTERN + r'toplist (?P<toplist_id>[a-zA-Z0-9]+)$', MATCH_OPTIONS)
+    },
+    {
+        'function': 'show_my_toplists',
+        'pattern': re.compile(DEFAULT_PATTERN + r'toplists$', MATCH_OPTIONS)
     },
 ]

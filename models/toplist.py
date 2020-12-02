@@ -5,6 +5,12 @@ from hashids import Hashids
 
 from models import DB
 
+MAX_TOPLISTS = 5
+
+
+class ToplistError(Exception):
+    pass
+
 
 class Toplist:
     def __init__(self):
@@ -32,39 +38,73 @@ class Toplist:
     def get(self, toplist_id):
         return self.toplists.get(toplist_id)
 
-    async def add(self, author_id, author_name, description, items):
-        hashids = Hashids(salt=author_name)
-        new_id = hashids.encode(len(self.toplists)).lower()
+    async def add(self, author_id, author_name, description, items, update_id):
+        _id = update_id
+        if not update_id:
+            if len(self.get_my_toplists(author_id)) >= MAX_TOPLISTS:
+                raise ToplistError(f'You have reached the maximum amount of {MAX_TOPLISTS} toplists.'
+                                   f' Please consider deleting some using `!toplist delete <id>`.')
+            _id = self.generate_new_id(author_name)
+        elif update_id not in self.toplists:
+            raise ToplistError('The toplist you are trying to update does not exist.')
+        elif str(author_id) != self.toplists[update_id]['author_id']:
+            raise ToplistError('The toplist you are trying to update belongs to someone else.')
+
+        chopped_items = [i.strip() for i in items.split(',')][:30]
         toplist = {
-            'id': new_id,
-            'author_id': author_id,
+            'id': _id,
+            'author_id': str(author_id),
             'author_name': author_name,
             'description': description,
-            'items': items.split(','),
-            'created': datetime.datetime.now(),
-            'modified': datetime.datetime.now(),
+            'items': chopped_items,
+            'created': datetime.datetime.utcnow(),
+            'modified': datetime.datetime.utcnow(),
         }
-        self.toplists[new_id] = toplist
+        self.toplists[_id] = toplist
         lock = asyncio.Lock()
         async with lock:
             db = DB()
             db.cursor.execute(
-                'REPLACE INTO Toplist (id, author_id, author_name, description, items, created, modified) '
-                'VALUES (?, ?, ?, ?, ?, ?, ?)',
-                (new_id,
+                'REPLACE INTO Toplist (id, author_id, author_name, description, items, modified) '
+                'VALUES (?, ?, ?, ?, ?, ?)',
+                (_id,
                  author_id,
                  author_name,
                  description,
-                 items,
-                 toplist['created'],
+                 ','.join(chopped_items),
                  toplist['modified'],
                  ))
             db.commit()
             db.close()
-        return new_id
+        return _id
+
+    async def remove(self, author_id, _id):
+        if _id not in self.toplists:
+            raise ToplistError('The toplist you are trying to delete does not exist.')
+        elif str(author_id) != self.toplists[_id]['author_id']:
+            raise ToplistError('The toplist you are trying to delete belongs to someone else.')
+        lock = asyncio.Lock()
+        async with lock:
+            db = DB()
+            db.cursor.execute('DELETE FROM Toplist WHERE id = ?', (_id,))
+            db.commit()
+            db.close()
+        del (self.toplists[_id])
+
+    def get_my_toplists(self, author_id):
+        return [t for t in self.toplists.values() if str(author_id) == t['author_id']]
 
     def __len__(self):
         return len(self.toplists)
 
     def __iter__(self):
         yield from self.toplists.values()
+
+    def generate_new_id(self, author_name):
+        hashids = Hashids(salt=author_name)
+        offset = 0
+        while True:
+            _id = hashids.encode(len(self.toplists) + offset).lower()
+            if _id not in self.toplists:
+                return _id
+            offset += 1
