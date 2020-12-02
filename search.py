@@ -761,6 +761,8 @@ class TeamExpander:
         result = toplist.copy()
         troops = []
         for troop_id in toplist['items']:
+            if not troop_id:
+                continue
             troop = self.troops.get(int(troop_id.strip()))
             if not troop:
                 continue
