@@ -234,5 +234,7 @@ class Views:
         message_lines = []
         for toplist in toplists:
             message_lines.append(f'**{toplist["id"]}** {toplist["description"]}')
+        if not message_lines:
+            message_lines = ['No toplists created yet.']
         e.add_field(name=f'Overview for {author_name}', value='\n'.join(message_lines), inline=False)
         return e
