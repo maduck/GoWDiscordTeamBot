@@ -174,9 +174,15 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(DEFAULT_PATTERN + 'levels$', MATCH_OPTIONS)
     },
     {
-        'function': 'create_toplist',
+        'function': 'update_toplist',
         'pattern': re.compile(
             DEFAULT_PATTERN + r'toplist update (?P<_id>[a-zA-Z0-9]+) (?P<description>.+)? (?P<items>(\d{4},?)+)$',
+            MATCH_OPTIONS)
+    },
+    {
+        'function': 'append_toplist',
+        'pattern': re.compile(
+            DEFAULT_PATTERN + r'toplist append (?P<_id>[a-zA-Z0-9]+) (?P<items>(\d{4},?)+)$',
             MATCH_OPTIONS)
     },
     {

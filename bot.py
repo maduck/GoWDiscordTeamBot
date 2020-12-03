@@ -31,7 +31,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.19.1'
+    VERSION = '0.19.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -478,6 +478,17 @@ class DiscordBot(BaseBot):
     async def create_toplist(self, message, description, items, lang, **kwargs):
         try:
             toplist = await self.expander.create_toplist(message, description, items, lang, update_id=kwargs.get('_id'))
+            e = self.views.render_toplist(toplist)
+        except ToplistError as te:
+            e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))
+        await self.answer(message, e)
+
+    update_toplist = create_toplist
+
+    async def append_toplist(self, message, _id, items, lang, **kwargs):
+        try:
+            await self.expander.toplists.append(_id, message.author.id, message.author.display_name, items)
+            toplist = self.expander.translate_toplist(_id, lang)
             e = self.views.render_toplist(toplist)
         except ToplistError as te:
             e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))

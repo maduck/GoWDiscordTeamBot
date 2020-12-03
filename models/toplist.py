@@ -60,9 +60,9 @@ class Toplist:
             'created': datetime.datetime.utcnow(),
             'modified': datetime.datetime.utcnow(),
         }
-        self.toplists[_id] = toplist
         lock = asyncio.Lock()
         async with lock:
+            self.toplists[_id] = toplist
             db = DB()
             db.cursor.execute(
                 'REPLACE INTO Toplist (id, author_id, author_name, description, items, modified) '
@@ -89,7 +89,17 @@ class Toplist:
             db.cursor.execute('DELETE FROM Toplist WHERE id = ?', (_id,))
             db.commit()
             db.close()
-        del (self.toplists[_id])
+            del (self.toplists[_id])
+
+    async def append(self, _id, author_id, author_name, new_items):
+        if _id not in self.toplists:
+            raise ToplistError('The toplist you are trying to modify does not exist.')
+
+        toplist = self.toplists[_id]
+        old_items = ','.join(toplist['items'])
+        items = ','.join([old_items, new_items])
+        await self.add(author_id, author_name, toplist['description'], items, _id)
+        return _id
 
     def get_my_toplists(self, author_id):
         return [t for t in self.toplists.values() if str(author_id) == t['author_id']]
