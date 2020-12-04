@@ -121,7 +121,7 @@ class BaseBot(discord.Client):
         message = await channel.fetch_message(payload.message_id)
 
         if not permissions.manage_messages:
-            log.warn('[{message.guild}][{message.channel}][{payload.member.display_name}]'
+            log.warn(f'[{message.guild}][{message.channel}][{payload.member.display_name}]'
                      'Missing permissions to delete message')
             return
         if message.author != me:
