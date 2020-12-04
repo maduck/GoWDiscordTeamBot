@@ -111,7 +111,7 @@ class BaseBot(discord.Client):
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.')
 
     async def on_raw_reaction_add(self, payload):
-        if payload.member.bot:
+        if not payload.member or payload.member.bot:
             return
 
         channel = await self.fetch_channel(payload.channel_id)
