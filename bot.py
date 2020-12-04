@@ -39,6 +39,7 @@ class DiscordBot(BaseBot):
         'embed_links',
         'attach_files',
         'external_emojis',
+        'manage_messages'
     ]
 
     def __init__(self, *args, **kwargs):
