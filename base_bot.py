@@ -115,13 +115,16 @@ class BaseBot(discord.Client):
             return
 
         channel = await self.fetch_channel(payload.channel_id)
-        message = await channel.fetch_message(payload.message_id)
-        await message.clear_reaction(payload.emoji)
+        me = channel.guild.me
 
-        if message.author != message.channel.guild.me:
+        message = await channel.fetch_message(payload.message_id)
+
+        if message.author != me:
             return
         if payload.member.display_name != message.embeds[0].author.name:
             return
+
+        await message.clear_reaction(payload.emoji)
         if payload.emoji.name == '❌':
             log.debug(f'[{message.guild}][{message.channel}][{payload.member.display_name}] '
                       f'requested deletion of message {message.id}')
