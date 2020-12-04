@@ -214,6 +214,13 @@ class DiscordBot(BaseBot):
                           f'`[lang]{prefix}soulforge`\n'
                           f'`[lang]{prefix}levels`\n',
                     inline=False)
+        e.add_field(name='Toplists',
+                    value=f'`[lang]{prefix}toplists`\n'
+                          f'`[lang]{prefix}toplist <description> <troops>`\n'
+                          f'`[lang]{prefix}toplist delete <id>`\n'
+                          f'`[lang]{prefix}toplist update <id> <description> <troops>`\n'
+                          f'`[lang]{prefix}toplist append <id> <more_troops>`\n'
+                    )
         e.add_field(name='Admin Commands',
                     value=f'`{prefix}towerconfig`\n'
                           f'`{prefix}towerclear`\n'
