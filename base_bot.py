@@ -103,11 +103,29 @@ class BaseBot(discord.Client):
             await self.check_for_needed_permissions(message)
         try:
             self.embed_check_limits(embed)
+            embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
             await message.channel.send(embed=embed)
         except discord.errors.Forbidden:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
         except EmbedLimitsExceed as e:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.')
+
+    async def on_raw_reaction_add(self, payload):
+        if payload.member.bot:
+            return
+
+        channel = await self.fetch_channel(payload.channel_id)
+        message = await channel.fetch_message(payload.message_id)
+        await message.clear_reaction(payload.emoji)
+
+        if message.author != message.channel.guild.me:
+            return
+        if payload.member.display_name != message.embeds[0].author.name:
+            return
+        if payload.emoji.name == '❌':
+            log.debug(f'[{message.guild}][{message.channel}][{payload.member.display_name}] '
+                      f'requested deletion of message {message.id}')
+            return await message.delete()
 
     async def on_guild_join(self, guild):
         log.debug(f'Joined guild {guild} (id {guild.id}) Now in {len(self.guilds)} guilds.')
