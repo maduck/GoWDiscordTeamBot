@@ -118,7 +118,11 @@ class BaseBot(discord.Client):
         me = channel.guild.me
         permissions = channel.permissions_for(me)
 
-        message = await channel.fetch_message(payload.message_id)
+        try:
+            message = await channel.fetch_message(payload.message_id)
+        except discord.errors.NotFound:
+            log.debug(f'Tried to react to an emoji for a nonexistent message: {payload}')
+            return
 
         if message.author != me:
             return
