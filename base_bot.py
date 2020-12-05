@@ -129,8 +129,7 @@ class BaseBot(discord.Client):
         if payload.member.display_name != message.embeds[0].author.name:
             return
         if not permissions.manage_messages:
-            log.warn(f'[{message.guild}][{message.channel}][{payload.member.display_name}] '
-                     'Missing permissions to delete message')
+            await message.add_reaction('⛔')
             return
 
         await message.clear_reaction(payload.emoji)
