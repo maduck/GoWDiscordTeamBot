@@ -123,6 +123,9 @@ class BaseBot(discord.Client):
         except discord.errors.NotFound:
             log.debug(f'Tried to react to an emoji for a nonexistent message: {payload}')
             return
+        except discord.errors.Forbidden:
+            log.debug(f'Was not allowed to delete message: {payload}')
+            return
 
         if message.author != me:
             return
