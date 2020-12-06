@@ -217,7 +217,7 @@ class Views:
         item_chunks = chunks(toplist['items'], chunk_size)
         for i, chunk in enumerate(item_chunks, start=1):
             formatted_chunk = [
-                f'**{chunk_size * (i - 1) + j}. {self.my_emojis.get(item["color_code"])} {item["name"]}**'
+                f'**{chunk_size * (i - 1) + j}. {self.my_emojis.get(item["color_code"])} {item["name"]}** '
                 f'({item["kingdom"]} {item["rarity"]}) '
                 f'{item["spell"]["description"]}'
                 for j, item in enumerate(chunk, start=1)]
