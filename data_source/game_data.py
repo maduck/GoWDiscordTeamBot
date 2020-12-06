@@ -399,7 +399,9 @@ class GameData:
                                and w['rarity'] == 'Epic'
                                ]
             if faction_weapons:
-                self.kingdoms[faction_id]['event_weapon'] = self.weapons[faction_weapons[-1]]
+                weapon_id = faction_weapons[-1]
+                self.kingdoms[faction_id]['event_weapon'] = self.weapons[weapon_id]
+                self.weapons[weapon_id]['event_faction'] = faction_id
 
     def populate_soulforge(self):
         tabs = [

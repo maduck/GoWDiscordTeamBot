@@ -501,6 +501,9 @@ class TeamExpander:
             weapon['requirement_text'] = _('[CLASS_REWARD_TITLE]', lang) + f' ({_class})'
         elif weapon['requirement'] == 1003:
             weapon['requirement_text'] = _('[SOULFORGE_WEAPONS_TAB_EMPTY_ERROR]', lang)
+        if weapon.get('event_faction'):
+            weapon['requirement_text'] += ' (' + _(f'[{weapon["event_faction"]}_NAME]', lang) + ' ' + _(
+                '[FACTION_WEAPON]', lang) + ')'
 
     def search_affix(self, search_term, lang):
         real_search = extract_search_tag(search_term)
