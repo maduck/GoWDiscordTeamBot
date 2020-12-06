@@ -762,17 +762,12 @@ class TeamExpander:
         if not toplist:
             return None
         result = toplist.copy()
-        troops = []
-        for troop_id in toplist['items']:
-            if not troop_id:
+        result['items'] = []
+        for troop_search in toplist['items']:
+            troops = self.search_troop(troop_search, lang)
+            if not troops:
                 continue
-            troop = self.troops.get(int(troop_id.strip()))
-            if not troop:
-                continue
-            my_troop = troop.copy()
-            self.translate_troop(my_troop, lang)
-            troops.append(my_troop)
-        result['items'] = troops
+            result['items'].append(troops[0])
         return result
 
     async def create_toplist(self, message, description, items, lang, update_id):
