@@ -121,10 +121,12 @@ class BaseBot(discord.Client):
         try:
             message = await channel.fetch_message(payload.message_id)
         except discord.errors.NotFound:
-            log.debug(f'Tried to react to an emoji for a nonexistent message: {payload}')
+            log.debug(f'[{channel.guild}][{channel}][{payload.member}] '
+                      f'Tried to react to an emoji for a nonexistent message: {payload.message_id}')
             return
         except discord.errors.Forbidden:
-            log.debug(f'Was not allowed to delete message: {payload}')
+            log.debug(f'[{channel.guild}][{channel}][{payload.member}] '
+                      f'Was not allowed to access message: {payload.message_id}')
             return
 
         if message.author != me:
