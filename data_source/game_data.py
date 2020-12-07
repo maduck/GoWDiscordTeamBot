@@ -3,7 +3,7 @@ import operator
 import re
 
 from game_assets import GameAssets
-from game_constants import COLORS, EVENT_TYPES
+from game_constants import COLORS, EVENT_TYPES, SOULFORGE_ALWAYS_AVAILABLE
 from util import convert_color_array
 
 
@@ -414,10 +414,9 @@ class GameData:
         ]
 
         for recipe in self.soulforge_raw_data.get('pRecipeArray', []):
-            always_available_gachas = [6428, 6529, 1104, 1176, 1177, 1111, 1112, 1175, 1113]
             if recipe['Tab'] in (3, 4):
                 recipe_id = recipe['Target']['Data']
-                if recipe_id < 1000 or recipe_id in always_available_gachas:
+                if recipe_id < 1000 or recipe_id in SOULFORGE_ALWAYS_AVAILABLE:
                     continue
                 if not recipe['Name']:
                     recipe['Name'] = self.troops[recipe_id]['name']

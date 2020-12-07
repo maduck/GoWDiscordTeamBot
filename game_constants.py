@@ -50,3 +50,16 @@ EVENT_TYPES = {
     11: '[CAMPAIGN]',
     12: '[ARENA]',
 }
+SOULFORGE_ALWAYS_AVAILABLE = [
+    6428,  # Xathenos
+    6529,  # Zuul'Got
+    6919,  # Enraged Kurandara
+    1104,  # Eye of Xathenos
+    1176,  # Heart of Xathenos
+    1177,  # Soul of Xathenos
+    1111,  # Shattered Blade
+    1112,  # Broken Guard
+    1175,  # Dawnstone
+    1113,  # Dawnbringer
+    1374,  # Duskbringer
+]
