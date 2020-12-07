@@ -248,7 +248,8 @@ class DiscordBot(BaseBot):
         if not function:
             return
 
-        params['lang'] = params.get('lang').lower() or self.language.get(message.guild)
+        params['lang'] = params.get('lang') or self.language.get(message.guild)
+        params['lang'] = params['lang'].lower()
         debug(message)
         await function(message=message, **params)
 
