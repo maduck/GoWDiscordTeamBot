@@ -102,6 +102,7 @@ class GameData:
             self.weapons[_class['ClassWeaponId']]['class'] = _class['Name']
             for tree in _class['TalentTrees']:
                 self.talent_trees[tree]['classes'].append(self.classes[_class['Id']].copy())
+            self.kingdoms[_class['KingdomId']]['class_id'] = _class['Id']
 
     def populate_talents(self):
         for tree in self.data['TalentTrees']:

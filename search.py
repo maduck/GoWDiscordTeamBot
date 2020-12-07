@@ -250,6 +250,9 @@ class TeamExpander:
             kingdom['deed'] = _(f'[DEED{deed_num:02d}]', lang)
         kingdom['color_title'] = _('[GEM_MASTERY]', lang)
         kingdom['stat_title'] = _('[STAT_BONUS]', lang)
+        if 'class_id' in kingdom:
+            kingdom['class_title'] = _('[CLASS]', lang)
+            kingdom['class'] = _(self.classes[kingdom['class_id']]['name'], lang)
         if 'primary_stat' in kingdom:
             kingdom['primary_stat'] = _(f'[{kingdom["primary_stat"].upper()}]', lang)
         if 'pet' in kingdom:
