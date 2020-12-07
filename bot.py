@@ -16,7 +16,7 @@ from base_bot import BaseBot, log
 from command_registry import COMMAND_REGISTRY
 from configurations import CONFIG
 from discord_helpers import admin_required, guild_required
-from game_constants import CAMPAIGN_COLORS
+from game_constants import CAMPAIGN_COLORS, TASK_SKIP_COSTS
 from help import get_tower_help_text
 from jobs.news_downloader import NewsDownloader
 from models.toplist import ToplistError
@@ -31,7 +31,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.19.6'
+    VERSION = '0.19.7'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -96,7 +96,9 @@ class DiscordBot(BaseBot):
         for category, tasks in campaign_data['campaigns'].items():
             category_lines = [f'**{task["title"]}**: {task["name"]}' for task in tasks]
             color = CAMPAIGN_COLORS.get(category, self.WHITE)
-            e = discord.Embed(title=f'__**{category}**__', description='\n'.join(category_lines), color=color)
+            skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
+            e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
+                              description='\n'.join(category_lines), color=color)
             await self.answer(message, e)
 
     async def show_spoilers(self, message, lang, _filter, **kwargs):

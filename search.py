@@ -651,7 +651,7 @@ class TeamExpander:
         result = {'heading': f'{_("[CAMPAIGN]", lang)}: {_("[TASKS]", lang)}'}
         tiers = ['bronze', 'silver', 'gold']
         result['campaigns'] = {
-            _(f'[MEDAL_LEVEL_{i}]', lang): [self.translate_campaign_task(t, lang) for t in self.campaign_tasks[tier]]
+            f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(t, lang) for t in self.campaign_tasks[tier]]
             for i, tier in enumerate(tiers) if _filter is None or tier.lower() == _filter.lower()
         }
         result['has_content'] = any([len(c) > 0 for c in result['campaigns'].values()])

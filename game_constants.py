@@ -31,10 +31,16 @@ RARITY_COLORS = {
     'Doomed': (186, 0, 0),
 }
 CAMPAIGN_COLORS = {
-    'Bronze': discord.Color.from_rgb(164, 73, 32),
-    'Silver': discord.Color.from_rgb(159, 159, 159),
-    'Gold': discord.Color.from_rgb(238, 191, 15),
+    '[MEDAL_LEVEL_0]': discord.Color.from_rgb(164, 73, 32),
+    '[MEDAL_LEVEL_1]': discord.Color.from_rgb(159, 159, 159),
+    '[MEDAL_LEVEL_2]': discord.Color.from_rgb(238, 191, 15),
 }
+TASK_SKIP_COSTS = {
+    '[MEDAL_LEVEL_0]': 50,
+    '[MEDAL_LEVEL_1]': 100,
+    '[MEDAL_LEVEL_2]': 150,
+}
+
 EVENT_TYPES = {
     0: '[GUILD_WARS]',
     1: '[RAIDBOSS]',
