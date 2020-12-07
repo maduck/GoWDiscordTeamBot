@@ -148,11 +148,13 @@ class TeamExpander:
                 kingdom = extract_search_tag(troop['kingdom'])
                 _type = extract_search_tag(troop['type'])
                 roles = extract_search_tag(''.join(troop['roles']))
+                spell = extract_search_tag(troop['spell']['description'])
                 real_search = extract_search_tag(search_term)
 
                 if real_search == name:
                     return [troop]
-                elif real_search in name or real_search in kingdom or real_search in _type or real_search in roles:
+                elif real_search in name or real_search in kingdom or real_search in _type or real_search in roles \
+                        or real_search in spell:
                     possible_matches.append(troop)
 
             return sorted(possible_matches, key=operator.itemgetter('name'))
