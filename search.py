@@ -648,7 +648,9 @@ class TeamExpander:
             troop = _(self.troops[entry['gacha']]['name'], lang)
             kingdom = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
             entry['extra_info'] = f'{troop} ({kingdom})'
+            entry['kingdom'] = kingdom
 
+        entry['raw_type'] = entry['type']
         entry['type'] = _(entry['type'], lang)
         return entry
 

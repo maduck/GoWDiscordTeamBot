@@ -64,6 +64,10 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(DEFAULT_PATTERN + '(spoilers? )?events?$', MATCH_OPTIONS)
     },
     {
+        'function': 'show_event_kingdoms',
+        'pattern': re.compile(DEFAULT_PATTERN + r'events? kingdoms?$', MATCH_OPTIONS)
+    },
+    {
         'function': 'show_spoilers',
         'pattern': re.compile(DEFAULT_PATTERN + 'spoilers?( (?P<_filter>(weapon|pet|kingdom|troop))s?)?$',
                               MATCH_OPTIONS)
