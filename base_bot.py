@@ -114,6 +114,9 @@ class BaseBot(discord.Client):
         if not payload.member or payload.member.bot:
             return
 
+        if payload.emoji.name != '❌':
+            return
+
         channel = await self.fetch_channel(payload.channel_id)
         me = channel.guild.me
         permissions = channel.permissions_for(me)
@@ -122,11 +125,11 @@ class BaseBot(discord.Client):
             message = await channel.fetch_message(payload.message_id)
         except discord.errors.NotFound:
             log.debug(f'[{channel.guild}][{channel}][{payload.member}] '
-                      f'Tried to react to an emoji for a nonexistent message: {payload.message_id}')
+                      f'Tried to react to an emoji for a nonexistent message: {payload}')
             return
         except discord.errors.Forbidden:
             log.debug(f'[{channel.guild}][{channel}][{payload.member}] '
-                      f'Was not allowed to access message: {payload.message_id}')
+                      f'Was not allowed to access message: {payload}')
             return
 
         if message.author != me:
@@ -138,10 +141,9 @@ class BaseBot(discord.Client):
             return
 
         await message.clear_reaction(payload.emoji)
-        if payload.emoji.name == '❌':
-            log.debug(f'[{message.guild}][{message.channel}][{payload.member.display_name}] '
-                      f'requested deletion of message {message.id}')
-            return await message.delete()
+        log.debug(f'[{message.guild}][{message.channel}][{payload.member.display_name}] '
+                  f'requested deletion of message {message.id}')
+        return await message.delete()
 
     async def on_guild_join(self, guild):
         log.debug(f'Joined guild {guild} (id {guild.id}) Now in {len(self.guilds)} guilds.')
