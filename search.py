@@ -627,6 +627,25 @@ class TeamExpander:
         }
         return result
 
+    def get_event_kingdoms(self, lang):
+        result = []
+        latest_date = datetime.datetime.utcnow()
+        for spoiler in self.spoilers:
+            if spoiler['type'] == 'troop' \
+                    and spoiler['date'].weekday() == 0 \
+                    and spoiler['date'] > latest_date:
+                troop = self.troops[spoiler['id']]
+                if troop['rarity'] == 'Mythic':
+                    continue
+                kingdom = troop['kingdom']
+                result.append({
+                    'start': spoiler['date'],
+                    'end': spoiler['date'] + datetime.timedelta(days=7),
+                    'kingdom': _(kingdom.get('Name'), lang),
+                })
+                latest_date = spoiler['date']
+        return result
+
     def get_events(self, lang):
         today = datetime.date.today()
         events = [self.translate_event(e, lang) for e in self.events if today <= e['start']]

@@ -31,7 +31,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.20.0'
+    VERSION = '0.20.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -171,7 +171,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def show_event_kingdoms(self, message, lang, **kwargs):
-        events = self.expander.get_events(lang)
+        events = self.expander.get_event_kingdoms(lang)
         e = self.views.render_event_kingdoms(events)
         await self.answer(message, e)
 

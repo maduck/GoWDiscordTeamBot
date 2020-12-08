@@ -213,10 +213,9 @@ class Views:
         e = discord.Embed(title='Upcoming Event Kingdoms', color=self.WHITE)
         message_lines = ['```']
         for event in events:
-            if event['raw_type'] == '[WEEKLY_EVENT]':
-                message_lines.append(f'{event["start"].strftime("%b %d")} - '
-                                     f'{event["end"].strftime("%b %d")}  '
-                                     f'{event["kingdom"]}')
+            message_lines.append(f'{event["start"].strftime("%b %d")} - '
+                                 f'{event["end"].strftime("%b %d")}  '
+                                 f'{event["kingdom"]}')
         message_lines = self.trim_text_lines_to_length(message_lines, 900)
         message_lines.append('```')
         e.add_field(name='Spoilers', value='\n'.join(message_lines))
