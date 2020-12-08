@@ -552,7 +552,7 @@ class TeamExpander:
         for troop_id in traitstone['troop_ids']:
             amount = sum([t['amount'] for t in self.troops[troop_id]['traitstones'] if t['id'] == traitstone['id']])
             troops.append([_(self.troops[troop_id]['name'], lang), amount])
-        traitstone['troops'] = troops
+        traitstone['troops'] = sorted(troops, key=operator.itemgetter(1), reverse=True)
 
         classes = []
         for class_id in traitstone['class_ids']:
