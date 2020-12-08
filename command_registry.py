@@ -60,12 +60,12 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(SEARCH_PATTERN.format('traitstone'), MATCH_OPTIONS)
     },
     {
-        'function': 'show_events',
-        'pattern': re.compile(DEFAULT_PATTERN + '(spoilers? )?events?$', MATCH_OPTIONS)
-    },
-    {
         'function': 'show_event_kingdoms',
         'pattern': re.compile(DEFAULT_PATTERN + r'events? kingdoms?$', MATCH_OPTIONS)
+    },
+    {
+        'function': 'show_events',
+        'pattern': re.compile(DEFAULT_PATTERN + '(spoilers? )?events?( (?P<filter>.*))?$', MATCH_OPTIONS)
     },
     {
         'function': 'show_spoilers',

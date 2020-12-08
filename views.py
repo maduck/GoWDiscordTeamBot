@@ -191,19 +191,21 @@ class Views:
         result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
         return result
 
-    def render_events(self, events):
+    def render_events(self, events, _filter):
         e = discord.Embed(title='Upcoming GoW Events', color=self.WHITE)
         message_lines = ['```']
         last_event_date = events[0]['start']
         for event in events:
-            if event['start'] > last_event_date and event['start'].weekday() == 0:
+            if event['start'] > last_event_date and event['start'].weekday() == 0 and not _filter:
                 message_lines.append('')
             last_event_date = event['start']
-            message_lines.append(f'{event["start"].strftime("%b %d")} - '
-                                 f'{event["end"].strftime("%b %d")} '
-                                 f'{event["type"]}'
-                                 f'{":" if event["extra_info"] else ""} '
-                                 f'{event["extra_info"]}')
+            this_line = f'{event["start"].strftime("%b %d")} - ' \
+                        f'{event["end"].strftime("%b %d")} ' \
+                        f'{event["type"]}' \
+                        f'{":" if event["extra_info"] else ""} ' \
+                        f'{event["extra_info"]}'
+            if not _filter or _filter.lower() in this_line.lower():
+                message_lines.append(this_line)
         message_lines = self.trim_text_lines_to_length(message_lines, 900)
         message_lines.append('```')
         e.add_field(name='Spoilers', value='\n'.join(message_lines))
