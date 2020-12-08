@@ -100,14 +100,21 @@ class Views:
         e.title = traitstone['name']
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Runes_Rune{traitstone["id"]:02d}_full.png'
         e.set_thumbnail(url=thumbnail_url)
-        troop_list = ['{0} ({1})'.format(*troop) for troop in traitstone['troops']]
-        troops = self.trim_text_to_length(", ".join(sorted(troop_list)), 900, ',', ', ...')
+        troops = ['{0} ({1})'.format(*troop) for troop in traitstone['troops']]
+        chunk_size = 50
+        troop_chunks = [', '.join(chunk) for chunk in chunks(troops, chunk_size)]
         class_list = ['{0} ({1})'.format(*_class) for _class in traitstone['classes']]
         classes = self.trim_text_to_length(", ".join(sorted(class_list)), 900, ',', ', ...')
         kingdom_list = [k for k in traitstone['kingdoms']]
         kingdoms = self.trim_text_to_length(", ".join(sorted(kingdom_list)), 900, ',', ', ...')
+
         return self.render_embed(e, 'traitstone.jinja',
-                                 traitstone=traitstone, troops=troops, classes=classes, kingdoms=kingdoms)
+                                 traitstone=traitstone,
+                                 troops=troops,
+                                 troop_chunks=troop_chunks,
+                                 chunk_size=chunk_size,
+                                 classes=classes,
+                                 kingdoms=kingdoms)
 
     def render_talent(self, tree, shortened):
         e = discord.Embed(color=self.WHITE)

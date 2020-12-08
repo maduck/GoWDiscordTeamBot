@@ -1,6 +1,6 @@
 {% if kingdoms %}<T>{{ traitstone.kingdoms_title }}</T>
 {{ kingdoms }}{% endif %}
-{% if troops %}<T>{{ traitstone.troops | length }} {{ traitstone.troops_title }}</T>
-{{ troops }}{% endif %}
+{% if troop_chunks %}{% for chunk in troop_chunks %}<T>{{ troops | length }} {{ traitstone.troops_title }} ({{ loop.index0 * chunk_size + 1}} - {% if loop.index * chunk_size > troops|length %}{{ troops | length }}{% else %}{{ loop.index * chunk_size }}{% endif %})</T>
+{{ chunk }}{% endfor %}{% endif %}
 {% if classes %}<T>{{ traitstone.classes | length }} {{ traitstone.classes_title }}</T>
 {{ classes }}{% endif %}
