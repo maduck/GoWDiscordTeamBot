@@ -157,6 +157,7 @@ class GameData:
                 'magic_increase': weapon['SpellPowerIncrease'],
                 'affixes': [self.spells.get(spell) for spell in weapon['Affixes'] if spell in self.spells],
             }
+            self.kingdoms[weapon['KingdomId']]['weapon_ids'].append(weapon['Id'])
 
     def populate_kingdoms(self):
         for kingdom in self.data['Kingdoms']:
@@ -177,6 +178,7 @@ class GameData:
                 'punchline': kingdom['ByLine'],
                 'underworld': bool(kingdom.get('MapIndex', 0)),
                 'troop_ids': kingdom_troops,
+                'weapon_ids': [],
                 'troop_type': kingdom['KingdomTroopType'],
                 'linked_kingdom_id': kingdom.get('SisterKingdomId'),
                 'colors': sorted(kingdom_colors),

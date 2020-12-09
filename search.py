@@ -232,6 +232,12 @@ class TeamExpander:
              'id': _id
              } for _id in kingdom['troop_ids']
         ], key=operator.itemgetter('name'))
+        kingdom['weapons_title'] = _('[WEAPONS:]', lang)
+        kingdom['weapons'] = sorted([
+            {'name': _(self.weapons[_id]['name'], lang),
+             'id': _id
+             } for _id in kingdom['weapon_ids']
+        ], key=operator.itemgetter('name'))
         kingdom['banner_title'] = _('[BANNERS]', lang)
         kingdom['banner'] = self.translate_banner(self.banners[kingdom['id']], lang)
 
