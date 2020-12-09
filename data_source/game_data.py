@@ -349,12 +349,14 @@ class GameData:
                 self.spoilers.append({'type': 'weapon', 'date': release_date, 'id': weapon_id})
         for release in self.user_data['BasicLiveEventArray']:
             gacha_troop = release['GachaTroop']
+            gacha_troops = release.get('GachaTroops', [])
             result = {'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
                       'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
                       # 'id': release['Id'],
                       'type': EVENT_TYPES.get(release['Type'], release['Type']),
                       'names': release.get('Name'),
                       'gacha': gacha_troop,
+                      'troops': gacha_troops,
                       'kingdom_id': release.get('Kingdom')}
             if gacha_troop and gacha_troop in self.troops:
                 self.troops[gacha_troop]['event'] = True
