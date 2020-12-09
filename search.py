@@ -628,7 +628,25 @@ class TeamExpander:
         return result
 
     def get_event_kingdoms(self, lang):
-        result = []
+        result = self.guess_weekly_kingdom_from_troop_spoilers(lang)
+        weekly_events = [e for e in self.events
+                         if e['end'] - e['start'] == datetime.timedelta(days=7)
+                         and e['start'] > datetime.date.today()
+                         and e['start'].weekday() == 0
+                         and e['kingdom_id']
+                         and e['type'] == '[WEEKLY_EVENT]']
+        for event in weekly_events:
+            kingdom = self.kingdoms[event['kingdom_id']]
+            correct_entry = {
+                'start': event['start'],
+                'end': event['end'],
+                'kingdom': _(kingdom.get('name'), lang),
+            }
+            result[event['start']] = correct_entry
+        return sorted(result.values(), key=operator.itemgetter('start'))
+
+    def guess_weekly_kingdom_from_troop_spoilers(self, lang):
+        result = {}
         latest_date = datetime.datetime.utcnow()
         for spoiler in self.spoilers:
             if spoiler['type'] == 'troop' \
@@ -638,11 +656,11 @@ class TeamExpander:
                 if troop['rarity'] == 'Mythic':
                     continue
                 kingdom = troop['kingdom']
-                result.append({
-                    'start': spoiler['date'],
-                    'end': spoiler['date'] + datetime.timedelta(days=7),
-                    'kingdom': _(kingdom.get('Name'), lang),
-                })
+                result[spoiler['date'].date()] = {
+                    'start': spoiler['date'].date(),
+                    'end': spoiler['date'].date() + datetime.timedelta(days=7),
+                    'kingdom': _(kingdom.get('Name'), lang) + ' *',
+                }
                 latest_date = spoiler['date']
         return result
 

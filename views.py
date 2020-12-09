@@ -225,6 +225,7 @@ class Views:
         message_lines = self.trim_text_lines_to_length(message_lines, 900)
         message_lines.append('```')
         e.add_field(name='Spoilers', value='\n'.join(message_lines))
+        e.set_footer(text='* Projected from troop spoilers.')
         return e
 
     def render_levels(self, levels):
