@@ -14,8 +14,8 @@
 {%- for troop in kingdom.troops -%}
 {% if loop.index != 1 %},{% endif %} {{ troop.name }} `#{{ troop.id }}`
 {%- endfor %}
-**{{ kingdom.weapons_title|replace(':', '**:') -}}
+{% if kingdom.weapons -%}**{{ kingdom.weapons_title|replace(':', '**:') -}}
 {%- for weapon in kingdom.weapons -%}
 {% if loop.index != 1 %},{% endif %} {{ weapon.name }} `#{{ weapon.id }}`
-{%- endfor %}
+{%- endfor %}{%- endif -%}
 {% if kingdom.event_weapon %}**{{ kingdom.event_weapon_title }}**: {{ kingdom.event_weapon }} `#{{ kingdom.event_weapon_id }}`{% endif %}
