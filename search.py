@@ -436,24 +436,30 @@ class TeamExpander:
 
     def search_weapon(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.weapons:
-            weapon = self.weapons.get(int(search_term))
-            if weapon:
-                result = weapon.copy()
+            my_weapon = self.weapons.get(int(search_term))
+            if my_weapon:
+                result = my_weapon.copy()
                 self.translate_weapon(result, lang)
                 return [result]
             return []
         possible_matches = []
         for weapon in self.weapons.values():
-            translated_name = extract_search_tag(_(weapon['name'], lang))
+            my_weapon = weapon.copy()
+            self.translate_weapon(my_weapon, lang)
+            translated_name = extract_search_tag(my_weapon['name'])
             real_search = extract_search_tag(search_term)
+            kingdom = extract_search_tag(my_weapon['kingdom'])
+            _type = extract_search_tag(my_weapon['type'])
+            roles = extract_search_tag(''.join(my_weapon['roles']))
+            spell = extract_search_tag(my_weapon['spell']['description'])
             if real_search == translated_name:
-                result = weapon.copy()
-                self.translate_weapon(result, lang)
-                return [result]
-            elif real_search in translated_name:
-                result = weapon.copy()
-                self.translate_weapon(result, lang)
-                possible_matches.append(result)
+                return [my_weapon]
+            elif real_search in translated_name \
+                    or real_search in kingdom \
+                    or real_search in _type \
+                    or real_search in roles \
+                    or real_search in spell:
+                possible_matches.append(my_weapon)
         return sorted(possible_matches, key=operator.itemgetter('name'))
 
     def translate_weapon(self, weapon, lang):
