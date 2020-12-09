@@ -210,7 +210,7 @@ class Views:
                 message_lines.append(this_line)
         message_lines = self.trim_text_lines_to_length(message_lines, 894)
         if not message_lines:
-            message_lines = [_('[QUEST9052_ENDCONV_0]', lang).replace(' && ', '\n')]
+            message_lines = [_('[QUEST9052_ENDCONV_0]', lang).replace('&& ', '\n')]
         message_lines = ['```'] + message_lines + ['```']
         e.add_field(name='Spoilers', value='\n'.join(message_lines))
         return e
