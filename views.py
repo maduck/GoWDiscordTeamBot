@@ -176,6 +176,8 @@ class Views:
 
     @classmethod
     def trim_text_lines_to_length(cls, lines, limit, break_character='\n'):
+        if not lines:
+            return lines
         input_text = break_character.join(lines) + break_character
         trimmed_text = cls.trim_text_to_length(input_text, limit)
         return trimmed_text.split(break_character)
@@ -191,9 +193,9 @@ class Views:
         result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
         return result
 
-    def render_events(self, events, _filter):
-        e = discord.Embed(title='Upcoming GoW Events', color=self.WHITE)
-        message_lines = ['```']
+    def render_events(self, events, _filter, lang):
+        e = discord.Embed(title=_('[EVENTS]', lang), color=self.WHITE)
+        message_lines = []
         last_event_date = events[0]['start']
         for event in events:
             if event['start'] > last_event_date and event['start'].weekday() == 0 and not _filter:
@@ -206,8 +208,10 @@ class Views:
                         f'{event["extra_info"]}'
             if not _filter or _filter.lower() in this_line.lower():
                 message_lines.append(this_line)
-        message_lines = self.trim_text_lines_to_length(message_lines, 900)
-        message_lines.append('```')
+        message_lines = self.trim_text_lines_to_length(message_lines, 894)
+        if not message_lines:
+            message_lines = [_('[QUEST9052_ENDCONV_0]', lang).replace(' && ', '\n')]
+        message_lines = ['```'] + message_lines + ['```']
         e.add_field(name='Spoilers', value='\n'.join(message_lines))
         return e
 
