@@ -331,7 +331,7 @@ class DiscordBot(BaseBot):
         reminder = None
         everyone = message.guild.default_role
         for time_left in range(countdown_minutes, 0, -1):
-            e = self.views.render_pet_rescue(message.guild, pet, time_left, lang)
+            e = self.views.render_pet_rescue(pet, time_left, lang)
             if pet_message:
                 await pet_message.edit(embed=e)
             else:
