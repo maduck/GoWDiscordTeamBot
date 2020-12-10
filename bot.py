@@ -322,7 +322,7 @@ class DiscordBot(BaseBot):
                               color=self.BLACK)
             return await self.answer(message, e, content=message.guild.default_role.mention)
         pet = pets[0]
-        countdown_minutes = int(time_left)
+        countdown_minutes = int(time_left or 59)
         if countdown_minutes > 60:
             countdown_minutes = 60
 
