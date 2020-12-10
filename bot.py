@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.26.2'
+    VERSION = '0.26.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -336,7 +336,10 @@ class DiscordBot(BaseBot):
         for time_left in range(countdown_minutes, 0, -1):
             e = self.views.render_pet_rescue(pet, time_left, lang)
             if pet_message:
-                await pet_message.edit(embed=e)
+                try:
+                    await pet_message.edit(embed=e)
+                except discord.errors.NotFound:
+                    return
             else:
                 reminder = await self.answer(message, embed=None, content=mention)
                 pet_message = await self.answer(message, e)
