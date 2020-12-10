@@ -6,6 +6,7 @@ import os
 import random
 from functools import partialmethod
 
+import asyncio as asyncio
 import discord
 import humanize
 import prettytable
@@ -31,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.25.0'
+    VERSION = '0.26.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -312,6 +313,32 @@ class DiscordBot(BaseBot):
     handle_trait_search = partialmethod(handle_search, title='Trait', formatter='{0[name]}')
     handle_talent_search = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
     handle_traitstone_search = partialmethod(handle_search, title='Traitstone', formatter='{0[name]}')
+
+    async def show_pet_rescue(self, message, search_term, time_left, lang, **kwargs):
+        pets = self.expander.search_pet(search_term, lang)
+        if len(pets) != 1:
+            e = discord.Embed(title=f'Pet search for `{search_term}` yielded {len(pets)} results.',
+                              description='Try again with a different search.',
+                              color=self.BLACK)
+            return await self.answer(message, e)
+        pet = pets[0]
+        countdown_minutes = int(time_left)
+        if countdown_minutes > 60:
+            countdown_minutes = 60
+
+        seconds_in_one_minute = 60
+        pet_message = None
+        for time_left in range(countdown_minutes, 0, -1):
+            e = self.views.render_pet_rescue(pet, time_left, lang)
+            if pet_message:
+                await pet_message.edit(embed=e, delete_after=time_left * seconds_in_one_minute)
+            else:
+                pet_message = await self.answer(message, e)
+            await asyncio.sleep(seconds_in_one_minute)
+        try:
+            await message.delete()
+        except discord.errors.Forbidden:
+            pass
 
     async def show_class_summary(self, message, lang, **kwargs):
         result = self.expander.search_class('summary', lang)

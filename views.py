@@ -68,7 +68,7 @@ class Views:
         e.set_thumbnail(url=thumbnail_url)
         return self.render_embed(e, 'affix.jinja', affix=affix)
 
-    def render_pet(self, pet, shortened):
+    def render_pet(self, pet, shortened=False):
         e = discord.Embed(title='Pet search found one exact match', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
@@ -263,4 +263,12 @@ class Views:
         if not message_lines:
             message_lines = ['No toplists created yet.']
         e.add_field(name=f'Overview for {author_name}', value='\n'.join(message_lines), inline=False)
+        return e
+
+    def render_pet_rescue(self, pet, countdown, lang):
+        e = self.render_pet(pet, lang)
+        e.title = _('[PETRESCUE]', lang)
+        time_left = _('[PETRESCUE_ENDS_IN_HOURS]', lang).replace('%1', '00').replace('%2', f'{countdown:02d}')
+        rescue_message = f'@everyone {_("[PETRESCUE_OVERVIEW_PETSUBTITLE]", lang)}\n{time_left}'
+        e.add_field(name=_('[PETRESCUE_HELP_SHORT]'), value=rescue_message)
         return e

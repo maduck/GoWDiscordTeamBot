@@ -104,7 +104,7 @@ class BaseBot(discord.Client):
         try:
             self.embed_check_limits(embed)
             embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
-            await message.channel.send(embed=embed)
+            return await message.channel.send(embed=embed)
         except discord.errors.Forbidden:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
         except EmbedLimitsExceed as e:

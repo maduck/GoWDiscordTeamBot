@@ -40,6 +40,11 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(SEARCH_PATTERN.format('(kingdom|faction)'), MATCH_OPTIONS)
     },
     {
+        'function': 'show_pet_rescue',
+        'pattern': re.compile(
+            DEFAULT_PATTERN + 'pet rescue (?P<search_term>.+) (?P<time_left>[0-9]{1,2})( ?min)?', MATCH_OPTIONS),
+    },
+    {
         'function': 'handle_pet_search',
         'pattern': re.compile(SEARCH_PATTERN.format('pet'), MATCH_OPTIONS)
     },
