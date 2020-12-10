@@ -58,7 +58,7 @@ EVENT_TYPES = {
 }
 SOULFORGE_ALWAYS_AVAILABLE = [
     6428,  # Xathenos
-    6529,  # Zuul'Got
+    6529,  # Zuul'Goth
     6919,  # Enraged Kurandara
     1104,  # Eye of Xathenos
     1176,  # Heart of Xathenos
