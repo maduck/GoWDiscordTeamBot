@@ -320,7 +320,7 @@ class DiscordBot(BaseBot):
             e = discord.Embed(title=f'Pet search for `{search_term}` yielded {len(pets)} results.',
                               description='Try again with a different search.',
                               color=self.BLACK)
-            return await self.answer(message, e)
+            return await self.answer(message, e, content=message.guild.default_role.mention)
         pet = pets[0]
         countdown_minutes = int(time_left)
         if countdown_minutes > 60:
@@ -328,15 +328,19 @@ class DiscordBot(BaseBot):
 
         seconds_in_one_minute = 60
         pet_message = None
+        reminder = None
+        everyone = message.guild.default_role
         for time_left in range(countdown_minutes, 0, -1):
-            e = self.views.render_pet_rescue(pet, time_left, lang)
+            e = self.views.render_pet_rescue(message.guild, pet, time_left, lang)
             if pet_message:
                 await pet_message.edit(embed=e)
             else:
+                reminder = await self.answer(message, embed=None, content=everyone)
                 pet_message = await self.answer(message, e)
             await asyncio.sleep(seconds_in_one_minute)
         try:
             await pet_message.delete()
+            await reminder.delete()
             await message.delete()
         except discord.errors.Forbidden:
             pass

@@ -265,10 +265,10 @@ class Views:
         e.add_field(name=f'Overview for {author_name}', value='\n'.join(message_lines), inline=False)
         return e
 
-    def render_pet_rescue(self, pet, countdown, lang):
+    def render_pet_rescue(self, guild, pet, countdown, lang):
         e = self.render_pet(pet, lang)
         e.title = _('[PETRESCUE]', lang)
         time_left = _('[PETRESCUE_ENDS_IN_HOURS]', lang).replace('%1', '00').replace('%2', f'{countdown:02d}')
-        rescue_message = f'@everyone {_("[PETRESCUE_OVERVIEW_PETSUBTITLE]", lang)}\n{time_left}'
+        rescue_message = f'{_("[PETRESCUE_OVERVIEW_PETSUBTITLE]", lang)}\n{time_left}'
         e.add_field(name=_('[PETRESCUE_HELP_SHORT]', lang), value=rescue_message)
         return e

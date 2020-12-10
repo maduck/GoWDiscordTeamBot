@@ -98,10 +98,12 @@ class BaseBot(discord.Client):
         except EmbedLimitsExceed as e:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.')
 
-    async def answer(self, message, embed: discord.Embed):
+    async def answer(self, message, embed: discord.Embed, content=''):
         if message.guild:
             await self.check_for_needed_permissions(message)
         try:
+            if not embed:
+                return await message.channel.send(content=content)
             self.embed_check_limits(embed)
             embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
             return await message.channel.send(embed=embed)
