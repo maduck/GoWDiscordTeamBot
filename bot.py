@@ -331,11 +331,12 @@ class DiscordBot(BaseBot):
         for time_left in range(countdown_minutes, 0, -1):
             e = self.views.render_pet_rescue(pet, time_left, lang)
             if pet_message:
-                await pet_message.edit(embed=e, delete_after=time_left * seconds_in_one_minute)
+                await pet_message.edit(embed=e)
             else:
                 pet_message = await self.answer(message, e)
             await asyncio.sleep(seconds_in_one_minute)
         try:
+            await pet_message.delete()
             await message.delete()
         except discord.errors.Forbidden:
             pass
