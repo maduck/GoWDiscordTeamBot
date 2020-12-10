@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.26.1'
+    VERSION = '0.26.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -314,13 +314,13 @@ class DiscordBot(BaseBot):
     handle_talent_search = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
     handle_traitstone_search = partialmethod(handle_search, title='Traitstone', formatter='{0[name]}')
 
-    async def show_pet_rescue(self, message, search_term, time_left, lang, **kwargs):
+    async def show_pet_rescue(self, message, search_term, mention, lang, time_left, **kwargs):
         pets = self.expander.search_pet(search_term, lang)
         if len(pets) != 1:
             e = discord.Embed(title=f'Pet search for `{search_term}` yielded {len(pets)} results.',
                               description='Try again with a different search.',
                               color=self.BLACK)
-            return await self.answer(message, e, content=message.guild.default_role.mention)
+            return await self.answer(message, e)
         pet = pets[0]
         countdown_minutes = int(time_left or 59)
         if countdown_minutes > 60:
@@ -329,18 +329,22 @@ class DiscordBot(BaseBot):
         seconds_in_one_minute = 60
         pet_message = None
         reminder = None
-        everyone = message.guild.default_role
+        if not mention and message.guild:
+            mention = message.guild.default_role
+        elif not mention:
+            mention = message.author.mention
         for time_left in range(countdown_minutes, 0, -1):
             e = self.views.render_pet_rescue(pet, time_left, lang)
             if pet_message:
                 await pet_message.edit(embed=e)
             else:
-                reminder = await self.answer(message, embed=None, content=everyone)
+                reminder = await self.answer(message, embed=None, content=mention)
                 pet_message = await self.answer(message, e)
             await asyncio.sleep(seconds_in_one_minute)
         try:
             await pet_message.delete()
-            await reminder.delete()
+            if not mention:
+                await reminder.delete()
             await message.delete()
         except discord.errors.Forbidden:
             pass
