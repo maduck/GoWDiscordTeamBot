@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.26.5'
+    VERSION = '0.26.6'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -341,7 +341,7 @@ class DiscordBot(BaseBot):
                 except discord.errors.NotFound:
                     return
             else:
-                reminder = await self.answer(message, embed=None, content=mention)
+                reminder = await self.answer(message, embed=None, content=f'{mention} {pet["name"]}')
                 pet_message = await self.answer(message, e)
             await asyncio.sleep(seconds_in_one_minute)
         try:
