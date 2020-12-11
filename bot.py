@@ -333,7 +333,7 @@ class DiscordBot(BaseBot):
             mention = message.guild.default_role
         elif not mention:
             mention = message.author.mention
-        for time_left in range(countdown_minutes, 0, -1):
+        for time_left in range(countdown_minutes, -1, -1):
             e = self.views.render_pet_rescue(pet, time_left, lang)
             if pet_message:
                 try:
