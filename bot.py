@@ -346,8 +346,7 @@ class DiscordBot(BaseBot):
             await asyncio.sleep(seconds_in_one_minute)
         try:
             await pet_message.delete()
-            if not mention:
-                await reminder.delete()
+            await reminder.delete()
             await message.delete()
         except discord.errors.Forbidden:
             pass
