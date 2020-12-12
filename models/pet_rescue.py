@@ -1,7 +1,10 @@
 import datetime
 import math
 
+import asyncio
 import discord
+
+from models import DB
 
 
 class PetRescue:
@@ -52,6 +55,7 @@ class PetRescue:
             self.pet_message = await self.answer_method(self.message, embed)
         else:
             await self.delete_messages()
+            await self.remove_from_db()
             self.active = False
 
     async def delete_messages(self):
@@ -60,3 +64,70 @@ class PetRescue:
             await self.alert_message.delete()
         except discord.errors.Forbidden:
             pass
+
+    @classmethod
+    async def load_rescues(cls, client):
+        db = DB()
+        db_result = db.cursor.execute('SELECT * FROM PetRescue;')
+        rescues = []
+        for entry in db_result:
+            pet = client.expander.pets[entry['pet_id']].copy()
+            client.expander.translate_pet(pet, entry['lang'])
+
+            channel = await client.fetch_channel(entry['channel_id'])
+            message = await channel.fetch_message(entry['message_id'])
+            rescue = PetRescue(
+                pet=pet,
+                time_left=0,
+                message=message,
+                mention=entry['mention'],
+                lang=entry['lang'],
+                answer_method=client.answer
+            )
+            try:
+                rescue.alert_message = await channel.fetch_message(entry['alert_message_id'])
+                rescue.pet_message = await channel.fetch_message(entry['pet_message_id'])
+            except discord.errors.NotFound:
+                continue
+            rescue.start_time = entry['start_time']
+            rescues.append(rescue)
+        db.close()
+        return rescues
+
+    async def add(self, pet_rescues):
+        db = DB()
+        query = 'INSERT INTO PetRescue (guild_name, guild_id, channel_name, channel_id, message_id, pet_id, ' \
+                'alert_message_id, pet_message_id, start_time, lang, mention) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        channel_type = self.message.channel.type
+        if channel_type == discord.ChannelType.private:
+            channel_name = self.message.channel.recipient.name
+        else:
+            channel_name = self.message.channel.name
+
+        params = [
+            self.message.guild.name if self.message.guild else '<Private Message>',
+            self.message.guild.id if self.message.guild else 0,
+            channel_name,
+            self.message.channel.id,
+            self.message.id,
+            self.pet['id'],
+            self.alert_message.id,
+            self.pet_message.id,
+            self.start_time,
+            self.lang,
+            self.mention,
+        ]
+        lock = asyncio.Lock()
+        async with lock:
+            db.cursor.execute(query, params)
+            db.commit()
+            pet_rescues.append(self)
+
+    async def remove_from_db(self):
+        lock = asyncio.Lock()
+        async with lock:
+            db = DB()
+            query = 'DELETE FROM PetRescue WHERE message_id = ?'
+            db.cursor.execute(query, [self.message.id])
+            db.commit()
+            db.close()

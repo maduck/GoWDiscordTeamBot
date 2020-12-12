@@ -6,7 +6,6 @@ import os
 import random
 from functools import partialmethod
 
-import asyncio
 import discord
 import humanize
 import prettytable
@@ -33,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.26.8'
+    VERSION = '0.26.9'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -67,6 +66,8 @@ class DiscordBot(BaseBot):
                           f'&scope=bot' \
                           f'&permissions={self.permissions.value}'
         log.info(f'Logged in as {self.user.name}')
+        self.pet_rescues = await PetRescue.load_rescues(self)
+        log.debug(f'Loaded {len(self.pet_rescues)} pet rescues after restart.')
 
         subscriptions = sum([s.get('pc', True) for s in self.subscriptions])
         log.info(f'{subscriptions} channels subscribed to news.')
@@ -328,9 +329,7 @@ class DiscordBot(BaseBot):
         rescue = PetRescue(pet, time_left, message, mention, lang, self.answer)
         e = self.views.render_pet_rescue(rescue)
         await rescue.create_or_edit_posts(e)
-        lock = asyncio.Lock()
-        async with lock:
-            self.pet_rescues.append(rescue)
+        await rescue.add(self.pet_rescues)
 
     async def show_class_summary(self, message, lang, **kwargs):
         result = self.expander.search_class('summary', lang)
