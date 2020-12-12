@@ -62,7 +62,7 @@ class PetRescue:
         try:
             await self.pet_message.delete()
             await self.alert_message.delete()
-        except discord.errors.Forbidden:
+        except (discord.errors.Forbidden, discord.errors.NotFound):
             pass
 
     @classmethod
