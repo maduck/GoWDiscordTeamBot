@@ -6,7 +6,6 @@ import os
 import random
 from functools import partialmethod
 
-import asyncio as asyncio
 import discord
 import humanize
 import prettytable
@@ -20,6 +19,7 @@ from discord_helpers import admin_required, guild_required
 from game_constants import CAMPAIGN_COLORS, TASK_SKIP_COSTS
 from help import get_tower_help_text
 from jobs.news_downloader import NewsDownloader
+from models.pet_rescue import PetRescue
 from models.toplist import ToplistError
 from search import TeamExpander, _
 from tower_data import TowerOfDoomData
@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.26.6'
+    VERSION = '0.26.7'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -322,33 +322,14 @@ class DiscordBot(BaseBot):
                               color=self.BLACK)
             return await self.answer(message, e)
         pet = pets[0]
-        countdown_minutes = int(time_left or 59)
-        if countdown_minutes > 60:
-            countdown_minutes = 60
 
-        seconds_in_one_minute = 60
-        pet_message = None
-        reminder = None
-        if not mention and message.guild:
-            mention = message.guild.default_role
-        elif not mention:
-            mention = message.author.mention
-        for time_left in range(countdown_minutes, -1, -1):
+        rescue = PetRescue(pet, time_left, message, mention, self.answer)
+
+        for time_left in range(rescue.time_left, -1, -1):
             e = self.views.render_pet_rescue(pet, time_left, lang)
-            if pet_message:
-                try:
-                    await pet_message.edit(embed=e)
-                except discord.errors.NotFound:
-                    return
-            else:
-                reminder = await self.answer(message, embed=None, content=f'{mention} {pet["name"]}')
-                pet_message = await self.answer(message, e)
-            await asyncio.sleep(seconds_in_one_minute)
-        try:
-            await pet_message.delete()
-            await reminder.delete()
-        except discord.errors.Forbidden:
-            pass
+            await rescue.create_or_edit_posts(e)
+            await rescue.sleep_one_minute()
+        await rescue.delete_messages()
 
     async def show_class_summary(self, message, lang, **kwargs):
         result = self.expander.search_class('summary', lang)
