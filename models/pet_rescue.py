@@ -115,7 +115,7 @@ class PetRescue:
             self.pet_message.id,
             self.start_time,
             self.lang,
-            self.mention,
+            str(self.mention),
         ]
         lock = asyncio.Lock()
         async with lock:
