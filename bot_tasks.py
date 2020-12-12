@@ -12,6 +12,18 @@ from search import TeamExpander, update_translations
 from translations import LANG_FILES
 
 
+@tasks.loop(minutes=1, reconnect=True)
+async def task_update_pet_rescues(discord_client):
+    lock = asyncio.Lock()
+    async with lock:
+        discord_client.pet_rescues = [rescue for rescue in discord_client.pet_rescues if rescue.active]
+    if discord_client.pet_rescues:
+        log.debug(f'Dealing with {len(discord_client.pet_rescues)} pet rescues')
+    for rescue in discord_client.pet_rescues:
+        e = discord_client.views.render_pet_rescue(rescue)
+        await rescue.create_or_edit_posts(e)
+
+
 @tasks.loop(minutes=CONFIG.get('news_check_interval_minutes'), reconnect=False)
 async def task_check_for_news(discord_client):
     lock = asyncio.Lock()

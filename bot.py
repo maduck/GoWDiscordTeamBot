@@ -6,6 +6,7 @@ import os
 import random
 from functools import partialmethod
 
+import asyncio
 import discord
 import humanize
 import prettytable
@@ -32,7 +33,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.26.7'
+    VERSION = '0.26.8'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -53,6 +54,7 @@ class DiscordBot(BaseBot):
         self.language = models.Language(CONFIG.get('default_language'))
         self.subscriptions = models.Subscriptions()
         self.views = Views(emojis={})
+        self.pet_rescues = []
 
     async def on_ready(self):
         if not self.bot_connect:
@@ -323,13 +325,12 @@ class DiscordBot(BaseBot):
             return await self.answer(message, e)
         pet = pets[0]
 
-        rescue = PetRescue(pet, time_left, message, mention, self.answer)
-
-        for time_left in range(rescue.time_left, -1, -1):
-            e = self.views.render_pet_rescue(pet, time_left, lang)
-            await rescue.create_or_edit_posts(e)
-            await rescue.sleep_one_minute()
-        await rescue.delete_messages()
+        rescue = PetRescue(pet, time_left, message, mention, lang, self.answer)
+        e = self.views.render_pet_rescue(rescue)
+        await rescue.create_or_edit_posts(e)
+        lock = asyncio.Lock()
+        async with lock:
+            self.pet_rescues.append(rescue)
 
     async def show_class_summary(self, message, lang, **kwargs):
         result = self.expander.search_class('summary', lang)
@@ -642,6 +643,7 @@ if __name__ == '__main__':
     client = DiscordBot()
     bot_tasks.task_check_for_news.start(client)
     bot_tasks.task_check_for_data_updates.start(client)
+    bot_tasks.task_update_pet_rescues.start(client)
     if TOKEN is not None:
         client.run(TOKEN)
     else:

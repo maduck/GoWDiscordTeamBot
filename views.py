@@ -265,10 +265,11 @@ class Views:
         e.add_field(name=f'Overview for {author_name}', value='\n'.join(message_lines), inline=False)
         return e
 
-    def render_pet_rescue(self, pet, countdown, lang):
-        e = self.render_pet(pet, lang)
+    def render_pet_rescue(self, rescue):
+        lang = rescue.lang
+        e = self.render_pet(rescue.pet, lang)
         e.title = _('[PETRESCUE]', lang)
-        time_left = _('[PETRESCUE_ENDS_IN_HOURS]', lang).replace('%1', '00').replace('%2', f'{countdown:02d}')
+        time_left = _('[PETRESCUE_ENDS_IN_HOURS]', lang).replace('%1', '00').replace('%2', f'{rescue.time_left:02d}')
         rescue_message = f'{_("[PETRESCUE_OVERVIEW_PETSUBTITLE]", lang)}\n{time_left}'
         e.add_field(name=_('[PETRESCUE_HELP_SHORT]', lang), value=rescue_message)
         return e
