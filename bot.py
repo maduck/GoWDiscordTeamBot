@@ -156,26 +156,28 @@ class DiscordBot(BaseBot):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(title=_('[INFO]', lang), description='<https://garyatrics.com/>', color=color)
         version_title = _('[SETTINGS_VERSION_NO]', lang).replace(':', '')
-        e.add_field(name=version_title, value=self.VERSION, inline=False)
+        e.add_field(name=f'__{version_title}__:', value=self.VERSION, inline=False)
 
         with HumanizeTranslator(LANGUAGE_CODE_MAPPING.get(lang, lang)) as _t:
             offline = humanize.naturaldelta(self.downtimes)
             start_time = humanize.naturaltime(self.bot_start)
-        e.add_field(name=_('[START]', lang), value=start_time)
-        e.add_field(name=_('[OFF]', lang), value=offline)
+        e.add_field(name=f'__{_("[START]", lang)}__:', value=start_time)
+        e.add_field(name=f'__{_("[OFF]", lang)}__:', value=offline)
 
         bot_runtime = datetime.datetime.now() - self.bot_start
         availability = (bot_runtime - self.downtimes) / bot_runtime
-        e.add_field(name=_('[AVAILABLE]', lang), value=f'{availability:.3%}')
+        e.add_field(name=f'__{_("[AVAILABLE]", lang)}__:', value=f'{availability:.3%}')
 
-        e.add_field(name=_('[INVITE]', lang), value=f'<{self.invite_url}>', inline=False)
+        e.add_field(name=f'__{_("[INVITE]", lang)}__:', value=f'<{self.invite_url}>', inline=False)
         admin_invite = self.invite_url.split('permissions')[0] + 'permissions=8'
-        e.add_field(name=f'{_("[INVITE]", lang)} ({_("[ADMIN]", lang)})', value=f'<{admin_invite}>', inline=False)
+        e.add_field(name=f'__{_("[INVITE]", lang)} ({_("[ADMIN]", lang)})__:', value=f'<{admin_invite}>', inline=False)
 
         my_prefix = self.prefix.get(message.guild)
-        e.add_field(name=_('[HELP]', lang), value=f'`{my_prefix}help` / `{my_prefix}quickhelp`')
+        e.add_field(name=f'__{_("[HELP]", lang)}__:', value=f'`{my_prefix}help` / `{my_prefix}quickhelp`')
 
-        e.add_field(name=_('[CONTRIBUTE]', lang), value='<https://github.com/maduck/GoWDiscordTeamBot>', inline=False)
+        e.add_field(name=f'__{_("[SUPPORT]", lang)}__:', value='<https://discord.gg/XWs7x3cFTU>', inline=False)
+        e.add_field(name=f'__{_("[CONTRIBUTE]", lang)}__:', value='<https://github.com/maduck/GoWDiscordTeamBot>',
+                    inline=False)
         await self.answer(message, e)
 
     async def show_events(self, message, lang, **kwargs):

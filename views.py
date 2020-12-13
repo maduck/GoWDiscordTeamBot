@@ -45,7 +45,9 @@ class Views:
     def render_help(self, prefix, lang):
         title = f'garyatrics.com bot {_("[HELP]", lang)}'
         e = discord.Embed(title=title, color=self.WHITE)
-        return self.render_embed(e, f'help/help-{lang}.jinja', prefix=prefix)
+        self.render_embed(e, f'help/help-{lang}.jinja', prefix=prefix)
+        e.add_field(name=f'__{_("[SUPPORT]", lang)}__:', value='<https://discord.gg/XWs7x3cFTU>')
+        return e
 
     def render_weapon(self, weapon, shortened):
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
