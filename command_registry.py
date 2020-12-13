@@ -8,12 +8,8 @@ SEARCH_PATTERN = DEFAULT_PATTERN + '{0} #?(?P<search_term>.*)$'
 MATCH_OPTIONS = re.IGNORECASE | re.MULTILINE
 COMMAND_REGISTRY = [
     {
-        'function': 'show_version',
-        'pattern': re.compile(DEFAULT_PATTERN + 'version$', MATCH_OPTIONS)
-    },
-    {
-        'function': 'show_uptime',
-        'pattern': re.compile(DEFAULT_PATTERN + 'uptime$', MATCH_OPTIONS)
+        'function': 'show_about',
+        'pattern': re.compile(DEFAULT_PATTERN + 'about$', MATCH_OPTIONS)
     },
     {
         'function': 'handle_troop_search',
@@ -86,10 +82,6 @@ COMMAND_REGISTRY = [
     {
         'function': 'show_quickhelp',
         'pattern': re.compile(DEFAULT_PATTERN + 'quickhelp$', MATCH_OPTIONS)
-    },
-    {
-        'function': 'show_invite_link',
-        'pattern': re.compile(DEFAULT_PATTERN + 'invite$', MATCH_OPTIONS)
     },
     {
         'function': 'show_prefix',

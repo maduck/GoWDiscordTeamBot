@@ -16,7 +16,7 @@ from base_bot import BaseBot, log
 from command_registry import COMMAND_REGISTRY
 from configurations import CONFIG
 from discord_helpers import admin_required, guild_required
-from game_constants import CAMPAIGN_COLORS, TASK_SKIP_COSTS
+from game_constants import CAMPAIGN_COLORS, RARITY_COLORS, TASK_SKIP_COSTS
 from help import get_tower_help_text
 from jobs.news_downloader import NewsDownloader
 from models.pet_rescue import PetRescue
@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.26.10'
+    VERSION = '0.27.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -152,21 +152,30 @@ class DiscordBot(BaseBot):
             e.add_field(name=category, value=message_lines, inline=False)
         await self.answer(message, e)
 
-    async def show_uptime(self, message, lang, **kwargs):
-        e = discord.Embed(title='Uptime', color=self.WHITE)
-        lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
-        with HumanizeTranslator(lang) as _t:
-            uptime = humanize.naturaltime(self.bot_start)
-            downtime = humanize.naturaldelta(self.downtimes)
-        e.add_field(name='Bot running since', value=uptime, inline=False)
-        e.add_field(name='Offline for', value=downtime, inline=False)
+    async def show_about(self, message, lang, **kwargs):
+        color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
+        e = discord.Embed(title=_('[INFO]', lang), description='<https://garyatrics.com/>', color=color)
+        version_title = _('[SETTINGS_VERSION_NO]', lang).replace(':', '')
+        e.add_field(name=version_title, value=self.VERSION, inline=False)
+
+        with HumanizeTranslator(LANGUAGE_CODE_MAPPING.get(lang, lang)) as _t:
+            offline = humanize.naturaldelta(self.downtimes)
+            start_time = humanize.naturaltime(self.bot_start)
+        e.add_field(name=_('[START]', lang), value=start_time)
+        e.add_field(name=_('[OFF]', lang), value=offline)
+
         bot_runtime = datetime.datetime.now() - self.bot_start
         availability = (bot_runtime - self.downtimes) / bot_runtime
-        e.add_field(name='Availability', value=f'{availability:.3%}')
-        await self.answer(message, e)
+        e.add_field(name=_('[AVAILABLE]', lang), value=f'{availability:.3%}')
 
-    async def show_version(self, message, **kwargs):
-        e = discord.Embed(title='Version', description=self.VERSION, color=self.WHITE)
+        e.add_field(name=_('[INVITE]', lang), value=f'<{self.invite_url}>', inline=False)
+        admin_invite = self.invite_url.split('permissions')[0] + 'permissions=8'
+        e.add_field(name=f'{_("[INVITE]", lang)} ({_("[ADMIN]", lang)})', value=f'<{admin_invite}>', inline=False)
+
+        my_prefix = self.prefix.get(message.guild)
+        e.add_field(name=_('[HELP]', lang), value=f'`{my_prefix}help` / `{my_prefix}quickhelp`')
+
+        e.add_field(name=_('[CONTRIBUTE]', lang), value='<https://github.com/maduck/GoWDiscordTeamBot>', inline=False)
         await self.answer(message, e)
 
     async def show_events(self, message, lang, **kwargs):
@@ -241,9 +250,7 @@ class DiscordBot(BaseBot):
                           f'`{prefix}lang[uage[s]] [new_language]`\n',
                     inline=False)
         e.add_field(name='Bot specific',
-                    value=f'`{prefix}version`\n'
-                          f'`{prefix}uptime`\n'
-                          f'`{prefix}invite`\n'
+                    value=f'`{prefix}about`\n'
                           f'`{prefix}waffles`\n',
                     inline=False
                     )
