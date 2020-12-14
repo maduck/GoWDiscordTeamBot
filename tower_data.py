@@ -1,9 +1,9 @@
-import copy
 import json
 import operator
 import os
 import threading
 
+import copy
 import discord
 
 from util import bool_to_emoticon, merge
@@ -178,7 +178,7 @@ class TowerOfDoomData:
             'II': self.emojis.get('doomroom2'),
             'III': self.emojis.get('doomroom3'),
             'IV': self.emojis.get('doomroom4'),
-            'V': self.emojis.get('doomroomboss'),
+            'V': self.emojis.get('doomroom5'),
         }
         rooms = [
             f'{room_emojis.get(my_data["rooms"][r][0], my_data["rooms"][r][0])} = '
