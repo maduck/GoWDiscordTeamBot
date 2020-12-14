@@ -74,8 +74,11 @@ class PetRescue:
             pet = client.expander.pets[entry['pet_id']].copy()
             client.expander.translate_pet(pet, entry['lang'])
 
-            channel = await client.fetch_channel(entry['channel_id'])
-            message = await channel.fetch_message(entry['message_id'])
+            try:
+                channel = await client.fetch_channel(entry['channel_id'])
+                message = await channel.fetch_message(entry['message_id'])
+            except discord.errors.NotFound:
+                continue
             rescue = PetRescue(
                 pet=pet,
                 time_left=0,

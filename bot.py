@@ -67,6 +67,7 @@ class DiscordBot(BaseBot):
                           f'&permissions={self.permissions.value}'
         log.info(f'Logged in as {self.user.name}')
         self.pet_rescues = await PetRescue.load_rescues(self)
+
         log.debug(f'Loaded {len(self.pet_rescues)} pet rescues after restart.')
 
         subscriptions = sum([s.get('pc', True) for s in self.subscriptions])
