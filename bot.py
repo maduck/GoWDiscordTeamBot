@@ -265,6 +265,8 @@ class DiscordBot(BaseBot):
         if message.author.bot:
             return
 
+        await self.wait_until_ready()
+
         user_command = message.content.strip()
         my_prefix = self.prefix.get(message.guild)
         function, params = await self.get_function_for_command(user_command, my_prefix)
