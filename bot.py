@@ -15,7 +15,7 @@ import models
 from base_bot import BaseBot, log
 from command_registry import COMMAND_REGISTRY
 from configurations import CONFIG
-from discord_helpers import admin_required, guild_required
+from discord_wrappers import admin_required, guild_required
 from game_constants import CAMPAIGN_COLORS, RARITY_COLORS, TASK_SKIP_COSTS
 from help import get_tower_help_text
 from jobs.news_downloader import NewsDownloader
