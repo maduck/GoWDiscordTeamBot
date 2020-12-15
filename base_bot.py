@@ -165,6 +165,8 @@ class BaseBot(discord.Client):
 
     @staticmethod
     def is_guild_admin(message):
+        if message.channel.type == discord.ChannelType.private:
+            return True
         has_admin_role = any(['admin' in r.name.lower() for r in message.author.roles])
         is_administrator = any([r.permissions.administrator for r in message.author.roles])
         is_owner = message.author.id == message.guild.owner_id
