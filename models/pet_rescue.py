@@ -11,7 +11,7 @@ class PetRescue:
     SECONDS_PER_MINUTE = 60
     DISPLAY_TIME = datetime.timedelta(minutes=61)
 
-    def __init__(self, pet, time_left, message, mention, lang, answer_method):
+    def __init__(self, pet, time_left, message, mention, lang, answer_method, config):
         self.pet = pet
         time_left = int(time_left or 59)
         if time_left >= 60:
@@ -22,15 +22,16 @@ class PetRescue:
         self.mention = mention
         self.lang = lang
         self.answer_method = answer_method
+        self.config = config.get(message.channel)
 
         self.alert_message = None
         self.pet_message = None
 
     def update_mention(self):
         if not self.mention and self.message.guild:
-            self.mention = self.message.guild.default_role
+            self.mention = self.config.get('mention', self.message.guild.default_role)
         elif not self.mention:
-            self.mention = self.message.author.mention
+            self.mention = self.config.get('mention', self.message.author.mention)
 
     @property
     def reminder(self):
@@ -59,11 +60,22 @@ class PetRescue:
             self.active = False
 
     async def delete_messages(self):
+        if self.config['delete_pet']:
+            await self.delete_message(self.pet_message)
+        if self.config['delete_mention']:
+            await self.delete_message(self.alert_message)
+        if self.config['delete_message']:
+            await self.delete_message(self.message)
+
+    @staticmethod
+    async def delete_message(message):
         try:
-            await self.pet_message.delete()
-            await self.alert_message.delete()
-        except (discord.errors.Forbidden, discord.errors.NotFound):
-            pass
+            await message.delete()
+        except (discord.errors.Forbidden, discord.errors.NotFound, discord.errors.HTTPException):
+            try:
+                await message.add_reaction('⛔')
+            except (discord.errors.Forbidden, discord.errors.HTTPException):
+                pass
 
     @classmethod
     async def load_rescues(cls, client):
@@ -85,7 +97,8 @@ class PetRescue:
                 message=message,
                 mention=entry['mention'],
                 lang=entry['lang'],
-                answer_method=client.answer
+                answer_method=client.answer,
+                config=client.pet_rescue_config,
             )
             try:
                 rescue.alert_message = await channel.fetch_message(entry['alert_message_id'])

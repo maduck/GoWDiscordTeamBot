@@ -36,6 +36,15 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(SEARCH_PATTERN.format('(kingdom|faction)'), MATCH_OPTIONS)
     },
     {
+        'function': 'show_pet_rescue_config',
+        'pattern': re.compile(DEFAULT_PATTERN + 'pet rescue config$', MATCH_OPTIONS)
+    },
+    {
+        'function': 'set_pet_rescue_config',
+        'pattern': re.compile(DEFAULT_PATTERN + 'pet rescue config (?P<key>[_a-zA-Z]+)([ =])(?P<value>.*)',
+                              MATCH_OPTIONS)
+    },
+    {
         'function': 'show_pet_rescue',
         'pattern': re.compile(
             DEFAULT_PATTERN +

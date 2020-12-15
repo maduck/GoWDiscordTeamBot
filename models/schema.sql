@@ -49,3 +49,18 @@ CREATE TABLE IF NOT EXISTS PetRescue
     mention          TEXT
 );
 
+CREATE TABLE IF NOT EXISTS PetRescueConfig
+(
+    guild_name     TEXT,
+    guild_id       INTEGER,
+    channel_name   TEXT,
+    channel_id     INTEGER,
+    mention        TEXT,
+    delete_message INTEGER,
+    delete_mention INTEGER,
+    delete_pet     INTEGER
+);
+
+CREATE UNIQUE INDEX PetRescueConfig_index
+    ON PetRescueConfig (guild_id, channel_id);
+

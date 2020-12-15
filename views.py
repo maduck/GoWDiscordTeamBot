@@ -275,3 +275,27 @@ class Views:
         rescue_message = f'{_("[PETRESCUE_OVERVIEW_PETSUBTITLE]", lang)}\n{time_left}'
         e.add_field(name=_('[PETRESCUE_HELP_SHORT]', lang), value=rescue_message)
         return e
+
+    def render_pet_rescue_config(self, config, lang):
+        on = _('[ON]', lang)
+        off = _('[OFF]', lang)
+
+        pretty_display = {
+            'mention': '**Who gets mentioned?** `mention =',
+            'delete_pet': '**Deletion of the pet info** `delete_pet =',
+            'delete_mention': '**Deletion of the mention** `delete_mention =',
+            'delete_message': '**Deletion of the original request message¹** `delete_message =',
+        }
+
+        def translate_value(value):
+            if value is False:
+                return off
+            elif value is True:
+                return on
+            return value
+
+        answer = '\n'.join([f'{pretty_display[key]} {translate_value(value)}`' for key, value in config.items()])
+        e = discord.Embed(title=_('[PETRESCUE]', lang), color=self.WHITE)
+        e.add_field(name=_('[SETTINGS]', lang), value=answer)
+        e.set_footer(text='¹ needs "Manage Messages" permission, or will react with ⛔ emoji.')
+        return e

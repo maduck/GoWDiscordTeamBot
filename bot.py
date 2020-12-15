@@ -20,6 +20,7 @@ from game_constants import CAMPAIGN_COLORS, RARITY_COLORS, TASK_SKIP_COSTS
 from help import get_tower_help_text
 from jobs.news_downloader import NewsDownloader
 from models.pet_rescue import PetRescue
+from models.pet_rescue_config import PetRescueConfig
 from models.toplist import ToplistError
 from search import TeamExpander, _
 from tower_data import TowerOfDoomData
@@ -32,7 +33,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.27.3'
+    VERSION = '0.28.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -54,6 +55,7 @@ class DiscordBot(BaseBot):
         self.subscriptions = models.Subscriptions()
         self.views = Views(emojis={})
         self.pet_rescues = []
+        self.pet_rescue_config: PetRescueConfig = None
 
     async def on_ready(self):
         if not self.bot_connect:
@@ -75,6 +77,8 @@ class DiscordBot(BaseBot):
         await self.update_base_emojis()
         self.views.my_emojis = self.my_emojis
 
+        self.pet_rescue_config = PetRescueConfig()
+        await self.pet_rescue_config.load()
         self.pet_rescues = await PetRescue.load_rescues(self)
         log.debug(f'Loaded {len(self.pet_rescues)} pet rescues after restart.')
         log.info(f'Logged in as {self.user.name}')
@@ -340,10 +344,33 @@ class DiscordBot(BaseBot):
             return await self.answer(message, e)
         pet = pets[0]
 
-        rescue = PetRescue(pet, time_left, message, mention, lang, self.answer)
+        rescue = PetRescue(pet, time_left, message, mention, lang, self.answer, self.pet_rescue_config)
         e = self.views.render_pet_rescue(rescue)
         await rescue.create_or_edit_posts(e)
         await rescue.add(self.pet_rescues)
+
+    async def show_pet_rescue_config(self, message, lang, **kwargs):
+        config = self.pet_rescue_config.get(message.channel)
+
+        e = self.views.render_pet_rescue_config(config, lang)
+        await self.answer(message, e)
+
+    @admin_required
+    async def set_pet_rescue_config(self, message, key, value, lang, **kwargs):
+        key = key.lower()
+        valid_keys = self.pet_rescue_config.get(message.channel).keys()
+        if key not in valid_keys:
+            answer = f'Error: `{key}` is not a valid setting for pet rescues.\n' \
+                     f'Try one of those: `{"`, `".join(valid_keys)}`'
+            e = self.generate_response(_('[PETRESCUE]', lang), self.BLACK, _("[SETTINGS]", lang), answer)
+            return await self.answer(message, e)
+        guild = message.guild
+        channel = message.channel
+        on = _('[ON]', lang)
+        yes = _('[YES]', lang)
+        translated_trues = [on.lower(), yes.lower()]
+        await self.pet_rescue_config.update(guild, channel, key, value, translated_trues)
+        await self.show_pet_rescue_config(message, lang)
 
     async def show_class_summary(self, message, lang, **kwargs):
         result = self.expander.search_class('summary', lang)
