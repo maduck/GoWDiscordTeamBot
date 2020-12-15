@@ -33,7 +33,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.28.0'
+    VERSION = '0.28.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -179,6 +179,7 @@ class DiscordBot(BaseBot):
         admin_invite = self.invite_url.split('permissions')[0] + 'permissions=8'
         e.add_field(name=f'__{_("[INVITE]", lang)} ({_("[ADMIN]", lang)})__:', value=f'<{admin_invite}>', inline=False)
 
+        e.add_field(name=f'__{_("[GUILD]", lang)} {_("[AMOUNT]", lang)}__:', value=len(self.guilds))
         my_prefix = self.prefix.get(message.guild)
         e.add_field(name=f'__{_("[HELP]", lang)}__:', value=f'`{my_prefix}help` / `{my_prefix}quickhelp`')
 
