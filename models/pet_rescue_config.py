@@ -32,7 +32,7 @@ class PetRescueConfig:
             }
 
     def get(self, channel):
-        return self.__data.get(channel.id, self.DEFAULT_CONFIG)
+        return self.__data.get(channel.id, self.DEFAULT_CONFIG.copy())
 
     @staticmethod
     def atobool(input_value, translated_trues):
