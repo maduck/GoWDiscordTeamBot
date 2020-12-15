@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.27.2'
+    VERSION = '0.27.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -65,19 +65,20 @@ class DiscordBot(BaseBot):
                           f'?client_id={self.user.id}' \
                           f'&scope=bot' \
                           f'&permissions={self.permissions.value}'
-        log.info(f'Logged in as {self.user.name}')
-        self.pet_rescues = await PetRescue.load_rescues(self)
-
-        log.debug(f'Loaded {len(self.pet_rescues)} pet rescues after restart.')
 
         subscriptions = sum([s.get('pc', True) for s in self.subscriptions])
-        log.info(f'{subscriptions} channels subscribed to news.')
-        log.info(f'Active in {len(self.guilds)} guilds.')
+        log.info(f'{subscriptions} channels subscribed to PC news.')
 
         game = discord.Game("Gems of War")
         await self.change_presence(status=discord.Status.online, activity=game)
+
         await self.update_base_emojis()
         self.views.my_emojis = self.my_emojis
+
+        self.pet_rescues = await PetRescue.load_rescues(self)
+        log.debug(f'Loaded {len(self.pet_rescues)} pet rescues after restart.')
+        log.info(f'Logged in as {self.user.name}')
+        log.info(f'Active in {len(self.guilds)} guilds.')
 
     async def get_function_for_command(self, user_command, user_prefix):
         for command in COMMAND_REGISTRY:
