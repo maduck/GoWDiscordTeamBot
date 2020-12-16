@@ -3,9 +3,12 @@ import json
 import os
 import re
 import time
+from io import BytesIO
 
 import feedparser
 import html2markdown
+import requests
+from PIL import Image
 from bs4 import BeautifulSoup
 
 
@@ -19,13 +22,22 @@ class NewsDownloader:
         self.get_last_post_date()
 
     @staticmethod
-    def remove_tags(text):
+    def is_banner(source):
+        request = requests.get(source)
+        image = Image.open(BytesIO(request.content))
+        size = image.size
+        ratio = size[0] / size[1]
+        arbitrary_ratio_limit_for_banners = 10
+        print(f'Found a ration of {ratio} in {source}.')
+        return ratio >= arbitrary_ratio_limit_for_banners
+
+    def remove_tags(self, text):
         soup = BeautifulSoup(text, 'html5lib')
         source_images = soup.findAll('img')
         images = []
         for i in source_images:
             source = i['src']
-            if 'dividerline' not in source and 'ForumBanner' not in source:
+            if not self.is_banner(source):
                 images.append(source)
 
         forbidden_tags = re.compile(r'</?(a|img|div).*?>')
@@ -34,10 +46,9 @@ class NewsDownloader:
             .replace('</em>', '</em> ')
         return images, html2markdown.convert(tags_removed).replace('&amp;', '&')
 
-    @staticmethod
-    def reformat_html_summary(e):
+    def reformat_html_summary(self, e):
         content = e['content'][0]['value']
-        images, tags_removed = NewsDownloader.remove_tags(content)
+        images, tags_removed = self.remove_tags(content)
         return images, tags_removed.strip()
 
     def get_last_post_date(self):
