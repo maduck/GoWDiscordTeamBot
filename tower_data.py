@@ -62,7 +62,8 @@ class TowerOfDoomData:
         for guild in self.__data.keys():
             for channel in self.__data[guild].keys():
                 # FIXME split up config and tower data, so those checks can be removed
-                if isinstance(self.__data[guild][channel], dict):
+                if isinstance(self.__data[guild][channel], dict) \
+                        and all([k.isdigit() for k in self.__data[guild][channel].keys()]):
                     self.__data[guild][channel] = {int(k): v for k, v in self.__data[guild][channel].items()
                                                    if k.isdigit()}
 
