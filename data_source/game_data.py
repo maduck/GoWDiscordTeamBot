@@ -165,6 +165,7 @@ class GameData:
             colors = zip(colors, kingdom['BannerColors'])
             colors = sorted(colors, key=operator.itemgetter(1), reverse=True)
             self.banners[kingdom['Id']] = {
+                'id': kingdom['Id'],
                 'name': kingdom['BannerName'],
                 'colors': colors,
                 'filename': kingdom['FileBase'],
@@ -339,7 +340,6 @@ class GameData:
         for release in self.user_data['pEconomyModel']['RoomReleaseDates']:
             room_id = release['RoomId']
             release_date = self.get_datetime(release['Date'])
-            # self.rooms[room_id]['release_date'] = release_date
             self.spoilers.append({'type': 'room', 'date': release_date, 'id': room_id})
         for release in self.user_data['pEconomyModel']['WeaponReleaseDates']:
             weapon_id = release['WeaponId']
@@ -352,7 +352,6 @@ class GameData:
             gacha_troops = release.get('GachaTroops', [])
             result = {'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
                       'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
-                      # 'id': release['Id'],
                       'type': EVENT_TYPES.get(release['Type'], release['Type']),
                       'names': release.get('Name'),
                       'gacha': gacha_troop,
@@ -365,16 +364,15 @@ class GameData:
         week_long_events = [e for e in self.events
                             if e['end'] - e['start'] == datetime.timedelta(days=7)
                             and e['kingdom_id']]
-        non_craftable_wepon_ids = [
+        non_craftable_weapon_ids = [
             1102, 1114, 1070, 1073, 1119, 1118, 1108, 1109, 1203, 1092, 1067, 1094, 1179, 1178, 1069, 1127, 1096, 1134,
             1097, 1103, 1115, 1123, 1120, 1071, 1095, 1072, 1107, 1100, 1106, 1213, 1121, 1093, 1122, 1295, 1250, 1317,
             1294, 1239, 1223, 1222, 1272, 1252, 1287, 1275, 1251, 1238, 1224, 1296, 1273, 1274, 1286, 1225
         ]
         for event in week_long_events:
-            # print([w['kingdom']['id'] for w in self.weapons.values()])
             kingdom_weapons = [w['id'] for w in self.weapons.values()
                                if 'kingdom' in w and w['kingdom']['id'] == event['kingdom_id']
-                               and w['id'] not in non_craftable_wepon_ids
+                               and w['id'] not in non_craftable_weapon_ids
                                and w.get('release_date', datetime.datetime.min).date() < event['end']]
             self.soulforge_weapons.append({
                 'start': event['start'],
