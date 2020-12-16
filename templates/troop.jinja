@@ -11,5 +11,5 @@
 {%- for trait in troop.traits %}
 **{{ trait.name }}**: {{ trait.description }}
 {%- endfor -%}
-{% if troop.traitstones -%}<T>Traitstones</T>
+{% if troop.traitstones -%}<T>{{ troop.traitstones_title }}</T>
 {{ troop.traitstones|join(', ') }}{% endif %}

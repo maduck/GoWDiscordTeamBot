@@ -184,6 +184,7 @@ class TeamExpander:
         troop['kingdom'] = _(troop['kingdom']['Name'], lang)
         troop['spell'] = self.translate_spell(troop['spell_id'], lang)
         troop['spell_title'] = _('[TROOPHELP_SPELL0]', lang)
+        troop['traitstones_title'] = _('[SOULFORGE_TAB_TRAITSTONES]', lang)
         if 'traitstones' not in troop:
             troop['traitstones'] = []
         traitstones = []
