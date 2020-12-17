@@ -4,6 +4,7 @@ import math
 import asyncio
 import discord
 
+from base_bot import log
 from models import DB
 
 
@@ -48,8 +49,8 @@ class PetRescue:
         if self.pet_message and datetime.datetime.utcnow() - self.start_time <= self.DISPLAY_TIME:
             try:
                 await self.pet_message.edit(embed=embed)
-            except discord.errors.NotFound:
-                return
+            except discord.errors.DiscordException as e:
+                log.warn(f'Error while editing pet rescue: {str(e)}')
         elif not self.pet_message:
             self.update_mention()
             self.alert_message = await self.answer_method(self.message, embed=None, content=self.reminder)
@@ -74,22 +75,25 @@ class PetRescue:
         except (discord.errors.Forbidden, discord.errors.NotFound, discord.errors.HTTPException):
             try:
                 await message.add_reaction('⛔')
-            except (discord.errors.Forbidden, discord.errors.HTTPException):
+            except discord.errors.DiscordException:
                 pass
 
     @classmethod
     async def load_rescues(cls, client):
         db = DB()
-        db_result = db.cursor.execute('SELECT * FROM PetRescue;')
+        db_result = db.cursor.execute('SELECT * FROM PetRescue;').fetchall()
         rescues = []
-        for entry in db_result:
+        broken_rescues = []
+        for i, entry in enumerate(db_result, start=1):
+            log.debug(f'Loading pet rescue {i} of {len(db_result)}')
             pet = client.expander.pets[entry['pet_id']].copy()
             client.expander.translate_pet(pet, entry['lang'])
 
             try:
                 channel = await client.fetch_channel(entry['channel_id'])
                 message = await channel.fetch_message(entry['message_id'])
-            except discord.errors.NotFound:
+            except discord.errors.DiscordException:
+                broken_rescues.append(entry['id'])
                 continue
             rescue = PetRescue(
                 pet=pet,
@@ -103,11 +107,18 @@ class PetRescue:
             try:
                 rescue.alert_message = await channel.fetch_message(entry['alert_message_id'])
                 rescue.pet_message = await channel.fetch_message(entry['pet_message_id'])
-            except discord.errors.NotFound:
+            except discord.errors.DiscordException:
+                broken_rescues.append(entry['id'])
                 continue
             rescue.start_time = entry['start_time']
             rescues.append(rescue)
         db.close()
+
+        if broken_rescues:
+            log.debug(f'Pruning {len(broken_rescues)} broken pet rescues from the database: {broken_rescues}.')
+        for rescue_id in broken_rescues:
+            await cls.delete_by_id(rescue_id=rescue_id)
+
         return rescues
 
     async def add(self, pet_rescues):
@@ -140,10 +151,14 @@ class PetRescue:
             pet_rescues.append(self)
 
     async def remove_from_db(self):
+        await self.delete_by_id(message_id=self.message.id)
+
+    @staticmethod
+    async def delete_by_id(rescue_id=0, message_id=0):
         lock = asyncio.Lock()
         async with lock:
             db = DB()
-            query = 'DELETE FROM PetRescue WHERE message_id = ?'
-            db.cursor.execute(query, [self.message.id])
+            query = 'DELETE FROM PetRescue WHERE id = ? OR message_id = ?'
+            db.cursor.execute(query, [rescue_id, message_id])
             db.commit()
             db.close()
