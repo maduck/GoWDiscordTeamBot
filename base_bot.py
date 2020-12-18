@@ -73,13 +73,6 @@ class BaseBot(discord.Client):
         log.debug(f'Permissions required: {", ".join([p for p, v in permissions if v])}')
         return permissions
 
-    async def check_for_needed_permissions(self, message):
-        channel_permissions = message.channel.permissions_for(message.guild.me)
-        for permission in self.NEEDED_PERMISSIONS:
-            has_permission = getattr(channel_permissions, permission)
-            if not has_permission:
-                log.info(f'Missing permission {permission} in channel {message.guild} / {message.channel}.')
-
     @staticmethod
     async def is_writable(channel):
         if not channel:
@@ -88,19 +81,14 @@ class BaseBot(discord.Client):
         permissions = channel.permissions_for(me)
         return permissions.send_messages
 
-    async def react(self, message, reaction: discord.Emoji):
-        if message.guild:
-            await self.check_for_needed_permissions(message)
+    @staticmethod
+    async def react(message, reaction: discord.Emoji):
         try:
             await message.add_reaction(emoji=reaction)
-        except discord.errors.Forbidden:
-            log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
-        except EmbedLimitsExceed as e:
-            log.warning(f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.')
+        except discord.DiscordException as e:
+            log.warning(f'[{message.guild}][{message.channel}] Could not post response: {e}.')
 
     async def answer(self, message, embed: discord.Embed, content=''):
-        if message.guild:
-            await self.check_for_needed_permissions(message)
         try:
             if not embed:
                 return await message.channel.send(content=content)
