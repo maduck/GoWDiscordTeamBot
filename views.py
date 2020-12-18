@@ -299,3 +299,9 @@ class Views:
         e.add_field(name=_('[SETTINGS]', lang), value=answer)
         e.set_footer(text='¹ needs "Manage Messages" permission, or will react with ⛔ emoji.')
         return e
+
+    def render_permissions(self, channel, permissions):
+        e = discord.Embed(title=f'Channel Permissions for {channel}', color=self.WHITE)
+        permission_lines = [f'{v} {k.replace("_", " ").title()}' for k, v in permissions.items()]
+        e.add_field(name='__Checklist__', value='\n'.join(permission_lines))
+        return e

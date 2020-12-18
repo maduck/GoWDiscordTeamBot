@@ -215,4 +215,8 @@ COMMAND_REGISTRY = [
         'function': 'show_my_toplists',
         'pattern': re.compile(DEFAULT_PATTERN + r'toplists$', MATCH_OPTIONS)
     },
+    {
+        'function': 'show_permissions',
+        'pattern': re.compile(DEFAULT_PATTERN + r'permissions?$', MATCH_OPTIONS)
+    }
 ]

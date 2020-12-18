@@ -33,7 +33,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.28.6'
+    VERSION = '0.28.7'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -41,7 +41,9 @@ class DiscordBot(BaseBot):
         'embed_links',
         'attach_files',
         'external_emojis',
-        'manage_messages'
+        'manage_messages',
+        'mention_everyone',
+        'read_message_history',
     ]
 
     def __init__(self, *args, **kwargs):
@@ -529,9 +531,18 @@ class DiscordBot(BaseBot):
     @admin_required
     async def clear_tower_data(self, message, prefix, **kwargs):
         self.tower_data.clear_data(message)
-
         e = self.generate_response('Tower of Doom', self.WHITE, 'Success',
                                    f'Cleared tower data for #{message.channel.name}')
+        await self.answer(message, e)
+
+    @guild_required
+    async def show_permissions(self, message, **kwargs):
+        channel_permissions = message.channel.permissions_for(message.guild.me)
+        permissions = {}
+        for permission in self.NEEDED_PERMISSIONS:
+            has_permission = getattr(channel_permissions, permission)
+            permissions[permission] = '✅' if has_permission else '❌'
+        e = self.views.render_permissions(message.channel, permissions)
         await self.answer(message, e)
 
     @guild_required
