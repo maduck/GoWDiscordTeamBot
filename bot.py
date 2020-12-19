@@ -227,7 +227,6 @@ class DiscordBot(BaseBot):
         e.add_field(name='Searches',
                     value=f'`{prefix}help`\n'
                           f'`{prefix}quickhelp`\n'
-                          f'`{prefix}towerhelp`\n'
                           f'`[lang][-][<troopcode>]`\n'
                           f'`[lang][-]{prefix}troop <search>`\n'
                           f'`[lang][-]{prefix}weapon <search>`\n'
@@ -247,6 +246,13 @@ class DiscordBot(BaseBot):
                           f'`[lang]{prefix}soulforge`\n'
                           f'`[lang]{prefix}levels`\n',
                     inline=False)
+        e.add_field(name='Pet Rescue',
+                    value=f'`{prefix}pet rescue [pet name or id] [time remaining in minutes] [mention]`\n'
+                    )
+        e.add_field(name='Tower of Doom',
+                    value=f'`{prefix}towerhelp`\n'
+                          f'`{prefix}tower [lower floor-upper floor]`\n'
+                    )
         e.add_field(name='Toplists',
                     value=f'`[lang]{prefix}toplists`\n'
                           f'`[lang]{prefix}toplist <description> <troops>`\n'
@@ -257,6 +263,7 @@ class DiscordBot(BaseBot):
         e.add_field(name='Admin Commands',
                     value=f'`{prefix}towerconfig`\n'
                           f'`{prefix}towerclear`\n'
+                          f'`{prefix}pet rescue config <setting>=<value>`\n'
                           f'`{prefix}news [[un]subscribe [pc|switch]]`\n'
                           f'`{prefix}prefix [new_prefix]`\n'
                           f'`{prefix}lang[uage[s]] [new_language]`\n',

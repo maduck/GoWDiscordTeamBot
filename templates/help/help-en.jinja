@@ -25,13 +25,16 @@
 • Player level benefits: `{{ prefix }}levels`
 <T>**__Tower of Doom__**:</T>
 Please consult `{{ prefix }}towerhelp`.
+<T>**__Pet Rescue__**:</T>
+• When encountering a pet rescue mission in-game, you can alert all your fellow guild mates with `{{ prefix }}pet rescue <pet> [<time>] [<mention>]`. `<pet>` needs to be either the name or the id of the pet, `<time>` is the remaining time in minutes (default 59), followed by either nothing, "min", or "mins", and `<mention>` is the group that will be alerted (default `@everyone`).
+• Default settings can be checked with `{{ prefix }}pet rescue config`.
+• Server administrators can alter the default mention, as well as the deletion behaviour with `{{ prefix }}pet rescue config <setting>=<value>`.
 <T>**__Command Modifiers__**:</T>
 • __Translation__: All GoW languages are supported, put the two country code letters (en, fr, de, ru, it, es, zh) in front of the command, e.g. `de{{ prefix }}troop elemaugrim`. This works the same for team codes. **Localized searches will only look for troop names with their respective translations**.',
 • __Shortened output__: Put a "-" in front of any command to make it appear in condensed format, e.g. `-[1075,6251,6699,6007]`, or with language `de-[1075,6251,6699,6007]`. **Note that the language modifier always comes first.**
 <T>**__Bot Specific Commands__**:</T>
-• Display bot version: `{{ prefix }}about`
-• Display bot runtime & uptime: `{{ prefix }}about`
-• Get the bot's invite code: `{{ prefix }}about`
+• Check the bot's permissions within a channel: `{{ prefix }}permissions`
+• Display bot version, runtime, uptime, invite code, and more: `{{ prefix }}about`
 • Get a random motivation waffles: `{{ prefix }}waffles`
 • Short help: enter `{{ prefix }}quickhelp` to open a short overview of all commands.
 <T>**__Admin Commands__**:</T>

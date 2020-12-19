@@ -24,14 +24,17 @@
 • Artículos artesanales de Soulforge: `{{ prefix }}soulforge`
 • Beneficios a nivel de jugador: `{{ prefix }}levels`
 <T>**__La Torre de la Perdición__**:</T>
-Por favor, consulte la ayuda de la torre.
+Por favor, consulte `{{ prefix }}towerhelp`.
+<T>**__Pet Rescue__**:</T>
+• When encountering a pet rescue mission in-game, you can alert all your fellow guild mates with `{{ prefix }}pet rescue <pet> [<time>] [<mention>]`. `<pet>` needs to be either the name or the id of the pet, `<time>` is the remaining time in minutes (default 59), followed by either nothing, "min", or "mins", and `<mention>` is the group that will be alerted (default `@everyone`).
+• Default settings can be checked with `{{ prefix }}pet rescue config`.
+• Server administrators can alter the default mention, as well as the deletion behaviour with `{{ prefix }}pet rescue config <setting>=<value>`.
 <T>**__Modificadores de Comando__**:</T>
 • __Traducción__: Todos los idiomas de GoW están soportados, pon las dos letras del código del país (en, fr, de, ru, it, es, zh) delante del comando, por ejemplo `es{{ prefix }}troop rey duentrufa`. Esto funciona igual para los códigos de equipo. **Las búsquedas localizadas sólo buscarán los nombres de las tropas con sus respectivas traducciones**.',
 • __Salida acortada__: Ponga un "-" delante de cualquier comando para que aparezca en formato condensado, por ejemplo `-[1075,6251,6699,6007]`, o con el lenguaje `es-[1075,6251,6699,6007]`. **Nota que el modificador de lenguaje siempre va primero.**
 <T>**__Comandos específicos del robot__**:</T>
-• Mostrar la versión del robot: `{{ prefix }}about`
-• Mostrar el tiempo de ejecución y el tiempo de actividad del robot: `{{ prefix }}about`
-• Consigue el código de invitación del robot: `{{ prefix }}about`
+• Check the bot's permissions within a channel: `{{ prefix }}permissions`
+• Display bot version, runtime, uptime, invite code, and more: `{{ prefix }}about`
 • Consigue unos gofres de motivación al azar: `{{ prefix }}waffles`
 • Ayuda corta: introduzca `{{ prefix }}quickhelp` para abrir un breve resumen de todos los comandos.
 <T>**__Administre los comandos__**:</T>

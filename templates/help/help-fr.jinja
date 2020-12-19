@@ -25,13 +25,16 @@
 • Avantages selon le niveau du joueur : `{{ prefix }}levels`
 <T>**__Tour maudite__** :</T>
 Veuillez consulter `{{ prefix }}towerhelp`.
+<T>**__Pet Rescue__**:</T>
+• When encountering a pet rescue mission in-game, you can alert all your fellow guild mates with `{{ prefix }}pet rescue <pet> [<time>] [<mention>]`. `<pet>` needs to be either the name or the id of the pet, `<time>` is the remaining time in minutes (default 59), followed by either nothing, "min", or "mins", and `<mention>` is the group that will be alerted (default `@everyone`).
+• Default settings can be checked with `{{ prefix }}pet rescue config`.
+• Server administrators can alter the default mention, as well as the deletion behaviour with `{{ prefix }}pet rescue config <setting>=<value>`.
 <T>**__Modificateurs de commandes__** :</T>
 • __Traduction__ : Toutes les langues de GoW sont supportées. Mettez le code pays à 2 lettres (en, fr, de, ru, it, es, zh) devant la commande, ex. `de{{ prefix }}troop elemaugrim`. Il en est de même pour les codes de partage d'équipes. **Les recherches localisées ne chercheront que les noms des unités avec leurs traductions respectives**.',
 • __Résultat condensé__ : Mettez un "-" devant n'importe quelle commande pour faire apparaître un résultat condensé, ex.`-[1075,6251,6699,6007]`, ou avec la langue `de-[1075,6251,6699,6007]`. **Note: le modificateur de langue vient toujours en premier.**
 <T>**__Commandes spécifiques du Bot__** :</T>
-• Afficher la version du bot : `{{ prefix }}version`
-• Afficher le runtime et uptime du bot : `{{ prefix }}uptime`
-• Optenez le lien d'invitation du bot : `{{ prefix }}invite`
+• Check the bot's permissions within a channel: `{{ prefix }}permissions`
+• Display bot version, runtime, uptime, invite code, and more: `{{ prefix }}about`
 • Recevez une gauffre de motivation aléatoire : `{{ prefix }}waffles`
 • Aide raccourcie : tapez `{{ prefix }}quickhelp` pour afficher une version simplifée des commandes d'aide.
 <T>**__Commandes Admin__** :</T>

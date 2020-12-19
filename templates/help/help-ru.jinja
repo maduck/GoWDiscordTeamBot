@@ -25,13 +25,16 @@
 • Бонусы при повышении уровня героя: `{{ prefix }}levels`
 <T>**__Башни Бед__**:</T>
 Введите `{{ prefix }}towerhelp`.
+<T>**__Pet Rescue__**:</T>
+• When encountering a pet rescue mission in-game, you can alert all your fellow guild mates with `{{ prefix }}pet rescue <pet> [<time>] [<mention>]`. `<pet>` needs to be either the name or the id of the pet, `<time>` is the remaining time in minutes (default 59), followed by either nothing, "min", or "mins", and `<mention>` is the group that will be alerted (default `@everyone`).
+• Default settings can be checked with `{{ prefix }}pet rescue config`.
+• Server administrators can alter the default mention, as well as the deletion behaviour with `{{ prefix }}pet rescue config <setting>=<value>`.
 <T>**__Модификаторы комманд__**:</T>
 • __Перевод__: Поддерживаются все языки, доступные в Gems of War, введите две буквы кода страны (en, fr, de, ru, it, es, zh) в начале команды, например: `ru{{ prefix }}troop элемогрим`. Это также работает и для кодов команд. **Локализованный поиск осуществляет поиск только для соответственно переведенных названий**.',
 • __Сокращенный вывод__: Введите "-" в начале любой команды, для того, чтобы получить сокращенный ответ, например: `-[1075,6251,6699,6007]`, или с выбором языка `ru-[1075,6251,6699,6007]`. **Обратите внимание, что код языка всегда указывается в первую очередь.**
 <T>**__Специальные команды бота__**:</T>
-• Показать версию бота: `{{ prefix }}about`
-• Показать время работы бота: `{{ prefix }}about`
-• Получить код приглашения бота: `{{ prefix }}about`
+• Check the bot's permissions within a channel: `{{ prefix }}permissions`
+• Display bot version, runtime, uptime, invite code, and more: `{{ prefix }}about`
 • Получить случайные мотивационные вафельки: `{{ prefix }}waffles`
 • Краткая помощь: введите `{{ prefix }}quickhelp` чтобы открыть краткий обзор доступных команд.
 <T>**__Администраторские команды__**:</T>
