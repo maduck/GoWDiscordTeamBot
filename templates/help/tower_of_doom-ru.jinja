@@ -1,24 +1,24 @@
-<T>__Basics__</T>
-Users can use the `{{ prefix }}tower` command to enter Scroll data for the Tower of Doom, 
-then display it for easy viewing. **Each Tower is specific to the channel it is in**.
+<T>__Основное__</T>
+Пользователи могут использовать команду `{{ prefix }}tower` для того, чтобы ввести данные о свитках в Башне Бед, 
+а потом отобразить их. **Для каждого канала создается уникальная башня**.
 <T>__Entering Data__</T>
-To enter data, use the `{{ prefix }}tower` command. Shortened names or aliases can be used.
+Чтобы ввести данные, используйте команду `{{ prefix }}tower`. Можно использовать сокращенные названия и псевдонимы.
 `{{ prefix }}tower 4 ii unlock`
 `{{ prefix }}tower 5 rare fi`
-You can set a whole floor in one line:
+Можно заполнить весь этаж одной командой:
 `{{ prefix }}tower 6 armor fireball unlock haste`
 
-<T>__Displaying Data__</T>
-To display all the data, simply use the `{{ prefix }}tower` command with no arguments.
-For a selection of floors, ranging from _lower_ to _upper_, use `{{ prefix }}tower <lower>-<upper>`, e.g. `{{ prefix }}tower 20-30`.
+<T>__Отображение данных__</T>
+Чтобы увидеть данные о башне просто введите команду `{{ prefix }}tower` без аргументов.
+Чтобы отображать этажи в диапазоне от _нижнего_ до _верхнего_, исползуйте `{{ prefix }}tower <нижний>-<верхний>`, например: `{{ prefix }}tower 20-30`.
 
-<T>__Clearing Data__</T>
-To clear the tower data, simply use the `{{ prefix }}towerclear` command with no arguments.
+<T>__Очистка данных__</T>
+Для очистки данных используйте команду `{{ prefix }}towerclear` без аргументов.
 
-<T>__Configuration__</T>
-To configure the tower utility, use `{{ prefix }}towerconfig`.
-`{{ prefix }}towerconfig short true` for short responses to edits.
-`{{ prefix }}towerconfig rooms III iii,rare,green` to set the room aliases.
-Comma separated values.
-`{{ prefix }}towerconfig scrolls armor :shield:,Armor` to set scroll aliases. 
-First value will be used for display.
+<T>__Конфигурация__</T>
+Для конфигурации используйте `{{ prefix }}towerconfig`.
+`{{ prefix }}towerconfig short true` устанавливает краткие ответы на редактирование.
+`{{ prefix }}towerconfig rooms III iii,rare,green` устанавливает псевдонимы для комнат.
+Значения разделяются запятыми.
+`{{ prefix }}towerconfig scrolls armor :shield:,Armor` устанавливает псевдонимы для свитков. 
+Первое значение будет использоваться при отображении данных.
