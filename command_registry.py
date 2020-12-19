@@ -48,7 +48,7 @@ COMMAND_REGISTRY = [
         'function': 'show_pet_rescue',
         'pattern': re.compile(
             DEFAULT_PATTERN +
-            'pet rescue (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?min)?)?( (?P<mention><?@.+))?$',
+            '(pr|pet rescue) (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?min)?)?( (?P<mention><?@.+))?$',
             MATCH_OPTIONS),
     },
     {
