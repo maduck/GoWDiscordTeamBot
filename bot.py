@@ -33,7 +33,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.28.7'
+    VERSION = '0.28.8'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -218,61 +218,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def show_quickhelp(self, message, prefix, **kwargs):
-        e = discord.Embed(title='Quick Help', color=self.WHITE)
-        langs = '|'.join(LANGUAGES)
-        e.add_field(name='How to read',
-                    value='Square brackets `[]` show optional parameters, except for troop code.\n'
-                          'Vertical lines `|` mean "or": this|that.\n'
-                          f'valid language codes are `{langs}`.')
-        e.add_field(name='Searches',
-                    value=f'`{prefix}help`\n'
-                          f'`{prefix}quickhelp`\n'
-                          f'`[lang][-][<troopcode>]`\n'
-                          f'`[lang][-]{prefix}troop <search>`\n'
-                          f'`[lang][-]{prefix}weapon <search>`\n'
-                          f'`[lang][-]{prefix}pet <search>`\n'
-                          f'`[lang][-]{prefix}class <search>`\n'
-                          f'`[lang][-]{prefix}kingdom <search>`\n'
-                          f'`[lang][-]{prefix}talent <search>`\n'
-                          f'`[lang][-]{prefix}trait <search>`\n'
-                          f'`[lang][-]{prefix}traitstone <search>`\n',
-                    inline=False)
-        e.add_field(name='Overviews',
-                    value=f'`[lang]{prefix}class summary`\n'
-                          f'`[lang]{prefix}kingdom summary`\n'
-                          f'`[lang]{prefix}spoiler[s] [pet[s]|troop[s]|weapon[s]|kingdom[s]|event[s]]`\n'
-                          f'`[lang]{prefix}event[s]`\n'
-                          f'`[lang]{prefix}campaign [bronze|silver|gold]`\n'
-                          f'`[lang]{prefix}soulforge`\n'
-                          f'`[lang]{prefix}levels`\n',
-                    inline=False)
-        e.add_field(name='Pet Rescue',
-                    value=f'`{prefix}pet rescue [pet name or id] [time remaining in minutes] [mention]`\n'
-                    )
-        e.add_field(name='Tower of Doom',
-                    value=f'`{prefix}towerhelp`\n'
-                          f'`{prefix}tower [lower floor-upper floor]`\n'
-                    )
-        e.add_field(name='Toplists',
-                    value=f'`[lang]{prefix}toplists`\n'
-                          f'`[lang]{prefix}toplist <description> <troops>`\n'
-                          f'`[lang]{prefix}toplist delete <id>`\n'
-                          f'`[lang]{prefix}toplist update <id> <description> <troops>`\n'
-                          f'`[lang]{prefix}toplist append <id> <more_troops>`\n'
-                    )
-        e.add_field(name='Admin Commands',
-                    value=f'`{prefix}towerconfig`\n'
-                          f'`{prefix}towerclear`\n'
-                          f'`{prefix}pet rescue config <setting>=<value>`\n'
-                          f'`{prefix}news [[un]subscribe [pc|switch]]`\n'
-                          f'`{prefix}prefix [new_prefix]`\n'
-                          f'`{prefix}lang[uage[s]] [new_language]`\n',
-                    inline=False)
-        e.add_field(name='Bot specific',
-                    value=f'`{prefix}about`\n'
-                          f'`{prefix}waffles`\n',
-                    inline=False
-                    )
+        e = self.views.render_quickhelp(prefix, LANGUAGES)
         await self.answer(message, e)
 
     async def on_message(self, message):

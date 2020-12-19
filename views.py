@@ -305,3 +305,7 @@ class Views:
         permission_lines = [f'{v} {k.replace("_", " ").title()}' for k, v in permissions.items()]
         e.add_field(name='__Checklist__', value='\n'.join(permission_lines))
         return e
+
+    def render_quickhelp(self, prefix, languages):
+        e = discord.Embed(title='Quick Help', color=self.WHITE)
+        return self.render_embed(e, 'help/quickhelp.jinja', prefix=prefix, languages='|'.join(languages))
