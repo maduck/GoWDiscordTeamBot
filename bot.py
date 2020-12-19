@@ -17,7 +17,6 @@ from command_registry import COMMAND_REGISTRY
 from configurations import CONFIG
 from discord_wrappers import admin_required, guild_required
 from game_constants import CAMPAIGN_COLORS, RARITY_COLORS, TASK_SKIP_COSTS
-from help import get_tower_help_text
 from jobs.news_downloader import NewsDownloader
 from models.pet_rescue import PetRescue
 from models.pet_rescue_config import PetRescueConfig
@@ -210,11 +209,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def show_tower_help(self, message, prefix, lang, **kwargs):
-        help_title, help_text = get_tower_help_text(prefix, lang)
-
-        e = discord.Embed(title=help_title, color=self.WHITE)
-        for section, text in help_text.items():
-            e.add_field(name=section, value=text, inline=False)
+        e = self.views.render_tower_help(prefix, lang)
         await self.answer(message, e)
 
     async def show_quickhelp(self, message, prefix, **kwargs):

@@ -309,3 +309,8 @@ class Views:
     def render_quickhelp(self, prefix, languages):
         e = discord.Embed(title='Quick Help', color=self.WHITE)
         return self.render_embed(e, 'help/quickhelp.jinja', prefix=prefix, languages='|'.join(languages))
+
+    def render_tower_help(self, prefix, lang):
+        title = f'{_("[TOWER_OF_DOOM]", lang)} {_("[HELP]", lang)}'
+        e = discord.Embed(title=title, color=self.WHITE)
+        return self.render_embed(e, f'help/tower_of_doom-{lang}.jinja', prefix=prefix)
