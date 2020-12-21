@@ -1,7 +1,7 @@
+import asyncio
 import datetime
 import math
 
-import asyncio
 import discord
 
 from base_bot import log
@@ -51,6 +51,8 @@ class PetRescue:
                 await self.pet_message.edit(embed=embed)
             except discord.errors.DiscordException as e:
                 log.warn(f'Error while editing pet rescue: {str(e)}')
+                await self.remove_from_db()
+                self.active = False
         elif not self.pet_message:
             self.update_mention()
             self.alert_message = await self.answer_method(self.message, embed=None, content=self.reminder)
