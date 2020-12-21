@@ -191,8 +191,8 @@ class Views:
             trimmed_text = cls.trim_text_to_length(text, max_length, break_character=' ')
         read_more = ''
         if len(trimmed_text) != len(text):
-            read_more = '[...] '
-        result = f'{trimmed_text}{read_more}\n\n[Read full news article]({link}).'
+            read_more = f'[...]\n\n[Read full news article]({link}).'
+        result = f'{trimmed_text}{read_more}'
         return result
 
     def render_events(self, events, _filter, lang):
@@ -314,3 +314,31 @@ class Views:
         title = f'{_("[TOWER_OF_DOOM]", lang)} {_("[HELP]", lang)}'
         e = discord.Embed(title=title, color=self.WHITE)
         return self.render_embed(e, f'help/tower_of_doom-{lang}.jinja', prefix=prefix)
+
+    def render_news(self, article):
+        e = discord.Embed(title=article['title'], color=self.WHITE, url=article['url'])
+        content = self.transform_news_article(article['content'], article['url'])
+        for title, text in content.items():
+            e.add_field(name=title, value=text, inline=False)
+        result = [e]
+        for image_url in article['images']:
+            e = discord.Embed(type='image', color=self.WHITE)
+            e.set_image(url=image_url)
+            result.append(e)
+        return result
+
+    def transform_news_article(self, content, url=''):
+        text_lines = content.split('\n')
+        result = {}
+        field = []
+        field_title = 'News'
+        for line in text_lines:
+            if line.startswith('_') and line.endswith('_'):
+                if field:
+                    result[field_title] = self.trim_news_to_length('\n'.join(field), link=url)
+                    field = []
+                field_title = line
+            else:
+                field.append(line)
+        result[field_title] = self.trim_news_to_length('\n'.join(field), link=url)
+        return result

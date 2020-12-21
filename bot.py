@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.28.9'
+    VERSION = '0.28.10'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -575,15 +575,7 @@ class DiscordBot(BaseBot):
         if articles:
             log.debug(f'Distributing {len(articles)} news articles to {len(self.subscriptions)} channels.')
         for article in articles:
-            e = discord.Embed(title='Gems of War news', color=self.WHITE, url=article['url'])
-            content = self.views.trim_news_to_length(article['content'], article['url'])
-            e.add_field(name=article['title'], value=content)
-            embeds = [e]
-            for image_url in article['images']:
-                e = discord.Embed(type='image', color=self.WHITE)
-                e.set_image(url=image_url)
-                embeds.append(e)
-
+            embeds = self.views.render_news(article)
             for subscription in self.subscriptions:
                 relevant_news = subscription.get(article['platform'])
                 if not relevant_news:
@@ -600,9 +592,10 @@ class DiscordBot(BaseBot):
                 try:
                     for e in embeds:
                         await channel.send(embed=e)
-                except Exception as e:
+                except Exception as ex:
                     log.error('Could not send out news, exception follows')
-                    log.exception(e)
+                    log.error(repr(e.fields))
+                    log.exception(ex)
         with open(NewsDownloader.NEWS_FILENAME, 'w') as f:
             f.write('[]')
 

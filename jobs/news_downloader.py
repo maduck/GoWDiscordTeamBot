@@ -11,6 +11,8 @@ import requests
 from PIL import Image
 from bs4 import BeautifulSoup
 
+from base_bot import log
+
 
 class NewsDownloader:
     LAST_POST_DATE_FILENAME = 'jobs/latest_known_post.dat'
@@ -28,7 +30,7 @@ class NewsDownloader:
         size = image.size
         ratio = size[0] / size[1]
         arbitrary_ratio_limit_for_banners = 10
-        print(f'Found a ration of {ratio} in {source}.')
+        log.debug(f'[NEWS] Found a ration of {ratio} in {source}.')
         return ratio >= arbitrary_ratio_limit_for_banners
 
     def remove_tags(self, text):
