@@ -12,6 +12,6 @@
 {%- for tree in _class.talents %}
 <T>inline__{{ _class.trees[loop.index - 1] }}__</T>
 {%- for t in tree %}
-**{{ t.name }}**: ({{ t.description }})
+**{{ t.name }}**: {{ t.description }}
 {%- endfor -%}
 {%- endfor -%}
