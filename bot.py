@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.29.0'
+    VERSION = '0.29.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -646,6 +646,8 @@ class DiscordBot(BaseBot):
         log.debug('Deregistering all slash commands...')
         for command in await get_all_commands(self.user.id, TOKEN, guild_id=None):
             await remove_slash_command(self.user.id, TOKEN, command.get('guild_id'), command['id'])
+        if not CONFIG.get('register_slash_commands'):
+            return
         log.debug(f'Registering slash commands...')
         for command in COMMAND_REGISTRY:
             if 'description' not in command:

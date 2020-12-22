@@ -8,5 +8,6 @@
   "news_check_interval_minutes": 5,
   "game_assets_folder": "",
   "database": "db.sqlite3",
-  "file_update_check_seconds": 10
+  "file_update_check_seconds": 10,
+  "register_slash_commands": true
 }
