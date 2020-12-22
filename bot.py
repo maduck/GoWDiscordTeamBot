@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.30.0'
+    VERSION = '0.30.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -106,7 +106,7 @@ class DiscordBot(BaseBot):
                 return getattr(self, command['function']), groups
         return None, None
 
-    async def campaign(self, message, lang, tier, **kwargs):
+    async def campaign(self, message, lang, tier=None, **kwargs):
         campaign_data = self.expander.get_campaign_tasks(lang, tier)
         if not campaign_data['has_content']:
             title = _('[NO_CURRENT_TASK]', lang)
