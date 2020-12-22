@@ -306,9 +306,9 @@ class Views:
         e.add_field(name='__Checklist__', value='\n'.join(permission_lines))
         return e
 
-    def render_quickhelp(self, prefix, languages):
+    def render_quickhelp(self, prefix, lang, languages):
         e = discord.Embed(title='Quick Help', color=self.WHITE)
-        return self.render_embed(e, 'help/quickhelp.jinja', prefix=prefix, languages='|'.join(languages))
+        return self.render_embed(e, f'help/quickhelp-{lang}.jinja', prefix=prefix, languages='|'.join(languages))
 
     def render_tower_help(self, prefix, lang):
         title = f'{_("[TOWER_OF_DOOM]", lang)} {_("[HELP]", lang)}'

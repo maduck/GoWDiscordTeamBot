@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.28.10'
+    VERSION = '0.28.11'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -212,8 +212,8 @@ class DiscordBot(BaseBot):
         e = self.views.render_tower_help(prefix, lang)
         await self.answer(message, e)
 
-    async def show_quickhelp(self, message, prefix, **kwargs):
-        e = self.views.render_quickhelp(prefix, LANGUAGES)
+    async def show_quickhelp(self, message, prefix, lang, **kwargs):
+        e = self.views.render_quickhelp(prefix, lang, LANGUAGES)
         await self.answer(message, e)
 
     async def on_message(self, message):
