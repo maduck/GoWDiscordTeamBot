@@ -82,7 +82,8 @@ class GameData:
         self.populate_campaign_tasks()
         self.populate_soulforge()
         self.populate_traitstones()
-        self.populate_levels()
+        self.populate_hero_levels()
+        self.populate_max_power_levels()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -129,6 +130,7 @@ class GameData:
             self.pets[pet['Id']] = {
                 'id': pet['Id'],
                 'name': pet['Name'],
+                'kingdom_id': pet['KingdomId'],
                 'kingdom': self.kingdoms[pet['KingdomId']],
                 'colors': sorted(colors),
                 'effect': self.pet_effects[pet['Effect']],
@@ -481,10 +483,47 @@ class GameData:
     def get_rune_name_from_id(rune_id):
         return f'[RUNE{rune_id:02d}_NAME]'
 
-    def populate_levels(self):
+    def populate_hero_levels(self):
         for bonus in self.user_data['pEconomyModel']['HeroLevelUpStats']:
             level_bonus = {
                 'level': bonus['Level'],
                 'bonus': f'[{bonus["Stat"].upper()}]',
             }
             self.levels.append(level_bonus)
+
+    def populate_max_power_levels(self):
+        pattern = re.compile(r'KingdomTask(?P<level>[0-9]+)-.+')
+        for kingdom in self.kingdoms.values():
+            max_kingdom_level = 0
+            for task in self.user_data['pTasksData']['Kingdom']:
+                match = pattern.match(task['Id'])
+                if not match:
+                    print(f'Match is broken for kingdom {kingdom}')
+                level = match.groups()[0]
+                if not self.kingdom_satisfies_task(kingdom, task):
+                    break
+                max_kingdom_level = int(level)
+            self.kingdoms[kingdom['id']]['max_power_level'] = max_kingdom_level
+
+    def kingdom_satisfies_task(self, kingdom, task):
+        if task['Task'] in ('IncreaseKingdomLevel', 'CompleteQuestline', 'Complete{x}ChallengesIn{y}'):
+            return True
+        if task['Task'] == 'Own{x}Troops':
+            troops = [self.troops[id_] for id_ in kingdom['troop_ids']]
+            troops = [t for t in troops if 'release_date' not in t or t['release_date'] <= datetime.datetime.now()]
+            return len(troops) >= task['XValue']
+        if task['Task'] == 'Own{x}Weapons':
+            weapons = [self.weapons[id_] for id_ in kingdom['weapon_ids']]
+            weapons = [w for w in weapons if 'release_date' not in w or w['release_date'] <= datetime.datetime.now()]
+            return len(weapons) >= task['XValue']
+        if task['Task'] == 'Own{x}Classes':
+            classes = [c for c in self.classes.values() if c['kingdom_id'] == kingdom['id']]
+            classes = [c for c in classes if 'release_date' not in c or c['release_date'] <= datetime.datetime.now()]
+            return len(classes) >= task['XValue']
+        if task['Task'] == 'Own{x}Pets':
+            pets = [p for p in self.pets.values() if p['kingdom_id'] == kingdom['id']]
+            pets = [p for p in pets if 'release_date' not in p or p['release_date'] <= datetime.datetime.now()]
+            return len(pets) >= task['XValue']
+        if task['Task'] == 'Earn{x}Renown':
+            return kingdom['linked_kingdom_id'] and not kingdom['underworld']
+        return False

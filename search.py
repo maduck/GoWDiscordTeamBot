@@ -271,6 +271,7 @@ class TeamExpander:
             kingdom['event_weapon_title'] = _('[FACTION_WEAPON]', lang)
             kingdom['event_weapon_id'] = kingdom['event_weapon']['id']
             kingdom['event_weapon'] = _(kingdom['event_weapon']['name'], lang)
+        kingdom['max_power_level_title'] = _('[KINGDOM_POWER_LEVELS]', lang)
 
     def search_class(self, search_term, lang):
         if search_term.isdigit() and int(search_term) in self.classes:
