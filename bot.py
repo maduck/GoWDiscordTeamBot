@@ -13,7 +13,7 @@ import prettytable
 import bot_tasks
 import models
 from base_bot import BaseBot, log
-from command_registry import COMMAND_REGISTRY
+from command_registry import COMMAND_REGISTRY, add_slash_command, get_all_commands, remove_slash_command
 from configurations import CONFIG
 from discord_wrappers import admin_required, guild_required
 from game_constants import CAMPAIGN_COLORS, RARITY_COLORS, TASK_SKIP_COSTS
@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.28.11'
+    VERSION = '0.29.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -58,6 +58,15 @@ class DiscordBot(BaseBot):
         self.pet_rescues = []
         self.pet_rescue_config: PetRescueConfig = None
 
+    async def on_slash_command(self, function, options, message):
+        try:
+            if 'lang' not in options:
+                options['lang'] = self.language.get(message.guild)
+            debug(message)
+            await function(message, **options)
+        except discord.HTTPException as e:
+            log.debug(f'Could not answer to slash command: {e}')
+
     async def on_ready(self):
         if not self.bot_connect:
             self.bot_connect = datetime.datetime.now()
@@ -66,7 +75,7 @@ class DiscordBot(BaseBot):
             await self.on_resumed()
         self.invite_url = f'https://discordapp.com/api/oauth2/authorize' \
                           f'?client_id={self.user.id}' \
-                          f'&scope=bot' \
+                          f'&scope=bot&scope=applications.commands' \
                           f'&permissions={self.permissions.value}'
 
         subscriptions = sum([s.get('pc', True) for s in self.subscriptions])
@@ -82,6 +91,7 @@ class DiscordBot(BaseBot):
         await self.pet_rescue_config.load()
         self.pet_rescues = await PetRescue.load_rescues(self)
         log.debug(f'Loaded {len(self.pet_rescues)} pet rescues after restart.')
+        await self.register_slash_commands()
         log.info(f'Logged in as {self.user.name}')
         log.info(f'Active in {len(self.guilds)} guilds.')
 
@@ -96,7 +106,7 @@ class DiscordBot(BaseBot):
                 return getattr(self, command['function']), groups
         return None, None
 
-    async def show_campaign_tasks(self, message, lang, tier, **kwargs):
+    async def campaign(self, message, lang, tier, **kwargs):
         campaign_data = self.expander.get_campaign_tasks(lang, tier)
         if not campaign_data['has_content']:
             title = _('[NO_CURRENT_TASK]', lang)
@@ -112,7 +122,8 @@ class DiscordBot(BaseBot):
                               description='\n'.join(category_lines), color=color)
             await self.answer(message, e)
 
-    async def show_spoilers(self, message, lang, _filter, **kwargs):
+    async def show_spoilers(self, message, lang, **kwargs):
+        _filter = kwargs.get('filter')
         spoilers = self.expander.get_spoilers(lang)
         e = discord.Embed(title='Spoilers', color=self.WHITE)
         troop_title = self.expander.translate_categories(['troop'], lang)['troop']
@@ -159,7 +170,7 @@ class DiscordBot(BaseBot):
             e.add_field(name=category, value=message_lines, inline=False)
         await self.answer(message, e)
 
-    async def show_about(self, message, lang, **kwargs):
+    async def about(self, message, lang, **kwargs):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(title=_('[INFO]', lang), description='<https://garyatrics.com/>', color=color)
         e.set_thumbnail(url=self.user.avatar_url)
@@ -253,7 +264,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
         log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
 
-    async def handle_search(self, message, search_term, lang, title, shortened, formatter='{0[name]} `#{0[id]}`',
+    async def handle_search(self, message, search_term, lang, title, shortened=False, formatter='{0[name]} `#{0[id]}`',
                             **kwargs):
         search_function = getattr(self.expander, 'search_{}'.format(title.lower()))
         result = search_function(search_term, lang)
@@ -275,16 +286,16 @@ class DiscordBot(BaseBot):
                 e.add_field(name=f'results {chunk_size * i + 1} - {chunk_size * i + len(chunk)}', value=chunk_message)
         await self.answer(message, e)
 
-    handle_class_search = partialmethod(handle_search, title='Class')
-    handle_kingdom_search = partialmethod(handle_search, title='Kingdom')
-    handle_pet_search = partialmethod(handle_search, title='Pet')
-    handle_weapon_search = partialmethod(handle_search, title='Weapon')
-    handle_affix_search = partialmethod(handle_search, title='Affix',
-                                        formatter='{0[name]} ({0[num_weapons]} {0[weapons_title]})')
-    handle_troop_search = partialmethod(handle_search, title='Troop')
-    handle_trait_search = partialmethod(handle_search, title='Trait', formatter='{0[name]}')
-    handle_talent_search = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
-    handle_traitstone_search = partialmethod(handle_search, title='Traitstone', formatter='{0[name]}')
+    class_ = partialmethod(handle_search, title='Class')
+    kingdom = partialmethod(handle_search, title='Kingdom')
+    pet = partialmethod(handle_search, title='Pet')
+    weapon = partialmethod(handle_search, title='Weapon')
+    affix = partialmethod(handle_search, title='Affix',
+                          formatter='{0[name]} ({0[num_weapons]} {0[weapons_title]})')
+    troop = partialmethod(handle_search, title='Troop')
+    trait = partialmethod(handle_search, title='Trait', formatter='{0[name]}')
+    talent = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
+    traitstones = partialmethod(handle_search, title='Traitstone', formatter='{0[name]}')
 
     async def show_pet_rescue(self, message, search_term, mention, lang, time_left, **kwargs):
         pets = self.expander.search_pet(search_term, lang)
@@ -630,6 +641,17 @@ class DiscordBot(BaseBot):
     def add_available_languages(e):
         available_langs = ', '.join([f'`{lang_code}`' for lang_code in LANGUAGES])
         e.add_field(name='Available languages', value=available_langs, inline=False)
+
+    async def register_slash_commands(self):
+        log.debug('Deregistering all slash commands...')
+        for command in await get_all_commands(self.user.id, TOKEN, guild_id=None):
+            await remove_slash_command(self.user.id, TOKEN, command.get('guild_id'), command['id'])
+        log.debug(f'Registering slash commands...')
+        for command in COMMAND_REGISTRY:
+            if 'description' not in command:
+                continue
+            await add_slash_command(self.user.id, TOKEN, guild_id=None, cmd_name=command['function'],
+                                    description=command['description'], options=command.get('options', []))
 
 
 if __name__ == '__main__':

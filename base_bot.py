@@ -21,6 +21,14 @@ class EmbedLimitsExceed(Exception):
     pass
 
 
+class FakeMessage:
+    def __init__(self, author, guild, channel, content):
+        self.author = author
+        self.guild = guild
+        self.channel = channel
+        self.content = content
+
+
 class BaseBot(discord.Client):
     WHITE = discord.Color.from_rgb(254, 254, 254)
     BLACK = discord.Color.from_rgb(0, 0, 0)
@@ -99,6 +107,25 @@ class BaseBot(discord.Client):
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
         except EmbedLimitsExceed as e:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.')
+
+    async def on_slash_command(self, function, options, message):
+        raise NotImplemented('This function has not been implemented.')
+
+    async def on_socket_response(self, response):
+        if response.get('t') == 'INTERACTION_CREATE':
+            event = response['d']
+            function = getattr(self, event['data']['name'])
+            try:
+                guild = await self.fetch_guild(event['guild_id'])
+                channel = await self.fetch_channel(event['channel_id'])
+                author = await guild.fetch_member(event['member']['user']['id'])
+                options = {o['name']: o['value'] for o in event['data'].get('options', [])}
+                options_text = ' '.join([f'{k}={v}' for k, v in options.items()])
+                content = f'/{event["data"]["name"]} {options_text}'
+                message = FakeMessage(author, guild, channel, content)
+                await self.on_slash_command(function, options, message)
+            except discord.HTTPException as e:
+                log.debug(f'Slash command triggered in broken channel: {e}')
 
     async def on_raw_reaction_add(self, payload):
         if not payload.member or payload.member.bot:

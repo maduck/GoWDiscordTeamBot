@@ -1,6 +1,39 @@
+import asyncio
 import re
+from enum import Enum
+
+import aiohttp
 
 from translations import LANGUAGES
+
+
+class OptionType(Enum):
+    SUB_COMMAND = 1
+    SUB_COMMAND_GROUP = 2
+    STRING = 3
+    INTEGER = 4
+    BOOLEAN = 5
+    USER = 6
+    CHANNEL = 7
+    ROLE = 8
+
+
+STANDARD_OPTIONS = {
+    'search_term': {
+        'name': 'search_term',
+        'description': 'case insensitive search',
+        'type': OptionType.STRING.value,
+        'required': True,
+        'choices': [],
+    },
+    'lang': {
+        'name': 'lang',
+        'description': 'language',
+        'type': OptionType.STRING.value,
+        'required': False,
+        'choices': [{'name': v, 'value': k} for k, v in LANGUAGES.items() if k not in ('ru', 'cn')],
+    }
+}
 
 LANG_PATTERN = r'(?P<lang>' + '|'.join(LANGUAGES) + ')?'
 DEFAULT_PATTERN = '^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.)'
@@ -8,32 +41,44 @@ SEARCH_PATTERN = DEFAULT_PATTERN + '{0} #?(?P<search_term>.*)$'
 MATCH_OPTIONS = re.IGNORECASE | re.MULTILINE
 COMMAND_REGISTRY = [
     {
-        'function': 'show_about',
-        'pattern': re.compile(DEFAULT_PATTERN + 'about$', MATCH_OPTIONS)
+        'function': 'about',
+        'pattern': re.compile(DEFAULT_PATTERN + 'about$', MATCH_OPTIONS),
+        'description': 'Shows general information about the bot',
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'handle_troop_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('troop'), MATCH_OPTIONS)
+        'function': 'troop',
+        'pattern': re.compile(SEARCH_PATTERN.format('troop'), MATCH_OPTIONS),
+        'description': 'Search troops',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'handle_trait_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('trait'), MATCH_OPTIONS)
+        'function': 'trait',
+        'pattern': re.compile(SEARCH_PATTERN.format('trait'), MATCH_OPTIONS),
+        'description': 'Search traits',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'handle_weapon_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('weapon'), MATCH_OPTIONS)
+        'function': 'weapon',
+        'pattern': re.compile(SEARCH_PATTERN.format('weapon'), MATCH_OPTIONS),
+        'description': 'Search weapons',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'handle_affix_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('affix'), MATCH_OPTIONS)
+        'function': 'affix',
+        'pattern': re.compile(SEARCH_PATTERN.format('affix'), MATCH_OPTIONS),
+        'description': 'Search weapon affixes',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'show_kingdom_summary',
         'pattern': re.compile(DEFAULT_PATTERN + 'kingdom summary$', MATCH_OPTIONS)
     },
     {
-        'function': 'handle_kingdom_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('(kingdom|faction)'), MATCH_OPTIONS)
+        'function': 'kingdom',
+        'pattern': re.compile(SEARCH_PATTERN.format('(kingdom|faction)'), MATCH_OPTIONS),
+        'description': 'Search kingdoms',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'show_pet_rescue_config',
@@ -52,24 +97,32 @@ COMMAND_REGISTRY = [
             MATCH_OPTIONS),
     },
     {
-        'function': 'handle_pet_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('pet'), MATCH_OPTIONS)
+        'function': 'pet',
+        'pattern': re.compile(SEARCH_PATTERN.format('pet'), MATCH_OPTIONS),
+        'description': 'Search pets',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'show_class_summary',
         'pattern': re.compile(DEFAULT_PATTERN + 'class summary$', MATCH_OPTIONS)
     },
     {
-        'function': 'handle_class_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('class'), MATCH_OPTIONS)
+        'function': 'class_',
+        'pattern': re.compile(SEARCH_PATTERN.format('class'), MATCH_OPTIONS),
+        'description': 'Search classes',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'handle_talent_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('talent'), MATCH_OPTIONS)
+        'function': 'talent',
+        'pattern': re.compile(SEARCH_PATTERN.format('talent'), MATCH_OPTIONS),
+        'description': 'Search class talents',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'handle_traitstone_search',
-        'pattern': re.compile(SEARCH_PATTERN.format('traitstone'), MATCH_OPTIONS)
+        'function': 'traitstones',
+        'pattern': re.compile(SEARCH_PATTERN.format('traitstone'), MATCH_OPTIONS),
+        'description': 'Search traitstones',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'show_event_kingdoms',
@@ -77,20 +130,49 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'show_events',
-        'pattern': re.compile(DEFAULT_PATTERN + '(spoilers? )?events?( (?P<filter>.*))?$', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + '(spoilers? )?events?( (?P<filter>.*))?$', MATCH_OPTIONS),
+        'description': 'Show upcoming events',
+        'options': [{
+            'name': 'filter',
+            'description': 'case insensitive filter for events',
+            'type': OptionType.STRING.value,
+            'required': False,
+            'choices': [],
+        },
+            STANDARD_OPTIONS['lang'],
+        ]
     },
     {
         'function': 'show_spoilers',
-        'pattern': re.compile(DEFAULT_PATTERN + 'spoilers?( (?P<_filter>(weapon|pet|kingdom|troop))s?)?$',
-                              MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + 'spoilers?( (?P<filter>(weapon|pet|kingdom|troop))s?)?$',
+                              MATCH_OPTIONS),
+        'description': 'Show upcoming releases',
+        'options': [{
+            'name': 'filter',
+            'description': 'case insensitive filter for spoilers',
+            'type': OptionType.STRING.value,
+            'required': False,
+            'choices': [
+                {'name': 'Weapons', 'value': 'weapon'},
+                {'name': 'Pets', 'value': 'pet'},
+                {'name': 'Kingdoms', 'value': 'kingdom'},
+                {'name': 'Troops', 'value': 'troop'},
+            ],
+        }, STANDARD_OPTIONS['lang'],
+        ]
     },
     {
         'function': 'show_help',
-        'pattern': re.compile(DEFAULT_PATTERN + 'help$', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + 'help$', MATCH_OPTIONS),
+        'description': 'Shows bot help',
+        'options': [STANDARD_OPTIONS['lang']],
+
     },
     {
         'function': 'show_quickhelp',
-        'pattern': re.compile(DEFAULT_PATTERN + 'quickhelp$', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + 'quickhelp$', MATCH_OPTIONS),
+        'description': 'Shows shorter bot reference help',
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'show_prefix',
@@ -163,7 +245,8 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'waffles',
-        'pattern': re.compile(r'^(?P<prefix>.)waffles$', MATCH_OPTIONS)
+        'pattern': re.compile(r'^(?P<prefix>.)waffles$', MATCH_OPTIONS),
+        'description': "Easteregg command. Don't use.",
     },
     {
         'function': 'show_languages',
@@ -174,12 +257,27 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(DEFAULT_PATTERN + 'lang(uages?)? (?P<new_language>.+)$', MATCH_OPTIONS)
     },
     {
-        'function': 'show_campaign_tasks',
-        'pattern': re.compile(DEFAULT_PATTERN + 'campaign( (?P<tier>bronze|silver|gold))?$', MATCH_OPTIONS)
+        'function': 'campaign',
+        'pattern': re.compile(DEFAULT_PATTERN + 'campaign( (?P<tier>bronze|silver|gold))?$', MATCH_OPTIONS),
+        'description': "Show current week's campaign tasks",
+        'options': [{
+            'name': 'tier',
+            'description': 'Tier filter for campaign tasks',
+            'type': OptionType.STRING.value,
+            'required': False,
+            'choices': [
+                {'name': 'Bronze', 'value': 'bronze'},
+                {'name': 'Silver', 'value': 'silver'},
+                {'name': 'Gold', 'value': 'gold'},
+            ],
+        }, STANDARD_OPTIONS['lang'],
+        ]
     },
     {
-        'function': 'show_soulforge',
-        'pattern': re.compile(DEFAULT_PATTERN + 'soulforge$', MATCH_OPTIONS)
+        'function': 'soulforge',
+        'pattern': re.compile(DEFAULT_PATTERN + 'soulforge$', MATCH_OPTIONS),
+        'description': "Show this week's craftable items in Soulforge",
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'show_levels',
@@ -220,3 +318,89 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(DEFAULT_PATTERN + r'permissions?$', MATCH_OPTIONS)
     }
 ]
+
+
+# taken from https://github.com/eunwoo1104/discord-py-slash-command
+async def add_slash_command(bot_id,
+                            bot_token: str,
+                            guild_id,
+                            cmd_name: str,
+                            description: str,
+                            options: list = None):
+    """
+    A coroutine that sends a slash command add request to Discord API.
+    :param bot_id: User ID of the bot.
+    :param bot_token: Token of the bot.
+    :param guild_id: ID of the guild to add command. Pass `None` to add global command.
+    :param cmd_name: Name of the command. Must be 3 or longer and 32 or shorter.
+    :param description: Description of the command.
+    :param options: List of the function.
+    :return: JSON Response of the request.
+    :raises: :class:`.error.RequestFailure` - Requesting to Discord API has failed.
+    """
+    url = f"https://discord.com/api/v8/applications/{bot_id}"
+    url += "/commands" if not guild_id else f"/guilds/{guild_id}/commands"
+    base = {
+        "name": cmd_name,
+        "description": description,
+        "options": options if options else []
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, headers={"Authorization": f"Bot {bot_token}"}, json=base) as resp:
+            if resp.status == 429:
+                _json = await resp.json()
+                await asyncio.sleep(_json["retry_after"])
+                return await add_slash_command(bot_id, bot_token, guild_id, cmd_name, description, options)
+            if not 200 <= resp.status < 300:
+                raise RuntimeError(resp.status, await resp.text())
+            return await resp.json()
+
+
+async def remove_slash_command(bot_id,
+                               bot_token,
+                               guild_id,
+                               cmd_id):
+    """
+    A coroutine that sends a slash command remove request to Discord API.
+    :param bot_id: User ID of the bot.
+    :param bot_token: Token of the bot.
+    :param guild_id: ID of the guild to remove command. Pass `None` to remove global command.
+    :param cmd_id: ID of the command.
+    :return: Response code of the request.
+    :raises: :class:`.error.RequestFailure` - Requesting to Discord API has failed.
+    """
+    url = f"https://discord.com/api/v8/applications/{bot_id}"
+    url += "/commands" if not guild_id else f"/guilds/{guild_id}/commands"
+    url += f"/{cmd_id}"
+    async with aiohttp.ClientSession() as session:
+        async with session.delete(url, headers={"Authorization": f"Bot {bot_token}"}) as resp:
+            if resp.status == 429:
+                _json = await resp.json()
+                await asyncio.sleep(_json["retry_after"])
+                return await remove_slash_command(bot_id, bot_token, guild_id, cmd_id)
+            if not 200 <= resp.status < 300:
+                raise RuntimeError(resp.status, await resp.text())
+            return resp.status
+
+
+async def get_all_commands(bot_id, bot_token, guild_id):
+    """
+    A coroutine that sends a slash command get request to Discord API.
+    :param bot_id: User ID of the bot.
+    :param bot_token: Token of the bot.
+    :param guild_id: ID of the guild to get commands. Pass `None` to get all global commands.
+    :return: JSON Response of the request.
+    :raises: :class:`.error.RequestFailure` - Requesting to Discord API has failed.
+    """
+    url = f"https://discord.com/api/v8/applications/{bot_id}"
+    url += "/commands" if not guild_id else f"/guilds/{guild_id}/commands"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers={"Authorization": f"Bot {bot_token}"}) as resp:
+            if resp.status == 429:
+                _json = await resp.json()
+                await asyncio.sleep(_json["retry_after"])
+                return await get_all_commands(bot_id, bot_token, guild_id)
+            if not 200 <= resp.status < 300:
+                raise RuntimeError(resp.status, await resp.text())
+            return await resp.json()
