@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.30.1'
+    VERSION = '0.30.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -161,7 +161,7 @@ class DiscordBot(BaseBot):
                 e.add_field(name=translated[spoil_type], value=f'```{result}```', inline=False)
         await self.answer(message, e)
 
-    async def show_soulforge(self, message, lang, **kwargs):
+    async def soulforge(self, message, lang, **kwargs):
         title, craftable_items = self.expander.get_soulforge(lang)
         e = discord.Embed(title=title, color=self.WHITE)
         for category, recipes in craftable_items.items():
