@@ -1,24 +1,24 @@
-<T>__Basics__</T>
-Users can use the `{{ prefix }}tower` command to enter Scroll data for the Tower of Doom, 
-then display it for easy viewing. **Each Tower is specific to the channel it is in**.
-<T>__Entering Data__</T>
-To enter data, use the `{{ prefix }}tower` command. Shortened names or aliases can be used.
+<T>__Bases__</T>
+Les utilisateurs peuvent utiliser la commande `{{ prefix }}tower` pour ajouter des informations sur les parchemins de la tour maudite,
+puis les afficher pour dans un visuel facile. **Chaque Tour est spécifique au salon dans lequel l'information est saisie.**.
+<T>__Saisie des données__</T>
+Pour saisir les données, utilisez la commande `{{ prefix }}tower`. Des noms abrégés ou des alias peuvent être utilisés.
 `{{ prefix }}tower 4 ii unlock`
 `{{ prefix }}tower 5 rare fi`
-You can set a whole floor in one line:
+Vous pouvez saisir un étage entier sur une seule ligne:
 `{{ prefix }}tower 6 armor fireball unlock haste`
 
-<T>__Displaying Data__</T>
-To display all the data, simply use the `{{ prefix }}tower` command with no arguments.
-For a selection of floors, ranging from _lower_ to _upper_, use `{{ prefix }}tower <lower>-<upper>`, e.g. `{{ prefix }}tower 20-30`.
+<T>__Affichage des données__</T>
+Pour afficher les données, utilisez simplement la commande `{{ prefix }}tower` sans aucun argument.
+Pour une sélection d'étages, allant de _inférieur_ à _supérieur_, utilisez `{{ prefix }}tower <inférieur>-<supérieur>`, ex. `{{ prefix }}tower 20-30`.
 
-<T>__Clearing Data__</T>
-To clear the tower data, simply use the `{{ prefix }}towerclear` command with no arguments.
+<T>__Effacement des données__</T>
+Pour effacer les données de la tour, utilisez simplement la commande `{{ prefix }}towerclear` sans aucun argument.
 
 <T>__Configuration__</T>
-To configure the tower utility, use `{{ prefix }}towerconfig`.
-`{{ prefix }}towerconfig short true` for short responses to edits.
-`{{ prefix }}towerconfig rooms III iii,rare,green` to set the room aliases.
-Comma separated values.
-`{{ prefix }}towerconfig scrolls armor :shield:,Armor` to set scroll aliases. 
-First value will be used for display.
+Pour configurer l'utilitaire de la tour, utilisez `{{ prefix }}towerconfig`.
+`{{ prefix }}towerconfig short true` pour la saisie de réponses raccourcies.
+`{{ prefix }}towerconfig rooms III iii,rare,green` pour définir les alias des pièces.
+Valeurs séparées par des virgules.
+`{{ prefix }}towerconfig scrolls armor :shield:,Armor` pour définir des alias pour des parchemins.
+La première valeur sera utilisée pour l'affichage.
