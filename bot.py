@@ -122,7 +122,7 @@ class DiscordBot(BaseBot):
                               description='\n'.join(category_lines), color=color)
             await self.answer(message, e)
 
-    async def show_spoilers(self, message, lang, **kwargs):
+    async def spoilers(self, message, lang, **kwargs):
         _filter = kwargs.get('filter')
         spoilers = self.expander.get_spoilers(lang)
         e = discord.Embed(title='Spoilers', color=self.WHITE)
@@ -200,7 +200,7 @@ class DiscordBot(BaseBot):
                     inline=False)
         await self.answer(message, e)
 
-    async def show_events(self, message, lang, **kwargs):
+    async def events(self, message, lang, **kwargs):
         events = self.expander.get_events(lang)
         e = self.views.render_events(events, kwargs.get('filter'), lang)
         await self.answer(message, e)
@@ -215,7 +215,7 @@ class DiscordBot(BaseBot):
         e = self.views.render_levels(levels)
         await self.answer(message, e)
 
-    async def show_help(self, message, prefix, lang, **kwargs):
+    async def help(self, message, prefix, lang, **kwargs):
         e = self.views.render_help(prefix, lang)
         await self.answer(message, e)
 
@@ -223,7 +223,7 @@ class DiscordBot(BaseBot):
         e = self.views.render_tower_help(prefix, lang)
         await self.answer(message, e)
 
-    async def show_quickhelp(self, message, prefix, lang, **kwargs):
+    async def quickhelp(self, message, prefix, lang, **kwargs):
         e = self.views.render_quickhelp(prefix, lang, LANGUAGES)
         await self.answer(message, e)
 

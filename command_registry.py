@@ -129,7 +129,7 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(DEFAULT_PATTERN + r'events? kingdoms?$', MATCH_OPTIONS)
     },
     {
-        'function': 'show_events',
+        'function': 'events',
         'pattern': re.compile(DEFAULT_PATTERN + '(spoilers? )?events?( (?P<filter>.*))?$', MATCH_OPTIONS),
         'description': 'Show upcoming events',
         'options': [{
@@ -143,7 +143,7 @@ COMMAND_REGISTRY = [
         ]
     },
     {
-        'function': 'show_spoilers',
+        'function': 'spoilers',
         'pattern': re.compile(DEFAULT_PATTERN + 'spoilers?( (?P<filter>(weapon|pet|kingdom|troop))s?)?$',
                               MATCH_OPTIONS),
         'description': 'Show upcoming releases',
@@ -162,14 +162,14 @@ COMMAND_REGISTRY = [
         ]
     },
     {
-        'function': 'show_help',
+        'function': 'help',
         'pattern': re.compile(DEFAULT_PATTERN + 'help$', MATCH_OPTIONS),
         'description': 'Shows bot help',
         'options': [STANDARD_OPTIONS['lang']],
 
     },
     {
-        'function': 'show_quickhelp',
+        'function': 'quickhelp',
         'pattern': re.compile(DEFAULT_PATTERN + 'quickhelp$', MATCH_OPTIONS),
         'description': 'Shows shorter bot reference help',
         'options': [STANDARD_OPTIONS['lang']],
