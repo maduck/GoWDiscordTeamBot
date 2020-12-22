@@ -215,7 +215,8 @@ class DiscordBot(BaseBot):
         e = self.views.render_levels(levels)
         await self.answer(message, e)
 
-    async def help(self, message, prefix, lang, **kwargs):
+    async def help(self, message, lang, **kwargs):
+        prefix = self.prefix.get(message.guild)
         e = self.views.render_help(prefix, lang)
         await self.answer(message, e)
 
@@ -223,7 +224,8 @@ class DiscordBot(BaseBot):
         e = self.views.render_tower_help(prefix, lang)
         await self.answer(message, e)
 
-    async def quickhelp(self, message, prefix, lang, **kwargs):
+    async def quickhelp(self, message, lang, **kwargs):
+        prefix = self.prefix.get(message.guild)
         e = self.views.render_quickhelp(prefix, lang, LANGUAGES)
         await self.answer(message, e)
 
