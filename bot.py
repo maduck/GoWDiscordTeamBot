@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.30.2'
+    VERSION = '0.30.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -245,10 +245,6 @@ class DiscordBot(BaseBot):
         params['lang'] = params['lang'].lower()
         debug(message)
         await function(message=message, **params)
-
-    async def show_invite_link(self, message, **kwargs):
-        e = self.generate_response('Bot invite link', self.WHITE, 'Feel free to share!', self.invite_url)
-        await self.answer(message, e)
 
     @guild_required
     @admin_required
