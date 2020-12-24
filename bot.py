@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.30.4'
+    VERSION = '0.30.5'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -295,7 +295,7 @@ class DiscordBot(BaseBot):
     talent = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
     traitstones = partialmethod(handle_search, title='Traitstone', formatter='{0[name]}')
 
-    async def show_pet_rescue(self, message, search_term, mention, lang, time_left, **kwargs):
+    async def pet_rescue(self, message, search_term, mention, lang, time_left, **kwargs):
         pets = self.expander.search_pet(search_term, lang)
         if len(pets) != 1:
             e = discord.Embed(title=f'Pet search for `{search_term}` yielded {len(pets)} results.',

@@ -82,19 +82,34 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'show_pet_rescue_config',
-        'pattern': re.compile(DEFAULT_PATTERN + '(pet rescue config|pr config)$', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + '(pr|pet rescue) config$', MATCH_OPTIONS)
     },
     {
         'function': 'set_pet_rescue_config',
-        'pattern': re.compile(DEFAULT_PATTERN + '(pet rescue config|pr config) (?P<key>[_a-zA-Z]+)([ =]+)(?P<value>.*)',
+        'pattern': re.compile(DEFAULT_PATTERN + '(pr|pet rescue) config (?P<key>[_a-zA-Z]+)([ =]+)(?P<value>.*)',
                               MATCH_OPTIONS)
     },
     {
-        'function': 'show_pet_rescue',
+        'function': 'pet_rescue',
         'pattern': re.compile(
             DEFAULT_PATTERN +
             '(pr|pet rescue) (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?min)?)?( (?P<mention><?@.+))?$',
             MATCH_OPTIONS),
+        'description': 'Shows general information about the bot',
+        'options': [STANDARD_OPTIONS['search_term'],
+                    {
+                        'name': 'time_left',
+                        'description': 'time left for rescue, max 59 minutes',
+                        'type': OptionType.INTEGER.value,
+                        'required': False,
+                    },
+                    {
+                        'name': 'mention',
+                        'description': 'person or role to mention, defaults to `@everyone`',
+                        'type': OptionType.STRING.value,
+                        'required': False,
+                    },
+                    STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'pet',
