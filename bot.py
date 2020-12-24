@@ -642,16 +642,21 @@ class DiscordBot(BaseBot):
 
     async def register_slash_commands(self):
         log.debug('Deregistering all slash commands...')
-        for command in await get_all_commands(self.user.id, TOKEN, guild_id=None):
-            await remove_slash_command(self.user.id, TOKEN, command.get('guild_id'), command['id'])
+        guild_id = CONFIG.get('slash_command_guild_id')
+        for command in await get_all_commands(self.user.id, TOKEN, guild_id=guild_id):
+            await remove_slash_command(self.user.id, TOKEN, guild_id, command['id'])
         if not CONFIG.get('register_slash_commands'):
             return
         log.debug(f'Registering slash commands...')
         for command in COMMAND_REGISTRY:
             if 'description' not in command:
                 continue
-            await add_slash_command(self.user.id, TOKEN, guild_id=None, cmd_name=command['function'],
-                                    description=command['description'], options=command.get('options', []))
+            await add_slash_command(self.user.id,
+                                    bot_token=TOKEN,
+                                    guild_id=guild_id,
+                                    cmd_name=command['function'],
+                                    description=command['description'],
+                                    options=command.get('options', []))
 
 
 if __name__ == '__main__':
