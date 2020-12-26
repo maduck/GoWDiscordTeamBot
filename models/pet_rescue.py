@@ -21,6 +21,7 @@ class PetRescue:
         self.active = True
         self.message = message
         self.mention = mention
+        self.show_mention = False if self.mention else True
         self.lang = lang
         self.answer_method = answer_method
         self.config = config.get(message.channel)
@@ -54,8 +55,9 @@ class PetRescue:
                 await self.remove_from_db()
                 self.active = False
         elif not self.pet_message:
-            self.update_mention()
-            self.alert_message = await self.answer_method(self.message, embed=None, content=self.reminder)
+            if self.show_mention:
+                self.update_mention()
+                self.alert_message = await self.answer_method(self.message, embed=None, content=self.reminder)
             self.pet_message = await self.answer_method(self.message, embed)
         else:
             await self.delete_messages()
@@ -140,7 +142,7 @@ class PetRescue:
             self.message.channel.id,
             self.message.id,
             self.pet['id'],
-            self.alert_message.id,
+            self.alert_message.id if self.alert_message else 0,
             self.pet_message.id,
             self.start_time,
             self.lang,
