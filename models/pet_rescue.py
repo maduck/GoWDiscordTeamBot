@@ -67,7 +67,7 @@ class PetRescue:
     async def delete_messages(self):
         if self.config['delete_pet']:
             await self.delete_message(self.pet_message)
-        if self.config['delete_mention']:
+        if self.config['delete_mention'] and self.alert_message:
             await self.delete_message(self.alert_message)
         if self.config['delete_message']:
             await self.delete_message(self.message)
@@ -109,7 +109,8 @@ class PetRescue:
                 config=client.pet_rescue_config,
             )
             try:
-                rescue.alert_message = await channel.fetch_message(entry['alert_message_id'])
+                if entry['alert_message_id']:
+                    rescue.alert_message = await channel.fetch_message(entry['alert_message_id'])
                 rescue.pet_message = await channel.fetch_message(entry['pet_message_id'])
             except discord.errors.DiscordException:
                 broken_rescues.append(entry['id'])
