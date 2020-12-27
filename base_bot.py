@@ -178,6 +178,10 @@ class BaseBot(discord.Client):
         for emoji in my_guild.emojis:
             self.my_emojis[emoji.name] = str(emoji)
 
+    async def is_owner(self, message):
+        app_info = await self.application_info()
+        return message.author == app_info.owner
+
     @staticmethod
     def is_guild_admin(message):
         if message.channel.type == discord.ChannelType.private:

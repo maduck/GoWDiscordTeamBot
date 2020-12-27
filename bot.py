@@ -15,7 +15,7 @@ import models
 from base_bot import BaseBot, log
 from command_registry import COMMAND_REGISTRY, add_slash_command, get_all_commands, remove_slash_command
 from configurations import CONFIG
-from discord_wrappers import admin_required, guild_required
+from discord_wrappers import admin_required, guild_required, owner_required
 from game_constants import CAMPAIGN_COLORS, RARITY_COLORS, TASK_SKIP_COSTS
 from jobs.news_downloader import NewsDownloader
 from models.pet_rescue import PetRescue
@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.30.6'
+    VERSION = '0.31.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -191,13 +191,26 @@ class DiscordBot(BaseBot):
         admin_invite = self.invite_url.split('permissions')[0] + 'permissions=8'
         e.add_field(name=f'__{_("[INVITE]", lang)} ({_("[ADMIN]", lang)})__:', value=f'<{admin_invite}>', inline=False)
 
-        e.add_field(name=f'__{_("[GUILD]", lang)} {_("[AMOUNT]", lang)}__:', value=len(self.guilds))
         my_prefix = self.prefix.get(message.guild)
-        e.add_field(name=f'__{_("[HELP]", lang)}__:', value=f'`{my_prefix}help` / `{my_prefix}quickhelp`')
+        e.add_field(name=f'__{_("[HELP]", lang)}__:', value=f'`{my_prefix}help` / `{my_prefix}quickhelp`', inline=False)
 
         e.add_field(name=f'__{_("[SUPPORT]", lang)}__:', value='<https://discord.gg/XWs7x3cFTU>', inline=False)
         e.add_field(name=f'__{_("[CONTRIBUTE]", lang)}__:', value='<https://github.com/maduck/GoWDiscordTeamBot>',
                     inline=False)
+        await self.answer(message, e)
+
+    @owner_required
+    async def stats(self, message, lang, **kwargs):
+        color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
+        e = discord.Embed(title=_('[PVPSTATS]', lang), description='<https://garyatrics.com/>', color=color)
+        collections = [
+            f'**{_("[GUILD]", lang)} {_("[AMOUNT]", lang)}**: {len(self.guilds)}',
+            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (PC)**: {sum([s.get("pc", True) for s in self.subscriptions])}',
+            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (Switch)**: {sum([s.get("switch", True) for s in self.subscriptions])}',
+            f'**{_("[PETRESCUE]", lang)} ({_("[JUST_NOW]", lang)})**: {len(self.pet_rescues)}',
+        ]
+        e.add_field(name=_("[COLLECTION]", lang), value='\n'.join(collections))
+
         await self.answer(message, e)
 
     async def events(self, message, lang, **kwargs):

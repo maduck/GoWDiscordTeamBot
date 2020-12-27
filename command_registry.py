@@ -47,6 +47,10 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'stats',
+        'pattern': re.compile(DEFAULT_PATTERN + 'stats$', MATCH_OPTIONS),
+    },
+    {
         'function': 'troop',
         'pattern': re.compile(SEARCH_PATTERN.format('troop'), MATCH_OPTIONS),
         'description': 'Search troops',
