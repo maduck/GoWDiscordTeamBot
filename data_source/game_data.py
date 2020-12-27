@@ -180,6 +180,7 @@ class GameData:
                 'description': kingdom['Description'],
                 'punchline': kingdom['ByLine'],
                 'underworld': bool(kingdom.get('MapIndex', 0)),
+                'location': self.infer_kingdom_location(kingdom),
                 'troop_ids': kingdom_troops,
                 'weapon_ids': [],
                 'troop_type': kingdom['KingdomTroopType'],
@@ -191,6 +192,12 @@ class GameData:
                 self.kingdoms[kingdom['SisterKingdomId']]['linked_kingdom_id'] = kingdom['Id']
             for troop_id in kingdom_troops:
                 self.troops[troop_id]['kingdom'] = kingdom
+
+    @staticmethod
+    def infer_kingdom_location(kingdom):
+        if 'WARBAND' in kingdom['ReferenceName']:
+            return 'warband'
+        return 'underworld' if bool(kingdom.get('MapIndex', 0)) else 'krystara'
 
     def populate_troops(self):
         for troop in self.data['Troops']:

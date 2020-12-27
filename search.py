@@ -202,7 +202,7 @@ class TeamExpander:
             new_traits.append(new_trait)
         return new_traits
 
-    def search_kingdom(self, search_term, lang):
+    def search_kingdom(self, search_term, lang, include_warband=True):
         if search_term.isdigit() and int(search_term) in self.kingdoms:
             result = self.kingdoms.get(int(search_term)).copy()
             self.translate_kingdom(result, lang)
@@ -217,7 +217,7 @@ class TeamExpander:
                     self.translate_kingdom(result, lang)
                     return [result]
                 elif real_search in translated_name or \
-                        (search_term == 'summary' and not kingdom['underworld'] and len(kingdom['colors']) > 0):
+                        (search_term == 'summary' and kingdom['location'] == 'krystara' and len(kingdom['colors']) > 0):
                     result = kingdom.copy()
                     self.translate_kingdom(result, lang)
                     possible_matches.append(result)
