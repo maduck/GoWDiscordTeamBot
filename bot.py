@@ -365,7 +365,7 @@ class DiscordBot(BaseBot):
                                                 _('[OVERVIEW]', lang))
         await self.answer(message, e)
 
-    async def show_kingdom_summary(self, message, lang, **kwargs):
+    async def kingdom_summary(self, message, lang, **kwargs):
         result = self.expander.search_kingdom('summary', lang)
         result.sort(key=operator.itemgetter('name'))
 

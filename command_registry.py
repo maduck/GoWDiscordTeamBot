@@ -75,8 +75,10 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'show_kingdom_summary',
-        'pattern': re.compile(DEFAULT_PATTERN + 'kingdom summary$', MATCH_OPTIONS)
+        'function': 'kingdom_summary',
+        'pattern': re.compile(DEFAULT_PATTERN + 'kingdom summary$', MATCH_OPTIONS),
+        'description': 'Show all kingdoms in a table',
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'kingdom',
