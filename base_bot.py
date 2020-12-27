@@ -180,6 +180,8 @@ class BaseBot(discord.Client):
 
     async def is_owner(self, message):
         app_info = await self.application_info()
+        if app_info.team:
+            return message.author in app_info.team.members
         return message.author == app_info.owner
 
     @staticmethod
