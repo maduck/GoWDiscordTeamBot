@@ -191,6 +191,7 @@ class TeamExpander:
         for rune in troop['traitstones']:
             traitstones.append(f'{_(rune["name"], lang)} ({rune["amount"]})')
         troop['traitstones'] = traitstones
+        troop['bonuses_title'] = _('[BONUSES]', lang)
 
     @staticmethod
     def enrich_traits(traits, lang):

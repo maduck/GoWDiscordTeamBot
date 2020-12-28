@@ -215,7 +215,11 @@ class GameData:
                 'types': [troop['TroopType']],
                 'roles': troop['TroopRoleArray'],
                 'kingdom': {'Name': ''},
-                'filename': troop["FileBase"],
+                'filename': troop['FileBase'],
+                'armor': sum(troop['ArmorIncrease']),
+                'health': sum(troop['HealthIncrease']),
+                'magic': sum(troop['SpellPowerIncrease']),
+                'attack': sum(troop['AttackIncrease']),
             }
             if 'TroopType2' in troop:
                 self.troops[troop['Id']]['types'].append(troop['TroopType2'])
