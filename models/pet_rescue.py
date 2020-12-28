@@ -4,7 +4,7 @@ import math
 
 import discord
 
-from base_bot import log
+from base_bot import FakeMessage, log
 from models import DB
 
 
@@ -21,7 +21,9 @@ class PetRescue:
         self.active = True
         self.message = message
         self.mention = mention
-        self.show_mention = False if self.mention else True
+        self.show_mention = True
+        if self.mention and message.id:
+            self.show_mention = False
         self.lang = lang
         self.answer_method = answer_method
         self.config = config.get(message.channel)
@@ -74,6 +76,8 @@ class PetRescue:
 
     @staticmethod
     async def delete_message(message):
+        if not message or not message.id:
+            return
         try:
             await message.delete()
         except (discord.errors.Forbidden, discord.errors.NotFound, discord.errors.HTTPException):
@@ -95,7 +99,9 @@ class PetRescue:
 
             try:
                 channel = await client.fetch_channel(entry['channel_id'])
-                message = await channel.fetch_message(entry['message_id'])
+                message = FakeMessage('author', channel.guild, channel, 'content')
+                if entry['message_id']:
+                    message = await channel.fetch_message(entry['message_id'])
             except discord.errors.DiscordException:
                 broken_rescues.append(entry['id'])
                 continue

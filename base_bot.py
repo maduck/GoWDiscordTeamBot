@@ -22,6 +22,8 @@ class EmbedLimitsExceed(Exception):
 
 
 class FakeMessage:
+    id = 0
+
     def __init__(self, author, guild, channel, content):
         self.author = author
         self.guild = guild
@@ -151,7 +153,7 @@ class BaseBot(discord.Client):
 
         if message.author != me:
             return
-        if payload.member.display_name != message.embeds[0].author.name:
+        if not message.embeds or payload.member.display_name != message.embeds[0].author.name:
             return
         if not permissions.manage_messages:
             await message.add_reaction('⛔')
