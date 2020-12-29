@@ -84,12 +84,12 @@ class TeamExpander:
             if troop:
                 color_code = "".join(troop["colors"])
                 troop_name = _(troop['name'], lang)
-                result['troops'].append([color_code, troop_name])
+                result['troops'].append([color_code, troop_name, ''])
                 continue
             elif weapon:
                 color_code = "".join(weapon["colors"])
                 weapon_name = _(weapon['name'], lang)
-                result['troops'].append([color_code, weapon_name + ' :crossed_swords:'])
+                result['troops'].append([color_code, weapon_name, 'weapon'])
                 has_weapon = True
                 continue
 

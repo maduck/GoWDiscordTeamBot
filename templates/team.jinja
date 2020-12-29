@@ -1,6 +1,6 @@
 <T>inline**{{ team.troops_title }}**</T>
 {%- for troop in team.troops %}
-{{ troop[0]|emoji(':'+ troop[0] + ':') }} {{ troop[1] }}
+{{ troop[0]|emoji }} {{ troop[1] }}{% if troop[2] %} {{ troop[2]|emoji }}{% endif %}
 {%- endfor -%}
 
 {%- if team.banner %}
