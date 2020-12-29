@@ -99,7 +99,10 @@ class PetRescue:
 
             try:
                 channel = await client.fetch_channel(entry['channel_id'])
-                message = FakeMessage('author', channel.guild, channel, 'content')
+                guild = None
+                if not isinstance(channel, discord.DMChannel):
+                    guild = channel.guild
+                message = FakeMessage('author', guild, channel, 'content')
                 if entry['message_id']:
                     message = await channel.fetch_message(entry['message_id'])
             except discord.errors.DiscordException:
