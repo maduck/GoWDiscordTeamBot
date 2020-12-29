@@ -35,6 +35,7 @@ STANDARD_OPTIONS = {
     }
 }
 
+NO_QUOTE = r'^([^>].*)??'
 LANG_PATTERN = r'(?P<lang>' + '|'.join(LANGUAGES) + ')?'
 DEFAULT_PATTERN = '^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.)'
 SEARCH_PATTERN = DEFAULT_PATTERN + '{0} #?(?P<search_term>.*)$'
@@ -249,7 +250,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'handle_team_code',
         'pattern': re.compile(
-            r'^([^>].*)??' + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})].*',
+            NO_QUOTE + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})].*',
             MATCH_OPTIONS | re.DOTALL)
     },
     {
