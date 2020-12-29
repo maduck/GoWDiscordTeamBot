@@ -6,7 +6,7 @@
 **{{ kingdom.color_title }}**: {{ kingdom.primary_color|emoji }} / {{ ('deed_' + kingdom.primary_color)|emoji }} {{ kingdom.deed }}
 **{{ kingdom.stat_title }}**: {{ kingdom.primary_stat }}{% endif %}{% if kingdom.max_power_level and not kingdom.underworld %}
 **{{ kingdom.max_power_level_title }}**: {{ kingdom.max_power_level }}{% endif %}{% if kingdom.linked_kingdom %}
-**{{ kingdom.linked_map }}**: {{ kingdom.linked_kingdom }}
+**{{ kingdom.linked_map }}**: {{ kingdom.linked_kingdom }} `#{{ kingdom.linked_kingdom_id }}`
 {% endif %}{% if 'pet' in kingdom %}
 **{{ kingdom.pet_title }}**: {{ kingdom.pet.name }} `#{{ kingdom.pet.id }}`{% endif %}{% if 'class' in kingdom %}
 **{{ kingdom.class_title }}**: {{ kingdom.class }} `#{{ kingdom.class_id }}`{% endif %}
