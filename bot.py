@@ -228,7 +228,7 @@ class DiscordBot(BaseBot):
         e = self.views.render_event_kingdoms(events)
         await self.answer(message, e)
 
-    async def show_levels(self, message, lang, **kwargs):
+    async def levels(self, message, lang, **kwargs):
         levels = self.expander.get_levels(lang)
         e = self.views.render_levels(levels)
         await self.answer(message, e)

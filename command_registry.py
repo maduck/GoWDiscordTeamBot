@@ -306,12 +306,13 @@ COMMAND_REGISTRY = [
     {
         'function': 'soulforge',
         'pattern': re.compile(DEFAULT_PATTERN + 'soulforge$', MATCH_OPTIONS),
-        'description': "Show this week's craftable items in Soulforge",
+        'description': 'Show this week\'s craftable items in Soulforge',
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'show_levels',
-        'pattern': re.compile(DEFAULT_PATTERN + 'levels$', MATCH_OPTIONS)
+        'function': 'levels',
+        'pattern': re.compile(DEFAULT_PATTERN + 'levels$', MATCH_OPTIONS),
+        'description': 'Show the player\'s level progression bonuses'
     },
     {
         'function': 'update_toplist',
