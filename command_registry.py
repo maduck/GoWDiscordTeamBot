@@ -270,11 +270,12 @@ COMMAND_REGISTRY = [
     {
         'function': 'waffles',
         'pattern': re.compile(r'^(?P<prefix>.)waffles$', MATCH_OPTIONS),
-        'description': "Easteregg command. Don't use.",
+        'description': 'Easteregg command. Don\'t use.',
     },
     {
         'function': 'show_languages',
-        'pattern': re.compile(DEFAULT_PATTERN + 'lang(uages?)?$', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + 'lang(uages?)?$', MATCH_OPTIONS),
+        'description': 'Show all languages supported by the bot.',
     },
     {
         'function': 'change_language',
