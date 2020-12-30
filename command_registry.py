@@ -296,6 +296,11 @@ COMMAND_REGISTRY = [
         ]
     },
     {
+        'function': 'color_kingdoms',
+        'pattern': re.compile(DEFAULT_PATTERN + 'color_kingdoms?$', MATCH_OPTIONS),
+        'description': 'Shows the best farming kingdom for each mana color',
+    },
+    {
         'function': 'soulforge',
         'pattern': re.compile(DEFAULT_PATTERN + 'soulforge$', MATCH_OPTIONS),
         'description': "Show this week's craftable items in Soulforge",

@@ -841,3 +841,27 @@ class TeamExpander:
         toplist = self.translate_toplist(toplist_id, lang)
 
         return toplist
+
+    def get_color_kingdoms(self, lang):
+        result = {}
+        now = datetime.datetime.utcnow()
+        colors_without_skulls = COLORS[:-1]
+        for color in colors_without_skulls:
+            kingdoms = []
+            for kingdom in self.kingdoms.values():
+                if kingdom['location'] != 'krystara':
+                    continue
+                all_troops = [self.troops.get(t) for t in kingdom['troop_ids']]
+                available_troops = [t for t in all_troops if t.get('release_date', now) <= now]
+                if not available_troops:
+                    continue
+                colored_troops = [t for t in available_troops if color in t['colors']]
+                kingdoms.append({
+                    'name': _(kingdom['name'], lang),
+                    'total': len(available_troops),
+                    'color_troops': len(colored_troops),
+                    'percentage': len(colored_troops) / len(available_troops),
+                })
+            top_kingdom = sorted(kingdoms, key=operator.itemgetter('percentage'), reverse=True)[0]
+            result[color] = top_kingdom
+        return result

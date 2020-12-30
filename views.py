@@ -342,3 +342,19 @@ class Views:
                 field.append(line)
         result[field_title] = self.trim_news_to_length('\n'.join(field), link=url)
         return result
+
+    def render_color_kingdoms(self, kingdoms, lang):
+        top_n = _('[TOP_N]', lang)
+        mana_color_troop = _('[COLOR_TROOP]', lang)
+        top_kingdoms = top_n.replace('%1%', _('[KINGDOMS]', lang))
+        title = f'{top_kingdoms} ({mana_color_troop})'
+        e = discord.Embed(title=title, color=self.WHITE)
+        for color_code, kingdom in kingdoms.items():
+            color = self.my_emojis.get(color_code, color_code)
+            name = f'{color} __{kingdom["name"]}__ ({kingdom["percentage"]:0.0%})'
+            color_name = _(f'[GEM_{color_code.upper()}]', lang)
+            troops_title = _('[N_TROOPS]', lang).replace('%1', color_name)
+            value = f'**{_("[TOTAL_TROOPS]", lang)}**: {kingdom["total"]}\n' \
+                    f'**{troops_title}**: {kingdom["color_troops"]}'
+            e.add_field(name=name, value=value)
+        return e
