@@ -5,4 +5,4 @@
 {% for troop in trait.troops %}{{ troop.name }}{% if not loop.last %}, {% endif %}{% else %}-{% endfor %}
 
 <T>**{{ trait.classes_title }}**</T>
-{% for class in trait.classes %}{{ class.name }}{% if not loop.last %}, {% endif %}{% else %}-{% endfor %}
+{% for class in trait.classes %}{{ class.name }} `#{{ class.id }}`{% if not loop.last %}, {% endif %}{% else %}-{% endfor %}
