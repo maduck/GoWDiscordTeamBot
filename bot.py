@@ -537,8 +537,6 @@ class DiscordBot(BaseBot):
         e = self.views.render_toplist(toplist)
         await self.answer(message, e)
 
-
-d
     async def create_toplist(self, message, description, items, lang, **kwargs):
         try:
             toplist = await self.expander.create_toplist(message, description, items, lang, update_id=kwargs.get('_id'))
