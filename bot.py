@@ -223,7 +223,7 @@ class DiscordBot(BaseBot):
         e = self.views.render_color_kingdoms(kingdoms, lang)
         await self.answer(message, e)
 
-    async def show_event_kingdoms(self, message, lang, **kwargs):
+    async def event_kingdoms(self, message, lang, **kwargs):
         events = self.expander.get_event_kingdoms(lang)
         e = self.views.render_event_kingdoms(events)
         await self.answer(message, e)

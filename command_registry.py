@@ -148,8 +148,9 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'show_event_kingdoms',
-        'pattern': re.compile(DEFAULT_PATTERN + r'events? kingdoms?$', MATCH_OPTIONS)
+        'function': 'event_kingdoms',
+        'pattern': re.compile(DEFAULT_PATTERN + r'events? kingdoms?$', MATCH_OPTIONS),
+        'description': 'Show upcoming weekly event kingdoms'
     },
     {
         'function': 'events',
