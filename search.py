@@ -363,14 +363,21 @@ class TeamExpander:
         ]
 
     def get_troops_with_trait(self, trait, lang):
-        troops = []
-        for troop in self.troops.values():
-            trait_codes = [t['code'] for t in troop['traits']] if 'traits' in troop else []
+        return self.get_objects_by_trait(trait, self.troops, self.translate_troop, lang)
+
+    def get_classes_with_trait(self, trait, lang):
+        return self.get_objects_by_trait(trait, self.classes, self.translate_class, lang)
+
+    @staticmethod
+    def get_objects_by_trait(trait, objects, translator, lang):
+        result = []
+        for o in objects.values():
+            trait_codes = [t['code'] for t in o['traits']] if 'traits' in o else []
             if trait['code'] in trait_codes:
-                translated_troop = troop.copy()
-                self.translate_troop(translated_troop, lang)
-                troops.append(translated_troop)
-        return troops
+                translated_object = o.copy()
+                translator(translated_object, lang)
+                result.append(translated_object)
+        return result
 
     def search_trait(self, search_term, lang):
         possible_matches = []
@@ -382,14 +389,18 @@ class TeamExpander:
                 result = trait.copy()
                 result['troops'] = self.get_troops_with_trait(trait, lang)
                 result['troops_title'] = _('[TROOPS]', lang)
-                if result['troops']:
+                result['classes'] = self.get_classes_with_trait(trait, lang)
+                result['classes_title'] = _('[CLASS]', lang)
+                if result['troops'] or result['classes']:
                     possible_matches.append(result)
                     break
             elif real_search in translated_name or real_search in translated_description:
                 result = trait.copy()
                 result['troops'] = self.get_troops_with_trait(trait, lang)
                 result['troops_title'] = _('[TROOPS]', lang)
-                if result['troops']:
+                result['classes'] = self.get_classes_with_trait(trait, lang)
+                result['classes_title'] = _('[CLASS]', lang)
+                if result['troops'] or result['classes']:
                     possible_matches.append(result)
         return sorted(self.enrich_traits(possible_matches, lang), key=operator.itemgetter('name'))
 

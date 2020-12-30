@@ -6,6 +6,7 @@ from game_assets import GameAssets
 from game_constants import COLORS, EVENT_TYPES, SOULFORGE_ALWAYS_AVAILABLE
 from util import convert_color_array
 
+NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
 
 class U(str):
     def __format__(self, fmt):
@@ -93,7 +94,8 @@ class GameData:
                 'code': _class['Code'],
                 'talents': [self.talent_trees[tree]['talents'] for tree in _class['TalentTrees']],
                 'trees': _class['TalentTrees'],
-                'traits': [self.traits.get(trait, {'name': trait, 'description': '-'}) for trait in _class['Traits']],
+                'traits': [self.traits.get(trait, NO_TRAIT) for trait in
+                           _class['Traits']],
                 'weapon_id': _class['ClassWeaponId'],
                 'kingdom_id': _class['KingdomId'],
                 'type': _class['Augment'][0],
@@ -202,14 +204,13 @@ class GameData:
     def populate_troops(self):
         for troop in self.data['Troops']:
             colors = convert_color_array(troop)
-            no_trait = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
             self.troops[troop['Id']] = {
                 'id': troop['Id'],
                 'name': troop['Name'],
                 'colors': sorted(colors),
                 'description': troop['Description'],
                 'spell_id': troop['SpellId'],
-                'traits': [self.traits.get(trait, no_trait) for trait in
+                'traits': [self.traits.get(trait, NO_TRAIT) for trait in
                            troop['Traits']],
                 'rarity': troop['TroopRarity'],
                 'types': [troop['TroopType']],
