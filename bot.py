@@ -63,7 +63,7 @@ class DiscordBot(BaseBot):
             if 'lang' not in options:
                 options['lang'] = self.language.get(message.guild)
             debug(message)
-            await function(message, **options)
+            await function(message=message, **options)
         except discord.HTTPException as e:
             log.debug(f'Could not answer to slash command: {e}')
 
