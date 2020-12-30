@@ -350,7 +350,7 @@ class DiscordBot(BaseBot):
         await self.pet_rescue_config.update(guild, channel, key, value, translated_trues)
         await self.show_pet_rescue_config(message, lang)
 
-    async def show_class_summary(self, message, lang, **kwargs):
+    async def class_summary(self, message, lang, **kwargs):
         result = self.expander.search_class('summary', lang)
         result.sort(key=operator.itemgetter('name'))
 
@@ -537,6 +537,8 @@ class DiscordBot(BaseBot):
         e = self.views.render_toplist(toplist)
         await self.answer(message, e)
 
+
+d
     async def create_toplist(self, message, description, items, lang, **kwargs):
         try:
             toplist = await self.expander.create_toplist(message, description, items, lang, update_id=kwargs.get('_id'))

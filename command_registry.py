@@ -125,8 +125,9 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
-        'function': 'show_class_summary',
-        'pattern': re.compile(DEFAULT_PATTERN + 'class summary$', MATCH_OPTIONS)
+        'function': 'class_summary',
+        'pattern': re.compile(DEFAULT_PATTERN + 'class summary$', MATCH_OPTIONS),
+        'description': 'Show a summary table of all classes'
     },
     {
         'function': 'class_',
