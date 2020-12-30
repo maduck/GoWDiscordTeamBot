@@ -127,7 +127,8 @@ COMMAND_REGISTRY = [
     {
         'function': 'class_summary',
         'pattern': re.compile(DEFAULT_PATTERN + 'class summary$', MATCH_OPTIONS),
-        'description': 'Show a summary table of all classes'
+        'description': 'Show a summary table of all classes',
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'class_',
@@ -150,7 +151,8 @@ COMMAND_REGISTRY = [
     {
         'function': 'event_kingdoms',
         'pattern': re.compile(DEFAULT_PATTERN + r'events? kingdoms?$', MATCH_OPTIONS),
-        'description': 'Show upcoming weekly event kingdoms'
+        'description': 'Show upcoming weekly event kingdoms',
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'events',
@@ -304,6 +306,7 @@ COMMAND_REGISTRY = [
         'function': 'color_kingdoms',
         'pattern': re.compile(DEFAULT_PATTERN + 'color_kingdoms?$', MATCH_OPTIONS),
         'description': 'Shows the best farming kingdom for each mana color',
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'soulforge',
@@ -314,7 +317,8 @@ COMMAND_REGISTRY = [
     {
         'function': 'levels',
         'pattern': re.compile(DEFAULT_PATTERN + 'levels$', MATCH_OPTIONS),
-        'description': 'Show the player\'s level progression bonuses'
+        'description': 'Show the player\'s level progression bonuses',
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'update_toplist',
