@@ -318,6 +318,7 @@ class Views:
     def render_news(self, article):
         e = discord.Embed(title=article['title'], color=self.WHITE, url=article['url'])
         content = self.transform_news_article(article['content'], article['url'])
+        e.set_author(name=article['author'])
         for title, text in content.items():
             e.add_field(name=title, value=text, inline=False)
         result = [e]
