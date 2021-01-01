@@ -322,10 +322,14 @@ class Views:
         for title, text in content.items():
             e.add_field(name=title, value=text, inline=False)
         result = [e]
-        for image_url in article['images']:
-            e = discord.Embed(type='image', color=self.WHITE)
-            e.set_image(url=image_url)
-            result.append(e)
+        for i, image_url in enumerate(article['images']):
+            if i >= len(result):
+                e = discord.Embed(type='image', color=self.WHITE)
+                e.set_image(url=image_url)
+                result.append(e)
+            else:
+                e = result[i]
+                e.set_image(url=image_url)
         return result
 
     def transform_news_article(self, content, url=''):
