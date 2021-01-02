@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.32.2'
+    VERSION = '0.32.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -120,6 +120,7 @@ class DiscordBot(BaseBot):
             skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
             e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
                               description='\n'.join(category_lines), color=color)
+            e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
             await self.answer(message, e)
 
     async def spoilers(self, message, lang, **kwargs):
