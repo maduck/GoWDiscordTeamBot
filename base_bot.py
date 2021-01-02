@@ -5,6 +5,8 @@ import discord
 
 from configurations import CONFIG
 
+IMMEDIATE_RECONNECT_TIME = datetime.timedelta(milliseconds=500)
+
 LOGLEVEL = logging.DEBUG
 
 formatter = logging.Formatter('%(asctime)-15s [%(levelname)s] %(message)s')
@@ -58,7 +60,10 @@ class BaseBot(discord.Client):
         if self.bot_disconnect > self.bot_connect:
             self.bot_connect = datetime.datetime.now()
             added_downtime = self.bot_connect - self.bot_disconnect
-            self.downtimes += added_downtime
+            if added_downtime > IMMEDIATE_RECONNECT_TIME:
+                self.downtimes += added_downtime
+            else:
+                added_downtime = datetime.timedelta(seconds=0)
             log.debug(f'Reconnected at {self.bot_connect}, increased downtime by {added_downtime} to {self.downtimes}.')
 
     async def generate_embed_from_text(self, message_lines, title, subtitle):
