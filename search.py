@@ -713,10 +713,16 @@ class TeamExpander:
             entry['extra_info'] = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
         elif entry['type'] == '[HIJACK]' and entry['troops']:
             entry['extra_info'] = ', '.join(_(self.troops[t]['name'], lang) for t in entry['troops'])
-        elif entry['type'] in ('[INVASION]', '[WEEKLY_EVENT]', '[RARITY_5]') and entry['gacha']:
-            troop = _(self.troops[entry['gacha']]['name'], lang)
+        elif entry['type'] == '[INVASION]':
+            troop = self.troops[entry['gacha']]
+            troop_name = _(troop['name'], lang)
+            troop_types = [_(f'[TROOPTYPE_{t.upper()}]', lang) for t in troop['types']]
+            entry['extra_info'] = f'{troop_name} ({", ".join(troop_types)})'
+        elif entry['type'] in ('[WEEKLY_EVENT]', '[RARITY_5]') and entry['gacha']:
+            troop = self.troops[entry['gacha']]
+            troop_name = _(troop['name'], lang)
             kingdom = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
-            entry['extra_info'] = f'{troop} ({kingdom})'
+            entry['extra_info'] = f'{troop_name} ({kingdom})'
             entry['kingdom'] = kingdom
 
         entry['raw_type'] = entry['type']
