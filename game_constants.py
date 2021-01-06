@@ -20,6 +20,14 @@ WEAPON_RARITIES = (
     'Mythic',
     'Doomed'
 )
+TASKRARITY = (
+    'Common',
+    'Rare',
+    'UltraRare',
+    'Epic',
+    'Legendary',
+    'Mythic',
+)
 RARITY_COLORS = {
     'Common': (255, 254, 255),
     'Uncommon': (84, 168, 31),

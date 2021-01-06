@@ -8,6 +8,7 @@ from util import convert_color_array
 
 NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
 
+
 class U(str):
     def __format__(self, fmt):
         if not fmt:
@@ -58,6 +59,7 @@ class GameData:
         self.soulforge_raw_data = {}
         self.traitstones = {}
         self.levels = []
+        self.adventure_board = []
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -85,6 +87,7 @@ class GameData:
         self.populate_traitstones()
         self.populate_hero_levels()
         self.populate_max_power_levels()
+        self.populate_adventure_board()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -539,3 +542,31 @@ class GameData:
         if task['Task'] == 'Earn{x}Renown':
             return kingdom['linked_kingdom_id'] and not kingdom['underworld']
         return False
+
+    def populate_adventure_board(self):
+        for board in self.user_data['pUser']['AdventureData']:
+            name = board['Name']
+            rewards = self._transform_adventure_reward(board['Battles'])
+            rarity = f'[RARITY_{board["Rarity"]}]'
+            self.adventure_board.append({
+                'name': name,
+                'rewards': rewards,
+                'rarity': rarity,
+                'raw_rarity': int(board['Rarity']),
+            })
+
+    @staticmethod
+    def _transform_adventure_reward(battles):
+        result = {}
+        for battle in battles:
+            for reward in battle['Rewards']:
+                reward_type = f'[{reward["Type"].upper()}]'
+                amount = reward['Amount']
+                data = reward['Data']
+                if reward_type == '[GEM]':
+                    reward_type = '[GEMS]'
+                elif reward_type == '[DEED]':
+                    reward_type = f'[DEED{data:02d}]'
+                result.setdefault(reward_type, 0)
+                result[reward_type] += amount
+        return result

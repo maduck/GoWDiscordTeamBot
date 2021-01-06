@@ -1,3 +1,5 @@
+import datetime
+
 import discord
 from jinja2 import Environment, FileSystemLoader
 
@@ -362,4 +364,23 @@ class Views:
             value = f'**{_("[TOTAL_TROOPS]", lang)}**: {kingdom["total"]}\n' \
                     f'**{troops_title}**: {kingdom["color_troops"]}'
             e.add_field(name=name, value=value)
+        return e
+
+    def render_adventure_board(self, adventures, lang):
+        highest_rarity = max([a['raw_rarity'] for a in adventures])
+        color = list(RARITY_COLORS.values())[highest_rarity]
+        e = discord.Embed(title=_('[ADVENTURE_BOARD]', lang), color=discord.Color.from_rgb(*color))
+
+        for adventure in adventures:
+            reward_emojis = [self.my_emojis.get(t.lower()[1:-1], '') for t in adventure['reward_types']]
+            name = f'{"".join(reward_emojis)} __{adventure["name"]}__ ({adventure["rarity"]})'
+            rewards = ', '.join([f'{v} {k}' for k, v in adventure['rewards'].items()])
+            e.add_field(name=name, value=rewards, inline=False)
+        now = datetime.datetime.utcnow()
+        reset_time = now.replace(hour=7, minute=0, second=0, microsecond=0)
+        time_left = reset_time + datetime.timedelta(hours=24) - now
+        hours = time_left.seconds // 3600
+        minutes = time_left.seconds // 60 - hours * 60
+        footer = _('[DAILY_ADVENTURES_RESET_IN]', lang).replace('%1', str(hours)).replace('%2', str(minutes))
+        e.set_footer(text=footer)
         return e

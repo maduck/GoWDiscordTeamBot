@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.32.4'
+    VERSION = '0.33.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -122,6 +122,11 @@ class DiscordBot(BaseBot):
                               description='\n'.join(category_lines), color=color)
             e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
             await self.answer(message, e)
+
+    async def adventures(self, message, lang, **kwargs):
+        adventures = self.expander.get_adventure_board(lang)
+        e = self.views.render_adventure_board(adventures, lang)
+        return await self.answer(message, e)
 
     async def spoilers(self, message, lang, **kwargs):
         _filter = kwargs.get('filter')

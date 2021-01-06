@@ -60,6 +60,7 @@ class TeamExpander:
         self.levels = world.levels
         self.rooms = {}
         self.toplists = Toplist()
+        self.adventure_board = world.adventure_board
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -881,4 +882,19 @@ class TeamExpander:
                 })
             top_kingdom = sorted(kingdoms, key=operator.itemgetter('percentage'), reverse=True)[0]
             result[color] = top_kingdom
+        return result
+
+    def get_adventure_board(self, lang):
+        result = []
+        for adventure in self.adventure_board:
+            result.append(self.translate_adventure(adventure, lang))
+        return result
+
+    @staticmethod
+    def translate_adventure(adventure, lang):
+        result = adventure.copy()
+        result['name'] = _(result['name'], lang)
+        result['reward_types'] = set(result['rewards'].keys())
+        result['rewards'] = {_(key, lang): value for key, value in result['rewards'].items()}
+        result['rarity'] = _(result['rarity'], lang)
         return result
