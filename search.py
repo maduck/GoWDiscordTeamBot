@@ -182,7 +182,10 @@ class TeamExpander:
         ]
         troop['type'] = ' / '.join(types)
         troop['kingdom_title'] = _('[KINGDOM]', lang)
-        troop['kingdom'] = _(troop['kingdom']['Name'], lang)
+        reference_name = troop['kingdom'].get('reference_name', troop['kingdom']['name'])
+        troop['kingdom'] = _(troop['kingdom']['name'], lang)
+        if self.is_untranslated(troop['kingdom']):
+            troop['kingdom'] = reference_name
         troop['spell'] = self.translate_spell(troop['spell_id'], lang)
         troop['spell_title'] = _('[TROOPHELP_SPELL0]', lang)
         troop['traitstones_title'] = _('[SOULFORGE_TAB_TRAITSTONES]', lang)
@@ -227,6 +230,8 @@ class TeamExpander:
 
     def translate_kingdom(self, kingdom, lang):
         kingdom['name'] = _(kingdom['name'], lang)
+        if self.is_untranslated(kingdom['name']):
+            kingdom['name'] = kingdom['reference_name']
         kingdom['description'] = _(kingdom['description'], lang)
         kingdom['punchline'] = _(kingdom['punchline'], lang)
         kingdom['troop_title'] = _('[TROOPS]', lang)
@@ -688,7 +693,7 @@ class TeamExpander:
                 result[spoiler['date'].date()] = {
                     'start': spoiler['date'].date(),
                     'end': spoiler['date'].date() + datetime.timedelta(days=7),
-                    'kingdom': _(kingdom.get('Name'), lang) + ' *',
+                    'kingdom': _(kingdom.get('name'), lang) + ' *',
                 }
                 latest_date = spoiler['date']
         return result
@@ -792,6 +797,8 @@ class TeamExpander:
         if not entry:
             return None
         entry['name'] = _(entry['name'], lang)
+        if self.is_untranslated(entry['name']):
+            entry['name'] = entry.get('reference_name', entry['name'])
         entry['type'] = spoiler['type']
         entry['date'] = spoiler['date'].date()
         entry['event'] = _('[GLOG_EVENT]', lang) + ': ' if entry.get('event') else ''
@@ -805,6 +812,8 @@ class TeamExpander:
         if kingdom_id:
             kingdom = self.kingdoms[kingdom_id]
             entry['kingdom'] = _(kingdom['name'], lang)
+            if self.is_untranslated(entry['kingdom']):
+                entry['kingdom'] = kingdom['reference_name']
         return entry
 
     def get_soulforge(self, lang):
@@ -898,3 +907,9 @@ class TeamExpander:
         result['rewards'] = {_(key, lang): value for key, value in result['rewards'].items()}
         result['rarity'] = _(result['rarity'], lang)
         return result
+
+    @staticmethod
+    def is_untranslated(param):
+        if not param:
+            return True
+        return param[0] + param[-1] == '[]'

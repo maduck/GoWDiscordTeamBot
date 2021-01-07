@@ -192,11 +192,12 @@ class GameData:
                 'linked_kingdom_id': kingdom.get('SisterKingdomId'),
                 'colors': sorted(kingdom_colors),
                 'filename': kingdom['FileBase'],
+                'reference_name': kingdom['ReferenceName'],
             }
             if 'SisterKingdomId' in kingdom:
                 self.kingdoms[kingdom['SisterKingdomId']]['linked_kingdom_id'] = kingdom['Id']
             for troop_id in kingdom_troops:
-                self.troops[troop_id]['kingdom'] = kingdom
+                self.troops[troop_id]['kingdom'] = self.kingdoms[kingdom['Id']]
 
     @staticmethod
     def infer_kingdom_location(kingdom):
@@ -218,7 +219,7 @@ class GameData:
                 'rarity': troop['TroopRarity'],
                 'types': [troop['TroopType']],
                 'roles': troop['TroopRoleArray'],
-                'kingdom': {'Name': ''},
+                'kingdom': {'name': '', 'reference_name': ''},
                 'filename': troop['FileBase'],
                 'armor': sum(troop['ArmorIncrease']),
                 'health': sum(troop['HealthIncrease']),
