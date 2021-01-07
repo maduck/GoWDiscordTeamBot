@@ -571,6 +571,8 @@ class GameData:
                     reward_type = f'[DEED{data:02d}]'
                 elif reward_type == '[RUNE]':
                     reward_type = f'[RUNE{data:02d}_NAME]'
+                elif reward_type == '[KEY]':
+                    reward_type = f'[KEYTYPE_{data}_TITLE]'
                 result.setdefault(reward_type, 0)
                 result[reward_type] += amount
         return result
