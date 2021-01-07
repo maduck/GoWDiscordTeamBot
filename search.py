@@ -217,11 +217,12 @@ class TeamExpander:
             for kingdom in self.kingdoms.values():
                 translated_name = extract_search_tag(_(kingdom['name'], lang))
                 real_search = extract_search_tag(search_term)
+                reference_name = extract_search_tag(kingdom['reference_name'])
                 if real_search == translated_name:
                     result = kingdom.copy()
                     self.translate_kingdom(result, lang)
                     return [result]
-                elif real_search in translated_name or \
+                elif real_search in translated_name or real_search in reference_name or \
                         (search_term == 'summary' and kingdom['location'] == 'krystara' and len(kingdom['colors']) > 0):
                     result = kingdom.copy()
                     self.translate_kingdom(result, lang)
