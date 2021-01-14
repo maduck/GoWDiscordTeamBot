@@ -399,8 +399,7 @@ class TeamExpander:
                 result['classes'] = self.get_classes_with_trait(trait, lang)
                 result['classes_title'] = _('[CLASS]', lang)
                 if result['troops'] or result['classes']:
-                    possible_matches.append(result)
-                    break
+                    return self.enrich_traits([result], lang)
             elif real_search in translated_name or real_search in translated_description:
                 result = trait.copy()
                 result['troops'] = self.get_troops_with_trait(trait, lang)
