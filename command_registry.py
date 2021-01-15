@@ -96,6 +96,26 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(DEFAULT_PATTERN + '(pr|pet rescue) config$', MATCH_OPTIONS)
     },
     {
+        'function': 'class_level',
+        'pattern': re.compile(DEFAULT_PATTERN + r'class_level( ((?P<from>\d{1,3})( ?- ?))?(?P<to>\d{1,3}))?$'),
+        'description': 'Calculate XP to level a class',
+        'options': [
+            {
+                'name': 'from',
+                'description': 'Starting Level',
+                'type': OptionType.INTEGER.value,
+                'required': False,
+            },
+            {
+                'name': 'to',
+                'description': 'Target Level',
+                'type': OptionType.INTEGER.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['lang'],
+        ],
+    },
+    {
         'function': 'set_pet_rescue_config',
         'pattern': re.compile(DEFAULT_PATTERN + '(pr|pet rescue) config (?P<key>[_a-zA-Z]+)([ =]+)(?P<value>.*)',
                               MATCH_OPTIONS)

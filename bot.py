@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.33.5'
+    VERSION = '0.34.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -596,6 +596,16 @@ class DiscordBot(BaseBot):
             answer_text = f'{platforms_text} news for will be posted into channel {message.channel.name}.'
 
         e = self.generate_response('News management', self.WHITE, 'Status', answer_text)
+        await self.answer(message, e)
+
+    async def class_level(self, message, **kwargs):
+        lower_level = kwargs.get('from')
+        lower_level = int(lower_level) if lower_level else 0
+        upper_level = int(kwargs['to'])
+        xp_required = int(1 / 2 * (upper_level ** 2 + upper_level) - 1 / 2 * (lower_level ** 2 + lower_level))
+
+        lang = kwargs.get('lang', 'en')
+        e = self.views.render_class_level(lower_level, upper_level, xp_required, lang)
         await self.answer(message, e)
 
     async def show_latest_news(self):

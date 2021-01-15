@@ -384,3 +384,12 @@ class Views:
         footer = _('[DAILY_ADVENTURES_RESET_IN]', lang).replace('%1', str(hours)).replace('%2', str(minutes))
         e.set_footer(text=footer)
         return e
+
+    def render_class_level(self, lower_level, upper_level, xp_required, lang):
+        title = f'{_("[CHAMPION_LEVEL_N]", lang)}'.replace('%1', f'{lower_level} - {upper_level}')
+        e = discord.Embed(title=title, color=self.WHITE)
+        name = f'{_("[CHAMPION_LEVEL]", lang)} {_("[XP]", lang)}'
+        xp = f'{xp_required} {_("[XP]", lang)}'
+        e.add_field(name=name, value=xp)
+        e.set_footer(text=_('[CHAMPION_XP_INFO]', lang))
+        return e
