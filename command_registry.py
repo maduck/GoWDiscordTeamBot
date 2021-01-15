@@ -101,16 +101,16 @@ COMMAND_REGISTRY = [
         'description': 'Calculate XP to level a class',
         'options': [
             {
-                'name': 'from',
-                'description': 'Starting Level',
-                'type': OptionType.INTEGER.value,
-                'required': False,
-            },
-            {
                 'name': 'to',
                 'description': 'Target Level',
                 'type': OptionType.INTEGER.value,
                 'required': True,
+            },
+            {
+                'name': 'from',
+                'description': 'Starting Level',
+                'type': OptionType.INTEGER.value,
+                'required': False,
             },
             STANDARD_OPTIONS['lang'],
         ],
