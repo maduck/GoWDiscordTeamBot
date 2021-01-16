@@ -599,13 +599,19 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def class_level(self, message, **kwargs):
-        lower_level = kwargs.get('from')
-        lower_level = int(lower_level) if lower_level else 0
-        upper_level = int(kwargs['to'])
-        xp_required = int(1 / 2 * (upper_level ** 2 + upper_level) - 1 / 2 * (lower_level ** 2 + lower_level))
+        def xp_for(level):
+            return int(1 / 2 * (level ** 2 + level))
 
+        low, high = sorted([
+            int(kwargs.get('from') if kwargs.get('from') else 0),
+            int(kwargs.get('to'))
+        ])
+        low = max(0, low)
+        high = min(100, high)
+
+        xp_required = xp_for(high) - xp_for(low)
         lang = kwargs.get('lang', 'en')
-        e = self.views.render_class_level(lower_level, upper_level, xp_required, lang)
+        e = self.views.render_class_level(low, high, xp_required, lang)
         await self.answer(message, e)
 
     async def show_latest_news(self):
