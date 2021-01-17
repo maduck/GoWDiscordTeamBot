@@ -93,7 +93,12 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'show_pet_rescue_config',
-        'pattern': re.compile(DEFAULT_PATTERN + '(pr|pet rescue) config$', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + '(pr|pet rescue) config$', MATCH_OPTIONS),
+    },
+    {
+        'function': 'tools',
+        'pattern': re.compile(DEFAULT_PATTERN + 'tools$', MATCH_OPTIONS),
+        'description': 'Show Gems of War related tools',
     },
     {
         'function': 'class_level',

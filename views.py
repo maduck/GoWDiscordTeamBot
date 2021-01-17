@@ -393,3 +393,7 @@ class Views:
         e.add_field(name=name, value=xp)
         e.set_footer(text=_('[CHAMPION_XP_INFO]', lang))
         return e
+
+    def render_tools(self):
+        e = discord.Embed(title='Community Tools', color=self.WHITE)
+        return self.render_embed(e, 'tools.jinja')

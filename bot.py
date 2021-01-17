@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.34.2'
+    VERSION = '0.35.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -674,6 +674,10 @@ class DiscordBot(BaseBot):
                     value=f'`{self.language.get(message.guild)}`', inline=False)
 
         self.add_available_languages(e)
+        await self.answer(message, e)
+
+    async def tools(self, message, **kwargs):
+        e = self.views.render_tools()
         await self.answer(message, e)
 
     @staticmethod
