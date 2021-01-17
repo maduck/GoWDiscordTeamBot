@@ -17,18 +17,29 @@
 • В случае нескольких вариантов ответа будет выведен список войск.
 • Если найдено только одно подходящее войско, то ответ будет окрашен сбоку в цвет его базовой редкости.
 <T>**__Обзоры__**:</T>
-• Спойлеры: `{{ prefix }}spoilers`. Можно фильтровать, используя следующие параметры: `pets`, `troops`, `weapons`, `kingdoms`, `events`: `{{ prefix }}spoilers weapons`, или `{{ prefix }}event[s]`
+• Спойлеры: `{{ prefix }}spoilers`. Можно фильтровать, используя следующие параметры: `pets`, `troops`, `weapons`, `kingdoms`, `events`: `{{ prefix }}spoilers weapons`.
+• Events: `{{ prefix }}events`. Can be used with a filter, e.g. `{{ prefix }}events faction`. Can also be used to only show event kingdoms: `{{ prefix }}event kingdoms`.
+• Current Adventure Board: `{{ prefix }}adventures`.
+• Class XP requirements: `{{ prefix }}class_level <target level>`, e.g. `{{ prefix }}class_level 70`. Can be used with a lower level to show the difference, e.g. `{{ prefix }}class_level 70-100`
 • Обзор недельной кампании: `{{ prefix }}campaign`. Можно фильтровать, используя следующие параметры: `bronze`, `silver`, or `gold`: `{{ prefix }}campaign silver`
 • Обзор класса: `{{ prefix }}class summary`
 • Обзор королевства: `{{ prefix }}kingdom summary`
 • Предметы, которые можно выковать в Кузне Душ: `{{ prefix }}soulforge`
 • Бонусы при повышении уровня героя: `{{ prefix }}levels`
+• Kingdom colors: `{{ prefix }}color_kingdoms`
 <T>**__Башни Бед__**:</T>
 Введите `{{ prefix }}towerhelp`.
 <T>**__Спасение питомца__**:</T>
 • Если вы столкнулись с миссией по спасению питомца, то вы можете оповестить об этом всех своих согильдийцев с помощью команды `{{ prefix }}pet rescue <питомец> [<время>] [<упоминание>]`. `<питомец>` должно быть именем либо id питомца, `<время>` это оставшееся время в минутах (по умолчанию 59), за которым следует "min", "mins" или ничего, и `<упоминание>` это группа, которую необходимо уведомить (по умолчанию `@everyone`).
 • Настройки по умолчанию можно проверить с помощью команды `{{ prefix }}pet rescue config`.
+• This command can be shortened up by using `{{ prefix }}pr ...` instead of `{{ prefix }}pet rescue`.
 • Администраторы сервера могут менять группу для уведомления, a также настроить удаление сообщений о спасении после его завершения  `{{ prefix }}pet rescue config <имя настройки>=<значение>`.
+<T>**__Toplists__**:</T>
+• Show own toplists: `{{ prefix }}toplists`
+• Create a new toplist: `{{ prefix }}toplist <description> <troops>`. Troops are comma separated list of names or troop ids. A new toplist id will be created.
+• Append more troops to an existing toplist: `{{ prefix }}toplist append <id> <troops>`
+• Change a toplist: `{{ prefix }}toplist update <toplist id> <description> <troops>`
+• Delete a toplist: `{{ prefix }}toplist delete <toplist id>`.
 <T>**__Модификаторы комманд__**:</T>
 • __Перевод__: Поддерживаются все языки, доступные в Gems of War, введите две буквы кода страны (en, fr, de, ru, it, es, zh) в начале команды, например: `ru{{ prefix }}troop элемогрим`. Это также работает и для кодов команд. **Локализованный поиск осуществляет поиск только для соответственно переведенных названий**.
 • __Сокращенный вывод__: Введите "-" в начале любой команды, для того, чтобы получить сокращенный ответ, например: `-[1075,6251,6699,6007]`, или с выбором языка `ru-[1075,6251,6699,6007]`. **Обратите внимание, что код языка всегда указывается в первую очередь.**

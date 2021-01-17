@@ -17,18 +17,29 @@
 • En cas de plusieurs résultats, une liste des unités correspondantes sera affichée.
 • Si une seule correspondance est trouvée, la couleur sur le côté correspondra à la rareté de l'unité.
 <T>**__Aperçus__**:</T>
-• Spoilers : `{{ prefix }}spoilers`. Peut être fitré en utilisant les paramètres suivants : `pets`, `troops`, `weapons`, `kingdoms`, `events` : `{{ prefix }}spoilers weapons`, ou `{{ prefix }}event[s]`
+• Spoilers : `{{ prefix }}spoilers`. Peut être fitré en utilisant les paramètres suivants : `pets`, `troops`, `weapons`, `kingdoms`, `events` : `{{ prefix }}spoilers weapons`.
+• Events: `{{ prefix }}events`. Can be used with a filter, e.g. `{{ prefix }}events faction`. Can also be used to only show event kingdoms: `{{ prefix }}event kingdoms`.
+• Current Adventure Board: `{{ prefix }}adventures`.
+• Class XP requirements: `{{ prefix }}class_level <target level>`, e.g. `{{ prefix }}class_level 70`. Can be used with a lower level to show the difference, e.g. `{{ prefix }}class_level 70-100`
 • Aperçu de la campagne hebdomadaire : `{{ prefix }}campaign`. Peut être fitré avec `bronze`, `silver`, ou `gold` : `{{ prefix }}campaign silver`
 • Aperçu des classes : `{{ prefix }}class summary`
 • Aperçu des royaumes : `{{ prefix }}kingdom summary`
 • Objects pouvant être créés dans la forge des âmes : `{{ prefix }}soulforge`
 • Avantages selon le niveau du joueur : `{{ prefix }}levels`
+• Kingdom colors: `{{ prefix }}color_kingdoms`
 <T>**__Tour maudite__** :</T>
 Veuillez consulter `{{ prefix }}towerhelp`.
 <T>**__Pet Rescue__**:</T>
 • When encountering a pet rescue mission in-game, you can alert all your fellow guild mates with `{{ prefix }}pet rescue <pet> [<time>] [<mention>]`. `<pet>` needs to be either the name or the id of the pet, `<time>` is the remaining time in minutes (default 59), followed by either nothing, "min", or "mins", and `<mention>` is the group that will be alerted (default `@everyone`).
 • Default settings can be checked with `{{ prefix }}pet rescue config`.
+• This command can be shortened up by using `{{ prefix }}pr ...` instead of `{{ prefix }}pet rescue`.
 • Server administrators can alter the default mention, as well as the deletion behaviour with `{{ prefix }}pet rescue config <setting>=<value>`.
+<T>**__Toplists__**:</T>
+• Show own toplists: `{{ prefix }}toplists`
+• Create a new toplist: `{{ prefix }}toplist <description> <troops>`. Troops are comma separated list of names or troop ids. A new toplist id will be created.
+• Append more troops to an existing toplist: `{{ prefix }}toplist append <id> <troops>`
+• Change a toplist: `{{ prefix }}toplist update <toplist id> <description> <troops>`
+• Delete a toplist: `{{ prefix }}toplist delete <toplist id>`.
 <T>**__Modificateurs de commandes__** :</T>
 • __Traduction__ : Toutes les langues de GoW sont supportées. Mettez le code pays à 2 lettres (en, fr, de, ru, it, es, zh) devant la commande, ex. `de{{ prefix }}troop elemaugrim`. Il en est de même pour les codes de partage d'équipes. **Les recherches localisées ne chercheront que les noms des unités avec leurs traductions respectives**.',
 • __Résultat condensé__ : Mettez un "-" devant n'importe quelle commande pour faire apparaître un résultat condensé, ex.`-[1075,6251,6699,6007]`, ou avec la langue `de-[1075,6251,6699,6007]`. **Note: le modificateur de langue vient toujours en premier.**
