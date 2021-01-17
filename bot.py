@@ -241,6 +241,7 @@ class DiscordBot(BaseBot):
 
     async def help(self, message, lang, **kwargs):
         prefix = self.prefix.get(message.guild)
+        lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         e = self.views.render_help(prefix, lang)
         await self.answer(message, e)
 
