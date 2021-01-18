@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.35.0'
+    VERSION = '0.35.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -73,11 +73,10 @@ class DiscordBot(BaseBot):
             log.debug(f'Connected at {self.bot_connect}.')
         else:
             await self.on_resumed()
-        self.invite_url = f'https://discordapp.com/api/oauth2/authorize' \
-                          f'?client_id={self.user.id}' \
-                          f'&scope=bot&scope=applications.commands' \
-                          f'&permissions={self.permissions.value}'
-
+        self.invite_url = discord.utils.oauth_url(
+            client_id=self.user.id,
+            permissions=self.permissions
+        )
         subscriptions = sum([s.get('pc', True) for s in self.subscriptions])
         log.info(f'{subscriptions} channels subscribed to PC news.')
 
@@ -193,9 +192,14 @@ class DiscordBot(BaseBot):
         availability = (bot_runtime - self.downtimes) / bot_runtime
         e.add_field(name=f'__{_("[AVAILABLE]", lang)}__:', value=f'{availability:.3%}')
 
-        e.add_field(name=f'__{_("[INVITE]", lang)}__:', value=f'<{self.invite_url}>', inline=False)
+        slash_invite = self.invite_url.replace('scope=bot', 'scope=applications.commands')
+        e.add_field(name=f'__{_("[INVITE]", lang)}__:',
+                    value=f'[Bot]({self.invite_url}) / [Slash Commands]({slash_invite})', inline=False)
+
         admin_invite = self.invite_url.split('permissions')[0] + 'permissions=8'
-        e.add_field(name=f'__{_("[INVITE]", lang)} ({_("[ADMIN]", lang)})__:', value=f'<{admin_invite}>', inline=False)
+        admin_slash_invite = admin_invite.replace('scope=bot', 'scope=applications.commands')
+        e.add_field(name=f'__{_("[INVITE]", lang)} ({_("[ADMIN]", lang)})__:',
+                    value=f'[Bot]({admin_invite}>) / [Slash Commands]({admin_slash_invite})', inline=False)
 
         my_prefix = self.prefix.get(message.guild)
         e.add_field(name=f'__{_("[HELP]", lang)}__:', value=f'`{my_prefix}help` / `{my_prefix}quickhelp`', inline=False)
