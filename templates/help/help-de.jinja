@@ -1,5 +1,5 @@
 <T>**__Team Codes__**</T>
-• __Basics__: Einfach den Team Code eingeben, z.B. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. Dieser Code kann mitten im Text stehen und muss nicht alleine in einer Zeile eingegeben werden.
+• __Grundlagen__: Einfach den Team Code eingeben, z.B. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. Dieser Code kann mitten im Text stehen und muss nicht alleine in einer Zeile eingegeben werden.
 <T>**__Searches__**:</T>
 • `{{ prefix }}troop <Suche>`, z.B. `{{ prefix }}troop wilde königin`.
 • `{{ prefix }}weapon <Suche>`, z.B. `{{ prefix }}weapon axt der verdammnis`.
@@ -25,16 +25,16 @@
 • Spieler-Level Boni: `{{ prefix }}levels`
 <T>**__Turm der Verdammnis__**:</T>
 Bitte `{{ prefix }}towerhelp` benutzen.
-<T>**__Pet Rescue__**:</T>
-• When encountering a pet rescue mission in-game, you can alert all your fellow guild mates with `{{ prefix }}pet rescue <pet> [<time>] [<mention>]`. `<pet>` needs to be either the name or the id of the pet, `<time>` is the remaining time in minutes (default 59), followed by either nothing, "min", or "mins", and `<mention>` is the group that will be alerted (default `@everyone`).
-• Default settings can be checked with `{{ prefix }}pet rescue config`.
-• Server administrators can alter the default mention, as well as the deletion behaviour with `{{ prefix }}pet rescue config <setting>=<value>`.
+<T>**__Haustierrettungen__**:</T>
+• Wenn im Spiel eine Haustierrettung vorkommt, kann der Bot alle Gildenmitglieder benachrichtigen: `{{ prefix }}pet rescue <Haustier> [<Zeit>] [<Erwähnung>]`. `<Haustier>` ist der Name oder die ID des Haustieres, `<Zeit>` übrige Zeit in Minuten (Standard 59), gefolgt von entweder nichts, "min" oder "mins", und `<Erwähnung>`, welches die Benachrichtigung in Discord aktiviert (Standard `@everyone`).
+• Die Konfiguration kann mit `{{ prefix }}pet rescue config` angezeigt werden.
+• Administratoren können die Standardwerte und das Löschverhalten wie folgt bearbeiten: `{{ prefix }}pet rescue config <Konfiguration>=<Wert>`.
 <T>**__Befehls-Modifikatoren__**:</T>
 • __Übersetzungen__: Alle GoW-Sprachen werden vom Bot unterstützt, einfach die zwei-Buchstaben Ländercodes (en, fr, de, ru, it, es, zh) vor das jeweilige Kommando setzen, , z.B. `de{{ prefix }}troop elemaugrim`. Das selbe gilt bei Team Codes. **Bei der Übersetzung werden auch Suchbegriffe übersetzt**.
 • __Gekürzte Ausgabe__: Mit einem `-` vor dem Kommando wird die Ausgabe gekürzt, z.B. `-[1075,6251,6699,6007]` oder mit der Sprache `de-[1075,6251,6699,6007]`. **Die Sprachangabe muss stets zuerst erfolgen.**
 <T>**__Bot-spezifische Befehle__**:</T>
-• Check the bot's permissions within a channel: `{{ prefix }}permissions`
-• Display bot version, runtime, uptime, invite code, and more: `{{ prefix }}about`
+• Überprüfen der Kanal-spezifischen Berechtigungen: `{{ prefix }}permissions`
+• Anzeige der Bot-Version, Laufzeit, Verfügbarkeit, Einladungscode und mehr: `{{ prefix }}about`
 • Zufällige Hochmotivations-Waffel: `{{ prefix }}waffles`
 • Kurzhilfe: `{{ prefix }}quickhelp` für eine gekürzte Übersicht aller Befehle.
 <T>**__Administrative Befehle__**:</T>
