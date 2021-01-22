@@ -30,10 +30,14 @@ def update_translations():
     _ = translations.Translations().get
 
 
+damage_denominator = re.compile(r'\[.+]')
+
+
 def extract_search_tag(search_term):
     ignored_characters = ' -\'’'
     for char in ignored_characters:
         search_term = search_term.replace(char, '')
+    search_term = damage_denominator.sub("", search_term)
     return search_term.lower()
 
 
