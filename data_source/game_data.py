@@ -205,7 +205,7 @@ class GameData:
     def infer_kingdom_location(kingdom):
         if 'WARBAND' in kingdom['ReferenceName']:
             return 'warband'
-        return 'underworld' if bool(kingdom.get('MapIndex', 0)) else 'krystara'
+        return 'underworld' if kingdom.get('MapIndex', 0) == 1 else 'krystara'
 
     def populate_troops(self):
         for troop in self.data['Troops']:

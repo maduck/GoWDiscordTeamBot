@@ -1,4 +1,5 @@
 import datetime
+import math
 
 import discord
 from jinja2 import Environment, FileSystemLoader
@@ -374,26 +375,17 @@ class Views:
         title = f'{top_kingdoms} ({troop_type})'
         e = discord.Embed(title=title, color=self.WHITE)
 
-        half_size = int(round(len(kingdoms) / 2))
+        half_size = math.ceil(len(kingdoms) / 2)
         chunked_kingdoms = chunks(list(kingdoms.items()), half_size)
         for i, chunk in enumerate(chunked_kingdoms, start=0):
             kingdoms = _('[KINGDOMS]', lang)
-            from_ = i * half_size + 1
-            to = i * half_size + len(chunk)
-            title = f'{kingdoms} {from_:n} - {to:n}'
+            start = i * half_size + 1
+            end = i * half_size + len(chunk)
+            title = f'{kingdoms} {start:n} - {end:n}'
             field_lines = [
                 f'{_(f"[TROOPTYPE_{type_.upper()}]", lang)} __{kingdom["name"]}__ ({kingdom["percentage"]:0.0%})' for
                 type_, kingdom in chunk]
             e.add_field(name=title, value='\n'.join(field_lines))
-        """
-        for type_, kingdom in list(kingdoms.items())[:15]:
-            type_name = 
-            name = f'{type_name} __{kingdom["name"]}__ ({kingdom["percentage"]:0.0%})'
-            troops_title = _('[N_TROOPS]', lang).replace('%1', type_name)
-            value = f'**{_("[TOTAL_TROOPS]", lang)}**: {kingdom["total"]}\n' \
-                    f'**{troops_title}**: {kingdom["fitting_troops"]}'
-            e.add_field(name=name, value=value)
-        """
         return e
 
     def render_adventure_board(self, adventures, lang):

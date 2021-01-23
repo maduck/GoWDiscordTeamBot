@@ -877,11 +877,14 @@ class TeamExpander:
     def kingdom_percentage(self, filter_name, filter_values, lang):
         result = {}
         now = datetime.datetime.utcnow()
+        hidden_kingdoms = [3032, 3033, 3034, 3038]
 
         for filter_ in filter_values:
             kingdoms = []
             for kingdom in self.kingdoms.values():
                 if kingdom['location'] != 'krystara':
+                    continue
+                if kingdom['id'] in hidden_kingdoms:
                     continue
                 all_troops = [self.troops.get(t) for t in kingdom['troop_ids']]
                 available_troops = [t for t in all_troops if t.get('release_date', now) <= now]
@@ -903,7 +906,7 @@ class TeamExpander:
         return self.kingdom_percentage('colors', colors_without_skulls, lang)
 
     def get_type_kingdoms(self, lang):
-        forbidden_types = {'None', 'Boss', 'Tower', 'Castle', 'Doom', 'Elemental', 'Construct'}
+        forbidden_types = {'None', 'Boss', 'Tower', 'Castle', 'Doom'}
         troop_types = self.troop_types - forbidden_types
         return self.kingdom_percentage('types', troop_types, lang)
 
