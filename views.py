@@ -1,5 +1,6 @@
 import datetime
 import math
+import operator
 
 import discord
 from jinja2 import Environment, FileSystemLoader
@@ -374,9 +375,10 @@ class Views:
 
         title = f'{top_kingdoms} ({troop_type})'
         e = discord.Embed(title=title, color=self.WHITE)
+        my_kingdoms = sorted(kingdoms.items(), key=operator.itemgetter(0))
 
         half_size = math.ceil(len(kingdoms) / 2)
-        chunked_kingdoms = chunks(list(kingdoms.items()), half_size)
+        chunked_kingdoms = chunks(my_kingdoms, half_size)
         for i, chunk in enumerate(chunked_kingdoms, start=0):
             kingdoms = _('[KINGDOMS]', lang)
             start = i * half_size + 1
