@@ -41,6 +41,7 @@ class GameData:
         }
 
         self.troops = {'`?`': {'name': '`?`'}}
+        self.troop_types = set()
         self.spells = {}
         self.weapons = {}
         self.classes = {}
@@ -60,6 +61,7 @@ class GameData:
         self.traitstones = {}
         self.levels = []
         self.adventure_board = []
+
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -228,6 +230,8 @@ class GameData:
             }
             if 'TroopType2' in troop:
                 self.troops[troop['Id']]['types'].append(troop['TroopType2'])
+            for type_ in self.troops[troop['Id']]['types']:
+                self.troop_types.add(type_)
 
     def populate_traits(self):
         for trait in self.data['Traits']:

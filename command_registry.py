@@ -338,6 +338,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'troop_type_kingdoms',
+        'pattern': re.compile(DEFAULT_PATTERN + 'troop_type_kingdoms?$', MATCH_OPTIONS),
+        'description': 'Shows the best farming kingdom for each troop type',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'soulforge',
         'pattern': re.compile(DEFAULT_PATTERN + 'soulforge$', MATCH_OPTIONS),
         'description': 'Show this week\'s craftable items in Soulforge',

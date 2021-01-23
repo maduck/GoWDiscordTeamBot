@@ -47,6 +47,7 @@ class TeamExpander:
         world = GameData()
         world.populate_world_data()
         self.troops = world.troops
+        self.troop_types = world.troop_types
         self.spells = world.spells
         self.weapons = world.weapons
         self.classes = world.classes
@@ -873,11 +874,11 @@ class TeamExpander:
 
         return toplist
 
-    def get_color_kingdoms(self, lang):
+    def kingdom_percentage(self, filter_name, filter_values, lang):
         result = {}
         now = datetime.datetime.utcnow()
-        colors_without_skulls = COLORS[:-1]
-        for color in colors_without_skulls:
+
+        for filter_ in filter_values:
             kingdoms = []
             for kingdom in self.kingdoms.values():
                 if kingdom['location'] != 'krystara':
@@ -886,16 +887,25 @@ class TeamExpander:
                 available_troops = [t for t in all_troops if t.get('release_date', now) <= now]
                 if not available_troops:
                     continue
-                colored_troops = [t for t in available_troops if color in t['colors']]
+                fitting_troops = [t for t in available_troops if filter_ in t[filter_name]]
                 kingdoms.append({
                     'name': _(kingdom['name'], lang),
                     'total': len(available_troops),
-                    'color_troops': len(colored_troops),
-                    'percentage': len(colored_troops) / len(available_troops),
+                    'fitting_troops': len(fitting_troops),
+                    'percentage': len(fitting_troops) / len(available_troops),
                 })
             top_kingdom = sorted(kingdoms, key=operator.itemgetter('percentage'), reverse=True)[0]
-            result[color] = top_kingdom
+            result[filter_] = top_kingdom
         return result
+
+    def get_color_kingdoms(self, lang):
+        colors_without_skulls = COLORS[:-1]
+        return self.kingdom_percentage('colors', colors_without_skulls, lang)
+
+    def get_type_kingdoms(self, lang):
+        forbidden_types = {'None', 'Boss', 'Tower', 'Castle', 'Doom', 'Elemental', 'Construct'}
+        troop_types = self.troop_types - forbidden_types
+        return self.kingdom_percentage('types', troop_types, lang)
 
     def get_adventure_board(self, lang):
         result = []
