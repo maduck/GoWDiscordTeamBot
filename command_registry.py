@@ -374,7 +374,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'create_toplist',
-        'pattern': re.compile(DEFAULT_PATTERN + r'toplist (?P<description>.+)? (?P<items>(.+,?)+)$',
+        'pattern': re.compile(DEFAULT_PATTERN + r'toplist (?P<description>[^,]+)? (?P<items>(.+,?)+)$',
                               MATCH_OPTIONS)
     },
     {

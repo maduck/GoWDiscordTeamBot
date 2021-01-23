@@ -935,3 +935,11 @@ class TeamExpander:
         if not param:
             return True
         return param[0] + param[-1] == '[]'
+
+    def get_toplist_troop_ids(self, items, lang):
+        result = []
+        for search_term in items.split(','):
+            troops = self.search_troop(search_term, lang)
+            if troops:
+                result.append(str(troops[0]['id']))
+        return result
