@@ -908,7 +908,12 @@ class TeamExpander:
     def get_type_kingdoms(self, lang):
         forbidden_types = {'None', 'Boss', 'Tower', 'Castle', 'Doom'}
         troop_types = self.troop_types - forbidden_types
-        return self.kingdom_percentage('types', troop_types, lang)
+        result = self.kingdom_percentage('types', troop_types, lang)
+        translated_result = {
+            _(f"[TROOPTYPE_{troop_type.upper()}]", lang): kingdom
+            for troop_type, kingdom in result.items()
+        }
+        return sorted(translated_result.items(), key=operator.itemgetter(0))
 
     def get_adventure_board(self, lang):
         result = []
