@@ -409,12 +409,18 @@ class Views:
         e.set_footer(text=footer)
         return e
 
-    def render_class_level(self, lower_level, upper_level, xp_required, lang):
+    def render_class_level(self, lower_level, upper_level, xp_required, speeds, lang):
         title = f'{_("[CHAMPION_LEVEL_N]", lang)}'.replace('%1', f'{lower_level} - {upper_level}')
         e = discord.Embed(title=title, color=self.WHITE)
         name = f'{_("[CHAMPION_LEVEL]", lang)} {_("[XP]", lang)}'
         xp = f'{xp_required} {_("[XP]", lang)}'
         e.add_field(name=name, value=xp)
+        xp_speed = _('[N_MINUTE]', lang).replace('%1', f'{_("[XP]", lang)} / ')
+        hours = _('[N_HOURS]', lang)
+        for i, (xp_per_min, time) in enumerate(speeds.items()):
+            name = _(f'[ANIMATION_SPEED_{i}]', lang)
+            value = f'{xp_per_min} {xp_speed}: **{hours.replace("%1", time)}**'
+            e.add_field(name=name, value=value, inline=False)
         e.set_footer(text=_('[CHAMPION_XP_INFO]', lang))
         return e
 

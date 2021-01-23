@@ -32,7 +32,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.36.1'
+    VERSION = '0.36.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -620,8 +620,12 @@ class DiscordBot(BaseBot):
         high = min(100, high)
 
         xp_required = xp_for(high) - xp_for(low)
+        speeds = {
+            xp_per_min: str(round(xp_required / (60 * xp_per_min)))
+            for xp_per_min in (2, 4, 6)
+        }
         lang = kwargs.get('lang', 'en')
-        e = self.views.render_class_level(low, high, xp_required, lang)
+        e = self.views.render_class_level(low, high, xp_required, speeds, lang)
         await self.answer(message, e)
 
     async def show_latest_news(self):
