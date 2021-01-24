@@ -381,10 +381,10 @@ class Views:
         half_size = math.ceil(len(kingdoms) / 2)
         chunked_kingdoms = chunks(kingdoms, half_size)
         for i, chunk in enumerate(chunked_kingdoms, start=0):
-            kingdoms = _('[KINGDOMS]', lang)
+            chunk_title = _('[TROOP_TYPES]', lang)
             start = i * half_size + 1
             end = i * half_size + len(chunk)
-            title = f'{kingdoms} {start:n} - {end:n}'
+            title = f'{chunk_title} {start:n} - {end:n}'
             field_lines = [
                 f'{troop_type} __{kingdom["name"]}__ ({kingdom["percentage"]:0.0%})' for
                 troop_type, kingdom in chunk]
