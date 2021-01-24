@@ -483,6 +483,12 @@ class GameData:
             for rune_id in runes:
                 rune_name = self.get_rune_name_from_id(rune_id)
                 self.traitstones[rune_name]['kingdom_ids'].append(kingdom_id)
+        for kingdom_id, runes in self.user_data['pEconomyModel']['Rune_AfterBattleKingdomData'].items():
+            if kingdom_id == '1000':
+                continue
+            for rune_id in runes:
+                rune_name = self.get_rune_name_from_id(rune_id)
+                self.traitstones[rune_name]['kingdom_ids'].append(kingdom_id)
 
     def extract_runes(self, runes):
         result = {}
