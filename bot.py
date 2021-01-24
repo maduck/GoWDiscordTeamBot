@@ -85,6 +85,8 @@ class DiscordBot(BaseBot):
 
         await self.update_base_emojis()
         self.views.my_emojis = self.my_emojis
+        log.info(f'Logged in as {self.user.name}')
+        log.info(f'Active in {len(self.guilds)} guilds.')
 
         self.pet_rescue_config = PetRescueConfig()
         await self.pet_rescue_config.load()
