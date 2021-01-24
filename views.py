@@ -108,6 +108,8 @@ class Views:
         troops = ['{0} ({1})'.format(*troop) for troop in traitstone['troops']]
         chunk_size = 50
         troop_chunks = [', '.join(chunk) for chunk in chunks(troops, chunk_size)][:6]
+        if shortened:
+            troop_chunks = None
         class_list = ['{0} ({1})'.format(*_class) for _class in traitstone['classes']]
         classes = self.trim_text_to_length(", ".join(sorted(class_list)), 900, ',', ', ...')
         kingdom_list = [k for k in traitstone['kingdoms']]
