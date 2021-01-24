@@ -909,7 +909,7 @@ class TeamExpander:
         return self.kingdom_percentage('colors', colors_without_skulls, lang)
 
     def get_type_kingdoms(self, lang):
-        forbidden_types = {'None', 'Boss', 'Tower', 'Castle', 'Doom'}
+        forbidden_types = {'None', 'Boss', 'Tower', 'Castle', 'Doom', 'Gnome'}
         troop_types = self.troop_types - forbidden_types
         result = self.kingdom_percentage('types', troop_types, lang)
         translated_result = {
