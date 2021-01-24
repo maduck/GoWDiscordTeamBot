@@ -173,7 +173,7 @@ class DiscordBot(BaseBot):
         e = discord.Embed(title=title, color=self.WHITE)
         for category, recipes in craftable_items.items():
             recipes = sorted(recipes, key=operator.itemgetter('rarity', 'id'))
-            message_lines = '\n'.join([f'{r["name"]} `{r["id"]}`' for r in recipes])
+            message_lines = '\n'.join([f'{r["name"]} `#{r["id"]}` ({r["rarity"]})' for r in recipes])
             e.add_field(name=category, value=message_lines, inline=False)
         await self.answer(message, e)
 
