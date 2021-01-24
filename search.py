@@ -833,6 +833,8 @@ class TeamExpander:
     def translate_recipe(recipe, lang):
         new_recipe = recipe.copy()
         new_recipe['name'] = _(recipe['name'], lang)
+        rarity_number = WEAPON_RARITIES.index(new_recipe['rarity'])
+        new_recipe['rarity'] = _(f'[RARITY_{rarity_number}]', lang)
         return new_recipe
 
     @staticmethod

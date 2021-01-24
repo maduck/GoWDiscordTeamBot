@@ -446,6 +446,8 @@ class GameData:
                 if not recipe['Name']:
                     recipe['Name'] = self.troops[recipe_id]['name']
                     recipe['rarity'] = self.troops[recipe_id]['rarity']
+                if 'rarity' not in recipe:
+                    recipe['rarity'] = self.weapons[recipe_id]['rarity']
                 category = tabs[recipe['Tab']]
                 self.soulforge.setdefault(category, []).append({
                     'name': recipe['Name'],
@@ -453,7 +455,7 @@ class GameData:
                     'costs': recipe['Source'],
                     'start': recipe['StartDate'],
                     'end': recipe['EndDate'],
-                    'rarity': recipe.get('rarity', 'Z'),
+                    'rarity': recipe['rarity'],
                 })
 
     def populate_traitstones(self):
