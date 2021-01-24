@@ -470,7 +470,7 @@ class GameData:
                         'name': rune['name'],
                         'troop_ids': [],
                         'class_ids': [],
-                        'kingdom_ids': [],
+                        'kingdom_ids': set(),
                         'total_amount': rune['amount'],
                     }
                 if 'ClassCode' in traits:
@@ -484,13 +484,13 @@ class GameData:
         for kingdom_id, runes in self.user_data['pEconomyModel']['Explore_RunePerKingdom'].items():
             for rune_id in runes:
                 rune_name = self.get_rune_name_from_id(rune_id)
-                self.traitstones[rune_name]['kingdom_ids'].append(kingdom_id)
+                self.traitstones[rune_name]['kingdom_ids'].add(kingdom_id)
         for kingdom_id, runes in self.user_data['pEconomyModel']['Rune_AfterBattleKingdomData'].items():
             if kingdom_id == '1000':
                 continue
             for rune_id in runes:
                 rune_name = self.get_rune_name_from_id(rune_id)
-                self.traitstones[rune_name]['kingdom_ids'].append(kingdom_id)
+                self.traitstones[rune_name]['kingdom_ids'].add(kingdom_id)
 
     def extract_runes(self, runes):
         result = {}
