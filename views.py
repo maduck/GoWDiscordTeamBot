@@ -339,6 +339,10 @@ class Views:
         return result
 
     def transform_news_article(self, content, url=''):
+        # FIXME: the following works around bug reported in:
+        #  https://community.gemsofwar.com/t/news-contain-invalid-html-tags-reported/67756/
+        #  Needs to be removed as soon as the bug is resolved.
+        content = content.replace('_Scoring_', '\n_Scoring_\n')
         text_lines = content.split('\n')
         result = {}
         field = []
