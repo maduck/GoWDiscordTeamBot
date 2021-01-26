@@ -393,7 +393,7 @@ COMMAND_REGISTRY = [
         'function': 'soulforge_preview',
         'pattern': re.compile(
             DEFAULT_PATTERN + r'soulforge_preview (?P<search_term>.+?) '
-                              r'(?P<release_date>\d{1,2}-\d{1,2}|.{3} \d{1,2})$')
+                              r'(?P<release_date>\d{1,2}-\d{1,2})(?P<switch>.?Switch)?$', MATCH_OPTIONS)
     }
 ]
 

@@ -81,6 +81,9 @@ class WeeklyPreview:
         gow_logo = download_image(self.data['gow_logo'])
         ratio = gow_logo.width / gow_logo.height
         gow_logo.resize(round(200 * ratio), 200)
+        switch_logo = Image(filename='switch_logo.png')
+        ratio = switch_logo.width / switch_logo.height
+        switch_logo.resize(round(100 * ratio), 100)
         with Drawing() as draw:
             color = Color('rgba(0, 0, 0, 0.7)')
             draw.fill_color = color
@@ -89,6 +92,11 @@ class WeeklyPreview:
                            left=(300 - gow_logo.height) // 2, top=(300 - gow_logo.height) // 2,
                            width=gow_logo.width, height=gow_logo.height,
                            image=gow_logo)
+            if self.data['switch']:
+                draw.composite(operator='atop',
+                               left=(300 - switch_logo.height) // 2 - 15, top=300 - switch_logo.height - 15,
+                               width=switch_logo.width, height=switch_logo.height,
+                               image=switch_logo)
             draw.fill_color = Color('white')
             draw.font_size = 100
             draw.text_antialias = True
@@ -343,7 +351,7 @@ class WeeklyPreview:
     def draw_watermark(self):
         with Drawing() as draw:
             avatar = Image(filename='hawx_transparent.png')
-            max_size = 50
+            max_size = 100
             width, height = scale_down(*avatar.size, max_size)
             draw.composite(operator='atop',
                            left=self.img.width - width - 10, top=self.img.height - height - 10,
@@ -351,11 +359,11 @@ class WeeklyPreview:
                            image=avatar)
 
             draw.fill_color = Color('white')
-            draw.font_size = 15
+            draw.font_size = 25
             draw.font = FONTS['raleway']
             draw.text_alignment = 'right'
             draw.text_antialias = True
-            draw.text(self.img.width - width - 15, self.img.height - 30,
+            draw.text(self.img.width - width - 20, self.img.height - 2 * int(draw.font_size),
                       'Produced by Hawx & Gary.\nNo redistribution without this notice.')
             draw(self.img)
 

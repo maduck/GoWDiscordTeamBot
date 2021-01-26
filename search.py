@@ -8,7 +8,7 @@ import translations
 from data_source.game_data import GameData
 from game_constants import COLORS, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, WEAPON_RARITIES
 from models.toplist import Toplist
-from util import translate_day
+from util import format_locale_date, translate_day
 
 LOGLEVEL = logging.DEBUG
 
@@ -949,7 +949,7 @@ class TeamExpander:
                 result.append(str(troops[0]['id']))
         return result
 
-    def get_soulforge_weapon_image_data(self, search_term, date, lang):
+    def get_soulforge_weapon_image_data(self, search_term, date, switch, lang):
         search_result = self.search_weapon(search_term, lang)
         if len(search_result) != 1:
             return
@@ -980,6 +980,7 @@ class TeamExpander:
         mana_colors = ''.join([c.title() for c in weapon['colors']]).replace('Brown', 'Orange')
         kingdom_filebase = self.kingdoms[weapon['kingdom_id']]['filename']
         result = {
+            'switch': switch,
             'name': weapon['name'],
             'rarity_color': RARITY_COLORS[weapon['raw_rarity']],
             'rarity': weapon['rarity'],
@@ -1014,6 +1015,6 @@ class TeamExpander:
                 'in_soulforge': _('[WEAPON_AVAILABLE_FROM_SOULFORGE]', lang),
                 'login_everyday': _('[LOGIN_CALENDAR_DAILY_REWARD_SUMMARY_SUBTITLE_UNAVAILABLE]', lang),
             },
-            'date': date,
+            'date': format_locale_date(date, lang),
         }
         return result

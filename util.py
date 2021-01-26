@@ -1,3 +1,5 @@
+import datetime
+import platform
 from calendar import day_name, different_locale
 
 from base_bot import log
@@ -59,6 +61,18 @@ def translate_day(day_no, locale):
     locale = LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
     with different_locale(locale):
         return day_name[day_no]
+
+
+def format_locale_date(date, lang):
+    month, day = date.split('-')
+    date = datetime.date.today()
+    date = date.replace(month=int(month), day=int(day))
+    locale = lang
+    if platform.system() != 'Windows':
+        locale = LOCALE_MAPPING.get(lang, 'en_GB') + '.UTF8'
+    with different_locale(locale):
+        date = date.strftime('%b %d')
+    return date
 
 
 def convert_color_array(data_object):

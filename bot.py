@@ -34,7 +34,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.37.0'
+    VERSION = '0.37.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -108,10 +108,10 @@ class DiscordBot(BaseBot):
         return None, None
 
     @owner_required
-    async def soulforge_preview(self, message, lang, search_term, release_date, **kwargs):
+    async def soulforge_preview(self, message, lang, search_term, release_date, switch, **kwargs):
         async with message.channel.typing():
             start = time.time()
-            weapon_data = self.expander.get_soulforge_weapon_image_data(search_term, release_date, lang)
+            weapon_data = self.expander.get_soulforge_weapon_image_data(search_term, release_date, switch, lang)
             if not weapon_data:
                 e = discord.Embed(title=f'Weapon search for `{search_term}` did not yield any result',
                                   description=':(',
