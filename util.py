@@ -56,7 +56,7 @@ def debug(message):
 
 
 def translate_day(day_no, locale):
-    locale = LOCALE_MAPPING.get(locale, 'en_GB')
+    locale = LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
     with different_locale(locale):
         return day_name[day_no]
 
