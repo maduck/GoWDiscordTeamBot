@@ -955,7 +955,7 @@ class TeamExpander:
             return
         weapon = search_result[0].copy()
 
-        requirements = SOULFORGE_REQUIREMENTS[weapon['raw_rarity']]
+        requirements = SOULFORGE_REQUIREMENTS[weapon['raw_rarity']].copy()
         jewels = []
         for color in weapon['colors']:
             color_code = COLORS.index(color)
