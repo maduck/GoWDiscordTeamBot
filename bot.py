@@ -121,7 +121,7 @@ class DiscordBot(BaseBot):
             result = discord.File(image_data, f'soulforge_{release_date}.png')
             duration = time.time() - start
             await message.channel.send(
-                f"After {duration:0.2f} seconds of deep thought,"
+                f"After {duration:0.2f} seconds of deep thought, "
                 f"I think it's time to hand you over the requested file.",
                 file=result)
 
