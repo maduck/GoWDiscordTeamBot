@@ -4,6 +4,7 @@ import json
 import operator
 import os
 import random
+import time
 from functools import partialmethod
 
 import discord
@@ -12,6 +13,7 @@ import prettytable
 
 import bot_tasks
 import models
+import soulforge_preview
 from base_bot import BaseBot, log
 from command_registry import COMMAND_REGISTRY, add_slash_command, get_all_commands, remove_slash_command
 from configurations import CONFIG
@@ -32,7 +34,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.36.8'
+    VERSION = '0.37.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -93,8 +95,6 @@ class DiscordBot(BaseBot):
         self.pet_rescues = await PetRescue.load_rescues(self)
         log.debug(f'Loaded {len(self.pet_rescues)} pet rescues after restart.')
         await self.register_slash_commands()
-        log.info(f'Logged in as {self.user.name}')
-        log.info(f'Active in {len(self.guilds)} guilds.')
 
     async def get_function_for_command(self, user_command, user_prefix):
         for command in COMMAND_REGISTRY:
@@ -106,6 +106,24 @@ class DiscordBot(BaseBot):
             if groups.get('prefix', user_prefix) == user_prefix:
                 return getattr(self, command['function']), groups
         return None, None
+
+    @owner_required
+    async def soulforge_preview(self, message, lang, search_term, release_date, **kwargs):
+        async with message.channel.typing():
+            start = time.time()
+            weapon_data = self.expander.get_soulforge_weapon_image_data(search_term, release_date, lang)
+            if not weapon_data:
+                e = discord.Embed(title=f'Weapon search for `{search_term}` did not yield any result',
+                                  description=':(',
+                                  color=self.BLACK)
+                return await self.answer(message, e)
+            image_data = soulforge_preview.render_all(weapon_data)
+            result = discord.File(image_data, f'soulforge_{release_date}.png')
+            duration = time.time() - start
+            await message.channel.send(
+                f"After {duration:0.2f} seconds of deep thought,"
+                f"I think it's time to hand you over the requested file.",
+                file=result)
 
     async def campaign(self, message, lang, tier=None, **kwargs):
         campaign_data = self.expander.get_campaign_tasks(lang, tier)

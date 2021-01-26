@@ -1,3 +1,5 @@
+from calendar import day_name, different_locale
+
 from base_bot import log
 
 
@@ -50,6 +52,11 @@ def debug(message):
     if message.guild:
         guild = message.guild.name
     log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
+
+
+def translate_day(day_no, locale):
+    with different_locale(locale):
+        return day_name[day_no]
 
 
 def convert_color_array(data_object):

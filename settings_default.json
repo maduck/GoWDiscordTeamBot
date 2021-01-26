@@ -10,5 +10,6 @@
   "database": "db.sqlite3",
   "file_update_check_seconds": 10,
   "register_slash_commands": true,
-  "slash_command_guild_id": null
+  "slash_command_guild_id": null,
+  "special_users": []
 }

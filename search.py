@@ -6,8 +6,9 @@ import re
 
 import translations
 from data_source.game_data import GameData
-from game_constants import COLORS, TROOP_RARITIES, WEAPON_RARITIES
+from game_constants import COLORS, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, WEAPON_RARITIES
 from models.toplist import Toplist
+from util import translate_day
 
 LOGLEVEL = logging.DEBUG
 
@@ -946,4 +947,73 @@ class TeamExpander:
             troops = self.search_troop(search_term, lang)
             if troops:
                 result.append(str(troops[0]['id']))
+        return result
+
+    def get_soulforge_weapon_image_data(self, search_term, date, lang):
+        search_result = self.search_weapon(search_term, lang)
+        if len(search_result) != 1:
+            return
+        weapon = search_result[0].copy()
+
+        requirements = SOULFORGE_REQUIREMENTS[weapon['raw_rarity']]
+        jewels = []
+        for color in weapon['colors']:
+            color_code = COLORS.index(color)
+            filename = f'Runes_Jewel{color_code:02n}_full.png'
+            jewels.append({
+                'filename': filename,
+                'amount': requirements['jewels'],
+                'available_on': translate_day(color_code, lang),
+                'kingdoms': sorted([_(kingdom['name'], lang) for kingdom in self.kingdoms.values()
+                                    if 'primary_color' in kingdom
+                                    and color == kingdom['primary_color']
+                                    and kingdom['location'] == 'krystara']),
+            })
+        requirements['jewels'] = jewels
+        kingdom = self.kingdoms[weapon['kingdom_id']]
+
+        affixes = [{
+            'name': _(affix['name'], lang),
+            'description': _(affix['description'], lang),
+            'color': list(RARITY_COLORS.values())[i],
+        } for i, affix in enumerate(weapon['affixes'], start=1)]
+        mana_colors = ''.join([c.title() for c in weapon['colors']]).replace('Brown', 'Orange')
+        kingdom_filebase = self.kingdoms[weapon['kingdom_id']]['filename']
+        result = {
+            'name': weapon['name'],
+            'rarity_color': RARITY_COLORS[weapon['raw_rarity']],
+            'rarity': weapon['rarity'],
+            'filename': f'Spells/Cards_{weapon["spell_id"]}_full.png',
+            'description': weapon['spell']['description'],
+            'kingdom': weapon['kingdom'],
+            'kingdom_logo': f'Maplocations_{kingdom_filebase}_full.png',
+            'type': _(weapon['type'], lang),
+            'background': f'Background/{kingdom["filename"]}_full.png',
+            'gow_logo': 'Atlas/gow_logo.png',
+            'requirements': requirements,
+            'affixes': affixes,
+            'affix_icon': 'Atlas/affix.png',
+            'gold_medal': 'Atlas/medal_gold.png',
+            'mana_color': f'Troopcardall_{mana_colors}_full.png',
+            'mana_cost': weapon['spell']['cost'],
+            'stat_increases': {'attack': sum(weapon['attack_increase']),
+                               'health': sum(weapon['health_increase']),
+                               'armor': sum(weapon['armor_increase']),
+                               'magic': sum(weapon['magic_increase'])},
+            'stat_icon': 'Atlas/{stat}.png',
+            'texts': {
+                'from_battles': _('[PET_LOOT_BONUS]', lang).replace('+%1% %2 ', '').replace('+%1 %2 ', ''),
+                'gem_bounty': _('[DUNGEON_OFFER_NAME]', lang),
+                'kingdom_challenges': f'{_("[KINGDOM]", lang)} {_("[CHALLENGES]", lang)}',
+                'soulforge': _('[SOULFORGE]', lang),
+                'resources': _('[RESOURCES]', lang),
+                'dungeon': _('[DUNGEON]', lang),
+                'dungeon_battles': _('[TASK_WIN_DUNGEON_BATTLES]', lang),
+                'tier_8': _('[CHALLENGE_TIER_8_ROMAN]', lang),
+                'available': _('[AVAILABLE]', lang),
+                'in_soulforge': _('[WEAPON_AVAILABLE_FROM_SOULFORGE]', lang),
+                'login_everyday': _('[LOGIN_CALENDAR_DAILY_REWARD_SUMMARY_SUBTITLE_UNAVAILABLE]', lang),
+            },
+            'date': date,
+        }
         return result

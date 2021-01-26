@@ -77,3 +77,23 @@ SOULFORGE_ALWAYS_AVAILABLE = [
     1113,  # Dawnbringer
     1374,  # Duskbringer
 ]
+SOULFORGE_REQUIREMENTS = {
+    'UltraRare': {
+        'jewels': 300,
+        'Runes_JewelDiamond_full.png': 75,
+        'Runes_Rune39_full.png': 3,
+        'Commonrewards_icon_soul_small_full.png': 3000,
+    },
+    'Epic': {
+        'jewels': 600,
+        'Runes_JewelDiamond_full.png': 300,
+        'Runes_Rune39_full.png': 3,
+        'Commonrewards_icon_soul_small_full.png': 15000,
+    },
+    'Doomed': {
+        'jewels': 2200,
+        'Runes_JewelDiamond_full.png': 900,
+        'Runes_Rune39_full.png': 10,
+        'Commonrewards_icon_soul_small_full.png': 60000,
+    }
+}
