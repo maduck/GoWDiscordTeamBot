@@ -525,6 +525,7 @@ class TeamExpander:
 
         weapon['upgrades'] = upgrades + [self.translate_spell(spell['id'], lang) for spell in weapon['affixes']]
         weapon['kingdom_title'] = _('[KINGDOM]', lang)
+        weapon['kingdom_id'] = weapon['kingdom']['id']
         weapon['kingdom'] = _(weapon['kingdom']['name'], lang)
         weapon['roles_title'] = _('[WEAPON_ROLE]', lang)
         weapon['roles'] = [_(f'[TROOP_ROLE_{role.upper()}]', lang) for role in weapon['roles']]
