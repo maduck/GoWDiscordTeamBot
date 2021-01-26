@@ -19,6 +19,16 @@ LANGUAGE_CODE_MAPPING = {
     'cn': 'zh',
 }
 
+LOCALE_MAPPING = {
+    'en': 'en_GB',
+    'ru': 'ru_RU',
+    'de': 'de_DE',
+    'it': 'it_IT',
+    'fr': 'fr_FR',
+    'es': 'es_ES',
+    'zh': 'zh_CN',
+}
+
 LANG_FILES = [f'GemsOfWar_{language}.json' for language in LANGUAGES.values()]
 
 

@@ -1,6 +1,7 @@
 from calendar import day_name, different_locale
 
 from base_bot import log
+from translations import LOCALE_MAPPING
 
 
 def atoi(text):
@@ -55,6 +56,7 @@ def debug(message):
 
 
 def translate_day(day_no, locale):
+    locale = LOCALE_MAPPING.get(locale, 'en_GB')
     with different_locale(locale):
         return day_name[day_no]
 
