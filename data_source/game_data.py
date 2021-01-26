@@ -153,7 +153,7 @@ class GameData:
                 'id': weapon['Id'],
                 'name': f'[SPELL{weapon["SpellId"]}_NAME]',
                 'description': f'[SPELL{weapon["SpellId"]}_DESC]',
-                'colors': sorted(colors),
+                'colors': colors,
                 'rarity': weapon['WeaponRarity'],
                 'type': weapon['Type'],
                 'roles': weapon['TroopRoleArray'],

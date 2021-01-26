@@ -496,7 +496,7 @@ class TeamExpander:
     def translate_weapon(self, weapon, lang):
         weapon['name'] = _(weapon['name'], lang)
         weapon['description'] = _(weapon['description'], lang)
-        weapon['color_code'] = "".join(weapon['colors'])
+        weapon['color_code'] = "".join(sorted(weapon['colors']))
         weapon['spell_title'] = _('[TROOPHELP_SPELL0]', lang)
         weapon['rarity_title'] = _('[RARITY]', lang)
         weapon['raw_rarity'] = weapon['rarity']
