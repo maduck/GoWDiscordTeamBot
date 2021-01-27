@@ -117,9 +117,9 @@ class WeeklyPreview:
             draw.text_antialias = True
             draw.font = FONTS['raleway']
             draw.text(450, 200, f'{self.data["texts"]["soulforge"]}: {self.data["date"]}')
-            draw.font_size = 40
+            draw.font_size = 70
             draw.text_alignment = 'center'
-            bottom_message = f'{self.data["texts"]["in_soulforge"]}\n{self.data["texts"]["login_everyday"]}'
+            bottom_message = self.data["texts"]["in_soulforge"]
             draw.fill_color = Color('black')
             draw.text(self.img.width // 2 + 2, self.img.height - 150 + 2, bottom_message)
             draw.fill_color = Color('white')
@@ -133,6 +133,7 @@ class WeeklyPreview:
                            width=kingdom_width, height=kingdom_height,
                            image=kingdom_logo
                            )
+            draw.font_size = 40
             draw.text(self.img.width - kingdom_width // 2 - 15, kingdom_logo.height + 1 * int(draw.font_size),
                       self.data['kingdom'])
 
