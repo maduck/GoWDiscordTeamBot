@@ -108,7 +108,7 @@ class DiscordBot(BaseBot):
         return None, None
 
     @owner_required
-    async def soulforge_preview(self, message, lang, search_term, release_date, switch, **kwargs):
+    async def soulforge_preview(self, message, lang, search_term, release_date, switch=False, **kwargs):
         async with message.channel.typing():
             start = time.time()
             weapon_data = self.expander.get_soulforge_weapon_image_data(search_term, release_date, switch, lang)
