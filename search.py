@@ -1014,6 +1014,7 @@ class TeamExpander:
                 'available': _('[AVAILABLE]', lang),
                 'in_soulforge': _('[WEAPON_AVAILABLE_FROM_SOULFORGE]', lang),
                 'login_everyday': _('[LOGIN_CALENDAR_DAILY_REWARD_SUMMARY_SUBTITLE_UNAVAILABLE]', lang),
+                'n_gems': _('[GEMS_GAINED]', lang).replace('%1', '50'),
             },
             'date': format_locale_date(date, lang),
         }

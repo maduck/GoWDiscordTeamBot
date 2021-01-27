@@ -349,15 +349,13 @@ class WeeklyPreview:
                                width=jewel_width, height=jewel_height,
                                image=jewel_icon)
                 kingdoms = ', '.join(jewel['kingdoms'])
-                message1 = f'x100 {jewel["available_on"]}: ' \
-                           f'{self.data["texts"]["dungeon_battles"]} & ' \
-                           f'{self.data["texts"]["gem_bounty"]}'
-                message2 = f'x140 {self.data["texts"]["tier_8"]} {self.data["texts"]["kingdom_challenges"]}:\n' \
-                           f'{kingdoms}'
 
-                message1 = word_wrap(self.img, draw, message1, 500, 400)
-                message2 = word_wrap(self.img, draw, message2, 500, 400)
-                message = f'{message1}\n{message2}'
+                message_lines = [
+                    f'x100 {jewel["available_on"]}: {self.data["texts"]["dungeon_battles"]}',
+                    f'x100 {jewel["available_on"]}: {self.data["texts"]["gem_bounty"]} ({self.data["texts"]["n_gems"]})',
+                    f'x140 {self.data["texts"]["tier_8"]} {self.data["texts"]["kingdom_challenges"]}:\n{kingdoms}'
+                ]
+                message = '\n'.join([word_wrap(self.img, draw, m, 500, 400) for m in message_lines])
 
                 draw.text(left + 25 + 55, top + 30 + offset, message)
                 offset += 50 + int(draw.font_size) * len(message.split('\n'))
