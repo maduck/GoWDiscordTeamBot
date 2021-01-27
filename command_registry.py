@@ -54,6 +54,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'adventures',
         'pattern': re.compile(DEFAULT_PATTERN + 'adventures?$', MATCH_OPTIONS),
+        'description': 'Shows today\'s adventure board',
     },
     {
         'function': 'troop',
@@ -312,7 +313,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'change_language',
-        'pattern': re.compile(DEFAULT_PATTERN + 'lang(uages?)? (?P<new_language>.+)$', MATCH_OPTIONS)
+        'pattern': re.compile(DEFAULT_PATTERN + 'lang(uages?)? (?P<new_language>.+)$', MATCH_OPTIONS),
     },
     {
         'function': 'campaign',
