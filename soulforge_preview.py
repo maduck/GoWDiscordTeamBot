@@ -223,15 +223,10 @@ class WeeklyPreview:
             draw.stroke_width = 0
             draw.text_alignment = 'center'
             draw.text_antialias = True
-            draw.text(left + 300, top + 80, self.data['name'])
+            name = word_wrap(self.img, draw, self.data['name'], 590, int(1.5 * draw.font_size))
+            draw.text(left + 300, top + 80 - int(60 - draw.font_size), name)
 
             draw(self.img)
-            """
-            # d = 230
-            # r = 115
-            # margin = 185
-            # center = 300, 350
-            """
 
     def render_affixes(self):
         affix_icon = download_image(self.data['affix_icon'])
