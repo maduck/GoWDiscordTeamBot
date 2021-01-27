@@ -3,7 +3,7 @@ import platform
 from calendar import day_name, different_locale
 
 from base_bot import log
-from translations import LOCALE_MAPPING
+from translations import LANGUAGE_CODE_MAPPING, LOCALE_MAPPING
 
 
 def atoi(text):
@@ -58,12 +58,14 @@ def debug(message):
 
 
 def translate_day(day_no, locale):
+    locale = LANGUAGE_CODE_MAPPING.get(locale, locale)
     locale = LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
     with different_locale(locale):
         return day_name[day_no]
 
 
 def format_locale_date(date, lang):
+    lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
     month, day = date.split('-')
     date = datetime.date.today()
     date = date.replace(month=int(month), day=int(day))
