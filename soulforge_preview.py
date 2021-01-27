@@ -1,5 +1,6 @@
 import io
 import math
+import os
 from textwrap import wrap
 from typing import Mapping
 
@@ -17,11 +18,25 @@ FONTS = {
 
 
 def download_image(path):
-    url = f'{BASE_URL}/{path}'
-    r = requests.get(url)
-    f = io.BytesIO(r.content)
+    cache_path = '.cache'
+    # if not os.path.exists(cache_path):
+    #     os.mkdir(cache_path)
+    cache_filename = os.path.join(cache_path, path)
+    if os.path.exists(cache_filename):
+        f = open(cache_filename, 'rb')
+    else:
+        url = f'{BASE_URL}/{path}'
+        r = requests.get(url)
+        f = io.BytesIO(r.content)
+        cache_subdir = os.path.dirname(cache_filename)
+        if not os.path.exists(cache_subdir):
+            os.makedirs(cache_subdir)
+        with open(cache_filename, 'wb') as cache:
+            cache.write(f.read())
+        f.seek(0)
     img = Image(file=f)
     img.alpha_channel = True
+    f.close()
     return img
 
 
@@ -358,7 +373,6 @@ class WeeklyPreview:
                            width=width, height=height,
                            image=avatar)
 
-            draw.fill_color = Color('white')
             draw.font_size = 25
             draw.font = FONTS['raleway']
             draw.text_alignment = 'right'
