@@ -21,7 +21,7 @@ class OptionType(Enum):
 STANDARD_OPTIONS = {
     'search_term': {
         'name': 'search_term',
-        'description': 'case insensitive search',
+        'description': 'case insensitive search or numeric id',
         'type': OptionType.STRING.value,
         'required': True,
         'choices': [],
@@ -393,7 +393,24 @@ COMMAND_REGISTRY = [
         'function': 'soulforge_preview',
         'pattern': re.compile(
             DEFAULT_PATTERN + r'soulforge_preview (?P<search_term>.+?) '
-                              r'(?P<release_date>\d{1,2}-\d{1,2})(?P<switch>.?Switch)?$', MATCH_OPTIONS)
+                              r'(?P<release_date>\d{1,2}-\d{1,2})(?P<switch>.?Switch)?$', MATCH_OPTIONS),
+        'description': 'Generate a Soulforge Preview image',
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            {
+                'name': 'release_date',
+                'description': 'Date of weapon release, format MONTH-DAY with two digits each (e.g. 12-25)',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            {
+                'name': 'switch',
+                'description': 'Add Nintendo Switch logo',
+                'type': OptionType.BOOLEAN.value,
+                'required': False,
+            },
+            STANDARD_OPTIONS['lang']
+        ],
     }
 ]
 
