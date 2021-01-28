@@ -134,8 +134,10 @@ class WeeklyPreview:
                            image=kingdom_logo
                            )
             draw.font_size = 40
-            draw.text(self.img.width - kingdom_width // 2 - 15, kingdom_logo.height + 1 * int(draw.font_size),
-                      self.data['kingdom'])
+            kingdom = word_wrap(self.img, draw, self.data['kingdom'], kingdom_width + 10, int(1.5 * draw.font_size))
+            x = self.img.width - kingdom_width // 2 - 15
+            y = kingdom_logo.height + int(1.5 * draw.font_size)
+            draw.text(x, y, kingdom)
 
             draw(self.img)
 
