@@ -14,12 +14,20 @@ see [CONTRIBUTIONS](CONTRIBUTING.md)
 see [LICENSE](LICENSE.md)
 
 ## install
-* install python 3.8
+* install python 3.8+
 * create a virtualenv "venv"
 * install all packages from requirements.txt
 
 ## configure
-* provide fitting World.json and language files to the path specified in settings as `game_assets_folder`.
+
+* copy file `settings_default.json` into `settings.json`. Adapt settings there.
+* create folder `game_assets` (or whatever you configured as `game_assets_folder`)
+* place the following files into that folder:
+  - Unencrypted `World.json`
+  - Unencrypted language translation json files
+  - Optional: `Soulforge.json` for `!soulforge` command
+  - Optional: `User.json` for `!events`, `!spoilers` and some more
+  - Optional: `Campaign.json` for `!campaign` command
 
 ## run
 * export the ENV DISCORD_TOKEN (register the app on discord to get a token)
