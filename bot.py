@@ -120,10 +120,8 @@ class DiscordBot(BaseBot):
             image_data = soulforge_preview.render_all(weapon_data)
             result = discord.File(image_data, f'soulforge_{release_date}.png')
             duration = time.time() - start
-            await message.channel.send(
-                f"After {duration:0.2f} seconds of deep thought, "
-                f"I think it's time to hand you over the requested file.",
-                file=result)
+            log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
+            await message.channel.send(file=result)
 
     async def campaign(self, message, lang, tier=None, **kwargs):
         campaign_data = self.expander.get_campaign_tasks(lang, tier)
