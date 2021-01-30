@@ -53,7 +53,6 @@ class Bookmark:
         }
         lock = asyncio.Lock()
         async with lock:
-            print('BOOKMARK')
             self.bookmarks[_id] = bookmark
             db = DB()
             db.cursor.execute(
