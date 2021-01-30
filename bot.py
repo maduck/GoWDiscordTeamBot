@@ -576,6 +576,9 @@ class DiscordBot(BaseBot):
 
     async def show_bookmark(self, message, bookmark_id, lang, shortened='', **kwargs):
         bookmark = self.expander.bookmarks.get(bookmark_id)
+        if not bookmark:
+            e = self.generate_response('Bookmark', self.BLACK, 'Error', f'Bookmark id `{bookmark_id}` does not exist.')
+            return await self.answer(message, e)
         title = f'Bookmark `{bookmark_id}` by {bookmark["author_name"]}\n{bookmark["description"]}'
         return await self.handle_team_code(message, lang, bookmark['team_code'], title=title, shortened=shortened)
 
