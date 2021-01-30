@@ -440,7 +440,9 @@ class DiscordBot(BaseBot):
             return
         author = message.author.display_name
         author = await pluralize_author(author)
-        e = self.views.render_team(team, author, shortened, title=kwargs.get('title'))
+        if kwargs.get('title') is None:
+            team_code = None
+        e = self.views.render_team(team, author, shortened, team_code=team_code, title=kwargs.get('title'))
         await self.answer(message, e)
 
     async def waffles(self, message, lang, **kwargs):

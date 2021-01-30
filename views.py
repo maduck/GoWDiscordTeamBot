@@ -133,7 +133,7 @@ class Views:
         e.title = 'Talent search found one exact match'
         return self.render_embed(e, 'talent.jinja', tree=tree)
 
-    def render_team(self, team, author, shortened, title=None):
+    def render_team(self, team, author, shortened, team_code=None, title=None):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(color=color)
         if team['banner']:
@@ -144,6 +144,9 @@ class Views:
             troops = [f'{t[1]}' for t in team['troops']]
             e.title = ', '.join(troops)
             return self.render_embed(e, 'team_shortened.jinja', team=team)
+
+        if team_code:
+            e.set_footer(text=f'[{team_code}]')
 
         e.title = f"{author} team"
         if title:
