@@ -20,6 +20,7 @@ from configurations import CONFIG
 from discord_wrappers import admin_required, guild_required, owner_required
 from game_constants import CAMPAIGN_COLORS, RARITY_COLORS, TASK_SKIP_COSTS
 from jobs.news_downloader import NewsDownloader
+from models.bookmark import BookmarkError
 from models.pet_rescue import PetRescue
 from models.pet_rescue_config import PetRescueConfig
 from models.toplist import ToplistError
@@ -34,7 +35,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.37.4'
+    VERSION = '0.38.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -439,7 +440,7 @@ class DiscordBot(BaseBot):
             return
         author = message.author.display_name
         author = await pluralize_author(author)
-        e = self.views.render_team(team, author, shortened)
+        e = self.views.render_team(team, author, shortened, title=kwargs.get('title'))
         await self.answer(message, e)
 
     async def waffles(self, message, lang, **kwargs):
@@ -571,6 +572,30 @@ class DiscordBot(BaseBot):
                                    f'Channel {message.channel.name} is now subscribed and will receive future news.')
         await self.answer(message, e)
 
+    async def show_bookmark(self, message, bookmark_id, lang, shortened='', **kwargs):
+        bookmark = self.expander.bookmarks.get(bookmark_id)
+        title = bookmark['description']
+        return await self.handle_team_code(message, lang, bookmark['team_code'], title=title, shortened=shortened)
+
+    async def show_my_bookmarks(self, message, **kwargs):
+        bookmarks = self.expander.bookmarks.get_my_bookmarks(message.author.id)
+        e = self.views.render_my_bookmarks(bookmarks, message.author.display_name)
+        await self.answer(message, e)
+
+    async def create_bookmark(self, message, description, team_code, lang, shortened='', **kwargs):
+        bookmark_id = await self.expander.bookmarks.add(message.author.id, message.author.display_name, description,
+                                                        team_code)
+        return await self.show_bookmark(message, bookmark_id, lang, shortened)
+
+    async def delete_bookmark(self, message, bookmark_id, lang, **kwargs):
+        try:
+            await self.expander.bookmarks.remove(message.author.id, bookmark_id)
+            e = self.generate_response('Bookmark', self.WHITE, 'Deletion',
+                                       f'Bookmark `{bookmark_id}` was successfully deleted.')
+        except BookmarkError as te:
+            e = self.generate_response('Bookmark', self.BLACK, 'There was a problem', str(te))
+        await self.answer(message, e)
+
     async def show_toplist(self, message, toplist_id, lang, **kwargs):
         toplist = self.expander.translate_toplist(toplist_id, lang)
         e = self.views.render_toplist(toplist)
@@ -580,7 +605,8 @@ class DiscordBot(BaseBot):
         try:
             toplist_ids = self.expander.get_toplist_troop_ids(items, lang)
             items = ','.join(toplist_ids)
-            toplist = await self.expander.create_toplist(message, description, items, lang, update_id=kwargs.get('_id'))
+            toplist = await self.expander.create_toplist(message, description, items, lang,
+                                                         update_id=kwargs.get('bookmark_id'))
             e = self.views.render_toplist(toplist)
         except ToplistError as te:
             e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))

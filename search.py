@@ -7,6 +7,7 @@ import re
 import translations
 from data_source.game_data import GameData
 from game_constants import COLORS, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, WEAPON_RARITIES
+from models.bookmark import Bookmark
 from models.toplist import Toplist
 from util import format_locale_date, translate_day
 
@@ -66,6 +67,7 @@ class TeamExpander:
         self.levels = world.levels
         self.rooms = {}
         self.toplists = Toplist()
+        self.bookmarks = Bookmark()
         self.adventure_board = world.adventure_board
 
     @classmethod

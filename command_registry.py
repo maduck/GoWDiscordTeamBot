@@ -282,6 +282,24 @@ COMMAND_REGISTRY = [
             MATCH_OPTIONS)
     },
     {
+        'function': 'delete_bookmark',
+        'pattern': re.compile(
+            DEFAULT_PATTERN + r'bookmark delete (?P<bookmark_id>[a-zA-Z0-9]+)$', MATCH_OPTIONS)
+    },
+    {
+        'function': 'create_bookmark',
+        'pattern': re.compile(DEFAULT_PATTERN + r'bookmark (?P<description>[^,]+)? (\[(?P<team_code>(\d+,?){1,13})])$',
+                              MATCH_OPTIONS)
+    },
+    {
+        'function': 'show_bookmark',
+        'pattern': re.compile(DEFAULT_PATTERN + r'bookmark (?P<bookmark_id>[a-zA-Z0-9]+)$', MATCH_OPTIONS)
+    },
+    {
+        'function': 'show_my_bookmarks',
+        'pattern': re.compile(DEFAULT_PATTERN + r'bookmarks$', MATCH_OPTIONS)
+    },
+    {
         'function': 'handle_team_code',
         # TODO adapt to something more strict, maybe this?
         # \[(?P<weapon_troops>([167]\d{3},?)+){1,4}(?P<banner>3\d{3},?)?(?P<talents>([0-3]{1},?){7})?(?P<class>\d{5})?\]
@@ -359,19 +377,19 @@ COMMAND_REGISTRY = [
     {
         'function': 'update_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN + r'toplist update (?P<_id>[a-zA-Z0-9]+) (?P<description>.+)? (?P<items>(.+,?)+)$',
+            DEFAULT_PATTERN + r'toplist update (?P<bookmark_id>[a-zA-Z0-9]+) (?P<description>.+)? (?P<items>(.+,?)+)$',
             MATCH_OPTIONS)
     },
     {
         'function': 'append_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN + r'toplist append (?P<_id>[a-zA-Z0-9]+) (?P<items>(.+,?)+)$',
+            DEFAULT_PATTERN + r'toplist append (?P<bookmark_id>[a-zA-Z0-9]+) (?P<items>(.+,?)+)$',
             MATCH_OPTIONS)
     },
     {
         'function': 'delete_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN + r'toplist delete (?P<_id>[a-zA-Z0-9]+)$', MATCH_OPTIONS)
+            DEFAULT_PATTERN + r'toplist delete (?P<bookmark_id>[a-zA-Z0-9]+)$', MATCH_OPTIONS)
     },
     {
         'function': 'create_toplist',

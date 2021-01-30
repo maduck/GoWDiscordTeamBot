@@ -51,16 +51,55 @@ CREATE TABLE IF NOT EXISTS PetRescue
 
 CREATE TABLE IF NOT EXISTS PetRescueConfig
 (
-    guild_name     TEXT,
-    guild_id       INTEGER,
-    channel_name   TEXT,
-    channel_id     INTEGER,
-    mention        TEXT,
-    delete_message INTEGER,
-    delete_mention INTEGER,
-    delete_pet     INTEGER
+    guild_name TEXT,
+    guild_id INTEGER,
+    channel_name TEXT,
+    channel_id
+    INTEGER,
+    mention
+    TEXT,
+    delete_message
+    INTEGER,
+    delete_mention
+    INTEGER,
+    delete_pet
+    INTEGER
 );
 
-CREATE UNIQUE INDEX PetRescueConfig_index
+CREATE
+UNIQUE INDEX PetRescueConfig_index
     ON PetRescueConfig (guild_id, channel_id);
 
+CREATE TABLE IF NOT EXISTS Bookmark
+(
+    id
+    TEXT
+    NOT
+    NULL
+    CONSTRAINT
+    Bookmark_pk
+    PRIMARY
+    KEY,
+    author_id
+    TEXT
+    NOT
+    NULL,
+    author_name
+    TEXT
+    NOT
+    NULL,
+    description
+    TEXT
+    NOT
+    NULL,
+    team_code
+    TEXT
+    NOT
+    NULL,
+    created
+    TIMESTAMP
+    DEFAULT
+    CURRENT_TIMESTAMP
+    NOT
+    NULL
+);

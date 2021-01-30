@@ -133,7 +133,7 @@ class Views:
         e.title = 'Talent search found one exact match'
         return self.render_embed(e, 'talent.jinja', tree=tree)
 
-    def render_team(self, team, author, shortened):
+    def render_team(self, team, author, shortened, title=None):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(color=color)
         if team['banner']:
@@ -146,6 +146,8 @@ class Views:
             return self.render_embed(e, 'team_shortened.jinja', team=team)
 
         e.title = f"{author} team"
+        if title:
+            e.title = title
         return self.render_embed(e, 'team.jinja', team=team)
 
     def render_kingdom(self, kingdom, shortened):
@@ -435,3 +437,13 @@ class Views:
     def render_tools(self):
         e = discord.Embed(title='Community Tools', color=self.WHITE)
         return self.render_embed(e, 'tools.jinja')
+
+    def render_my_bookmarks(self, bookmarks, display_name):
+        e = discord.Embed(title='Bookmarks', color=self.WHITE)
+        message_lines = []
+        for bookmark in bookmarks:
+            message_lines.append(f'**{bookmark["id"]}** {bookmark["description"]}')
+        if not message_lines:
+            message_lines = ['No bookmarks created yet.']
+        e.add_field(name=f'Overview for {display_name}', value='\n'.join(message_lines), inline=False)
+        return e
