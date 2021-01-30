@@ -209,8 +209,11 @@ class Views:
             if event['start'] > last_event_date and event['start'].weekday() == 0 and not _filter:
                 message_lines.append('')
             last_event_date = event['start']
-            this_line = f'{event["start"].strftime("%b %d")} - ' \
-                        f'{event["end"].strftime("%b %d")} ' \
+            end = f'- {event["end"].strftime("%b %d")} '
+            if event['end'] == event['start'] + datetime.timedelta(days=1):
+                end = ''
+            this_line = f'{event["start"].strftime("%b %d")} ' \
+                        f'{end}' \
                         f'{event["type"]}' \
                         f'{":" if event["extra_info"] else ""} ' \
                         f'{event["extra_info"]}'
@@ -220,7 +223,7 @@ class Views:
         if not message_lines:
             message_lines = [_('[QUEST9052_ENDCONV_0]', lang).replace('&& ', '\n')]
         message_lines = ['```'] + message_lines + ['```']
-        e.add_field(name='Spoilers', value='\n'.join(message_lines))
+        e.add_field(name=_('[CALENDAR]', lang), value='\n'.join(message_lines))
         return e
 
     def render_event_kingdoms(self, events):
