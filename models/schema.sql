@@ -72,34 +72,10 @@ UNIQUE INDEX PetRescueConfig_index
 
 CREATE TABLE IF NOT EXISTS Bookmark
 (
-    id
-    TEXT
-    NOT
-    NULL
-    CONSTRAINT
-    Bookmark_pk
-    PRIMARY
-    KEY,
-    author_id
-    TEXT
-    NOT
-    NULL,
-    author_name
-    TEXT
-    NOT
-    NULL,
-    description
-    TEXT
-    NOT
-    NULL,
-    team_code
-    TEXT
-    NOT
-    NULL,
-    created
-    TIMESTAMP
-    DEFAULT
-    CURRENT_TIMESTAMP
-    NOT
-    NULL
+    id          TEXT NOT NULL CONSTRAINT Bookmark_pk PRIMARY KEY,
+    author_id   TEXT NOT NULL,
+    author_name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    team_code   TEXT NOT NULL,
+    created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
