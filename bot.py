@@ -574,7 +574,7 @@ class DiscordBot(BaseBot):
 
     async def show_bookmark(self, message, bookmark_id, lang, shortened='', **kwargs):
         bookmark = self.expander.bookmarks.get(bookmark_id)
-        title = bookmark['description']
+        title = f'Bookmark `{bookmark_id}` by {bookmark["author_name"]}\n{bookmark["description"]}'
         return await self.handle_team_code(message, lang, bookmark['team_code'], title=title, shortened=shortened)
 
     async def show_my_bookmarks(self, message, **kwargs):
