@@ -34,7 +34,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.37.3'
+    VERSION = '0.37.4'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -442,9 +442,13 @@ class DiscordBot(BaseBot):
         e = self.views.render_team(team, author, shortened)
         await self.answer(message, e)
 
-    async def waffles(self, message, **kwargs):
+    async def waffles(self, message, lang, **kwargs):
         waffle_no = random.randint(0, 66)
-        e = self.generate_response('Waffles', self.WHITE, 'random waffle', f'number {waffle_no}')
+
+        title = _('[QUEST9480_OBJ0_MSG]', lang)
+        subtitle = _('[HAND_FEED]', lang)
+        image_no = f'{_("[SPELLEFFECT_CAUSERANDOM]", lang)} #{waffle_no}'
+        e = self.generate_response(title, self.WHITE, subtitle, image_no)
         e.set_image(url=f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg')
         await self.answer(message, e)
 

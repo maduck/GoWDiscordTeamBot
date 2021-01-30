@@ -303,8 +303,8 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'waffles',
-        'pattern': re.compile(r'^(?P<prefix>.)waffles$', MATCH_OPTIONS),
-        'description': 'Easteregg command. Don\'t use.',
+        'pattern': re.compile(DEFAULT_PATTERN + r'waffles?$', MATCH_OPTIONS),
+        'description': 'Easteregg command.',
     },
     {
         'function': 'show_languages',
