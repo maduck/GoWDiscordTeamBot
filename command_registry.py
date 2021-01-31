@@ -377,19 +377,19 @@ COMMAND_REGISTRY = [
     {
         'function': 'update_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN + r'toplist update (?P<bookmark_id>[a-zA-Z0-9]+) (?P<description>.+)? (?P<items>(.+,?)+)$',
+            DEFAULT_PATTERN + r'toplist update (?P<toplist_id>[a-zA-Z0-9]+) (?P<description>.+)? (?P<items>(.+,?)+)$',
             MATCH_OPTIONS)
     },
     {
         'function': 'append_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN + r'toplist append (?P<bookmark_id>[a-zA-Z0-9]+) (?P<items>(.+,?)+)$',
+            DEFAULT_PATTERN + r'toplist append (?P<toplist_id>[a-zA-Z0-9]+) (?P<items>(.+,?)+)$',
             MATCH_OPTIONS)
     },
     {
         'function': 'delete_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN + r'toplist delete (?P<bookmark_id>[a-zA-Z0-9]+)$', MATCH_OPTIONS)
+            DEFAULT_PATTERN + r'toplist delete (?P<toplist_id>[a-zA-Z0-9]+)$', MATCH_OPTIONS)
     },
     {
         'function': 'create_toplist',
