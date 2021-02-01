@@ -1,23 +1,23 @@
-<T>How to read</T>
-Square brackets `[]` show optional parameters, except for troop code.
-Vertical lines `|` mean "or": this|that.
-valid language codes are `{{ languages }}`.
+<T>Come si legge</T>
+Parentesi quadre `[]` mostrano i paramaetri opzionali, tranne per i codici delle truppe.
+Linea verticale `|` significa "o": questo|quello.
+codici lingua validi sono `{{ languages }}`.
 
-<T>Searches</T>
+<T>Ricerca</T>
 `{{ prefix }}help`
 `{{ prefix }}quickhelp`
-`[lang][-][<troopcode>]`
-`[lang][-]{{ prefix }}troop <search>`
-`[lang][-]{{ prefix }}weapon <search>`
-`[lang][-]{{ prefix }}affix <search>`
-`[lang][-]{{ prefix }}pet <search>`
-`[lang][-]{{ prefix }}class <search>`
-`[lang][-]{{ prefix }}kingdom <search>`
-`[lang][-]{{ prefix }}talent <search>`
-`[lang][-]{{ prefix }}trait <search>`
-`[lang][-]{{ prefix }}traitstone <search>`
+`[lang][-][<codice truppa>]`
+`[lang][-]{{ prefix }}troop <ricerca>`
+`[lang][-]{{ prefix }}weapon <ricerca>`
+`[lang][-]{{ prefix }}affix <ricerca>`
+`[lang][-]{{ prefix }}pet <ricerca>`
+`[lang][-]{{ prefix }}class <ricerca>`
+`[lang][-]{{ prefix }}kingdom <ricerca>`
+`[lang][-]{{ prefix }}talent <ricerca>`
+`[lang][-]{{ prefix }}trait <ricerca>`
+`[lang][-]{{ prefix }}traitstone <ricerca>`
 
-<T>Overviews</T>
+<T>Sommari</T>
 `[lang]{{ prefix }}class summary`
 `[lang]{{ prefix }}kingdom summary`
 `[lang]{{ prefix }}color_kingdoms`
@@ -31,36 +31,36 @@ valid language codes are `{{ languages }}`.
 `[lang]{{ prefix }}adventure[s]`
 `[lang][-]{{ prefix }}class_level [<basso>-]<alto>`
 
-<T>Pet Rescue</T>
-`{{ prefix }}pet rescue [pet name or id] [time remaining in minutes] [mention]`
-`{{ prefix }}pr [pet name or id] [time remaining in minutes] [mention]`
+<T>Salvataggio Famiglio</T>
+`{{ prefix }}pet rescue [nome del pet o ID] [tempo rimanente in minuti] [menzione]`
+`{{ prefix }}pr [nome del pet o ID] [tempo rimanente in minuti] [menzione]`
 
-<T>Tower of Doom</T>
+<T>Torre della Sventura</T>
 `{{ prefix }}towerhelp`
-`{{ prefix }}tower [lower floor-upper floor]`
+`{{ prefix }}tower [dal piano-al piano]`
 
-<T>Bookmarks</T>
+<T>Salvataggio Team</T>
 `[lang]{{ prefix }}bookmarks`
 `[lang]{{ prefix }}bookmark <id>`
-`[lang]{{ prefix }}bookmark <description> <team code>`
+`[lang]{{ prefix }}bookmark <descrizione> <codice team>`
 `[lang]{{ prefix }}bookmark delete <id>`
 
-<T>Toplists</T>
+<T>Toplist</T>
 `[lang]{{ prefix }}toplists`
-`[lang]{{ prefix }}toplist <description> <troops>`
+`[lang]{{ prefix }}toplist <descrizione> <truppa>`
 `[lang]{{ prefix }}toplist delete <id>`
-`[lang]{{ prefix }}toplist update <id> <description> <troops>`
-`[lang]{{ prefix }}toplist append <id> <more_troops>`
+`[lang]{{ prefix }}toplist update <id> <descrizione> <truppa>`
+`[lang]{{ prefix }}toplist append <id> <truppa aggiuntiva>`
 
-<T>Admin Commands</T>
+<T>Comandi Admin</T>
 `{{ prefix }}towerconfig`
 `{{ prefix }}towerclear`
-`{{ prefix }}pet rescue config [<setting>=<value>]`
+`{{ prefix }}pet rescue config [<parametro>=<valore>]`
 `{{ prefix }}news [[un]subscribe [pc|switch]]`
-`{{ prefix }}prefix [new_prefix]`
-`{{ prefix }}lang[uage[s]] [new_language]`
+`{{ prefix }}prefix [nuovo_prefisso]`
+`{{ prefix }}lang[uage[s]] [nuova_lingua]`
 
-<T>Bot specific</T>
+<T>Specifiche Bot</T>
 `{{ prefix }}about`
 `{{ prefix }}permissions`
 `{{ prefix }}tools`
