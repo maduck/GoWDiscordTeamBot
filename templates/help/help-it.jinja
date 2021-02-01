@@ -16,18 +16,18 @@
 • Spazi, apostrofi (') e trattini (-) verranno ignorati.
 • Più risultati mostreranno un elenco di truppe abbinate.
 • Se viene trovato un oggetto corrispondente, il colore del lato rifletterà la rarità di base della truppa.
-<T>**__Panoramiche__**:</T>
+<T>**__Sommari__**:</T>
 • Spoilers: `{{ prefix }}spoilers`. Può essere filtrato con i seguenti parametri: `pets`, `troops`, `weapons`, `kingdoms`, `events`: `{{ prefix }}spoilers weapons`.
-• Events: `{{ prefix }}events`. Can be used with a filter, e.g. `{{ prefix }}events faction`. Can also be used to only show event kingdoms: `{{ prefix }}event kingdoms`.
-• Current Adventure Board: `{{ prefix }}adventures`.
-• Class XP requirements: `{{ prefix }}class_level <target level>`, e.g. `{{ prefix }}class_level 70`. Can be used with a lower level to show the difference, e.g. `{{ prefix }}class_level 70-100`
-• Panoramica settimanale della campagna: `{{ prefix }}campaign`. Può essere filtrato con `bronze`, `silver` o `gold`: `{{ prefix }}campaign silver`
-• Panoramica della classe: `{{ prefix }}class summary`
-• Panoramica dello Regno: `{{ prefix }}kingdom summary`
+• Events: `{{ prefix }}events`. Può essere usato con un filtro, es. `{{ prefix }}events faction`. Può anche essere usato per mostrare solo l'evento per regno: `{{ prefix }}event kingdoms`.
+• Bacheca dell'Avventura corrente: `{{ prefix }}adventures`.
+• XP Classe richiesti: `{{ prefix }}class_level <obiettivo livello>`, es. `{{ prefix }}class_level 70`. Può essere usato con un livello di partenza per mostrare la differenza, es. `{{ prefix }}class_level 70-100`
+• Sommario settimanale della campagna: `{{ prefix }}campaign`. Può essere filtrato con `bronze`, `silver` o `gold`: `{{ prefix }}campaign silver`
+• Sommario della classe: `{{ prefix }}class summary`
+• Sommario dello Regno: `{{ prefix }}kingdom summary`
 • Oggetti costruibili di fucina delle anime: `{{ prefix }}soulforge`
 • Vantaggi a livello di giocatore: `{{ prefix }}levels`
-• Kingdoms by troop colors: `{{ prefix }}color_kingdoms`
-• Kingdoms by troop types: `{{ prefix }}troop_type_kingdoms`
+• Regni per colore truppe: `{{ prefix }}color_kingdoms`
+• Regni per tipo truppe: `{{ prefix }}troop_type_kingdoms`
 <T>**__Torre della Sventura__**:</T>
 Si prega di consultare `{{ prefix }}towerhelp`.
 <T>**__Salvataggio Famiglio__**:</T>
@@ -35,17 +35,17 @@ Si prega di consultare `{{ prefix }}towerhelp`.
 • Le impostazioni predefinite possono essere controllate con `{{ prefix }}pet rescue config`.
 • This command can be shortened up by using `{{ prefix }}pr ...` instead of `{{ prefix }}pet rescue`.
 • Gli amministratori del server possono modificare la menzione di default, così come cosa dovrà cancellare con `{{ prefix }}pet rescue config <setting>=<value>`.
-<T>**__Team Bookmarks__**:</T>
-• Show own bookmarks: `{{ prefix }}bookmarks`.
-• Display a certain bookmark: `{{ prefix }}bookmark <bookmark id>`.
-• Create a new bookmark: `{{ prefix }}bookmark <description> <team code>`. A new random bookmark id will be created.
-• Delete a bookmark: `{{ prefix }}bookmark delete <bookmark id>`.
-<T>**__Toplists__**:</T>
-• Show own toplists: `{{ prefix }}toplists`
-• Create a new toplist: `{{ prefix }}toplist <description> <troops>`. Troops are comma separated list of names or troop ids. A new toplist id will be created.
-• Append more troops to an existing toplist: `{{ prefix }}toplist append <id> <troops>`
-• Change a toplist: `{{ prefix }}toplist update <toplist id> <description> <troops>`
-• Delete a toplist: `{{ prefix }}toplist delete <toplist id>`.
+<T>**__Salvataggio Squadre__**:</T>
+• Mostra i propri salvataggi: `{{ prefix }}bookmarks`.
+• Mostra uno specifico salvataggio: `{{ prefix }}bookmark <bookmark id>`.
+• Crea un nuovo salvataggio: `{{ prefix }}bookmark <description> <team code>`. A new random bookmark id will be created.
+• Elimina un salvataggio: `{{ prefix }}bookmark delete <bookmark id>`.
+<T>**__Toplist Squadre__**:</T>
+• Mostra le proprie toplist: `{{ prefix }}toplists`
+• Crea una nuova toplist: `{{ prefix }}toplist <descrizione> <truppe>`. La lista delle truppe composte dai nomi o dagli id sono separate da una virgola. Un nuovo id toplist verrà creato.'
+• Aggiunge più truppe ad una toplist esistente: `{{ prefix }}toplist append <id> <truppe>`
+• Modifica una toplist: `{{ prefix }}toplist update <id toplist> <descrizione> <truppe>`
+• Elimina una toplist: `{{ prefix }}toplist delete <id toplist>`.
 <T>**__Modificatori di comandi__**:</T>
 • __Traduzione__:
 Sono supportate tutte le lingue GoW, inserisci le due lettere del codice del paese (en, fr, de, ru, it, es, zh) davanti al comando, ad es. `it{{ prefix }}troop elemaugrim`. Funziona allo stesso modo per i codici di squadra. **Le ricerche localizzate cercheranno solo i nomi delle truppe con le rispettive traduzioni**.',
