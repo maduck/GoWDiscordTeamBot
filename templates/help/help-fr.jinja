@@ -1,4 +1,4 @@
-<T>**__Codes Équipes__**</T>
+<T>**__Codes Équipes__** :</T>
 • __Base__ : Postez simplement vos codes de partage d'équipe, ex. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. Le bot répondra automatiquement avec les unités contenues dans le code. Le code peut être intégré dans du texte, il n'est pas nécessaire de le poster séparément.
 <T>**__Recherches__** :</T>
 • `{{ prefix }}troop <recherche>`, ex. `{{ prefix }}troop élémaugrim`.
@@ -16,43 +16,43 @@
 • Les espaces, apostrophes (') et tirets (-) seront ignorés.
 • En cas de plusieurs résultats, une liste des unités correspondantes sera affichée.
 • Si une seule correspondance est trouvée, la couleur sur le côté correspondra à la rareté de l'unité.
-<T>**__Aperçus__**:</T>
+<T>**__Aperçus__** :</T>
 • Spoilers : `{{ prefix }}spoilers`. Peut être fitré en utilisant les paramètres suivants : `pets`, `troops`, `weapons`, `kingdoms`, `events` : `{{ prefix }}spoilers weapons`.
-• Events: `{{ prefix }}events`. Can be used with a filter, e.g. `{{ prefix }}events faction`. Can also be used to only show event kingdoms: `{{ prefix }}event kingdoms`.
-• Current Adventure Board: `{{ prefix }}adventures`.
-• Class XP requirements: `{{ prefix }}class_level <target level>`, e.g. `{{ prefix }}class_level 70`. Can be used with a lower level to show the difference, e.g. `{{ prefix }}class_level 70-100`
+• Evénements : `{{ prefix }}events`. Peût être utilisé avec un filtre, ex. `{{ prefix }}events faction`. Peut aussi être utilisé pour afficher uniquements les royaumes des événements: `{{ prefix }}event kingdoms`.
+• Aventures Quotidiennes : `{{ prefix }}adventures`.
+• XP de champion nécessaire : `{{ prefix }}class_level <target level>`, ex. `{{ prefix }}class_level 70`. Peut aussi être utilisé avec un niveau inférieur pour afficher la différence, ex. `{{ prefix }}class_level 70-100`
 • Aperçu de la campagne hebdomadaire : `{{ prefix }}campaign`. Peut être fitré avec `bronze`, `silver`, ou `gold` : `{{ prefix }}campaign silver`
 • Aperçu des classes : `{{ prefix }}class summary`
 • Aperçu des royaumes : `{{ prefix }}kingdom summary`
-• Objects pouvant être créés dans la forge des âmes : `{{ prefix }}soulforge`
+• Objets pouvant être créés dans la forge des âmes : `{{ prefix }}soulforge`
 • Avantages selon le niveau du joueur : `{{ prefix }}levels`
-• Kingdoms by troop colors: `{{ prefix }}color_kingdoms`
-• Kingdoms by troop types: `{{ prefix }}troop_type_kingdoms`
+• Royaumes par unités de couleur de mana : `{{ prefix }}color_kingdoms`
+• Royaumes par type d'unités : `{{ prefix }}troop_type_kingdoms`
 <T>**__Tour maudite__** :</T>
 Veuillez consulter `{{ prefix }}towerhelp`.
-<T>**__Pet Rescue__**:</T>
-• When encountering a pet rescue mission in-game, you can alert all your fellow guild mates with `{{ prefix }}pet rescue <pet> [<time>] [<mention>]`. `<pet>` needs to be either the name or the id of the pet, `<time>` is the remaining time in minutes (default 59), followed by either nothing, "min", or "mins", and `<mention>` is the group that will be alerted (default `@everyone`).
-• Default settings can be checked with `{{ prefix }}pet rescue config`.
-• This command can be shortened up by using `{{ prefix }}pr ...` instead of `{{ prefix }}pet rescue`.
-• Server administrators can alter the default mention, as well as the deletion behaviour with `{{ prefix }}pet rescue config <setting>=<value>`.
-<T>**__Team Bookmarks__**:</T>
-• Show own bookmarks: `{{ prefix }}bookmarks`.
-• Display a certain bookmark: `{{ prefix }}bookmark <bookmark id>`.
-• Create a new bookmark: `{{ prefix }}bookmark <description> <team code>`. A new random bookmark id will be created.
-• Delete a bookmark: `{{ prefix }}bookmark delete <bookmark id>`.
-<T>**__Toplists__**:</T>
-• Show own toplists: `{{ prefix }}toplists`
-• Create a new toplist: `{{ prefix }}toplist <description> <troops>`. Troops are comma separated list of names or troop ids. A new toplist id will be created.
-• Append more troops to an existing toplist: `{{ prefix }}toplist append <id> <troops>`
-• Change a toplist: `{{ prefix }}toplist update <toplist id> <description> <troops>`
-• Delete a toplist: `{{ prefix }}toplist delete <toplist id>`.
+<T>**__Opération sauvetage__** :</T>
+• Lorsque vous rencontrez une mission de sauvetage dans le jeu, vous pouvez alerter vos compagnons de guilde avec `{{ prefix }}pet rescue <compagnon> [<temps>] [<mention>]`. `<compagnon>` doit être soit le nom du compagnon soit son id, `<temps>` est le temps restant en minutes (par défaut 59), suivi par soit: rien, "min", ou "mins", et la `<mention>` est le groupe qui sera alerté (par défaut `@everyone`).
+• Les paramètres par défaut peuvent être vérifiés avec `{{ prefix }}pet rescue config`.
+• Cette commande peut être raccourcie en utilisant `{{ prefix }}pr ...` au lieu de `{{ prefix }}pet rescue`.
+• Les administrateurs de serveur peuvent modifier la mention par défaut, ainsi que les suppressions de message avec `{{ prefix }}pet rescue config <setting>=<value>`.
+<T>**__Equipes Favorites__**:</T>
+• Afficher ses propres favoris : `{{ prefix }}bookmarks`.
+• Afficher un certain favori : `{{ prefix }}bookmark <bookmark id>`.
+• Créer un nouveau favori : `{{ prefix }}bookmark <description> <team code>`. Un nouvel id de favori sera alors aléatoirement créé.
+• Supprimer un favori: `{{ prefix }}bookmark delete <bookmark id>`.
+<T>**__Top listes__**:</T>
+• Afficher ses propres top listes : `{{ prefix }}toplists`
+• Créer une nouvelle top liste : `{{ prefix }}toplist <description> <unités>`. Unités sont les noms d'unités ou les ids d'unités séparés par des virgules. Une nouvelle id de top liste sera créée.
+• Ajouter plus d'unités à une liste existante : `{{ prefix }}toplist append <id> <unités>`
+• Modifier une top liste : `{{ prefix }}toplist update <toplist id> <description> <unités>`
+• Supprimer une top liste : `{{ prefix }}toplist delete <toplist id>`.
 <T>**__Modificateurs de commandes__** :</T>
 • __Traduction__ : Toutes les langues de GoW sont supportées. Mettez le code pays à 2 lettres (en, fr, de, ru, it, es, zh) devant la commande, ex. `de{{ prefix }}troop elemaugrim`. Il en est de même pour les codes de partage d'équipes. **Les recherches localisées ne chercheront que les noms des unités avec leurs traductions respectives**.',
 • __Résultat condensé__ : Mettez un "-" devant n'importe quelle commande pour faire apparaître un résultat condensé, ex.`-[1075,6251,6699,6007]`, ou avec la langue `de-[1075,6251,6699,6007]`. **Note: le modificateur de langue vient toujours en premier.**
 <T>**__Commandes spécifiques du Bot__** :</T>
-• Check the bot's permissions within a channel: `{{ prefix }}permissions`
-• Display bot version, runtime, uptime, invite code, and more: `{{ prefix }}about`
-• Recevez une gauffre de motivation aléatoire : `{{ prefix }}waffles`
+• Vérifier les permissions du bot dans un salon : `{{ prefix }}permissions`
+• Afficher la version du bot, runtime, uptime, code d'invitation, et plus encore : `{{ prefix }}about`
+• Recevoir une gauffre de motivation aléatoire : `{{ prefix }}waffles`
 • Aide raccourcie : tapez `{{ prefix }}quickhelp` pour afficher une version simplifée des commandes d'aide.
 <T>**__Commandes Admin__** :</T>
 Les commandes d'administration ne peuvent être utilisées que par le propriétaire du serveur, un membre disposant d'un accès administrateur ou des utilisateurs d'un groupe appelé "admin".
