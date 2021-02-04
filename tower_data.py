@@ -7,6 +7,7 @@ import threading
 
 import discord
 import requests
+from requests import HTTPError
 
 from util import bool_to_emoticon, merge
 
@@ -315,6 +316,11 @@ class TowerOfDoomData:
     def download_from_taran(self, message, map_name):
         download_url = f'https://www.taransworld.com/DoomMap/data/{map_name.upper()}.txt'
         r = requests.get(download_url)
+        try:
+            r.raise_for_status()
+        except HTTPError:
+            return discord.Embed(title='Error', description=f'Map {map_name} not found.',
+                                 color=discord.Color.from_rgb(0, 0, 0))
         decoded_content = r.content.decode('utf-8')
 
         rooms = {
