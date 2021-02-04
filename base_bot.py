@@ -113,7 +113,9 @@ class BaseBot(discord.Client):
         except discord.errors.Forbidden:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
         except EmbedLimitsExceed as e:
-            log.warning(f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.')
+            warning = f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.'
+            e = discord.Embed(title='Error', description=warning)
+            return await message.channel.send(embed=e)
 
     async def on_slash_command(self, function, options, message):
         raise NotImplemented('This function has not been implemented.')

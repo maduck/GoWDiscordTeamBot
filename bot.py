@@ -35,7 +35,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.39.0'
+    VERSION = '0.39.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -498,7 +498,7 @@ class DiscordBot(BaseBot):
     @guild_required
     @admin_required
     async def import_tower_from_taran(self, message, map_name, **kwargs):
-        e = self.tower_data.download_from_taran(message, map_name)
+        e = self.tower_data.download_from_taran(message, map_name, version=self.VERSION)
         await self.answer(message, e)
 
     @guild_required
