@@ -313,9 +313,10 @@ class TowerOfDoomData:
             unlock_room = unlock_rooms[0]
         return f'{floor}:{unlock_room}'
 
-    def download_from_taran(self, message, map_name):
-        download_url = f'https://www.taransworld.com/DoomMap/data/{map_name.upper()}.txt'
-        r = requests.get(download_url)
+    def download_from_taran(self, message, map_name, version):
+        headers = {'user-agent': f'garyatrics.com-discord-bot-{version}'}
+        download_url = f'https://www.taransworld.com/DoomMap/main.pl?mapName={map_name.upper()}&txt=1'
+        r = requests.get(download_url, headers=headers)
         try:
             r.raise_for_status()
         except HTTPError:
