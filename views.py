@@ -332,7 +332,7 @@ class Views:
     def render_news(self, article):
         e = discord.Embed(title=article['title'], color=self.WHITE, url=article['url'])
         content = self.transform_news_article(article['content'], article['url'])
-        e.set_author(name=article['author'])
+        self.enrich_author(e, article['author'])
         for title, text in content.items():
             e.add_field(name=title, value=text, inline=False)
         result = [e]
@@ -450,3 +450,18 @@ class Views:
             message_lines = ['No bookmarks created yet.']
         e.add_field(name=f'Overview for {display_name}', value='\n'.join(message_lines), inline=False)
         return e
+
+    def enrich_author(self, e, author):
+        author_details = {
+            'Nimhain': {
+                'url': 'https://community.gemsofwar.com/u/Nimhain',
+                'icon_url': 'https://sjc3.discourse-cdn.com/business5/'
+                            'user_avatar/community.gemsofwar.com/nimhain/360/47049.png'},
+            'Saltypatra': {
+                'url': 'https://community.gemsofwar.com/u/saltypatra/',
+                'icon_url': 'https://sjc3.discourse-cdn.com/business5/'
+                            'user_avatar/community.gemsofwar.com/saltypatra/360/59750.png'},
+        }
+        e.set_author(name=author)
+        if details := author_details.get(author):
+            e.set_author(name=author, **details)
