@@ -261,6 +261,10 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(DEFAULT_PATTERN + 'towerconfig reset$', MATCH_OPTIONS)
     },
     {
+        'function': 'import_tower_from_taran',
+        'pattern': re.compile(DEFAULT_PATTERN + 'tower taran (?P<map_name>[a-zA-Z0-9]{1,20})$', MATCH_OPTIONS)
+    },
+    {
         'function': 'show_tower_data',
         'pattern': re.compile(DEFAULT_PATTERN + r'tower( (?P<range>\d+-\d+))?$', MATCH_OPTIONS)
     },

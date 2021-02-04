@@ -35,7 +35,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.38.2'
+    VERSION = '0.39.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -493,6 +493,12 @@ class DiscordBot(BaseBot):
 
         e = self.generate_response('Administrative action', self.RED, 'Tower change accepted',
                                    f'Alias {category}: `{field}` was changed from `{old_values}` to `{new_values}`.')
+        await self.answer(message, e)
+
+    @guild_required
+    @admin_required
+    async def import_tower_from_taran(self, message, map_name, **kwargs):
+        e = self.tower_data.download_from_taran(message, map_name)
         await self.answer(message, e)
 
     @guild_required

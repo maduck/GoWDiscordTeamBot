@@ -1,10 +1,12 @@
+import copy
+import csv
 import json
 import operator
 import os
 import threading
 
-import copy
 import discord
+import requests
 
 from util import bool_to_emoticon, merge
 
@@ -309,3 +311,43 @@ class TowerOfDoomData:
         if unlock_rooms:
             unlock_room = unlock_rooms[0]
         return f'{floor}:{unlock_room}'
+
+    def download_from_taran(self, message, map_name):
+        download_url = f'https://www.taransworld.com/DoomMap/data/{map_name.upper()}.txt'
+        r = requests.get(download_url)
+        decoded_content = r.content.decode('utf-8')
+
+        rooms = {
+            '0': 'ii',
+            '1': 'iii',
+            '2': 'iv',
+            '3': 'v',
+        }
+        scrolls = {
+            'Armour': 'Armor',
+        }
+
+        csv_lines = csv.reader(decoded_content.splitlines())
+        imported_floors = set()
+        errors = 0
+        for row in csv_lines:
+            floor = row[0]
+            room = rooms[row[1]]
+            scroll = scrolls.get(row[2], row[2])
+            result = self.edit_floor(message, floor, room, scroll)
+            if result[0]:
+                imported_floors.add(floor)
+            else:
+                errors += 1
+
+        self.save_data()
+        return self.render_import_result(len(imported_floors), errors)
+
+    @staticmethod
+    def render_import_result(floors, errors):
+        message = f'Imported {floors} floors from [Taran\'s DoomMap](https://www.taransworld.com/DoomMap/).'
+        if errors:
+            message += f'\n\n{errors} fields could not be updated due to non-matching names.\n' \
+                       f'Please make sure that your towerconfig contains the default' \
+                       f' English names for scrolls and rooms.'
+        return discord.Embed(title='Import result', description=message, color=discord.Color.from_rgb(255, 255, 255))
