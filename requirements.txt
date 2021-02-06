@@ -11,3 +11,4 @@ hashids~=1.3.1
 pillow~=8.1.0
 Wand~=0.6.5
 aiohttp~=3.6.3
+dblpy~=0.4.0

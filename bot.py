@@ -7,6 +7,7 @@ import random
 import time
 from functools import partialmethod
 
+import dbl
 import discord
 import humanize
 import prettytable
@@ -35,7 +36,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.39.1'
+    VERSION = '0.39.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -60,6 +61,10 @@ class DiscordBot(BaseBot):
         self.views = Views(emojis={})
         self.pet_rescues = []
         self.pet_rescue_config: PetRescueConfig = None
+        token = CONFIG.get('dbl_token')
+        self.dbl_client = None
+        if token:
+            self.dbl_client = dbl.DBLClient(self, token)
 
     async def on_slash_command(self, function, options, message):
         try:
@@ -787,6 +792,7 @@ if __name__ == '__main__':
     bot_tasks.task_check_for_news.start(client)
     bot_tasks.task_check_for_data_updates.start(client)
     bot_tasks.task_update_pet_rescues.start(client)
+    bot_tasks.task_update_dbl_stats.start(client)
     if TOKEN is not None:
         client.run(TOKEN)
     else:
