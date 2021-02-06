@@ -55,6 +55,7 @@ COMMAND_REGISTRY = [
         'function': 'adventures',
         'pattern': re.compile(DEFAULT_PATTERN + 'adventures?$', MATCH_OPTIONS),
         'description': 'Shows today\'s adventure board',
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'troop',
