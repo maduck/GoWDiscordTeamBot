@@ -416,16 +416,17 @@ COMMAND_REGISTRY = [
     {
         'function': 'soulforge_preview',
         'pattern': re.compile(
-            DEFAULT_PATTERN + r'soulforge_preview (?P<search_term>.+?) '
-                              r'(?P<release_date>\d{1,2}-\d{1,2})(?P<switch>.?Switch)?$', MATCH_OPTIONS),
+            DEFAULT_PATTERN + r'soulforge_preview (?P<search_term>.+?)( '
+                              r'(?P<release_date>\d{1,2}-\d{1,2}))?(?P<switch>.?Switch)?$', MATCH_OPTIONS),
         'description': 'Generate a Soulforge Preview image',
         'options': [
             STANDARD_OPTIONS['search_term'],
             {
                 'name': 'release_date',
-                'description': 'Date of weapon release, format MONTH-DAY with two digits each (e.g. 12-25)',
+                'description': 'Date of weapon release, format MONTH-DAY with two digits each (e.g. 12-25). '
+                               'Defaults to next Monday.',
                 'type': OptionType.STRING.value,
-                'required': True,
+                'required': False,
             },
             {
                 'name': 'switch',

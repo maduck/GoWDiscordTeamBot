@@ -66,9 +66,12 @@ def translate_day(day_no, locale):
 
 def format_locale_date(date, lang):
     lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
-    month, day = date.split('-')
-    date = datetime.date.today()
-    date = date.replace(month=int(month), day=int(day))
+    today = datetime.date.today()
+    if date:
+        month, day = date.split('-')
+        date = today.replace(month=int(month), day=int(day))
+    else:
+        date = today + datetime.timedelta(days=-today.weekday(), weeks=1)
     locale = lang
     if platform.system() != 'Windows':
         locale = LOCALE_MAPPING.get(lang, 'en_GB') + '.UTF8'
