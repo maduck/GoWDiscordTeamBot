@@ -451,7 +451,8 @@ class Views:
         e.add_field(name=f'Overview for {display_name}', value='\n'.join(message_lines), inline=False)
         return e
 
-    def enrich_author(self, e, author):
+    @staticmethod
+    def enrich_author(e, author):
         author_details = {
             'Nimhain': {
                 'url': 'https://community.gemsofwar.com/u/Nimhain',
