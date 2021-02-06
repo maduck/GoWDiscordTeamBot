@@ -18,16 +18,16 @@
 • Si se encuentra un elemento coincidente, el color del lado reflejará la rareza de la tropa.
 <T>**__Resúmenes__**:</T>
 • Spoilers: `{{ prefix }}spoilers`. Puede ser filtrado con los siguientes parámetros: `pets`, `troops`, `weapons`, `kingdoms`, `events`: `{{ prefix }}spoilers weapons`.
-• Events: `{{ prefix }}events`. Can be used with a filter, e.g. `{{ prefix }}events faction`. Can also be used to only show event kingdoms: `{{ prefix }}event kingdoms`.
-• Current Adventure Board: `{{ prefix }}adventures`.
-• Class XP requirements: `{{ prefix }}class_level <target level>`, e.g. `{{ prefix }}class_level 70`. Can be used with a lower level to show the difference, e.g. `{{ prefix }}class_level 70-100`
+• Eventos: `{{ prefix }}events`. Se puede utilizar con un filtro, por ejemplo, `{{ prefix }}events faction`. También se puede utilizar para mostrar sólo los reinos de eventos: `{{ prefix }}event kingdoms`.
+• Tablón de Aventuras actual: `{{ prefix }}adventures`.
+• Requisitos de XP de clase: `{{ prefix }}class_level <target level>`, por ejemplo, `{{ prefix }}class_level 70`. Se puede utilizar con un nivel inferior para mostrar la diferencia, por ejemplo, `{{ prefix }}class_level 70-100`.
 • Resumen semanal de la campaña: `{{ prefix }}campaign`. Puede ser filtrado con `bronze`, `silver` u `gold`: `{{ prefix }}campaign silver`.
 • Resumen de la clase: `{{ prefix }}class summary`
 • Visión general del Reino: `{{ prefix }}kingdom summary`
 • Artículos artesanales de Soulforge: `{{ prefix }}soulforge`
 • Beneficios a nivel de jugador: `{{ prefix }}levels`
-• Kingdoms by troop colors: `{{ prefix }}color_kingdoms`
-• Kingdoms by troop types: `{{ prefix }}troop_type_kingdoms`
+• Reinos por colores de tropa: `{{ prefix }}color_kingdoms`
+• Reinos por tipos de tropas: `{{ prefix }}troop_type_kingdoms`
 <T>**__La Torre de la Perdición__**:</T>
 Por favor, consulte `{{ prefix }}towerhelp`.
 <T>**__Rescate de mascotas__**:</T>
@@ -35,17 +35,17 @@ Por favor, consulte `{{ prefix }}towerhelp`.
 • La configuración predeterminada se puede verificar con `{{ prefix }}pet rescue config`.
 • This command can be shortened up by using `{{ prefix }}pr ...` instead of `{{ prefix }}pet rescue`.
 • Los administradores del servidor pueden modificar la mención predeterminada, así como el comportamiento de eliminación con `{{ prefix }}pet rescue config <configuración> = <valor>`.
-<T>**__Team Bookmarks__**:</T>
-• Show own bookmarks: `{{ prefix }}bookmarks`.
-• Display a certain bookmark: `{{ prefix }}bookmark <bookmark id>`.
-• Create a new bookmark: `{{ prefix }}bookmark <description> <team code>`. A new random bookmark id will be created.
-• Delete a bookmark: `{{ prefix }}bookmark delete <bookmark id>`.
+<T>**__Marcadores del equipo__**:</T>
+• ID de marcador: `{{ prefix }}bookmarks`.
+• Mostrar un determinado marcador: `{{ prefix }}bookmark <ID de marcador>`.
+• Crear un nuevo marcador: {{ prefix }}bookmark <descripción> <código de equipo>`. Se creará un nuevo id de marcador aleatorio.
+• Eliminar un marcador: {{ prefix }}bookmark delete <ID de marcador>`.
 <T>**__Toplists__**:</T>
-• Show own toplists: `{{ prefix }}toplists`
-• Create a new toplist: `{{ prefix }}toplist <description> <troops>`. Troops are comma separated list of names or troop ids. A new toplist id will be created.
-• Append more troops to an existing toplist: `{{ prefix }}toplist append <id> <troops>`
-• Change a toplist: `{{ prefix }}toplist update <toplist id> <description> <troops>`
-• Delete a toplist: `{{ prefix }}toplist delete <toplist id>`.
+• Mostrar mis propias toplists: `{{ prefix }}toplists`.
+• Crear una nueva toplist: `{{ prefix }}toplist <descripción> <tropas>`. Las tropas son una lista de nombres o identificadores de tropas separados por comas. Se creará un nuevo id de toplist.
+• Añada más tropas a una lista superior existente: `{{ prefix }}toplist append <id de lista> <tropas>`.
+• Modificar una lista de favoritos: `{{ prefix }}toplist update <id de lista> <descripción> <tropas>`.
+• Eliminar una lista principal: `{{ prefix }}toplist delete <id de lista>`.
 <T>**__Modificadores de Comando__**:</T>
 • __Traducción__: Todos los idiomas de GoW están soportados, pon las dos letras del código del país (en, fr, de, ru, it, es, zh) delante del comando, por ejemplo `es{{ prefix }}troop rey duentrufa`. Esto funciona igual para los códigos de equipo. **Las búsquedas localizadas sólo buscarán los nombres de las tropas con sus respectivas traducciones**.',
 • __Salida acortada__: Ponga un "-" delante de cualquier comando para que aparezca en formato condensado, por ejemplo `-[1075,6251,6699,6007]`, o con el lenguaje `es-[1075,6251,6699,6007]`. **Nota que el modificador de lenguaje siempre va primero.**
