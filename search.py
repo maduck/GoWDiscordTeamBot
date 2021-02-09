@@ -9,7 +9,7 @@ from data_source.game_data import GameData
 from game_constants import COLORS, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
-from util import format_locale_date, translate_day
+from util import dig, format_locale_date, translate_day
 
 LOGLEVEL = logging.DEBUG
 
@@ -32,14 +32,18 @@ def update_translations():
     _ = translations.Translations().get
 
 
-damage_denominator = re.compile(r'\[.+]')
+DAMAGE_DENOMINATOR = re.compile(r'\[.+]')
 
 
 def extract_search_tag(search_term):
+    if isinstance(search_term, list):
+        search_term = ''.join(search_term)
+    if search_term is None:
+        search_term = ''
     ignored_characters = ' -\'’'
     for char in ignored_characters:
         search_term = search_term.replace(char, '')
-    search_term = damage_denominator.sub("", search_term)
+    search_term = DAMAGE_DENOMINATOR.sub("", search_term)
     return search_term.lower()
 
 
@@ -138,35 +142,46 @@ class TeamExpander:
             return
         return self.get_team_from_code(code, lang)
 
-    def search_troop(self, search_term, lang):
-        if search_term.isdigit() and int(search_term) in self.troops:
-            troop = self.troops.get(int(search_term))
-            if troop:
-                result = troop.copy()
-                self.translate_troop(result, lang)
+    @staticmethod
+    def search_item(search_term, lang, items, lookup_keys, translator, sort_by='name'):
+        if search_term.isdigit() and int(search_term) in items:
+            item = items.get(int(search_term))
+            if item:
+                result = item.copy()
+                translator(result, lang)
                 return [result]
             return []
-        else:
-            possible_matches = []
-            for base_troop in self.troops.values():
-                if base_troop['name'] == '`?`':
-                    continue
-                troop = base_troop.copy()
-                self.translate_troop(troop, lang)
-                name = extract_search_tag(troop['name'])
-                kingdom = extract_search_tag(troop['kingdom'])
-                _type = extract_search_tag(troop['type'])
-                roles = extract_search_tag(''.join(troop['roles']))
-                spell = extract_search_tag(troop['spell']['description'])
-                real_search = extract_search_tag(search_term)
+        possible_matches = []
+        for base_item in items.values():
+            if base_item['name'] == '`?`':
+                continue
+            item = base_item.copy()
+            translator(item, lang)
+            lookups = {
+                k: extract_search_tag(dig(item, k)) for k in lookup_keys
+            }
+            real_search = extract_search_tag(search_term)
 
-                if real_search == name:
-                    return [troop]
-                elif real_search in name or real_search in kingdom or real_search in _type or real_search in roles \
-                        or real_search in spell:
-                    possible_matches.append(troop)
+            if real_search == item['name']:
+                return [item]
+            for key, lookup in lookups.items():
+                if real_search in lookup:
+                    possible_matches.append(item)
 
-            return sorted(possible_matches, key=operator.itemgetter('name'))
+        return sorted(possible_matches, key=operator.itemgetter(sort_by))
+
+    def search_troop(self, search_term, lang):
+        lookup_keys = [
+            'name',
+            'kingdom',
+            'type',
+            'roles',
+            'spell.description',
+        ]
+        return self.search_item(search_term, lang,
+                                items=self.troops,
+                                lookup_keys=lookup_keys,
+                                translator=self.translate_troop)
 
     def translate_troop(self, troop, lang):
         troop['name'] = _(troop['name'], lang)
@@ -420,24 +435,14 @@ class TeamExpander:
         return sorted(self.enrich_traits(possible_matches, lang), key=operator.itemgetter('name'))
 
     def search_pet(self, search_term, lang):
-        if search_term.isdigit() and int(search_term) in self.pets:
-            result = self.pets.get(int(search_term)).copy()
-            self.translate_pet(result, lang)
-            return [result]
-        else:
-            possible_matches = []
-            for pet in self.pets.values():
-                translated_name = extract_search_tag(_(pet['name'], lang))
-                real_search = extract_search_tag(search_term)
-                if real_search == translated_name:
-                    result = pet.copy()
-                    self.translate_pet(result, lang)
-                    return [result]
-                elif real_search in translated_name:
-                    result = pet.copy()
-                    self.translate_pet(result, lang)
-                    possible_matches.append(result)
-            return sorted(possible_matches, key=operator.itemgetter('name'))
+        lookup_keys = [
+            'name',
+            'kingdom',
+        ]
+        return self.search_item(search_term, lang,
+                                items=self.pets,
+                                lookup_keys=lookup_keys,
+                                translator=self.translate_pet)
 
     def translate_pet(self, pet, lang):
         pet['name'] = _(pet['name'], lang)
@@ -470,32 +475,16 @@ class TeamExpander:
         pet['effect_title'] = _('[PET_TYPE]', lang)
 
     def search_weapon(self, search_term, lang):
-        if search_term.isdigit() and int(search_term) in self.weapons:
-            my_weapon = self.weapons.get(int(search_term))
-            if my_weapon:
-                result = my_weapon.copy()
-                self.translate_weapon(result, lang)
-                return [result]
-            return []
-        possible_matches = []
-        for weapon in self.weapons.values():
-            my_weapon = weapon.copy()
-            self.translate_weapon(my_weapon, lang)
-            translated_name = extract_search_tag(my_weapon['name'])
-            real_search = extract_search_tag(search_term)
-            kingdom = extract_search_tag(my_weapon['kingdom'])
-            _type = extract_search_tag(my_weapon['type'])
-            roles = extract_search_tag(''.join(my_weapon['roles']))
-            spell = extract_search_tag(my_weapon['spell']['description'])
-            if real_search == translated_name:
-                return [my_weapon]
-            elif real_search in translated_name \
-                    or real_search in kingdom \
-                    or real_search in _type \
-                    or real_search in roles \
-                    or real_search in spell:
-                possible_matches.append(my_weapon)
-        return sorted(possible_matches, key=operator.itemgetter('name'))
+        lookup_keys = [
+            'name',
+            'type',
+            'roles',
+            'spell.description',
+        ]
+        return self.search_item(search_term, lang,
+                                items=self.weapons,
+                                lookup_keys=lookup_keys,
+                                translator=self.translate_weapon)
 
     def translate_weapon(self, weapon, lang):
         weapon['name'] = _(weapon['name'], lang)
@@ -580,14 +569,10 @@ class TeamExpander:
         return sorted(results.values(), key=operator.itemgetter('name'))
 
     def search_traitstone(self, search_term, lang):
-        real_search = extract_search_tag(search_term)
-        result = []
-        for traitstone in self.traitstones.values():
-            translated_traitstone = traitstone.copy()
-            self.translate_traitstone(translated_traitstone, lang)
-            if real_search in extract_search_tag(translated_traitstone['name']):
-                result.append(translated_traitstone)
-        return sorted(result, key=operator.itemgetter('name'))
+        return self.search_item(search_term, lang,
+                                items=self.traitstones,
+                                lookup_keys=['name'],
+                                translator=self.translate_traitstone)
 
     def translate_traitstone(self, traitstone, lang):
         troops = []

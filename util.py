@@ -50,6 +50,16 @@ def chunks(iterable, chunk_size):
         yield iterable[i:i + chunk_size]
 
 
+def dig(item, lookup):
+    result = None
+    for key in lookup.split('.'):
+        result = item.get(key)
+        if result is None:
+            break
+        item = result
+    return result
+
+
 def debug(message):
     guild = '-'
     if message.guild:
