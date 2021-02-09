@@ -231,26 +231,15 @@ class TeamExpander:
         return new_traits
 
     def search_kingdom(self, search_term, lang, include_warband=True):
-        if search_term.isdigit() and int(search_term) in self.kingdoms:
-            result = self.kingdoms.get(int(search_term)).copy()
-            self.translate_kingdom(result, lang)
-            return [result]
-        else:
-            possible_matches = []
-            for kingdom in self.kingdoms.values():
-                translated_name = extract_search_tag(_(kingdom['name'], lang))
-                real_search = extract_search_tag(search_term)
-                reference_name = extract_search_tag(kingdom['reference_name'])
-                if real_search == translated_name:
-                    result = kingdom.copy()
-                    self.translate_kingdom(result, lang)
-                    return [result]
-                elif real_search in translated_name or real_search in reference_name or \
-                        (search_term == 'summary' and kingdom['location'] == 'krystara' and len(kingdom['colors']) > 0):
-                    result = kingdom.copy()
-                    self.translate_kingdom(result, lang)
-                    possible_matches.append(result)
-            return sorted(possible_matches, key=operator.itemgetter('name'))
+        lookup_keys = ['name']
+        return self.search_item(search_term, lang, items=self.kingdoms, lookup_keys=lookup_keys,
+                                translator=self.translate_kingdom)
+
+    def kingdom_summary(self, lang):
+        kingdoms = [k.copy() for k in self.kingdoms.values() if k['location'] == 'krystara' and len(k['colors']) > 0]
+        for kingdom in kingdoms:
+            self.translate_kingdom(kingdom, lang)
+        return sorted(kingdoms, key=operator.itemgetter('name'))
 
     def translate_kingdom(self, kingdom, lang):
         kingdom['name'] = _(kingdom['name'], lang)

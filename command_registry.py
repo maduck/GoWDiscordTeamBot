@@ -88,6 +88,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'kingdom_summary',
+        'pattern': re.compile(SEARCH_PATTERN.format('kingdom summary'), MATCH_OPTIONS),
+        'description': 'Show kingdom summary',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'kingdom',
         'pattern': re.compile(SEARCH_PATTERN.format('(kingdom|faction)'), MATCH_OPTIONS),
         'description': 'Search kingdoms',
