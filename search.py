@@ -362,6 +362,7 @@ class TeamExpander:
 
     @staticmethod
     def translate_talent_tree(tree, lang):
+        tree['talents_title'] = _('[TALENT_TREES]', lang)
         tree['name'] = _(tree['name'], lang)
         translated_talents = []
         for talent in tree['talents']:
