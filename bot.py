@@ -392,8 +392,7 @@ class DiscordBot(BaseBot):
         await self.show_pet_rescue_config(message, lang)
 
     async def class_summary(self, message, lang, **kwargs):
-        result = self.expander.search_class('summary', lang)
-        result.sort(key=operator.itemgetter('name'))
+        result = self.expander.class_summary(lang)
 
         table = prettytable.PrettyTable()
         table.field_names = [

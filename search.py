@@ -294,24 +294,17 @@ class TeamExpander:
         kingdom['max_power_level_title'] = _('[KINGDOM_POWER_LEVELS]', lang)
 
     def search_class(self, search_term, lang):
-        if search_term.isdigit() and int(search_term) in self.classes:
-            result = self.classes.get(int(search_term)).copy()
-            self.translate_class(result, lang)
-            return [result]
-        else:
-            possible_matches = []
-            for _class in self.classes.values():
-                translated_name = extract_search_tag(_(_class['name'], lang))
-                real_search = extract_search_tag(search_term)
-                if real_search == translated_name:
-                    result = _class.copy()
-                    self.translate_class(result, lang)
-                    return [result]
-                elif real_search in translated_name or search_term == 'summary':
-                    result = _class.copy()
-                    self.translate_class(result, lang)
-                    possible_matches.append(result)
-            return sorted(possible_matches, key=operator.itemgetter('name'))
+        lookup_keys = ['name']
+        return self.search_item(search_term, lang,
+                                items=self.classes,
+                                translator=self.translate_class,
+                                lookup_keys=lookup_keys)
+
+    def class_summary(self, lang):
+        classes = [c.copy() for c in self.classes]
+        for c in classes:
+            self.translate_class(c, lang)
+        return sorted(classes, key=operator.itemgetter('name'))
 
     def translate_class(self, _class, lang):
         kingdom = self.kingdoms[_class['kingdom_id']]
