@@ -169,7 +169,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'talent',
-        'pattern': re.compile(SEARCH_PATTERN.format('talent'), MATCH_OPTIONS),
+        'pattern': re.compile(SEARCH_PATTERN.format('talent(tree)?'), MATCH_OPTIONS),
         'description': 'Search class talents',
         'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
