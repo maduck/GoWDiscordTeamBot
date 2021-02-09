@@ -464,5 +464,6 @@ class Views:
                             'user_avatar/community.gemsofwar.com/saltypatra/360/59750.png'},
         }
         e.set_author(name=author)
-        if details := author_details.get(author):
+        details = author_details.get(author)
+        if details:
             e.set_author(name=author, **details)
