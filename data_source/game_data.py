@@ -61,7 +61,7 @@ class GameData:
         self.traitstones = {}
         self.levels = []
         self.adventure_board = []
-
+        self.drop_chances = {}
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -90,6 +90,7 @@ class GameData:
         self.populate_hero_levels()
         self.populate_max_power_levels()
         self.populate_adventure_board()
+        self.populate_drop_chances()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -590,3 +591,24 @@ class GameData:
                 result.setdefault(reward_type, 0)
                 result[reward_type] += amount
         return result
+
+    def populate_drop_chances(self):
+        for chest_id, chest in self.user_data['ChestInfo'].items():
+            if len(chest_id) != 1:
+                continue
+            drop_chances = chest['DropChances']
+            chest_type = f'[KEYTYPE_{chest_id}_TITLE]'
+            for drop in drop_chances.values():
+                multipliers = [1 for _ in range(len(drop['RarityChance']))]
+                multipliers = drop.get('Multiples', multipliers)
+
+                drop_type = f'[{drop["Type"].upper()}]'
+                title = drop.get('Title', drop_type)
+                self.drop_chances.setdefault(chest_type, {})[title] = [{
+                    f'[RARITY_{i}]': {
+                        'chance': chance,
+                    } if multiple == 1 else {
+                        'chance': chance,
+                        'multiplier': multiple,
+                    }}
+                    for i, (multiple, chance) in enumerate(zip(multipliers, drop['RarityChance'])) if chance]
