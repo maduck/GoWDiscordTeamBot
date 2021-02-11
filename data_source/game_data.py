@@ -180,6 +180,8 @@ class GameData:
                 'filename': kingdom['FileBase'],
             }
             kingdom_troops = [troop_id for troop_id in kingdom['TroopIds'] if troop_id != -1]
+            for troop_id in kingdom_troops:
+                self.troops[troop_id]['kingdom_id'] = kingdom['Id']
             kingdom_colors = convert_color_array(kingdom)
             self.kingdoms[kingdom['Id']] = {
                 'id': kingdom['Id'],
@@ -534,24 +536,21 @@ class GameData:
             self.kingdoms[kingdom['id']]['max_power_level'] = max_kingdom_level
 
     def kingdom_satisfies_task(self, kingdom, task):
+        def has_enough(items):
+            items = [i for i in items.values() if i.get('kingdom_id') == kingdom['id']]
+            items = [i for i in items if 'release_date' not in i or i['release_date'] <= datetime.datetime.now()]
+            return len(items) >= task['XValue']
+
         if task['Task'] in ('IncreaseKingdomLevel', 'CompleteQuestline', 'Complete{x}ChallengesIn{y}'):
             return True
         if task['Task'] == 'Own{x}Troops':
-            troops = [self.troops[id_] for id_ in kingdom['troop_ids']]
-            troops = [t for t in troops if 'release_date' not in t or t['release_date'] <= datetime.datetime.now()]
-            return len(troops) >= task['XValue']
+            return has_enough(self.troops)
         if task['Task'] == 'Own{x}Weapons':
-            weapons = [self.weapons[id_] for id_ in kingdom['weapon_ids']]
-            weapons = [w for w in weapons if 'release_date' not in w or w['release_date'] <= datetime.datetime.now()]
-            return len(weapons) >= task['XValue']
+            return has_enough(self.weapons)
         if task['Task'] == 'Own{x}Classes':
-            classes = [c for c in self.classes.values() if c['kingdom_id'] == kingdom['id']]
-            classes = [c for c in classes if 'release_date' not in c or c['release_date'] <= datetime.datetime.now()]
-            return len(classes) >= task['XValue']
+            return has_enough(self.classes)
         if task['Task'] == 'Own{x}Pets':
-            pets = [p for p in self.pets.values() if p['kingdom_id'] == kingdom['id']]
-            pets = [p for p in pets if 'release_date' not in p or p['release_date'] <= datetime.datetime.now()]
-            return len(pets) >= task['XValue']
+            return has_enough(self.pets)
         if task['Task'] == 'Earn{x}Renown':
             return kingdom['linked_kingdom_id'] and not kingdom['underworld']
         return False
