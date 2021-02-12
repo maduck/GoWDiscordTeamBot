@@ -148,7 +148,7 @@ class Views:
             e.title = ', '.join(troops)
             return self.render_embed(e, 'team_shortened.jinja', team=team)
 
-        # e.title = f"{author} team"
+        e.title = f"{author} team"
         if title:
             e.title = title
         return self.render_embed(e, 'team.jinja', team=team)
