@@ -301,7 +301,7 @@ class TeamExpander:
                                 lookup_keys=lookup_keys)
 
     def class_summary(self, lang):
-        classes = [c.copy() for c in self.classes]
+        classes = [c.copy() for c in self.classes.values()]
         for c in classes:
             self.translate_class(c, lang)
         return sorted(classes, key=operator.itemgetter('name'))
