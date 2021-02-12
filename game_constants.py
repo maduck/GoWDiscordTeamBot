@@ -20,14 +20,6 @@ WEAPON_RARITIES = (
     'Mythic',
     'Doomed'
 )
-TASKRARITY = (
-    'Common',
-    'Rare',
-    'UltraRare',
-    'Epic',
-    'Legendary',
-    'Mythic',
-)
 RARITY_COLORS = {
     'Common': (255, 254, 255),
     'Uncommon': (84, 168, 31),
@@ -35,8 +27,9 @@ RARITY_COLORS = {
     'UltraRare': (150, 54, 232),
     'Epic': (246, 161, 32),
     'Legendary': (19, 227, 246),
-    'Mythic': (19, 227, 246),
     'Doomed': (186, 0, 0),
+    'Mythic': (19, 227, 246),
+
 }
 CAMPAIGN_COLORS = {
     '[MEDAL_LEVEL_0]': discord.Color.from_rgb(164, 73, 32),
