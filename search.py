@@ -898,10 +898,15 @@ class TeamExpander:
 
     @staticmethod
     def translate_adventure(adventure, lang):
+        def change_form(key, value):
+            if value == 1 and key.startswith('[KEYTYPE'):
+                key = key.replace('_TITLE', '_SINGLE')
+            return _(key, lang).replace('%1 ', ''), value
+
         result = adventure.copy()
         result['name'] = _(result['name'], lang)
         result['reward_types'] = set(result['rewards'].keys())
-        result['rewards'] = {_(key, lang): value for key, value in result['rewards'].items()}
+        result['rewards'] = dict([change_form(key, value) for key, value in result['rewards'].items()])
         result['rarity'] = _(result['rarity'], lang)
         return result
 
