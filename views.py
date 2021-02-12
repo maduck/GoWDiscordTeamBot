@@ -140,9 +140,6 @@ class Views:
             thumbnail_url = f'{CONFIG.get("graphics_url")}/Banners/Banners_{team["banner"]["filename"]}_full.png'
             e.set_thumbnail(url=thumbnail_url)
 
-        if team_code:
-            e.set_footer(text=f'[{team_code}]')
-
         if shortened:
             troops = [f'{t[1]}' for t in team['troops']]
             e.title = ', '.join(troops)

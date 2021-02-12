@@ -447,6 +447,8 @@ class DiscordBot(BaseBot):
             team_code = None
         e = self.views.render_team(team, author, shortened, team_code=team_code, title=kwargs.get('title'))
         await self.answer(message, e)
+        if team_code:
+            await message.channel.send(content=f'[{team_code}]')
 
     async def waffles(self, message, lang, **kwargs):
         waffle_no = random.randint(0, 66)
