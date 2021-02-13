@@ -38,7 +38,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.41.0'
+    VERSION = '0.41.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -65,6 +65,7 @@ class DiscordBot(BaseBot):
         self.pet_rescue_config: PetRescueConfig = None
         token = CONFIG.get('dbl_token')
         self.dbl_client = None
+        self.server_status_cache = {'last_updated': datetime.datetime.min}
         if token:
             self.dbl_client = dbl.DBLClient(self, token)
 
@@ -462,15 +463,18 @@ class DiscordBot(BaseBot):
         e.set_image(url=f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg')
         await self.answer(message, e)
 
-    async def server_status(self, message, lang, **kwargs):
-        async with message.channel.typing():
-            r = requests.get('https://status.infinityplustwo.net/status_v2.txt')
-            await asyncio.sleep(2)
-            status = {'pGameArray': []}
-            if r.status_code == 200:
-                status = r.json()
-            e = self.views.render_server_status(status['pGameArray'][:-1])
-            await self.answer(message, e)
+    async def server_status(self, message, **kwargs):
+        if self.server_status_cache['last_updated'] <= datetime.datetime.now() - datetime.timedelta(seconds=30):
+            async with message.channel.typing():
+                r = requests.get('https://status.infinityplustwo.net/status_v2.txt')
+                await asyncio.sleep(2)
+                status = {'pGameArray': []}
+                if r.status_code == 200:
+                    status = r.json()
+                self.server_status_cache['status'] = status['pGameArray'][:-1]
+                self.server_status_cache['last_updated'] = datetime.datetime.now()
+        e = self.views.render_server_status(self.server_status_cache)
+        await self.answer(message, e)
 
     async def show_prefix(self, message, prefix, **kwargs):
         e = self.generate_response('Prefix', self.WHITE, 'The current prefix is', f'`{prefix}`')
