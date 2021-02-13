@@ -48,6 +48,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'server_status',
+        'pattern': re.compile(DEFAULT_PATTERN + 'server_status$', MATCH_OPTIONS),
+        'description': 'Show Gems of War server status',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'stats',
         'pattern': re.compile(DEFAULT_PATTERN + 'stats$', MATCH_OPTIONS),
     },

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import asyncio
 import datetime
 import json
 import operator
@@ -11,6 +12,7 @@ import dbl
 import discord
 import humanize
 import prettytable
+import requests
 
 import bot_tasks
 import models
@@ -36,7 +38,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.40.2'
+    VERSION = '0.41.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -459,6 +461,16 @@ class DiscordBot(BaseBot):
         e = self.generate_response(title, self.WHITE, subtitle, image_no)
         e.set_image(url=f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg')
         await self.answer(message, e)
+
+    async def server_status(self, message, lang, **kwargs):
+        async with message.channel.typing():
+            r = requests.get('https://status.infinityplustwo.net/status_v2.txt')
+            await asyncio.sleep(2)
+            status = {'pGameArray': []}
+            if r.status_code == 200:
+                status = r.json()
+            e = self.views.render_server_status(status['pGameArray'][:-1])
+            await self.answer(message, e)
 
     async def show_prefix(self, message, prefix, **kwargs):
         e = self.generate_response('Prefix', self.WHITE, 'The current prefix is', f'`{prefix}`')

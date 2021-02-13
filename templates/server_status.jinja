@@ -1,0 +1,10 @@
+{% macro status_type(type=0) -%}
+{% if type == 0 %}:white_check_mark:{% else %}:warning:{% endif %}
+{%- endmacro %}
+{% for platform in status %}
+<T>{{ platform.sFriendlyName }}</T>
+{{ status_type(type=platform.pStatusArray[0].nType) }} {{ platform.pStatusArray[0].pDescription.en_US }}
+{% else %}
+<T>Error</T>
+Could not download server status. Please try again later.
+{% endfor %}

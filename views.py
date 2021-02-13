@@ -464,3 +464,7 @@ class Views:
         details = author_details.get(author)
         if details:
             e.set_author(name=author, **details)
+
+    def render_server_status(self, status):
+        e = discord.Embed(title=_('[SERVER_STATUS]'), color=self.WHITE)
+        return self.render_embed(e, f'server_status.jinja', status=status)
