@@ -472,7 +472,7 @@ class DiscordBot(BaseBot):
                 if r.status_code == 200:
                     status = r.json()
                 self.server_status_cache['status'] = status['pGameArray'][:-1]
-                self.server_status_cache['last_updated'] = datetime.datetime.now()
+                self.server_status_cache['last_updated'] = datetime.datetime.utcnow()
         e = self.views.render_server_status(self.server_status_cache)
         await self.answer(message, e)
 
