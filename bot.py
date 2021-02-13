@@ -464,7 +464,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def server_status(self, message, **kwargs):
-        if self.server_status_cache['last_updated'] <= datetime.datetime.now() - datetime.timedelta(seconds=30):
+        if self.server_status_cache['last_updated'] <= datetime.datetime.utcnow() - datetime.timedelta(seconds=30):
             async with message.channel.typing():
                 r = requests.get('https://status.infinityplustwo.net/status_v2.txt')
                 await asyncio.sleep(2)
