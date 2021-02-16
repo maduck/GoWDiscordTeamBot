@@ -73,6 +73,7 @@ class TeamExpander:
         self.toplists = Toplist()
         self.bookmarks = Bookmark()
         self.adventure_board = world.adventure_board
+        self.drop_chances = world.drop_chances
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -993,3 +994,17 @@ class TeamExpander:
             'date': format_locale_date(date, lang),
         }
         return result
+
+    def translate_drop_chances(self, data: dict, lang):
+        for key, item in data.copy().items():
+            if not key.startswith('['):
+                continue
+            data[_(key, lang)] = item
+            del data[key]
+            if isinstance(item, dict):
+                self.translate_drop_chances(item, lang)
+
+    def get_drop_chances(self, lang):
+        drop_chances = self.drop_chances.copy()
+        self.translate_drop_chances(drop_chances, lang)
+        return drop_chances

@@ -64,6 +64,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'drop_chances',
+        'pattern': re.compile(DEFAULT_PATTERN + 'drop_chances?$', MATCH_OPTIONS),
+        'description': 'Chest drop chances',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'troop',
         'pattern': re.compile(SEARCH_PATTERN.format('troop'), MATCH_OPTIONS),
         'description': 'Search troops',

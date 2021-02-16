@@ -38,7 +38,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.41.1'
+    VERSION = '0.42.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -561,6 +561,11 @@ class DiscordBot(BaseBot):
             for room in rooms])
 
         e.add_field(name='Edit Tower (Floor)', value=edit_text)
+        await self.answer(message, e)
+
+    async def drop_chances(self, message, lang, **kwargs):
+        drop_chances = self.expander.get_drop_chances(lang)
+        e = self.views.render_drop_chances(drop_chances, lang)
         await self.answer(message, e)
 
     @guild_required

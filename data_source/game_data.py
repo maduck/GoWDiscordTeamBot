@@ -604,11 +604,18 @@ class GameData:
 
                 drop_type = f'[{drop["Type"].upper()}]'
                 title = drop.get('Title', drop_type)
-                self.drop_chances.setdefault(chest_type, {})[title] = [{
-                    f'[RARITY_{i}]': {
-                        'chance': chance,
-                    } if multiple == 1 else {
-                        'chance': chance,
-                        'multiplier': multiple,
-                    }}
-                    for i, (multiple, chance) in enumerate(zip(multipliers, drop['RarityChance'])) if chance]
+                self.drop_chances.setdefault(chest_type, {})
+                if title in ('[TROOPS]', '[CHESTS_6_HELP_1]'):
+                    self.drop_chances[chest_type].setdefault(title, {})
+                    self.drop_chances[chest_type][title] = {
+                        f'[RARITY_{i}]': {
+                            'chance': chance,
+                        } if multiple == 1 else {
+                            'chance': chance,
+                            'multiplier': multiple,
+                        }
+                        for i, (multiple, chance) in enumerate(zip(multipliers, drop['RarityChance'])) if chance
+                    }
+                else:
+                    self.drop_chances[chest_type].setdefault('[RESOURCES]', {})
+                    self.drop_chances[chest_type]['[RESOURCES]'][title] = {'chance': sum(drop['RarityChance'])}

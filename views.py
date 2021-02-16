@@ -470,3 +470,19 @@ class Views:
         e.timestamp = status['last_updated']
         e.set_footer(text='Last Updated')
         return self.render_embed(e, f'server_status.jinja', status=status['status'])
+
+    def render_drop_chances(self, drop_chances, lang):
+        e = discord.Embed(title=_('[DROP_RATES]'), color=self.WHITE)
+        for chest_type, drops in drop_chances.items():
+            field_lines = []
+            for category, items in drops.items():
+                if items:
+                    field_lines.append(f'**__{category}__**')
+                for item, chances in sorted(items.items(), key=lambda x: x[1]['chance'], reverse=True):
+                    multiplier = chances.get('multiplier', '')
+                    if multiplier:
+                        multiplier = f' (x{multiplier})'
+                    field_lines.append(f'{item}{multiplier}: {chances["chance"]}%')
+
+            e.add_field(name=chest_type, value='\n'.join(field_lines))
+        return e
