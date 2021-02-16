@@ -999,10 +999,12 @@ class TeamExpander:
         for key, item in data.copy().items():
             if not key.startswith('['):
                 continue
-            data[_(key, lang)] = item
-            del data[key]
-            if isinstance(item, dict):
-                self.translate_drop_chances(item, lang)
+            new_key = _(key, lang)
+            data[new_key] = item.copy()
+            if key != new_key:
+                del data[key]
+            if isinstance(data[new_key], dict):
+                self.translate_drop_chances(data[new_key], lang)
 
     def get_drop_chances(self, lang):
         drop_chances = self.drop_chances.copy()

@@ -473,7 +473,7 @@ class Views:
 
     def render_drop_chances(self, drop_chances, lang):
         chest = _('[CHEST]', lang)
-        drop_rates = _('[DROP_RATES]')
+        drop_rates = _('[DROP_RATES]', lang)
         e = discord.Embed(title=f'{chest} {drop_rates}', color=self.WHITE)
         for chest_type, drops in drop_chances.items():
             field_lines = []
