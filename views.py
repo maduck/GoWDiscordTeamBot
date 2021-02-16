@@ -487,4 +487,5 @@ class Views:
                     field_lines.append(f'{item}{multiplier}: {chances["chance"]}%')
 
             e.add_field(name=chest_type, value='\n'.join(field_lines))
+        e.set_footer(text='*' + _('[KEYTYPE_5_SHORT_DESCRIPTION]', lang).replace('%1', '0'))
         return e

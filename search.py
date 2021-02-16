@@ -1000,6 +1000,8 @@ class TeamExpander:
             if not key.startswith('['):
                 continue
             new_key = _(key, lang)
+            if key == '[KEYTYPE_5_TITLE]':
+                new_key = f'{new_key}*'
             data[new_key] = item.copy()
             if key != new_key:
                 del data[key]
