@@ -19,8 +19,6 @@ FONTS = {
 
 def download_image(path):
     cache_path = '.cache'
-    # if not os.path.exists(cache_path):
-    #     os.mkdir(cache_path)
     cache_filename = os.path.join(cache_path, path)
     if os.path.exists(cache_filename):
         f = open(cache_filename, 'rb')
@@ -117,16 +115,9 @@ class WeeklyPreview:
             draw.text_antialias = True
             draw.font = FONTS['raleway']
             draw.text(450, 200, f'{self.data["texts"]["soulforge"]}: {self.data["date"]}')
-            draw.font_size = 70
-            draw.text_alignment = 'center'
-            bottom_message = self.data["texts"]["in_soulforge"]
-            draw.fill_color = Color('black')
-            draw.text(self.img.width // 2 + 2, self.img.height - 150 + 2, bottom_message)
-            draw.fill_color = Color('white')
-            draw.text(self.img.width // 2, self.img.height - 150, bottom_message)
 
             kingdom_logo = download_image(self.data['kingdom_logo'])
-            kingdom_width, kingdom_height = scale_down(kingdom_logo.width, kingdom_logo.height, 250)
+            kingdom_width, kingdom_height = scale_down(kingdom_logo.width, kingdom_logo.height, 220)
             kingdom_logo.resize(kingdom_width, kingdom_height)
             draw.composite(operator='atop',
                            left=self.img.width - kingdom_width - 15, top=15,
@@ -134,6 +125,7 @@ class WeeklyPreview:
                            image=kingdom_logo
                            )
             draw.font_size = 40
+            draw.text_alignment = 'center'
             kingdom = word_wrap(self.img, draw, self.data['kingdom'], kingdom_width + 10, int(1.5 * draw.font_size))
             x = self.img.width - kingdom_width // 2 - 15
             y = kingdom_logo.height + int(1.5 * draw.font_size)
@@ -141,11 +133,24 @@ class WeeklyPreview:
 
             draw(self.img)
 
+    def get_box_coordinates(self, box_number):
+        outer_spacing_percentage = 3
+        inner_spacing_percentage = 1
+        vertical_spacing_percentage = 10
+        vertical_spacing = vertical_spacing_percentage * self.img.height / 100
+        height = self.img.height - 300 - 2 * vertical_spacing
+        top = round(250 + vertical_spacing)
+
+        outer_spacing = outer_spacing_percentage * self.img.width / 100
+        inner_spacing = inner_spacing_percentage * self.img.width / 100
+        width = round((self.img.width - 2 * outer_spacing - 2 * inner_spacing) / 3)
+
+        left = round(outer_spacing + box_number * (width + inner_spacing))
+
+        return left, top, width, height
+
     def render_soulforge_screen(self):
-        width = 600
-        height = 550
-        left = 80 + 600 + self.spacing
-        top = 200 + (self.img.height - 300 - height) // 2
+        left, top, width, height = self.get_box_coordinates(1)
 
         self.weapon = download_image(self.data['filename'])
         ratio = self.weapon.width / self.weapon.height
@@ -191,10 +196,10 @@ class WeeklyPreview:
                     filename, amount = requirement_objects[i]
                     requirement_img = download_image(filename)
                     max_size = 70
-                    width, height = scale_down(*requirement_img.size, max_size)
+                    r_width, r_height = scale_down(*requirement_img.size, max_size)
                     draw.composite(operator='atop',
-                                   left=center[0] - width // 2, top=center[1] - height // 2,
-                                   width=width, height=height,
+                                   left=center[0] - r_width // 2, top=center[1] - r_height // 2,
+                                   width=r_width, height=r_height,
                                    image=requirement_img)
                     draw.text_antialias = True
                     draw.stroke_color = Color('rgb(10, 199, 43)')
@@ -225,8 +230,16 @@ class WeeklyPreview:
             draw.stroke_width = 0
             draw.text_alignment = 'center'
             draw.text_antialias = True
-            name = word_wrap(self.img, draw, self.data['name'], 590, int(1.5 * draw.font_size))
-            draw.text(left + 300, top + 80 - int(60 - draw.font_size), name)
+            name = word_wrap(self.img, draw, self.data['name'], width, int(1.5 * draw.font_size))
+            draw.text(left + width // 2, top + 80 - int(60 - draw.font_size), name)
+
+            draw.font_size = 30
+            draw.font = FONTS['raleway']
+            draw.text_alignment = 'center'
+            draw.fill_color = Color('white')
+            crafting_message = word_wrap(self.img, draw, self.data["texts"]["in_soulforge"], width - 20, 100)
+            text_top = round(top + height - draw.font_size * 2)
+            draw.text(left + width // 2, text_top, crafting_message)
 
             draw(self.img)
 
@@ -237,9 +250,8 @@ class WeeklyPreview:
         with Drawing() as draw:
             draw.fill_color = Color('rgba(0, 0, 0, 0.7)')
             draw.stroke_width = 0
-            left = 80
-            top = 200 + (self.img.height - 850) // 2
-            draw.rectangle(left, top, left + 600, top + 550, radius=40)
+            left, top, width, height = self.get_box_coordinates(0)
+            draw.rectangle(left, top, left + width, top + height, radius=40)
 
             draw.composite(operator='atop',
                            left=left + 20, top=top + 8,
@@ -264,19 +276,19 @@ class WeeklyPreview:
             draw.stroke_color = Color('none')
             draw.text_alignment = 'left'
             draw.stroke_width = 0
-            base_size = 20
+            base_size = 30
             draw.font_size = base_size
             draw.font = FONTS['raleway']
-            description = word_wrap(self.img, draw, self.data['description'], 420, 500)
+            description = word_wrap(self.img, draw, self.data['description'], 420, height // 3)
             draw.text(left + 160, top + 25 + 3 * base_size, description)
 
             draw.text_alignment = 'right'
             draw.font_size = 2 * base_size
 
             draw.fill_color = Color('white')
-            draw.text(left + 580, top + 25 + base_size, self.data['type'])
+            draw.text(left + width - 10, top + 25 + base_size, self.data['type'])
 
-            offset = 250
+            offset = 350
             x = left + 500
             for affix in self.data['affixes']:
                 my_affix = affix_icon.clone()
@@ -301,7 +313,7 @@ class WeeklyPreview:
             box_width = 80
             item_count = len(list(self.data['stat_increases'].values()))
             distance = round((600 - item_count * box_width - 2 * margin) / (item_count - 1))
-            icon_top = 480
+            icon_top = round(height - 70)
             for i, (stat, increase) in enumerate(self.data['stat_increases'].items()):
                 icon_left = left + margin + i * (box_width + distance)
                 stat_icon = download_image(self.data['stat_icon'].format(stat=stat))
@@ -317,27 +329,27 @@ class WeeklyPreview:
 
     def render_farming(self):
         with Drawing() as draw:
-            left = 80 + 2 * (600 + self.spacing)
-            top = 200 + (self.img.height - 850) // 2
+            left, top, width, height = self.get_box_coordinates(2)
 
             draw.fill_color = Color('rgba(0, 0, 0, 0.7)')
             draw.stroke_width = 0
-            draw.rectangle(left, top, left + 600, top + 550, radius=40)
+            draw.rectangle(left, top, left + width, top + height, radius=40)
 
-            base_size = 20
-            draw.font_size = 2 * base_size
+            base_size = 35
+            draw.font_size = 12 * base_size / 7
             draw.text_antialias = True
             draw.fill_color = Color('white')
             draw.font = FONTS['raleway']
             draw.text(left + 30, top + 25 + base_size, self.data['texts']['resources'])
 
             draw.font = FONTS['opensans']
-            draw.font_size = 30
+            draw.font_size = base_size
             heading = f'{self.data["texts"]["dungeon"]} &\n{self.data["texts"]["kingdom_challenges"]}'
-            draw.text(left + 30, top + 25 + 3 * base_size, heading)
+            draw.text(left + 30, top + 25 + 2 * base_size, heading)
 
-            offset = 150
-            draw.font_size = 20
+            offset = 5 * base_size
+            draw.font_size = 30
+            draw.font = FONTS['raleway']
             for jewel in self.data['requirements']['jewels']:
                 jewel_icon = download_image(jewel['filename'])
                 jewel_width, jewel_height = scale_down(jewel_icon.width, jewel_icon.height, 50)
@@ -353,10 +365,13 @@ class WeeklyPreview:
                     f'x100 {jewel["available_on"]}: {self.data["texts"]["gem_bounty"]} ({self.data["texts"]["n_gems"]})',
                     f'x140 {self.data["texts"]["tier_8"]} {self.data["texts"]["kingdom_challenges"]}:\n{kingdoms}'
                 ]
-                message = '\n'.join([word_wrap(self.img, draw, m, 500, 400) for m in message_lines])
+                message = '\n'.join(
+                    [word_wrap(self.img, draw, m, width - 2 * jewel_width,
+                               7 * (height - 2.5 * base_size) / base_size) for m in
+                     message_lines])
 
                 draw.text(left + 25 + 55, top + 30 + offset, message)
-                offset += 50 + int(draw.font_size) * len(message.split('\n'))
+                offset += round(2.5 * base_size + int(draw.font_size) * len(message.split('\n')))
             draw(self.img)
 
     def draw_watermark(self):
@@ -369,13 +384,16 @@ class WeeklyPreview:
                            width=width, height=height,
                            image=avatar)
 
-            draw.font_size = 25
+            draw.font_size = 30
             draw.font = FONTS['raleway']
             draw.text_alignment = 'right'
             draw.text_antialias = True
             legal_notice = 'Produced by Hawx & Gary.\nNo redistribution without this notice.'
             draw.fill_color = Color('black')
+            draw.text(self.img.width - width - 18, self.img.height - 2 - 2 * int(draw.font_size), legal_notice)
             draw.text(self.img.width - width - 18, self.img.height + 2 - 2 * int(draw.font_size), legal_notice)
+            draw.text(self.img.width - width - 18, self.img.height - 2 + 2 * int(draw.font_size), legal_notice)
+            draw.text(self.img.width - width - 18, self.img.height + 2 + 2 * int(draw.font_size), legal_notice)
             draw.fill_color = Color('white')
             draw.text(self.img.width - width - 20, self.img.height - 2 * int(draw.font_size), legal_notice)
             draw(self.img)
