@@ -472,7 +472,9 @@ class Views:
         return self.render_embed(e, f'server_status.jinja', status=status['status'])
 
     def render_drop_chances(self, drop_chances, lang):
-        e = discord.Embed(title=_('[DROP_RATES]'), color=self.WHITE)
+        chest = _('[CHEST]', lang)
+        drop_rates = _('[DROP_RATES]')
+        e = discord.Embed(title=f'{chest} {drop_rates}', color=self.WHITE)
         for chest_type, drops in drop_chances.items():
             field_lines = []
             for category, items in drops.items():

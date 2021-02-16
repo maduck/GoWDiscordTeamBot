@@ -65,7 +65,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'drop_chances',
-        'pattern': re.compile(DEFAULT_PATTERN + 'drop_chances?$', MATCH_OPTIONS),
+        'pattern': re.compile(DEFAULT_PATTERN + 'drop_(rate|chance)s?$', MATCH_OPTIONS),
         'description': 'Chest drop chances',
         'options': [STANDARD_OPTIONS['lang']],
     },
