@@ -62,6 +62,7 @@ class GameData:
         self.levels = []
         self.adventure_board = []
         self.drop_chances = {}
+        self.event_kingdoms = []
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -91,6 +92,7 @@ class GameData:
         self.populate_max_power_levels()
         self.populate_adventure_board()
         self.populate_drop_chances()
+        self.populate_event_kingdoms()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -621,3 +623,18 @@ class GameData:
                 else:
                     self.drop_chances[chest_type].setdefault('[RESOURCES]', {})
                     self.drop_chances[chest_type]['[RESOURCES]'][title] = {'chance': sum(drop['RarityChance'])}
+
+    def populate_event_kingdoms(self):
+        current_event_kingdom = self.get_current_event_kingdom_id()
+        lowest_unreleased_artifact_id = self.user_data['pEconomyModel']['LowestUnreleasedArtifactId']
+        event_kingdoms = []
+        for artifact in self.data['Artifacts']:
+            if artifact['Id'] < lowest_unreleased_artifact_id - 1:
+                continue
+            for level in artifact['Levels']:
+                if event_kingdoms and level['KingdomId'] == event_kingdoms[-1]:
+                    continue
+                event_kingdoms.append(level['KingdomId'])
+            event_kingdoms.append(0)
+        index = event_kingdoms.index(current_event_kingdom)
+        self.event_kingdoms = event_kingdoms[index + 1:]

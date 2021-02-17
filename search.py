@@ -74,6 +74,7 @@ class TeamExpander:
         self.bookmarks = Bookmark()
         self.adventure_board = world.adventure_board
         self.drop_chances = world.drop_chances
+        self.event_kingdoms = world.event_kingdoms
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -640,21 +641,20 @@ class TeamExpander:
         return result
 
     def get_event_kingdoms(self, lang):
+        today = datetime.date.today()
+        start = today + datetime.timedelta(days=-today.weekday(), weeks=1)
         result = self.guess_weekly_kingdom_from_troop_spoilers(lang)
-        weekly_events = [e for e in self.events
-                         if e['end'] - e['start'] == datetime.timedelta(days=7)
-                         and e['start'] > datetime.date.today()
-                         and e['start'].weekday() == 0
-                         and e['kingdom_id']
-                         and e['type'] == '[WEEKLY_EVENT]']
-        for event in weekly_events:
-            kingdom = self.kingdoms[event['kingdom_id']]
-            correct_entry = {
-                'start': event['start'],
-                'end': event['end'],
-                'kingdom': _(kingdom.get('name'), lang),
-            }
-            result[event['start']] = correct_entry
+
+        for kingdom_id in self.event_kingdoms:
+            end = start + datetime.timedelta(days=7)
+            if kingdom_id != 0:
+                event_data = {
+                    'start': start,
+                    'end': end,
+                    'kingdom': _(self.kingdoms[kingdom_id]['name'], lang),
+                }
+                result[start] = event_data
+            start = end
         return sorted(result.values(), key=operator.itemgetter('start'))
 
     def guess_weekly_kingdom_from_troop_spoilers(self, lang):
