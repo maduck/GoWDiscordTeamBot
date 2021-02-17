@@ -1,4 +1,5 @@
 import datetime
+import html
 import json
 import os
 import re
@@ -46,7 +47,7 @@ class NewsDownloader:
         tags_removed = re.sub(forbidden_tags, '', text) \
             .replace('\n', '') \
             .replace('</em>', '</em> ')
-        return images, html2markdown.convert(tags_removed).replace('&amp;', '&')
+        return images, html.unescape(html2markdown.convert(tags_removed))
 
     def reformat_html_summary(self, e):
         content = e['content'][0]['value']
