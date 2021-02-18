@@ -83,6 +83,12 @@ SOULFORGE_REQUIREMENTS = {
         'Runes_Rune39_full.png': 3,
         'Commonrewards_icon_soul_small_full.png': 15000,
     },
+    'Mythic': {
+        'jewels': 0,
+        'Runes_JewelDiamond_full.png': 200,
+        'Runes_Rune39_full.png': 3,
+        'Commonrewards_icon_soul_small_full.png': 1000000,
+    },
     'Doomed': {
         'jewels': 2200,
         'Runes_JewelDiamond_full.png': 900,
