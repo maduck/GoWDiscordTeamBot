@@ -123,6 +123,8 @@ class BaseBot(discord.Client):
     async def on_socket_response(self, response):
         if response.get('t') == 'INTERACTION_CREATE':
             event = response['d']
+            if 'guild_id' not in event:
+                return
             function = getattr(self, event['data']['name'])
             try:
                 guild = await self.fetch_guild(event['guild_id'])
