@@ -162,8 +162,12 @@ class WeeklyPreview:
             draw.circle(origin=(self.weapon.width // 2, self.weapon.height // 2),
                         perimeter=(self.weapon.width // 2, -draw.stroke_width // 2))
             draw.border_color = draw.stroke_color
-            draw.alpha(0, 0, 'filltoborder')
-            draw.alpha(self.weapon.width - 1, 0, 'filltoborder')
+            try:
+                draw.matte(0, 0, 'filltoborder')
+                draw.matte(self.weapon.width - 1, 0, 'filltoborder')
+            except AttributeError:
+                draw.alpha(0, 0, 'filltoborder')
+                draw.alpha(self.weapon.width - 1, 0, 'filltoborder')
             draw(self.weapon)
 
         with Drawing() as draw:
