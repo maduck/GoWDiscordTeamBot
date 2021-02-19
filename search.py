@@ -164,7 +164,7 @@ class TeamExpander:
             }
             real_search = extract_search_tag(search_term)
 
-            if real_search == item['name']:
+            if real_search == extract_search_tag(item['name']):
                 return [item]
             for key, lookup in lookups.items():
                 if real_search in lookup:
