@@ -292,8 +292,8 @@ class WeeklyPreview:
             draw.fill_color = Color('white')
             draw.text(left + width - 10, top + 25 + base_size, self.data['type'])
 
-            offset = 350
-            x = left + 500
+            offset = 375
+            x = left + width
             for affix in self.data['affixes']:
                 my_affix = affix_icon.clone()
                 color_code = ','.join([str(c) for c in affix['color']])
@@ -309,7 +309,8 @@ class WeeklyPreview:
                 draw.text(x - 70, top + offset, affix['name'])
                 draw.font_size = 3 * base_size // 5
                 draw.font = FONTS['opensans']
-                draw.text(x - 70, top + offset + base_size - 5, affix['description'])
+                description = word_wrap(self.img, draw, affix['description'], width - 80, base_size + 10)
+                draw.text(x - 70, top + offset + base_size - 5, description)
                 offset += 2 * base_size
 
             draw.font_size = 30
