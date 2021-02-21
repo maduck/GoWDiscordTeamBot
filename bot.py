@@ -38,7 +38,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.44.0'
+    VERSION = '0.45.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -68,6 +68,14 @@ class DiscordBot(BaseBot):
         self.server_status_cache = {'last_updated': datetime.datetime.min}
         if token:
             self.dbl_client = dbl.DBLClient(self, token)
+
+    async def on_guild_join(self, guild):
+        await super().on_guild_join(guild)
+        welcome_message = self.views.render_welcome_message(self.prefix.get(guild))
+        for channel in guild.text_channels:
+            if channel.permissions_for(guild.me).send_messages:
+                await channel.send(embed=welcome_message)
+                return
 
     async def on_slash_command(self, function, options, message):
         try:

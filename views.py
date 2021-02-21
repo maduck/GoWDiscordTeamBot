@@ -489,3 +489,7 @@ class Views:
             e.add_field(name=chest_type, value='\n'.join(field_lines))
         e.set_footer(text='*' + _('[KEYTYPE_5_SHORT_DESCRIPTION]', lang).replace('%1', '0'))
         return e
+
+    def render_welcome_message(self, prefix):
+        e = discord.Embed(title='Thank you for inviting me!', color=self.WHITE)
+        return self.render_embed(e, 'welcome.jinja', prefix=prefix)
