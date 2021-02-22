@@ -686,7 +686,7 @@ class TeamExpander:
         entry = event.copy()
 
         entry['extra_info'] = ''
-        if entry['type'] in ('[BOUNTY]', '[HIJACK]') and entry['gacha']:
+        if entry['type'] in ('[BOUNTY]', '[HIJACK]') and entry['gacha'] and entry['gacha'] in self.troops:
             entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
         elif entry['type'] == '[PETRESCUE]' and entry['gacha']:
             entry['extra_info'] = _(self.pets[entry['gacha']]['name'], lang)
@@ -698,12 +698,12 @@ class TeamExpander:
             entry['extra_info'] = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
         elif entry['type'] == '[HIJACK]' and entry['troops']:
             entry['extra_info'] = ', '.join(_(self.troops[t]['name'], lang) for t in entry['troops'])
-        elif entry['type'] == '[INVASION]':
+        elif entry['type'] == '[INVASION]' and entry['gacha'] and entry['gacha'] in self.troops:
             troop = self.troops[entry['gacha']]
             troop_name = _(troop['name'], lang)
             troop_types = [_(f'[TROOPTYPE_{t.upper()}]', lang) for t in troop['types']]
             entry['extra_info'] = f'{troop_name} ({", ".join(troop_types)})'
-        elif entry['type'] in ('[WEEKLY_EVENT]', '[RARITY_5]') and entry['gacha']:
+        elif entry['type'] in ('[WEEKLY_EVENT]', '[RARITY_5]') and entry['gacha'] and entry['gacha'] in self.troops:
             troop = self.troops[entry['gacha']]
             troop_name = _(troop['name'], lang)
             kingdom = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
