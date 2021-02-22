@@ -416,7 +416,8 @@ class GameData:
             self.kingdoms[int(kingdom_id)]['primary_stat'] = kingdom_data['Stat']
 
         for kingdom_id, pet_id in self.user_data['pEconomyModel']['FactionRenownRewardPetIds'].items():
-            self.kingdoms[int(kingdom_id)]['pet'] = self.pets[pet_id]
+            if pet_id in self.pets:
+                self.kingdoms[int(kingdom_id)]['pet'] = self.pets[pet_id]
 
         factions = [(k_id, kingdom) for k_id, kingdom in self.kingdoms.items() if
                     kingdom['underworld'] and kingdom['troop_ids']]
