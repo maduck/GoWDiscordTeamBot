@@ -169,6 +169,7 @@ class TeamExpander:
             for key, lookup in lookups.items():
                 if real_search in lookup:
                     possible_matches.append(item)
+                    break
 
         return sorted(possible_matches, key=operator.itemgetter(sort_by))
 
