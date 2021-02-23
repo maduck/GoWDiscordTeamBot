@@ -571,7 +571,7 @@ class DiscordBot(BaseBot):
         e.add_field(name='Edit Tower (Floor)', value=edit_text)
         await self.answer(message, e)
 
-    async def drop_chances(self, message, lang, **kwargs):
+    async def drop_rates(self, message, lang, **kwargs):
         drop_chances = self.expander.get_drop_chances(lang)
         e = self.views.render_drop_chances(drop_chances, lang)
         await self.answer(message, e)
