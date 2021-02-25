@@ -218,6 +218,7 @@ class GameData:
             self.troops[troop['Id']] = {
                 'id': troop['Id'],
                 'name': troop['Name'],
+                'reference_name': troop['ReferenceName'],
                 'colors': sorted(colors),
                 'description': troop['Description'],
                 'spell_id': troop['SpellId'],

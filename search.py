@@ -188,6 +188,8 @@ class TeamExpander:
 
     def translate_troop(self, troop, lang):
         troop['name'] = _(troop['name'], lang)
+        if self.is_untranslated(troop['name']):
+            troop['name'] = troop['reference_name']
         troop['description'] = _(troop['description'], lang).replace('widerbeleben',
                                                                      'wiederbeleben')
         troop['color_code'] = "".join(troop['colors'])
@@ -268,7 +270,7 @@ class TeamExpander:
         kingdom['linked_kingdom'] = None
         if kingdom['linked_kingdom_id']:
             kingdom['linked_kingdom'] = _(self.kingdoms[kingdom['linked_kingdom_id']]['name'], lang)
-        if kingdom['linked_kingdom'] and kingdom['linked_kingdom'].startswith('['):
+        if kingdom['linked_kingdom'] and self.is_untranslated(kingdom['linked_kingdom']):
             kingdom['linked_kingdom'] = None
         kingdom['map'] = _('[MAPNAME_MAIN]', lang)
         kingdom['linked_map'] = _('[MAPNAME_UNDERWORLD]', lang)
@@ -998,7 +1000,7 @@ class TeamExpander:
 
     def translate_drop_chances(self, data: dict, lang):
         for key, item in data.copy().items():
-            if not key.startswith('['):
+            if self.is_untranslated(key):
                 continue
             new_key = _(key, lang)
             if key == '[KEYTYPE_5_TITLE]':

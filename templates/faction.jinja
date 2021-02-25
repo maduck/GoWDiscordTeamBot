@@ -1,0 +1,22 @@
+**{{ kingdom.name }} `#{{ kingdom.id }}` {% for color in kingdom.colors %}{{ color|emoji(':' + color + ':') }}{% endfor %} ({{ kingdom.map }})**
+{{ kingdom.punchline }}
+{{ kingdom.description }}
+**{{ kingdom.banner_title }}**: {{ kingdom.banner.name }} {{ kingdom['banner']|banner_colors|join(' ') }}
+{%- if kingdom.primary_color and kingdom.primary_stat %}
+**{{ kingdom.color_title }}**: {{ kingdom.primary_color|emoji }} / {{ ('deed_' + kingdom.primary_color)|emoji }} {{ kingdom.deed }}
+**{{ kingdom.stat_title }}**: {{ kingdom.primary_stat }}{% endif %}{% if kingdom.max_power_level and not kingdom.underworld %}
+**{{ kingdom.max_power_level_title }}**: {{ kingdom.max_power_level }}{% endif %}{% if kingdom.linked_kingdom %}
+**{{ kingdom.linked_map }}**: {{ kingdom.linked_kingdom }} `#{{ kingdom.linked_kingdom_id }}`
+{% endif %}{% if 'pet' in kingdom %}
+**{{ kingdom.pet_title }}**: {{ kingdom.pet.name }} `#{{ kingdom.pet.id }}`{% endif %}{% if 'class' in kingdom %}
+**{{ kingdom.class_title }}**: {{ kingdom.class }} `#{{ kingdom.class_id }}`{% endif %}
+**{{ kingdom.troop_title }}**:
+{%- for troop in kingdom.troops %}
+**{{ troop.spell.cost }}{{ troop.color_code|emoji }} {{ troop.name }}** `#{{ troop.id }}` {{ troop.spell.description }}
+{%- endfor %}
+{% if kingdom.weapons -%}**{{ kingdom.weapons_title|replace(':', '**:') -}}
+{%- for weapon in kingdom.weapons -%}
+{% if loop.index != 1 %},{% endif %} {{ weapon.name }} `#{{ weapon.id }}`
+{%- endfor %}{%- endif -%}
+{% if kingdom.event_weapon %}**{{ kingdom.event_weapon_title }}**:
+**{{ kingdom.event_weapon.spell.cost }}{{ kingdom.event_weapon.color_code|emoji }} {{ kingdom.event_weapon.name }}** `#{{ kingdom.event_weapon_id }}` {{ kingdom.event_weapon.spell.description }}{% endif %}
