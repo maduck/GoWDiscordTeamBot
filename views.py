@@ -501,6 +501,18 @@ class Views:
         e = discord.Embed(title=title, color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations_{current_event["kingdom"]["filename"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
+        event_ending = {
+            'en': 'Event ending on',
+            'de': 'Event endet am',
+            'fr': 'Evénement se terminant le',
+            'it': 'Evento che termina il',
+            'es': 'Evento que finaliza el',
+            'ru': 'Завершение события',
+            'zh': '活动结束时间',
+
+        }.get(lang, '')
+        e.set_footer(text=event_ending)
+        e.timestamp = current_event['end']
         data = {
             'event': current_event,
             'lore_title': _('[LORE]', lang),
@@ -509,6 +521,6 @@ class Views:
             'score': _('[SCORE]', lang),
             'medals': _('[MEDALS]', lang),
             'troop_restrictions': _('[TROOP_RESTRICTIONS]', lang),
-            'event_troop': _('[EVENT_TROOP]', lang)
+            'event_troop': _('[EVENT_TROOP]', lang),
         }
         return self.render_embed(e, 'current_event.jinja', **data)

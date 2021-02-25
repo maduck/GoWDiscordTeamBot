@@ -670,5 +670,7 @@ class GameData:
                 'icon': f'Liveevents/Liveeventscurrencies_{self.event_raw_data["CurrencyData"][0]["Icon"]}_full.png',
                 'value': self.event_raw_data['CurrencyData'][0]['Value'],
                 'name': {lang[0:2]: c for lang, c in self.event_raw_data['CurrencyData'][0]['Name'].items()},
-            }
+            },
+            'start': datetime.datetime.utcfromtimestamp(self.event_raw_data['StartDate']),
+            'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
         }
