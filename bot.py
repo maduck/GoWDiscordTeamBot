@@ -38,7 +38,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.46.0'
+    VERSION = '0.47.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -262,6 +262,11 @@ class DiscordBot(BaseBot):
     async def events(self, message, lang, **kwargs):
         events = self.expander.get_events(lang)
         e = self.views.render_events(events, kwargs.get('filter'), lang)
+        await self.answer(message, e)
+
+    async def current_event(self, message, lang, **kwargs):
+        current_event = self.expander.get_current_event(lang)
+        e = self.views.render_current_event(current_event, lang)
         await self.answer(message, e)
 
     async def color_kingdoms(self, message, lang, **kwargs):

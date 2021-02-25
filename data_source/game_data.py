@@ -97,6 +97,7 @@ class GameData:
         self.populate_adventure_board()
         self.populate_drop_chances()
         self.populate_event_kingdoms()
+        self.populate_weekly_event_details()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -644,3 +645,30 @@ class GameData:
             event_kingdoms.append(0)
         index = event_kingdoms.index(current_event_kingdom)
         self.event_kingdoms = event_kingdoms[index + 1:]
+
+    def populate_weekly_event_details(self):
+        self.weekly_event = {
+            'kingdom_id': str(self.event_raw_data['Kingdom']),
+            'name': {lang[0:2]: name for lang, name in self.event_raw_data['Name'].items()},
+            'lore': {lang[0:2]: lore for lang, lore in self.event_raw_data['Lore'].items()},
+            'restrictions': {
+                '[TROOPHELP_MANA0]': self.event_raw_data['PlayerTeamRestrictions']['ManaColors'],
+                '[KINGDOM]': [self.kingdoms[k]['name'] for k in
+                              self.event_raw_data['PlayerTeamRestrictions']['KingdomIds']],
+                '[TROOP_TYPES]': self.event_raw_data['PlayerTeamRestrictions']['TroopTypes'],
+                '[FILTER_WEAPONTYPE]': self.event_raw_data['PlayerTeamRestrictions']['WeaponTypes'],
+                '[RARITY]': self.event_raw_data['PlayerTeamRestrictions']['TroopRarities'],
+                '[FILTER_ROLE]': self.event_raw_data['PlayerTeamRestrictions']['Roles'],
+                '[ROSTER]': self.event_raw_data['PlayerTeamRestrictions']['RosterIds'],
+            },
+            'troop': self.troops[self.event_raw_data['GachaTroop']]['name'],
+            'troop_id': self.event_raw_data['GachaTroop'],
+            'token': self.event_raw_data['TokenId'],
+            'badge': self.event_raw_data['BadgeId'],
+            'medal': self.event_raw_data['MedalId'],
+            'currency': {
+                'icon': f'Liveevents/Liveeventscurrencies_{self.event_raw_data["CurrencyData"][0]["Icon"]}_full.png',
+                'value': self.event_raw_data['CurrencyData'][0]['Value'],
+                'name': {lang[0:2]: c for lang, c in self.event_raw_data['CurrencyData'][0]['Name'].items()},
+            }
+        }

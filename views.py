@@ -495,3 +495,20 @@ class Views:
     def render_welcome_message(self, prefix):
         e = discord.Embed(title='Thank you for inviting me!', color=self.WHITE)
         return self.render_embed(e, 'welcome.jinja', prefix=prefix)
+
+    def render_current_event(self, current_event, lang):
+        title = f'{_("[WEEKLY_EVENT]", lang)}: {current_event["name"]}'
+        e = discord.Embed(title=title, color=self.WHITE)
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations_{current_event["kingdom"]["filename"]}_full.png'
+        e.set_thumbnail(url=thumbnail_url)
+        data = {
+            'event': current_event,
+            'lore_title': _('[LORE]', lang),
+            'kingdom_title': _('[KINGDOM]', lang),
+            'overview': _('[OVERVIEW]', lang),
+            'score': _('[SCORE]', lang),
+            'medals': _('[MEDALS]', lang),
+            'troop_restrictions': _('[TROOP_RESTRICTIONS]', lang),
+            'event_troop': _('[EVENT_TROOP]', lang)
+        }
+        return self.render_embed(e, 'current_event.jinja', **data)

@@ -1,0 +1,14 @@
+<T>__**{{ overview }}**__</T>
+**{{ kingdom_title }}**: {{ event.kingdom.name }} `#{{ event.kingdom.id }}`
+**{{ score }}**: {{ event.currency.name }} ({{ event.currency.value }})
+**{{ event_troop }}**: {{ event.troop }} `#{{ event.troop_id }}`
+<T>__**{{ medals }}**__</T>
+**{{ event.token.name }}**: {{ event.token.description }}
+**{{ event.badge.name }}**: {{ event.badge.description }}
+**{{ event.medal.name }}**: {{ event.medal.description }}
+<T>__**{{ troop_restrictions }}**__</T>
+{% for r, v in event.restrictions.items() %}
+{{ r }}: {{ v }}
+{% endfor %}
+<T>__**{{ lore_title }}**__</T>
+{{ event.lore }}
