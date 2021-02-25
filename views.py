@@ -158,6 +158,8 @@ class Views:
 
         if shortened:
             return self.render_embed(e, 'kingdom_shortened.jinja', kingdom=kingdom)
+        if kingdom['underworld']:
+            return self.render_embed(e, 'faction.jinja', kingdom=kingdom)
         return self.render_embed(e, 'kingdom.jinja', kingdom=kingdom)
 
     def render_trait(self, trait, shortened):

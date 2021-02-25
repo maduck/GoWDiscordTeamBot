@@ -253,11 +253,14 @@ class TeamExpander:
         kingdom['description'] = _(kingdom['description'], lang)
         kingdom['punchline'] = _(kingdom['punchline'], lang)
         kingdom['troop_title'] = _('[TROOPS]', lang)
-        kingdom['troops'] = sorted([
-            {'name': _(self.troops[_id]['name'], lang),
-             'id': _id
-             } for _id in kingdom['troop_ids']
-        ], key=operator.itemgetter('name'))
+
+        kingdom['troops'] = []
+        for troop_id in kingdom['troop_ids']:
+            troop = self.troops[troop_id].copy()
+            self.translate_troop(troop, lang)
+            kingdom['troops'].append(troop)
+
+        kingdom['troops'] = sorted(kingdom['troops'], key=operator.itemgetter('name'))
         kingdom['weapons_title'] = _('[WEAPONS:]', lang)
         kingdom['weapons'] = sorted([
             {'name': _(self.weapons[_id]['name'], lang),
@@ -295,7 +298,9 @@ class TeamExpander:
         if 'event_weapon' in kingdom:
             kingdom['event_weapon_title'] = _('[FACTION_WEAPON]', lang)
             kingdom['event_weapon_id'] = kingdom['event_weapon']['id']
-            kingdom['event_weapon'] = _(kingdom['event_weapon']['name'], lang)
+            event_weapon = kingdom['event_weapon'].copy()
+            self.translate_weapon(event_weapon, lang)
+            kingdom['event_weapon'] = event_weapon
         kingdom['max_power_level_title'] = _('[KINGDOM_POWER_LEVELS]', lang)
 
     def search_class(self, search_term, lang):
@@ -966,7 +971,7 @@ class TeamExpander:
             'filename': f'Spells/Cards_{weapon["spell_id"]}_full.png',
             'description': weapon['spell']['description'],
             'kingdom': weapon['kingdom'],
-            'kingdom_logo': f'Maplocations_{kingdom_filebase}_full.png',
+            'kingdom_logo': f'Troopcardshields_{kingdom_filebase}_full.png',
             'type': _(weapon['type'], lang),
             'background': f'Background/{kingdom["filename"]}_full.png',
             'gow_logo': 'Atlas/gow_logo.png',
