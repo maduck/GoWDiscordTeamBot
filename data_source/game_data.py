@@ -152,6 +152,7 @@ class GameData:
                 'effect_data': pet.get('EffectData'),
                 'troop_type': pet.get('EffectTroopType'),
                 'filename': pet['FileBase'],
+                'reference_name': pet['ReferenceName'],
             }
 
     def populate_weapons(self):

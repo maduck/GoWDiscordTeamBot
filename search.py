@@ -440,6 +440,8 @@ class TeamExpander:
 
     def translate_pet(self, pet, lang):
         pet['name'] = _(pet['name'], lang)
+        if self.is_untranslated(pet['name']):
+            pet['name'] = pet['reference_name']
         pet['kingdom'] = _(pet['kingdom']['name'], lang)
         pet['kingdom_title'] = _('[KINGDOM]', lang)
         pet['color_code'] = "".join(pet['colors'])
