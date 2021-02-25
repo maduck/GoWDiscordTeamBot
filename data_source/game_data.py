@@ -63,6 +63,8 @@ class GameData:
         self.adventure_board = []
         self.drop_chances = {}
         self.event_kingdoms = []
+        self.event_raw_data = {}
+        self.weekly_event = {}
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -71,6 +73,8 @@ class GameData:
             self.campaign_data = GameAssets.load('Campaign.json')
         if GameAssets.exists('Soulforge.json'):
             self.soulforge_raw_data = GameAssets.load('Soulforge.json')
+        if GameAssets.exists('Event.json'):
+            self.event_raw_data = GameAssets.load('Event.json')
 
     def populate_world_data(self):
         self.read_json_data()
