@@ -11,14 +11,16 @@ class BaseGameData:
         self.raw_data = {}
         self.translations = {}
 
-    def translate_one(self, lang):
+    def translate_one_language(self, lang):
         item = copy.deepcopy(self.raw_data)
         self.deep_translate(item, lang)
+        if self.is_untranslated(item['name']) and 'reference_name' in item:
+            item['name'] = item['reference_name']
         self.translations[lang] = item
 
-    def translate_all(self):
+    def translate(self):
         for lang in translations.LOCALE_MAPPING.keys():
-            self.translate_one(lang)
+            self.translate_one_language(lang)
 
     @staticmethod
     def is_untranslated(param):

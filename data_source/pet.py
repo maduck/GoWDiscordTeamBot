@@ -2,19 +2,20 @@ from data_source.base_game_data import BaseGameData
 from game_constants import COLORS
 from util import convert_color_array
 
+EFFECTS = (
+    '[PETTYPE_BUFFTEAMCOLOR]',
+    '[PETTYPE_BUFFGEMMASTERY]',
+    '[PETTYPE_BUFFTEAMKINGDOM]',
+    '[PETTYPE_BUFFTEAMTROOPTYPE]',
+    '[PETTYPE_LOOTSOULS]',
+    '[PETTYPE_LOOTGOLD]',
+    '[PETTYPE_LOOTXP]',
+    '[PETTYPE_NOEFFECT]',
+)
+
 
 class Pet(BaseGameData):
     LOOKUP_KEYS = ['name', 'kingdom']
-    EFFECTS = (
-        '[PETTYPE_BUFFTEAMCOLOR]',
-        '[PETTYPE_BUFFGEMMASTERY]',
-        '[PETTYPE_BUFFTEAMKINGDOM]',
-        '[PETTYPE_BUFFTEAMTROOPTYPE]',
-        '[PETTYPE_LOOTSOULS]',
-        '[PETTYPE_LOOTGOLD]',
-        '[PETTYPE_LOOTXP]',
-        '[PETTYPE_NOEFFECT]',
-    )
 
     def __init__(self, data):
         super().__init__()
@@ -23,7 +24,7 @@ class Pet(BaseGameData):
             'name': data['Name'],
             'colors': convert_color_array(data),
             'color_code': ''.join(convert_color_array(data)),
-            'effect': self.EFFECTS[data['Effect']],
+            'effect': EFFECTS[data['Effect']],
             'effect_data': data.get('EffectData'),
             'effect_title': '[PET_TYPE]',
             'troop_type': data.get('EffectTroopType'),
@@ -34,13 +35,7 @@ class Pet(BaseGameData):
             'kingdom_title': '[KINGDOM]',
         }
         self.populate_effect_data()
-        self.translate_all()
-        self.translation_corrections()
-
-    def translation_corrections(self):
-        for lang, pet in self.translations.items():
-            if self.is_untranslated(pet['name']):
-                pet['name'] = pet['reference_name']
+        self.translate()
 
     def populate_effect_data(self):
         effect = self.raw_data['effect']
