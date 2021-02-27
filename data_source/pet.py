@@ -36,7 +36,7 @@ class PetContainer(BaseGameDataContainer):
             'reference_name': data['ReferenceName'],
             'filename': data['FileBase'],
             'kingdom_id': data['KingdomId'],
-            'kingdom': f'[{data["KingdomId"]}_NAME]',
+            'kingdom_name': f'[{data["KingdomId"]}_NAME]',
             'kingdom_title': '[KINGDOM]',
         }
         self.populate_effect_data()

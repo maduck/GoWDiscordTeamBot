@@ -94,7 +94,7 @@ class PetRescue:
         broken_rescues = []
         for i, entry in enumerate(db_result, start=1):
             log.debug(f'Loading pet rescue {i} of {len(db_result)}')
-            pet = client.expander.pets[entry['pet_id']].translations[entry['lang']]
+            pet = client.expander.pets[entry['pet_id']][entry['lang']]
 
             try:
                 channel = await client.fetch_channel(entry['channel_id'])
@@ -150,7 +150,7 @@ class PetRescue:
             channel_name,
             self.message.channel.id,
             self.message.id,
-            self.pet['id'],
+            self.pet.id,
             self.alert_message.id if self.alert_message else 0,
             self.pet_message.id,
             self.start_time,
