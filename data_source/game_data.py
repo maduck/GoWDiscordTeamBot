@@ -5,24 +5,9 @@ import re
 from data_source import Pets
 from game_assets import GameAssets
 from game_constants import COLORS, EVENT_TYPES, SOULFORGE_ALWAYS_AVAILABLE
-from util import convert_color_array
+from util import U, convert_color_array
 
 NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
-
-
-class U(str):
-    def __format__(self, fmt):
-        if not fmt:
-            s = str(self)
-        elif fmt[0] == 'u':
-            s = self.upper()
-            fmt = fmt[1:]
-        elif fmt[0] == 'l':
-            s = self.lower()
-            fmt = fmt[1:]
-        else:
-            s = str(self)
-        return s.__format__(fmt)
 
 
 class GameData:

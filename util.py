@@ -108,3 +108,18 @@ def format_locale_date(date, lang):
 
 def convert_color_array(data_object):
     return [c.replace('Color', '').lower() for c, v in data_object['ManaColors'].items() if v]
+
+
+class U(str):
+    def __format__(self, fmt):
+        if not fmt:
+            s = str(self)
+        elif fmt[0] == 'u':
+            s = self.upper()
+            fmt = fmt[1:]
+        elif fmt[0] == 'l':
+            s = self.lower()
+            fmt = fmt[1:]
+        else:
+            s = str(self)
+        return s.__format__(fmt)
