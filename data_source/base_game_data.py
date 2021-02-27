@@ -13,6 +13,9 @@ class BaseGameData:
     def set_release_date(self, release_date):
         self.data['release_date'] = release_date
 
+    def set_kingdom_name(self, kingdom_name):
+        self.data['kingdom_name'] = kingdom_name
+
     def get(self, key, default=None):
         return self.data.get(key, default)
 
@@ -21,6 +24,9 @@ class BaseGameData:
 
     def __getattr__(self, item):
         return self.data[item]
+
+    def __str__(self):
+        return f'<Pet id={self.data["id"]} name={self.data["reference_name"]} kingdom={self.data["kingdom_id"]}>'
 
 
 class BaseGameDataContainer:
@@ -86,3 +92,8 @@ class BaseGameDataContainer:
 
     def matches_precisely(self, search_term, lang):
         return extract_search_tag(self.translations[lang].name) == extract_search_tag(search_term)
+
+    def fill_untranslated_kingdom_name(self, kingdom_id, kingdom_reference_name):
+        if self.data['kingdom_id'] == kingdom_id and self.is_untranslated(self.translations['en'].kingdom_name):
+            for item in self.translations.values():
+                item.set_kingdom_name(kingdom_reference_name)

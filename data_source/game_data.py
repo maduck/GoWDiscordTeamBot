@@ -35,7 +35,7 @@ class GameData:
         self.traits = {}
         self.kingdoms = {}
         self.pet_effects = ()
-        self.pets = {}
+        self.pets: Pets = None
         self.talent_trees = {}
         self.spoilers = []
         self.events = []
@@ -65,12 +65,12 @@ class GameData:
     def populate_world_data(self):
         self.read_json_data()
 
+        self.pets = Pets(self.data['Pets'])
         self.populate_spells()
         self.populate_traits()
         self.populate_troops()
         self.populate_kingdoms()
         self.populate_weapons()
-        self.pets = Pets(self.data['Pets'])
         self.populate_talents()
         self.populate_classes()
         self.populate_release_dates()
@@ -139,6 +139,7 @@ class GameData:
 
     def populate_kingdoms(self):
         for kingdom in self.data['Kingdoms']:
+            self.pets.fill_untranslated_kingdom_name(kingdom['Id'], kingdom['ReferenceName'])
             colors = [f'[GEM_{c.upper()}]' for c in COLORS]
             colors = zip(colors, kingdom['BannerColors'])
             colors = sorted(colors, key=operator.itemgetter(1), reverse=True)

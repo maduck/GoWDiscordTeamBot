@@ -48,6 +48,10 @@ class Collection:
         data = json.loads(json_string)
         return cls(data)
 
+    def fill_untranslated_kingdom_name(self, kingdom_id, kingdom_reference_name):
+        for item in self.items.values():
+            item.fill_untranslated_kingdom_name(kingdom_id, kingdom_reference_name)
+
 
 class Pets(Collection):
     pass
