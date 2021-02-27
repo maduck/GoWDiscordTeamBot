@@ -8,11 +8,11 @@ _ = translations.Translations().get
 
 class BaseGameData:
     def __init__(self):
-        self.raw_data = {}
+        self.data = {}
         self.translations = {}
 
     def translate_one_language(self, lang):
-        item = copy.deepcopy(self.raw_data)
+        item = copy.deepcopy(self.data)
         self.deep_translate(item, lang)
         if self.is_untranslated(item['name']) and 'reference_name' in item:
             item['name'] = item['reference_name']
@@ -29,7 +29,7 @@ class BaseGameData:
         return param[0] + param[-1] == '[]'
 
     def __getattr__(self, item):
-        return self.raw_data[item]
+        return self.data[item]
 
     @classmethod
     def deep_translate(cls, data: dict, lang):
@@ -44,7 +44,7 @@ class BaseGameData:
                 cls.translate_drop_chances(data[new_key], lang)
 
     def set_release_date(self, release_date):
-        self.raw_data['release_date'] = release_date
+        self.data['release_date'] = release_date
         for lang in translations.LOCALE_MAPPING.keys():
             self.translations[lang]['release_date'] = release_date
 
