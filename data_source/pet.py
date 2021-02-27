@@ -67,6 +67,5 @@ class PetContainer(BaseGameDataContainer):
         if self.data['effect'] == '[PETTYPE_BUFFTEAMKINGDOM]' \
                 and self.is_untranslated(self.translations['en'].effect_data) \
                 and str(kingdom_id) in self.translations['en'].effect_data:
-            print(f"Replacing {kingdom_id}'s name with {kingdom_reference_name} for {self.data['name']}")
             for pet in self.translations.values():
                 pet.set_effect_data(kingdom_reference_name)
