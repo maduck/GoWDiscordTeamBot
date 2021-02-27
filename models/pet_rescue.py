@@ -94,8 +94,7 @@ class PetRescue:
         broken_rescues = []
         for i, entry in enumerate(db_result, start=1):
             log.debug(f'Loading pet rescue {i} of {len(db_result)}')
-            pet = client.expander.pets[entry['pet_id']].copy()
-            client.expander.translate_pet(pet, entry['lang'])
+            pet = client.expander.pets[entry['pet_id']].translations[entry['lang']]
 
             try:
                 channel = await client.fetch_channel(entry['channel_id'])

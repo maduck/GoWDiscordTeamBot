@@ -2,6 +2,7 @@ import datetime
 import operator
 import re
 
+from data_source import Pets
 from game_assets import GameAssets
 from game_constants import COLORS, EVENT_TYPES, SOULFORGE_ALWAYS_AVAILABLE
 from util import convert_color_array
@@ -84,7 +85,7 @@ class GameData:
         self.populate_troops()
         self.populate_kingdoms()
         self.populate_weapons()
-        self.populate_pets()
+        self.pets = Pets(self.data['Pets'])
         self.populate_talents()
         self.populate_classes()
         self.populate_release_dates()
@@ -127,32 +128,6 @@ class GameData:
                 'name': f'[TALENT_TREE_{tree["Code"].upper()}]',
                 'talents': talents,
                 'classes': [],
-            }
-
-    def populate_pets(self):
-        self.pet_effects = (
-            '[PETTYPE_BUFFTEAMCOLOR]',
-            '[PETTYPE_BUFFGEMMASTERY]',
-            '[PETTYPE_BUFFTEAMKINGDOM]',
-            '[PETTYPE_BUFFTEAMTROOPTYPE]',
-            '[PETTYPE_LOOTSOULS]',
-            '[PETTYPE_LOOTGOLD]',
-            '[PETTYPE_LOOTXP]',
-            '[PETTYPE_NOEFFECT]',
-        )
-        for pet in self.data['Pets']:
-            colors = convert_color_array(pet)
-            self.pets[pet['Id']] = {
-                'id': pet['Id'],
-                'name': pet['Name'],
-                'kingdom_id': pet['KingdomId'],
-                'kingdom': self.kingdoms[pet['KingdomId']],
-                'colors': sorted(colors),
-                'effect': self.pet_effects[pet['Effect']],
-                'effect_data': pet.get('EffectData'),
-                'troop_type': pet.get('EffectTroopType'),
-                'filename': pet['FileBase'],
-                'reference_name': pet['ReferenceName'],
             }
 
     def populate_weapons(self):
@@ -357,7 +332,7 @@ class GameData:
             pet_id = release['PetId']
             release_date = self.get_datetime(release['Date'])
             if pet_id in self.pets:
-                self.pets[pet_id]['release_date'] = release_date
+                self.pets[pet_id].set_release_date(release_date)
                 self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
         for release in self.user_data['pEconomyModel']['KingdomReleaseDates']:
             kingdom_id = release['KingdomId']

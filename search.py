@@ -10,7 +10,7 @@ from data_source.game_data import GameData
 from game_constants import COLORS, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
-from util import dig, format_locale_date, translate_day
+from util import dig, extract_search_tag, format_locale_date, translate_day
 
 LOGLEVEL = logging.DEBUG
 
@@ -31,21 +31,6 @@ def update_translations():
     importlib.reload(translations)
     del _
     _ = translations.Translations().get
-
-
-DAMAGE_DENOMINATOR = re.compile(r'\[.+]')
-
-
-def extract_search_tag(search_term):
-    if isinstance(search_term, list):
-        search_term = ''.join(search_term)
-    if search_term is None:
-        search_term = ''
-    ignored_characters = ' -\'’'
-    for char in ignored_characters:
-        search_term = search_term.replace(char, '')
-    search_term = DAMAGE_DENOMINATOR.sub("", search_term)
-    return search_term.lower()
 
 
 class TeamExpander:
@@ -294,9 +279,7 @@ class TeamExpander:
             kingdom['primary_stat'] = _(f'[{kingdom["primary_stat"].upper()}]', lang)
         if 'pet' in kingdom:
             kingdom['pet_title'] = _('[PET_RESCUE_PET]', lang)
-            pet = kingdom['pet'].copy()
-            self.translate_pet(pet, lang)
-            kingdom['pet'] = pet
+            kingdom['pet'] = kingdom['pet'].translations[lang]
         if 'event_weapon' in kingdom:
             kingdom['event_weapon_title'] = _('[FACTION_WEAPON]', lang)
             kingdom['event_weapon_id'] = kingdom['event_weapon']['id']
@@ -429,46 +412,7 @@ class TeamExpander:
         return sorted(self.enrich_traits(possible_matches, lang), key=operator.itemgetter('name'))
 
     def search_pet(self, search_term, lang):
-        lookup_keys = [
-            'name',
-            'kingdom',
-        ]
-        return self.search_item(search_term, lang,
-                                items=self.pets,
-                                lookup_keys=lookup_keys,
-                                translator=self.translate_pet)
-
-    def translate_pet(self, pet, lang):
-        pet['name'] = _(pet['name'], lang)
-        if self.is_untranslated(pet['name']):
-            pet['name'] = pet['reference_name']
-        pet['kingdom'] = _(pet['kingdom']['name'], lang)
-        pet['kingdom_title'] = _('[KINGDOM]', lang)
-        pet['color_code'] = "".join(pet['colors'])
-        pet['raw_effect'] = pet['effect']
-        pet['effect'] = _(pet['effect'], lang)
-        colors = (
-            '',
-            'GREEN',
-            'RED',
-            'YELLOW',
-            'PURPLE',
-            'BROWN',
-        )
-        if pet['raw_effect'] == '[PETTYPE_BUFFTEAMKINGDOM]':
-            pet['effect_data'] = _(self.kingdoms[pet['effect_data']]['name'], lang)
-        elif pet['raw_effect'] == '[PETTYPE_BUFFTEAMTROOPTYPE]':
-            pet['effect_data'] = _(f'[TROOPTYPE_{pet["troop_type"].upper()}]', lang)
-        elif pet['raw_effect'] == '[PETTYPE_BUFFTEAMCOLOR]':
-            pet['effect'] = _(f'[PET_{pet["colors"][0].upper()}_BUFF]', lang)
-            pet['effect_data'] = None
-        elif pet['raw_effect'] == '[PETTYPE_BUFFGEMMASTERY]':
-            if pet['effect_data']:
-                pet['effect'] = _(f'[PET_{colors[pet["effect_data"]]}_BUFF]', lang)
-                pet['effect_data'] = None
-            else:
-                pet['effect'] = _(f'[PET_{pet["colors"][0].upper()}_BUFF]', lang)
-        pet['effect_title'] = _('[PET_TYPE]', lang)
+        return self.pets.search(search_term, lang)
 
     def search_weapon(self, search_term, lang):
         lookup_keys = [
@@ -700,7 +644,7 @@ class TeamExpander:
         if entry['type'] in ('[BOUNTY]', '[HIJACK]') and entry['gacha'] and entry['gacha'] in self.troops:
             entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
         elif entry['type'] == '[PETRESCUE]' and entry['gacha']:
-            entry['extra_info'] = _(self.pets[entry['gacha']]['name'], lang)
+            entry['extra_info'] = self.pets[entry['gacha']].translations[lang]['name']
         elif entry['type'] == '[CLASS_EVENT]' and entry['gacha']:
             entry['extra_info'] = _(self.classes[entry['gacha']]['name'], lang)
         elif entry['type'] == '[TOWER_OF_DOOM]' and entry['gacha']:
@@ -783,7 +727,14 @@ class TeamExpander:
         return spoilers
 
     def translate_spoiler(self, spoiler, lang):
-        entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {}).copy()
+        # FIXME this is transitional until all new models are in place.
+        if spoiler['type'] in ['pet']:
+            item = getattr(self, spoiler['type'] + 's').get(spoiler['id'])
+            if not item:
+                return
+            entry = item.translations[lang].copy()
+        else:
+            entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {}).copy()
         if not entry:
             return None
         entry['name'] = _(entry['name'], lang)

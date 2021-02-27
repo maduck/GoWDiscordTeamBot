@@ -1,5 +1,6 @@
 import datetime
 import platform
+import re
 from calendar import day_name, different_locale
 
 from base_bot import log
@@ -65,6 +66,21 @@ def debug(message):
     if message.guild:
         guild = message.guild.name
     log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
+
+
+DAMAGE_DENOMINATOR = re.compile(r'\[.+]')
+
+
+def extract_search_tag(search_term):
+    if isinstance(search_term, list):
+        search_term = ''.join(search_term)
+    if search_term is None:
+        search_term = ''
+    ignored_characters = ' -\'’'
+    for char in ignored_characters:
+        search_term = search_term.replace(char, '')
+    search_term = DAMAGE_DENOMINATOR.sub("", search_term)
+    return search_term.lower()
 
 
 def translate_day(day_no, locale):
