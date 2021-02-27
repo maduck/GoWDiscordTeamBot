@@ -1,6 +1,6 @@
 import unittest
 
-from data_source import Pet, Pets
+from data_source import PetContainer, Pets
 
 
 class PetTests(unittest.TestCase):
@@ -13,14 +13,14 @@ class PetTests(unittest.TestCase):
         self.pets = Pets.from_json(pet_data)
 
     def test_class(self):
-        self.assertIsInstance(self.pets[13000], Pet)
+        self.assertIsInstance(self.pets[13000], PetContainer)
 
     def test_id(self):
         self.assertEqual(self.pets[13000].id, 13000)
 
     def test_reference_name_replacement(self):
-        self.assertEqual(self.pets[13111].translations['en']['name'],
-                         self.pets[13111].translations['en']['reference_name'])
+        self.assertEqual(self.pets[13111]['en'].name,
+                         self.pets[13111]['en'].reference_name)
 
     def test_matching(self):
         self.assertTrue(self.pets[13000].matches_precisely('crabbie', 'en'))
@@ -29,7 +29,7 @@ class PetTests(unittest.TestCase):
     def test_search(self):
         search_result = self.pets.search('13000', 'en')
         self.assertEqual(len(search_result), 1)
-        self.assertDictEqual(search_result[0], self.pets[13000].translations['en'])
+        self.assertDictEqual(search_result[0].data, self.pets[13000]['en'].data)
 
 
 if __name__ == '__main__':

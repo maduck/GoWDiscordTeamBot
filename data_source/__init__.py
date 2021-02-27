@@ -1,6 +1,6 @@
 import json
 
-from data_source.pet import Pet
+from data_source.pet import PetContainer
 from data_source.spell import Spell
 from data_source.trait import Trait
 from data_source.troop import Troop
@@ -9,7 +9,7 @@ from data_source.weapon import Weapon
 
 class Collection:
     def __init__(self, data):
-        data_class_name = self.__class__.__name__[:-1]
+        data_class_name = self.__class__.__name__[:-1] + 'Container'
         data_class = globals()[data_class_name]
 
         self.items = {}
@@ -50,4 +50,4 @@ class Collection:
 
 
 class Pets(Collection):
-    DATA_CLASS = Pet
+    pass

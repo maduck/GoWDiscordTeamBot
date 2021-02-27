@@ -644,7 +644,7 @@ class TeamExpander:
         if entry['type'] in ('[BOUNTY]', '[HIJACK]') and entry['gacha'] and entry['gacha'] in self.troops:
             entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
         elif entry['type'] == '[PETRESCUE]' and entry['gacha']:
-            entry['extra_info'] = self.pets[entry['gacha']].translations[lang]['name']
+            entry['extra_info'] = self.pets[entry['gacha']][lang].name
         elif entry['type'] == '[CLASS_EVENT]' and entry['gacha']:
             entry['extra_info'] = _(self.classes[entry['gacha']]['name'], lang)
         elif entry['type'] == '[TOWER_OF_DOOM]' and entry['gacha']:
@@ -732,7 +732,7 @@ class TeamExpander:
             item = getattr(self, spoiler['type'] + 's').get(spoiler['id'])
             if not item:
                 return
-            entry = item.translations[lang].copy()
+            entry = item[lang].data.copy()
         else:
             entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {}).copy()
         if not entry:

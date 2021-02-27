@@ -1,4 +1,4 @@
-from data_source.base_game_data import BaseGameData
+from data_source.base_game_data import BaseGameData, BaseGameDataContainer
 from game_constants import COLORS
 from util import convert_color_array
 
@@ -15,6 +15,11 @@ EFFECTS = (
 
 
 class Pet(BaseGameData):
+    pass
+
+
+class PetContainer(BaseGameDataContainer):
+    DATA_CLASS = Pet
     LOOKUP_KEYS = ['name', 'kingdom']
 
     def __init__(self, data):

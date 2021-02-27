@@ -39,7 +39,7 @@ class PetRescue:
 
     @property
     def reminder(self):
-        return f'{self.mention} {self.pet["name"]}'
+        return f'{self.mention} {self.pet.name}'
 
     @property
     def time_left(self):

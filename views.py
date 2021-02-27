@@ -75,14 +75,14 @@ class Views:
 
     def render_pet(self, pet, shortened=False):
         e = discord.Embed(title='Pet search found one exact match', color=self.WHITE)
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet["filename"]}_full.png'
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet.filename}_full.png'
         e.set_thumbnail(url=thumbnail_url)
         if shortened:
             return self.render_embed(e, 'pet_shortened.jinja', pet=pet)
 
         if 'release_date' in pet:
             e.set_footer(text='Release date')
-            e.timestamp = pet["release_date"]
+            e.timestamp = pet.release_date
         return self.render_embed(e, 'pet.jinja', pet=pet)
 
     def render_troop(self, troop, shortened):
