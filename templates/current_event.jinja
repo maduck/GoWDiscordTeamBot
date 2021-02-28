@@ -12,8 +12,6 @@
 {% for r, v in event.restrictions.items() %}
 {{ r }}: {{ v }}
 {% endfor %}{% endif %}
-{% if event.lore %}<T>__**{{ lore_title }}**__</T>
-{{ event.lore }}{% endif %}
 {% if event.rewards %}<T>__**{{ rewards }}**__</T>
 {% for stage, rewards in event.rewards.items() -%}
 ` {{ "%02s" | format(stage) }} ` {% for reward in rewards %}{{ reward.amount }}x {{ reward.type }}{% if not loop.last %}, {% endif %}{% endfor %}
