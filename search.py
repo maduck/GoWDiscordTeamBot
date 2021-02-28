@@ -993,4 +993,6 @@ class TeamExpander:
         event['restrictions'] = {_(r, lang): ', '.join([_(i, lang) for i in v]) for r, v in
                                  event['restrictions'].items() if v}
         event['troop'] = _(event['troop'], lang)
+        if event['weapon_id']:
+            event['weapon'] = _(self.weapons.get(event['weapon_id'], {'name': ''})['name'], lang)
         return event

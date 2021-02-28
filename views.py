@@ -522,5 +522,7 @@ class Views:
             'medals': _('[MEDALS]', lang),
             'troop_restrictions': _('[TROOP_RESTRICTIONS]', lang),
             'event_troop': _('[EVENT_TROOP]', lang),
+            'event_color': _('[FILTER_MANACOLOR]', lang),
+            'event_weapon': f'{_("[GLOG_EVENT]", lang)} {_("[WEAPON]", lang)}',
         }
         return self.render_embed(e, 'current_event.jinja', **data)
