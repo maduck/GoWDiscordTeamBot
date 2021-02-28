@@ -524,5 +524,6 @@ class Views:
             'event_troop': _('[EVENT_TROOP]', lang),
             'event_color': _('[FILTER_MANACOLOR]', lang),
             'event_weapon': f'{_("[GLOG_EVENT]", lang)} {_("[WEAPON]", lang)}',
+            'rewards': _('[REWARDS]', lang),
         }
         return self.render_embed(e, 'current_event.jinja', **data)

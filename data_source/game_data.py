@@ -539,29 +539,46 @@ class GameData:
                 'raw_rarity': int(board['Rarity']),
             })
 
-    @staticmethod
-    def _transform_adventure_reward(battles):
+    def _transform_adventure_reward(self, battles):
         result = {}
         for battle in battles:
             for reward in battle['Rewards']:
-                reward_type = f'[{reward["Type"].upper()}]'
                 amount = reward['Amount']
-                data = reward['Data']
-                if reward_type == '[GEM]':
-                    reward_type = '[GEMS]'
-                elif reward_type == '[SOUL]':
-                    reward_type = '[SOULS]'
-                elif reward_type == '[DEED]':
-                    reward_type = f'[DEED{data:02d}]'
-                elif reward_type == '[RUNE]':
-                    reward_type = f'[RUNE{data:02d}_NAME]'
-                elif reward_type == '[PETFOOD]':
-                    reward_type = f'[PETFOOD{data:02d}_NAME]'
-                elif reward_type == '[KEY]':
-                    reward_type = f'[KEYTYPE_{data}_TITLE]'
+                reward_type = self.translate_reward_type(reward)
                 result.setdefault(reward_type, 0)
                 result[reward_type] += amount
         return result
+
+    def translate_reward_type(self, reward):
+        reward_type = f'[{reward["Type"].upper()}]'
+        data = reward['Data']
+        if reward_type == '[GEM]':
+            reward_type = '[GEMS]'
+        elif reward_type == '[SOUL]':
+            reward_type = '[SOULS]'
+        elif reward_type == '[DEED]':
+            reward_type = f'[DEED{data:02d}]'
+        elif reward_type == '[RUNE]':
+            reward_type = f'[RUNE{data:02d}_NAME]'
+        elif reward_type == '[PETFOOD]':
+            reward_type = f'[PETFOOD{data:02d}_NAME]'
+        elif reward_type == '[KEY]':
+            reward_type = f'[KEYTYPE_{data}_TITLE]'
+        elif reward_type == '[VAULTKEY]':
+            reward_type = '[LIVEEVENTENERGY3]'
+        elif reward_type == '[ORB]':
+            reward_type = f'[REWARD_HELP_HEADING_ORB_{data}]'
+        elif reward_type == '[DIAMOND]':
+            reward_type = '[DIAMONDS_GAINED]'
+        elif reward_type == '[MEDAL]':
+            reward_type = f'[WONDER_{data}_NAME]'
+        elif reward_type == '[CHATTITLE]':
+            reward_type = '[TITLE]'
+        elif reward_type == '[CHATPORTRAIT]':
+            reward_type = '[PORTRAIT]'
+        elif reward_type == '[TROOP]':
+            reward_type = self.troops.get(data)['name']
+        return reward_type
 
     def populate_drop_chances(self):
         for chest_id, chest in self.user_data['ChestInfo'].items():
@@ -642,6 +659,22 @@ class GameData:
                 'name': {lang[0:2]: c for lang, c in self.event_raw_data['CurrencyData'][0]['Name'].items()},
             }
 
+        def extract_rewards(raw_data):
+            rewards = {}
+            for i, stage in enumerate(raw_data.get('RewardStageArray', []), start=1):
+                rewards[i] = []
+                for reward in stage['RewardArray']:
+                    rewards[i].append(transform_reward(reward))
+            return rewards
+
+        def transform_reward(reward):
+            reward_type = self.translate_reward_type(reward)
+            return {
+                'type': reward_type,
+                'data': reward['Data'],
+                'amount': reward['Amount'],
+            }
+
         self.weekly_event = {
             'kingdom_id': str(self.event_raw_data['Kingdom']),
             'type': self.event_raw_data.get('Type'),
@@ -656,6 +689,7 @@ class GameData:
             'badge': self.event_raw_data.get('BadgeId'),
             'medal': self.event_raw_data.get('MedalId'),
             'currency': extract_currency(self.event_raw_data),
+            'rewards': extract_rewards(self.event_raw_data),
             'start': datetime.datetime.utcfromtimestamp(self.event_raw_data['StartDate']),
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
         }

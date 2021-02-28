@@ -983,6 +983,16 @@ class TeamExpander:
         event['lore'] = event['lore'].get(lang, '')
         event['currency']['name'] = event['currency']['name'].get(lang, '')
         event['currency']['value'] = _('[N_TIMES_POINTS]', lang).replace('%1', str(event['currency']['value']))
+
+        for stage in event['rewards'].keys():
+            for reward in event['rewards'][stage]:
+                reward_type = reward['type']
+                reward['type'] = _(reward_type, lang)
+                if reward_type == '[TITLE]':
+                    reward['type'] += ' (' + _(f'[TITLE_{reward["data"]}]', lang) + ')'
+                if reward_type == '[TROOP]':
+                    reward['type'] = _(self.troops.get(reward['data'])['name'], lang)
+
         for item in ('token', 'badge', 'medal'):
             if not event[item]:
                 continue
