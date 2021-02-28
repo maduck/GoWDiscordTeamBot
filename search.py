@@ -7,7 +7,7 @@ import re
 
 import translations
 from data_source.game_data import GameData
-from game_constants import COLORS, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, WEAPON_RARITIES
+from game_constants import COLORS, EVENT_TYPES, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
 from util import dig, extract_search_tag, format_locale_date, translate_day
@@ -979,11 +979,13 @@ class TeamExpander:
     def get_current_event(self, lang):
         event = copy.deepcopy(self.weekly_event)
         event['kingdom'] = self.search_kingdom(event['kingdom_id'], lang)[0]
-        event['name'] = event['name'][lang]
-        event['lore'] = event['lore'][lang]
-        event['currency']['name'] = event['currency']['name'][lang]
+        event['name'] = event['name'].get(lang, _(EVENT_TYPES[event['type']], lang))
+        event['lore'] = event['lore'].get(lang, '')
+        event['currency']['name'] = event['currency']['name'].get(lang, '')
         event['currency']['value'] = _('[N_TIMES_POINTS]', lang).replace('%1', str(event['currency']['value']))
         for item in ('token', 'badge', 'medal'):
+            if not event[item]:
+                continue
             event[item] = {
                 'name': _(f'[WONDER_{event[item]}_NAME]', lang),
                 'description': _(f'[WONDER_{event[item]}_DESC]', lang),

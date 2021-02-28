@@ -609,12 +609,21 @@ class GameData:
         self.event_kingdoms = event_kingdoms[index + 1:]
 
     def populate_weekly_event_details(self):
-        self.weekly_event = {
-            'kingdom_id': str(self.event_raw_data['Kingdom']),
-            'name': {lang[0:2]: name for lang, name in self.event_raw_data['Name'].items()},
-            'lore': {lang[0:2]: lore for lang, lore in self.event_raw_data['Lore'].items()},
-            'restrictions': {
-                '[TROOPHELP_MANA0]': self.event_raw_data['PlayerTeamRestrictions']['ManaColors'],
+        def extract_name(raw_data):
+            if 'Name' in raw_data:
+                return {lang[0:2]: name for lang, name in self.event_raw_data['Name'].items()}
+            return {}
+
+        def extract_lore(raw_data):
+            if 'Lore' in raw_data:
+                return {lang[0:2]: lore for lang, lore in self.event_raw_data['Lore'].items()}
+            return {}
+
+        def extract_restrictions(raw_data):
+            if 'PlayerTeamRestrictions' not in raw_data:
+                return {}
+            return {
+                '[TROOPHELP_MANA0]': self.event_raw_data.get('PlayerTeamRestrictions', {}).get('ManaColors'),
                 '[KINGDOM]': [self.kingdoms[k]['name'] for k in
                               self.event_raw_data['PlayerTeamRestrictions']['KingdomIds']],
                 '[TROOP_TYPES]': self.event_raw_data['PlayerTeamRestrictions']['TroopTypes'],
@@ -622,17 +631,29 @@ class GameData:
                 '[RARITY]': self.event_raw_data['PlayerTeamRestrictions']['TroopRarities'],
                 '[FILTER_ROLE]': self.event_raw_data['PlayerTeamRestrictions']['Roles'],
                 '[ROSTER]': self.event_raw_data['PlayerTeamRestrictions']['RosterIds'],
-            },
-            'troop': self.troops[self.event_raw_data['GachaTroop']]['name'],
-            'troop_id': self.event_raw_data['GachaTroop'],
-            'token': self.event_raw_data['TokenId'],
-            'badge': self.event_raw_data['BadgeId'],
-            'medal': self.event_raw_data['MedalId'],
-            'currency': {
+            }
+
+        def extract_currency(raw_data):
+            if 'CurrencyData' not in raw_data:
+                return {'name': {}, 'value': '-'}
+            return {
                 'icon': f'Liveevents/Liveeventscurrencies_{self.event_raw_data["CurrencyData"][0]["Icon"]}_full.png',
                 'value': self.event_raw_data['CurrencyData'][0]['Value'],
                 'name': {lang[0:2]: c for lang, c in self.event_raw_data['CurrencyData'][0]['Name'].items()},
-            },
+            }
+
+        self.weekly_event = {
+            'kingdom_id': str(self.event_raw_data['Kingdom']),
+            'type': self.event_raw_data.get('Type'),
+            'name': extract_name(self.event_raw_data),
+            'lore': extract_lore(self.event_raw_data),
+            'restrictions': extract_restrictions(self.event_raw_data),
+            'troop': self.troops[self.event_raw_data['GachaTroop']]['name'],
+            'troop_id': self.event_raw_data['GachaTroop'],
+            'token': self.event_raw_data.get('TokenId'),
+            'badge': self.event_raw_data.get('BadgeId'),
+            'medal': self.event_raw_data.get('MedalId'),
+            'currency': extract_currency(self.event_raw_data),
             'start': datetime.datetime.utcfromtimestamp(self.event_raw_data['StartDate']),
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
         }
