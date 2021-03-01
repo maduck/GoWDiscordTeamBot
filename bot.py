@@ -38,7 +38,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.48.0'
+    VERSION = '0.48.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -241,8 +241,11 @@ class DiscordBot(BaseBot):
         e.add_field(name=f'__{_("[HELP]", lang)}__:', value=f'`{my_prefix}help` / `{my_prefix}quickhelp`', inline=False)
 
         e.add_field(name=f'__{_("[SUPPORT]", lang)}__:', value='<https://discord.gg/XWs7x3cFTU>', inline=False)
-        e.add_field(name=f'__{_("[CONTRIBUTE]", lang)}__:', value='<https://github.com/maduck/GoWDiscordTeamBot>',
-                    inline=False)
+        github = self.my_emojis.get('github')
+        gold = self.my_emojis.get('gold')
+        contribute = f'{gold} <https://www.buymeacoffee.com/garyatrics>\n' \
+                     f'{github} <https://github.com/maduck/GoWDiscordTeamBot>'
+        e.add_field(name=f'__{_("[CONTRIBUTE]", lang)}__:', value=contribute, inline=False)
         await self.answer(message, e)
 
     @owner_required
