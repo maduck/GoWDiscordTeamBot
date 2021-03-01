@@ -5,6 +5,7 @@ from data_source.spell import Spell
 from data_source.trait import Trait
 from data_source.troop import Troop
 from data_source.weapon import Weapon
+from translations import LANGUAGE_CODE_MAPPING
 
 
 class Collection:
@@ -29,6 +30,7 @@ class Collection:
         return self.items[key]
 
     def search(self, search_term, lang):
+        lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         if search_term.isdigit() and int(search_term) in self.items:
             item = self.items.get(int(search_term))
             if item:
