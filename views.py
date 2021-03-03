@@ -499,8 +499,9 @@ class Views:
     def render_current_event(self, current_event, lang):
         title = f'{_("[WEEKLY_EVENT]", lang)}: {current_event["name"]}'
         e = discord.Embed(title=title, color=self.WHITE)
-        thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations_{current_event["kingdom"]["filename"]}_full.png'
-        e.set_thumbnail(url=thumbnail_url)
+        if 'kingdom' in current_event:
+            thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations_{current_event["kingdom"]["filename"]}_full.png'
+            e.set_thumbnail(url=thumbnail_url)
         event_ending = {
             'en': 'Event ending on',
             'de': 'Event endet am',

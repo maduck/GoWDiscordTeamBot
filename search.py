@@ -978,7 +978,9 @@ class TeamExpander:
 
     def get_current_event(self, lang):
         event = copy.deepcopy(self.weekly_event)
-        event['kingdom'] = self.search_kingdom(event['kingdom_id'], lang)[0]
+        kingdoms = self.search_kingdom(event['kingdom_id'], lang)
+        if kingdoms:
+            event['kingdom'] = kingdoms[0]
         event['name'] = event['name'].get(lang, _(EVENT_TYPES[event['type']], lang))
         event['lore'] = event['lore'].get(lang, '')
         event['currency']['name'] = event['currency']['name'].get(lang, '')

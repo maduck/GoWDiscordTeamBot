@@ -1,8 +1,8 @@
-<T>__**{{ overview }}**__</T>
-**{{ kingdom_title }}**: {{ event.kingdom.name }} `#{{ event.kingdom.id }}`{% if event.currency.name %}
+<T>__**{{ overview }}**__</T>{% if 'kingdom' in event %}
+**{{ kingdom_title }}**: {{ event.kingdom.name }} `#{{ event.kingdom.id }}`{% else %}-{% endif %}{% if event.currency.name %}
 **{{ score }}**: {{ event.currency.name }} ({{ event.currency.value }}){% endif %}{% if event.weapon %}
-**{{ event_weapon }}**: {{ event.weapon }} `#{{ event.weapon_id }}`{% endif %}
-**{{ event_troop }}**: {{ event.troop }} `#{{ event.troop_id }}`{% if event.color %}
+**{{ event_weapon }}**: {{ event.weapon }} `#{{ event.weapon_id }}`{% endif %}{% if event.troop_id %}
+**{{ event_troop }}**: {{ event.troop }} `#{{ event.troop_id }}`{% endif %}{% if event.color %}
 **{{ event_color }}**: {{ event.color | emoji }}{% endif %}
 {% if event.token %}<T>__**{{ medals }}**__</T>
 **{{ event.token.name }}**: {{ event.token.description }}

@@ -676,15 +676,15 @@ class GameData:
             }
 
         self.weekly_event = {
-            'kingdom_id': str(self.event_raw_data['Kingdom']),
+            'kingdom_id': str(self.event_raw_data.get('Kingdom')),
             'type': self.event_raw_data.get('Type'),
             'name': extract_name(self.event_raw_data),
             'lore': extract_lore(self.event_raw_data),
             'restrictions': extract_restrictions(self.event_raw_data),
-            'troop': self.troops[self.event_raw_data['GachaTroop']]['name'],
+            'troop_id': self.event_raw_data.get('GachaTroop'),
+            'troop': self.troops[self.event_raw_data.get('GachaTroop', 6000)]['name'],
             'color': COLORS[self.event_raw_data.get('Color')] if 'Color' in self.event_raw_data else None,
             'weapon_id': self.event_raw_data.get('EventWeaponId'),
-            'troop_id': self.event_raw_data['GachaTroop'],
             'token': self.event_raw_data.get('TokenId'),
             'badge': self.event_raw_data.get('BadgeId'),
             'medal': self.event_raw_data.get('MedalId'),
