@@ -470,14 +470,22 @@ class DiscordBot(BaseBot):
         if team_code:
             await message.channel.send(content=f'[{team_code}]')
 
-    async def waffles(self, message, lang, **kwargs):
-        waffle_no = random.randint(0, 67)
+    async def waffles(self, message, lang, waffle_no, **kwargs):
+        random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
+        max_waffles = 67
+        if waffle_no and waffle_no.isdigit() and 1 <= int(waffle_no) <= max_waffles:
+            waffle_no = int(waffle_no)
+            image_no = f'~~{random_title}~~ #{waffle_no}'
+        else:
+            waffle_no = random.randint(0, max_waffles)
+            image_no = f'{random_title} #{waffle_no}'
 
         title = _('[QUEST9480_OBJ0_MSG]', lang)
         subtitle = _('[HAND_FEED]', lang)
-        image_no = f'{_("[SPELLEFFECT_CAUSERANDOM]", lang)} #{waffle_no}'
+
         e = self.generate_response(title, self.WHITE, subtitle, image_no)
-        e.set_image(url=f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg')
+        url = f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg'
+        e.set_image(url=url)
         await self.answer(message, e)
 
     async def server_status(self, message, **kwargs):

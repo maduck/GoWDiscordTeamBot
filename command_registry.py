@@ -344,8 +344,17 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'waffles',
-        'pattern': re.compile(DEFAULT_PATTERN + r'waffles?$', MATCH_OPTIONS),
+        'pattern': re.compile(DEFAULT_PATTERN + r'waffles?( #?(?P<waffle_no>[0-9]{1,2}))?$', MATCH_OPTIONS),
         'description': 'Easteregg command.',
+        'options': [
+            {
+                'name': 'waffle_no',
+                'description': 'Waffle number',
+                'type': OptionType.INTEGER.value,
+                'required': 'False',
+            },
+            STANDARD_OPTIONS['lang'],
+        ]
     },
     {
         'function': 'show_languages',
