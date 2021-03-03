@@ -471,7 +471,7 @@ class DiscordBot(BaseBot):
             await message.channel.send(content=f'[{team_code}]')
 
     async def waffles(self, message, lang, **kwargs):
-        waffle_no = random.randint(0, 66)
+        waffle_no = random.randint(0, 67)
 
         title = _('[QUEST9480_OBJ0_MSG]', lang)
         subtitle = _('[HAND_FEED]', lang)
