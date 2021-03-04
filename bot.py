@@ -500,7 +500,7 @@ class DiscordBot(BaseBot):
         else:
             meme_no = random.randint(0, len(available_memes) - 1)
             meme = available_memes[meme_no]
-            image_no = f'{random_title} meme `#{meme_no}`'
+            image_no = f'{random_title} meme `#{meme_no + 1}`'
 
         title = _('[Troop_K02_07_DESC]', lang)
         subtitle = _(f'[FUNNY_LOAD_TEXT_{random.randint(0, 19)}]', lang)
