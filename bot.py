@@ -492,14 +492,15 @@ class DiscordBot(BaseBot):
     async def memes(self, message, lang, meme_no, **kwargs):
         base_url = 'https://garyatrics.com/images/memes'
         r = requests.get(f'{base_url}/index.txt')
-        available_memes = r.text.split('\n')
-        if meme_no and 0 <= int(meme_no) <= len(available_memes) - 1:
-            meme = available_memes[int(meme_no)]
-            image_no = f'~~Random~~ meme `#{int(meme_no)}`'
+        available_memes = [m for m in r.text.split('\n') if m]
+        random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
+        if meme_no and 1 <= int(meme_no) <= len(available_memes):
+            meme = available_memes[int(meme_no) - 1]
+            image_no = f'~~{random_title}~~ meme `#{int(meme_no)}`'
         else:
             meme_no = random.randint(0, len(available_memes) - 1)
             meme = available_memes[meme_no]
-            image_no = f'Random meme `#{meme_no}`'
+            image_no = f'{random_title} meme `#{meme_no}`'
 
         title = _('[Troop_K02_07_DESC]', lang)
         subtitle = _(f'[FUNNY_LOAD_TEXT_{random.randint(0, 19)}]', lang)
