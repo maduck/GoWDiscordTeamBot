@@ -732,7 +732,7 @@ class TeamExpander:
             item = getattr(self, spoiler['type'] + 's').get(spoiler['id'])
             if not item:
                 return
-            entry = item[lang].data.copy()
+            entry = item[translations.LANGUAGE_CODE_MAPPING.get(lang, lang)].data.copy()
         else:
             entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {}).copy()
         if not entry:
