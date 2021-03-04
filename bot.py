@@ -6,6 +6,7 @@ import operator
 import os
 import random
 import time
+import urllib
 from functools import partialmethod
 
 import dbl
@@ -38,7 +39,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.48.2'
+    VERSION = '0.48.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -485,6 +486,27 @@ class DiscordBot(BaseBot):
 
         e = self.generate_response(title, self.WHITE, subtitle, image_no)
         url = f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg'
+        e.set_image(url=url)
+        await self.answer(message, e)
+
+    async def memes(self, message, lang, meme_no, **kwargs):
+        base_url = 'https://garyatrics.com/images/memes'
+        r = requests.get(f'{base_url}/index.txt')
+        available_memes = r.text.split('\n')
+        if meme_no and 0 <= int(meme_no) <= len(available_memes) - 1:
+            meme = available_memes[int(meme_no)]
+            image_no = f'~~Random~~ meme `#{int(meme_no)}`'
+        else:
+            meme_no = random.randint(0, len(available_memes) - 1)
+            meme = available_memes[meme_no]
+            image_no = f'Random meme `#{meme_no}`'
+
+        title = _('[Troop_K02_07_DESC]', lang)
+        subtitle = _(f'[FUNNY_LOAD_TEXT_{random.randint(0, 19)}]', lang)
+        meme = urllib.parse.quote(meme)
+        url = f'{base_url}/{meme}'
+
+        e = self.generate_response(title, self.WHITE, subtitle, image_no)
         e.set_image(url=url)
         await self.answer(message, e)
 

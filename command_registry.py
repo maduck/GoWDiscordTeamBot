@@ -357,6 +357,20 @@ COMMAND_REGISTRY = [
         ]
     },
     {
+        'function': 'memes',
+        'pattern': re.compile(DEFAULT_PATTERN + r'memes?( #?(?P<meme_no>[0-9]{1,2}))?$', MATCH_OPTIONS),
+        'description': 'Easteregg command #2.',
+        'options': [
+            {
+                'name': 'meme_no',
+                'description': 'Meme number',
+                'type': OptionType.INTEGER.value,
+                'required': 'False',
+            },
+            STANDARD_OPTIONS['lang'],
+        ]
+    },
+    {
         'function': 'show_languages',
         'pattern': re.compile(DEFAULT_PATTERN + 'lang(uages?)?$', MATCH_OPTIONS),
         'description': 'Show all languages supported by the bot.',
