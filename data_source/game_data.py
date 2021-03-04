@@ -239,6 +239,8 @@ class GameData:
             }
 
     def get_current_event_kingdom_id(self):
+        if 'CurrentEventKingdomId' in self.user_data['pEconomyModel']:
+            return self.user_data['pEconomyModel']['CurrentEventKingdomId']
         today = datetime.date.today()
         weekly_events = [e for e in self.events
                          if e['end'] - e['start'] == datetime.timedelta(days=7)
@@ -622,8 +624,9 @@ class GameData:
                     continue
                 event_kingdoms.append(level['KingdomId'])
             event_kingdoms.append(0)
-        index = event_kingdoms.index(current_event_kingdom)
-        self.event_kingdoms = event_kingdoms[index + 1:]
+        if current_event_kingdom in event_kingdoms:
+            index = event_kingdoms.index(current_event_kingdom)
+            self.event_kingdoms = event_kingdoms[index + 1:]
 
     def populate_weekly_event_details(self):
         def extract_name(raw_data):
