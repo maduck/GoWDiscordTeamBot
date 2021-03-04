@@ -489,7 +489,7 @@ class DiscordBot(BaseBot):
         e.set_image(url=url)
         await self.answer(message, e)
 
-    async def memes(self, message, lang, meme_no, **kwargs):
+    async def memes(self, message, lang, meme_no=None, **kwargs):
         base_url = 'https://garyatrics.com/images/memes'
         r = requests.get(f'{base_url}/index.txt')
         available_memes = [m for m in r.text.split('\n') if m]
