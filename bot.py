@@ -838,16 +838,16 @@ class DiscordBot(BaseBot):
         e.add_field(name='Available languages', value=available_langs, inline=False)
 
     async def register_slash_commands(self):
-        log.debug('Deregistering all slash commands...')
         guild_id = CONFIG.get('slash_command_guild_id')
         for command in await get_all_commands(self.user.id, TOKEN, guild_id=guild_id):
+            log.debug(f'Deregistering slash command {command["name"]}...')
             await remove_slash_command(self.user.id, TOKEN, guild_id, command['id'])
         if not CONFIG.get('register_slash_commands'):
             return
-        log.debug(f'Registering slash commands...')
         for command in COMMAND_REGISTRY:
             if 'description' not in command:
                 continue
+            log.debug(f'Registering slash command {command["function"]}...')
             await add_slash_command(self.user.id,
                                     bot_token=TOKEN,
                                     guild_id=guild_id,
