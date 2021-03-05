@@ -141,7 +141,13 @@ class Views:
             e.set_thumbnail(url=thumbnail_url)
 
         if shortened:
-            troops = [f'{t[1]}' for t in team['troops']]
+            troops = []
+            for troop in team['troops']:
+                addon = ''
+                if troop[2]:
+                    addon = self.my_emojis.get(troop[2])
+                troops.append(f'{troop[1]}{addon}')
+
             e.title = ', '.join(troops)
             return self.render_embed(e, 'team_shortened.jinja', team=team)
 
