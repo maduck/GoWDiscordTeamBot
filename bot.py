@@ -39,7 +39,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.48.5'
+    VERSION = '0.48.6'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -839,13 +839,18 @@ class DiscordBot(BaseBot):
 
     async def register_slash_commands(self):
         guild_id = CONFIG.get('slash_command_guild_id')
-        for command in await get_all_commands(self.user.id, TOKEN, guild_id=guild_id):
-            log.debug(f'Deregistering slash command {command["name"]}...')
-            await remove_slash_command(self.user.id, TOKEN, guild_id, command['id'])
+        existing_commands = await get_all_commands(self.user.id, TOKEN, guild_id=guild_id)
+        new_command_names = [c['function'] for c in COMMAND_REGISTRY]
+        for command in existing_commands:
+            if command['name'] not in new_command_names or CONFIG.get('deregister_slash_commands'):
+                log.debug(f'Deregistering slash command {command["name"]}...')
+                await remove_slash_command(self.user.id, TOKEN, guild_id, command['id'])
         if not CONFIG.get('register_slash_commands'):
             return
         for command in COMMAND_REGISTRY:
             if 'description' not in command:
+                continue
+            if command['function'] in [c['name'] for c in existing_commands]:
                 continue
             log.debug(f'Registering slash command {command["function"]}...')
             await add_slash_command(self.user.id,

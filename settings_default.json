@@ -9,6 +9,7 @@
   "game_assets_folder": "",
   "database": "db.sqlite3",
   "file_update_check_seconds": 10,
+  "deregister_slash_commands": false,
   "register_slash_commands": true,
   "slash_command_guild_id": null,
   "special_users": []
