@@ -41,6 +41,13 @@ class PetRescue:
     def reminder(self):
         return f'{self.mention} {self.pet.name}'
 
+    @staticmethod
+    def get_amount():
+        query = "SELECT seq FROM SQLITE_SEQUENCE WHERE name='PetRescue';";
+        db = DB()
+        db_result = db.cursor.execute(query).fetchone()
+        return db_result[0]
+
     @property
     def time_left(self):
         delta = self.start_time + datetime.timedelta(minutes=60) - datetime.datetime.utcnow()

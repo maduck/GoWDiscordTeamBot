@@ -39,7 +39,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.48.7'
+    VERSION = '0.48.8'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -258,6 +258,7 @@ class DiscordBot(BaseBot):
             f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (PC)**: {sum([s.get("pc", True) for s in self.subscriptions])}',
             f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (Switch)**: {sum([s.get("switch", True) for s in self.subscriptions])}',
             f'**{_("[PETRESCUE]", lang)} ({_("[JUST_NOW]", lang)})**: {len(self.pet_rescues)}',
+            f'**{_("[PETRESCUE]", lang)} ({_("[TRAIT_ALL]", lang)})**: {PetRescue.get_amount()}',
         ]
         e.add_field(name=_("[COLLECTION]", lang), value='\n'.join(collections))
 
