@@ -128,6 +128,7 @@ class GameData:
                 'roles': weapon['TroopRoleArray'],
                 'spell_id': weapon['SpellId'],
                 'kingdom': self.kingdoms[weapon['KingdomId']],
+                'kingdom_id': weapon['KingdomId'],
                 'requirement': weapon['MasteryRequirement'],
                 'armor_increase': weapon['ArmorIncrease'],
                 'attack_increase': weapon['AttackIncrease'],
@@ -510,8 +511,17 @@ class GameData:
             self.kingdoms[kingdom['id']]['max_power_level'] = max_kingdom_level
 
     def kingdom_satisfies_task(self, kingdom, task):
+        valid_ids = [kingdom['id']]
+        if kingdom['location'] == 'krystara' and kingdom['linked_kingdom_id']:
+            valid_ids.append(kingdom['linked_kingdom_id'])
+
         def has_enough(items):
-            items = [i for i in items.values() if i.get('kingdom_id') == kingdom['id']]
+            items = [i for i in items.values() if i.get('kingdom_id') in valid_ids]
+            items = [i for i in items if 'release_date' not in i or i['release_date'] <= datetime.datetime.now()]
+            return len(items) >= task['XValue']
+
+        def has_enough_new_style(items):
+            items = [i.data for i in items.items.values() if i.data.get('kingdom_id') in valid_ids]
             items = [i for i in items if 'release_date' not in i or i['release_date'] <= datetime.datetime.now()]
             return len(items) >= task['XValue']
 
@@ -524,7 +534,7 @@ class GameData:
         if task['Task'] == 'Own{x}Classes':
             return has_enough(self.classes)
         if task['Task'] == 'Own{x}Pets':
-            return has_enough(self.pets)
+            return has_enough_new_style(self.pets)
         if task['Task'] == 'Earn{x}Renown':
             return kingdom['linked_kingdom_id'] and not kingdom['underworld']
         return False
