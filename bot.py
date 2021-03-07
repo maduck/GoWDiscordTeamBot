@@ -7,7 +7,7 @@ import os
 import random
 import time
 import urllib
-from functools import partialmethod
+from functools import partial, partialmethod
 
 import dbl
 import discord
@@ -39,7 +39,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.48.10'
+    VERSION = '0.48.11'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -385,7 +385,8 @@ class DiscordBot(BaseBot):
             return await self.answer(message, e)
         pet = pets[0]
 
-        rescue = PetRescue(pet, time_left, message, mention, lang, self.answer, self.pet_rescue_config)
+        answer_method = partial(self.answer, no_interaction=True)
+        rescue = PetRescue(pet, time_left, message, mention, lang, answer_method, self.pet_rescue_config)
         e = self.views.render_pet_rescue(rescue)
         await rescue.create_or_edit_posts(e)
         await rescue.add(self.pet_rescues)

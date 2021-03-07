@@ -107,13 +107,13 @@ class BaseBot(discord.Client):
         except discord.DiscordException as e:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response: {e}.')
 
-    async def answer(self, message, embed: discord.Embed, content=''):
+    async def answer(self, message, embed: discord.Embed, content='', no_interaction=False):
         try:
             if not embed:
                 return await self.answer_or_react(message, embed, content)
             self.embed_check_limits(embed)
             embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
-            return await self.answer_or_react(message, embed, content)
+            return await self.answer_or_react(message, embed, content, no_interaction)
         except discord.errors.Forbidden:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
         except EmbedLimitsExceed as e:
@@ -121,8 +121,8 @@ class BaseBot(discord.Client):
             e = discord.Embed(title='Error', description=warning)
             return await message.channel.send(embed=e)
 
-    async def answer_or_react(self, message, embed: discord.Embed, content=None):
-        if hasattr(message, 'interaction_id'):
+    async def answer_or_react(self, message, embed: discord.Embed, content=None, no_interaction=False):
+        if hasattr(message, 'interaction_id') and not no_interaction:
             return await self.send_slash_command_result(message, embed, content)
         elif not embed:
             return await message.channel.send(content=content)

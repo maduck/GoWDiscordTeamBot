@@ -159,7 +159,7 @@ class PetRescue:
             self.message.id,
             self.pet.id,
             self.alert_message.id if self.alert_message else 0,
-            self.pet_message.id,
+            self.pet_message.id if self.pet_message else 0,
             self.start_time,
             self.lang,
             str(self.mention),
