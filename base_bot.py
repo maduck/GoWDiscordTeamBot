@@ -1,6 +1,8 @@
 import datetime
 import logging
+import os
 
+import aiohttp
 import discord
 
 from configurations import CONFIG
@@ -26,11 +28,13 @@ class EmbedLimitsExceed(Exception):
 class FakeMessage:
     id = 0
 
-    def __init__(self, author, guild, channel, content):
+    def __init__(self, author, guild, channel, content, interaction_id=None, interaction_token=None):
         self.author = author
         self.guild = guild
         self.channel = channel
         self.content = content
+        self.interaction_id = interaction_id
+        self.interaction_token = interaction_token
 
 
 class BaseBot(discord.Client):
@@ -106,16 +110,38 @@ class BaseBot(discord.Client):
     async def answer(self, message, embed: discord.Embed, content=''):
         try:
             if not embed:
-                return await message.channel.send(content=content)
+                return await self.answer_or_react(message, embed, content)
             self.embed_check_limits(embed)
             embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
-            return await message.channel.send(embed=embed)
+            return await self.answer_or_react(message, embed, content)
         except discord.errors.Forbidden:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
         except EmbedLimitsExceed as e:
             warning = f'[{message.guild}][{message.channel}] Could not post response, embed limits exceed: {e}.'
             e = discord.Embed(title='Error', description=warning)
             return await message.channel.send(embed=e)
+
+    async def answer_or_react(self, message, embed: discord.Embed, content=None):
+        if hasattr(message, 'interaction_id'):
+            return await self.send_slash_command_result(message, embed, content)
+        elif not embed:
+            return await message.channel.send(content=content)
+        return await message.channel.send(embed=embed)
+
+    @staticmethod
+    async def send_slash_command_result(message, embed, content):
+        endpoint = f'interactions/{message.interaction_id}/{message.interaction_token}/callback'
+        url = f'https://discord.com/api/v8/{endpoint}'
+        channel_message_with_source = 4
+        response = {
+            'type': channel_message_with_source,
+            'data': {
+                'embeds': [embed.to_dict()] if embed else [],
+                'content': content,
+            },
+        }
+        async with aiohttp.ClientSession() as session:
+            await session.post(url, headers={"Authorization": f"Bot {os.getenv('DISCORD_TOKEN')}"}, json=response)
 
     async def on_slash_command(self, function, options, message):
         raise NotImplemented('This function has not been implemented.')
@@ -137,7 +163,7 @@ class BaseBot(discord.Client):
             options = {o['name']: o['value'] for o in event['data'].get('options', [])}
             options_text = ' '.join([f'{k}={v}' for k, v in options.items()])
             content = f'/{event["data"]["name"]} {options_text}'
-            message = FakeMessage(author, guild, channel, content)
+            message = FakeMessage(author, guild, channel, content, event['id'], event['token'])
             await self.on_slash_command(function, options, message)
         except discord.HTTPException as e:
             log.debug(f'Slash command triggered in broken channel: {e}')
