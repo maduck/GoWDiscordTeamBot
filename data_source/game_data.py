@@ -626,7 +626,7 @@ class GameData:
         current_event_kingdom = self.get_current_event_kingdom_id()
         lowest_unreleased_artifact_id = self.user_data['pEconomyModel']['LowestUnreleasedArtifactId']
         lowest_unpurchasable_artifact_id = self.user_data['pEconomyModel']['LowestUnpurchasableArtifactId']
-        if lowest_unpurchasable_artifact_id == lowest_unpurchasable_artifact_id:
+        if lowest_unpurchasable_artifact_id == lowest_unreleased_artifact_id:
             return
         event_kingdoms = []
         for artifact in self.data['Artifacts']:
