@@ -39,7 +39,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.48.11'
+    VERSION = '0.48.12'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -157,7 +157,7 @@ class DiscordBot(BaseBot):
                               description='\n'.join(category_lines), color=color)
             if any(['`?`' in line for line in category_lines]):
                 e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
-            await self.answer(message, e)
+            await self.answer(message, e, no_interaction=True)
 
     async def adventures(self, message, lang, **kwargs):
         adventures = self.expander.get_adventure_board(lang)
