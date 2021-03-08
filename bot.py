@@ -39,7 +39,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.48.12'
+    VERSION = '0.48.13'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -367,7 +367,7 @@ class DiscordBot(BaseBot):
 
     class_ = partialmethod(handle_search, title='Class')
     kingdom = partialmethod(handle_search, title='Kingdom')
-    pet = partialmethod(handle_search, title='Pet')
+    pet = partialmethod(handle_search, title='Pet', formatter='{0.name} `#{0.id}`')
     weapon = partialmethod(handle_search, title='Weapon')
     affix = partialmethod(handle_search, title='Affix',
                           formatter='{0[name]} ({0[num_weapons]} {0[weapons_title]})')
