@@ -475,7 +475,7 @@ class DiscordBot(BaseBot):
 
     async def waffles(self, message, lang, waffle_no, **kwargs):
         random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
-        max_waffles = 67
+        max_waffles = 68
         if waffle_no and waffle_no.isdigit() and 1 <= int(waffle_no) <= max_waffles:
             waffle_no = int(waffle_no)
             image_no = f'~~{random_title}~~ #{waffle_no}'
