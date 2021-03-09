@@ -35,7 +35,7 @@ STANDARD_OPTIONS = {
     }
 }
 
-NO_QUOTE = r'^([^>].*)??'
+NO_QUOTE = r'^([^>].*?)??'
 LANG_PATTERN = r'(?P<lang>' + '|'.join(LANGUAGES) + ')?'
 DEFAULT_PATTERN = '^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.)'
 SEARCH_PATTERN = DEFAULT_PATTERN + '{0} #?(?P<search_term>.*)$'
