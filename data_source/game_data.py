@@ -656,7 +656,7 @@ class GameData:
             if 'PlayerTeamRestrictions' not in raw_data:
                 return {}
             return {
-                '[TROOPHELP_MANA0]': self.event_raw_data.get('PlayerTeamRestrictions', {}).get('ManaColors'),
+                '[FILTER_MANACOLOR]': self.event_raw_data.get('PlayerTeamRestrictions', {}).get('ManaColors'),
                 '[KINGDOM]': [self.kingdoms[k]['name'] for k in
                               self.event_raw_data['PlayerTeamRestrictions']['KingdomIds']],
                 '[TROOP_TYPES]': self.event_raw_data['PlayerTeamRestrictions']['TroopTypes'],

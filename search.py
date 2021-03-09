@@ -976,7 +976,7 @@ class TeamExpander:
         self.translate_drop_chances(drop_chances, lang)
         return drop_chances
 
-    def get_current_event(self, lang):
+    def get_current_event(self, lang, emojis):
         event = copy.deepcopy(self.weekly_event)
         kingdoms = self.search_kingdom(event['kingdom_id'], lang)
         if kingdoms:
@@ -1002,7 +1002,13 @@ class TeamExpander:
                 'name': _(f'[WONDER_{event[item]}_NAME]', lang),
                 'description': _(f'[WONDER_{event[item]}_DESC]', lang),
             }
-        event['restrictions'] = {_(r, lang): ', '.join([_(i, lang) for i in v]) for r, v in
+
+        def translate_restriction(r):
+            if isinstance(r, int):
+                return emojis.get(COLORS[r])
+            return _(r, lang)
+
+        event['restrictions'] = {_(r, lang): ', '.join([translate_restriction(i) for i in v]) for r, v in
                                  event['restrictions'].items() if v}
         event['troop'] = _(event['troop'], lang)
         if event['weapon_id']:
