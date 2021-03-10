@@ -39,7 +39,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.48.16'
+    VERSION = '0.48.17'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -670,9 +670,13 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def create_bookmark(self, message, description, team_code, lang, shortened='', **kwargs):
-        bookmark_id = await self.expander.bookmarks.add(message.author.id, message.author.display_name, description,
-                                                        team_code)
-        return await self.show_bookmark(message, bookmark_id, lang, shortened)
+        try:
+            bookmark_id = await self.expander.bookmarks.add(message.author.id, message.author.display_name, description,
+                                                            team_code)
+            return await self.show_bookmark(message, bookmark_id, lang, shortened)
+        except BookmarkError as te:
+            e = self.generate_response('Bookmark', self.BLACK, 'There was a problem', str(te))
+            await self.answer(message, e)
 
     async def delete_bookmark(self, message, bookmark_id, lang, **kwargs):
         try:
