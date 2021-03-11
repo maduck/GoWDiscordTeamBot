@@ -480,7 +480,7 @@ class DiscordBot(BaseBot):
             waffle_no = int(waffle_no)
             image_no = f'~~{random_title}~~ #{waffle_no}'
         else:
-            waffle_no = random.randint(0, max_waffles)
+            waffle_no = random.randrange(max_waffles + 1)
             image_no = f'{random_title} #{waffle_no}'
 
         title = _('[QUEST9480_OBJ0_MSG]', lang)
@@ -500,12 +500,12 @@ class DiscordBot(BaseBot):
             meme = available_memes[int(meme_no) - 1]
             image_no = f'~~{random_title}~~ meme `#{int(meme_no)}`'
         else:
-            meme_no = random.randint(0, len(available_memes) - 1)
+            meme_no = random.randrange(len(available_memes))
             meme = available_memes[meme_no]
             image_no = f'{random_title} meme `#{meme_no + 1}`'
 
         title = _('[Troop_K02_07_DESC]', lang)
-        subtitle = _(f'[FUNNY_LOAD_TEXT_{random.randint(0, 19)}]', lang)
+        subtitle = _(f'[FUNNY_LOAD_TEXT_{random.randrange(20)}]', lang)
         meme = urllib.parse.quote(meme)
         url = f'{base_url}/{meme}'
 
