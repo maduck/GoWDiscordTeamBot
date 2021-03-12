@@ -399,6 +399,7 @@ class GameData:
                                and w['requirement'] == 1000
                                and sorted(w['colors']) == sorted(faction_data['colors'])
                                and w['rarity'] == 'Epic'
+                               and w.get('release_date', datetime.datetime.now()) < datetime.datetime(2030, 1, 1)
                                ]
             if faction_weapons:
                 weapon_id = faction_weapons[-1]
