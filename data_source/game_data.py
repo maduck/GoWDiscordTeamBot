@@ -392,6 +392,11 @@ class GameData:
 
         factions = [(k_id, kingdom) for k_id, kingdom in self.kingdoms.items() if
                     kingdom['underworld'] and kingdom['troop_ids']]
+
+        faction_weapon_overrides = {
+            3053: 1274,
+            3058: 1414,
+        }
         for faction_id, faction_data in factions:
             kingdom_id = faction_data['linked_kingdom_id']
             faction_weapons = [w['id'] for w in self.weapons.values()
@@ -399,10 +404,10 @@ class GameData:
                                and w['requirement'] == 1000
                                and sorted(w['colors']) == sorted(faction_data['colors'])
                                and w['rarity'] == 'Epic'
-                               and w.get('release_date', datetime.datetime.now()) < datetime.datetime(2030, 1, 1)
                                ]
             if faction_weapons:
                 weapon_id = faction_weapons[-1]
+                weapon_id = faction_weapon_overrides.get(faction_id, weapon_id)
                 self.kingdoms[faction_id]['event_weapon'] = self.weapons[weapon_id]
                 self.weapons[weapon_id]['event_faction'] = faction_id
 
