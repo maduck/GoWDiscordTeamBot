@@ -39,7 +39,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.48.17'
+    VERSION = '0.49.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -842,6 +842,29 @@ class DiscordBot(BaseBot):
     def add_available_languages(e):
         available_langs = ', '.join([f'`{lang_code}`' for lang_code in LANGUAGES])
         e.add_field(name='Available languages', value=available_langs, inline=False)
+
+    @owner_required
+    async def search_guild(self, message, search_term, **kwargs):
+        matching_guilds = []
+        for guild in self.guilds:
+            if search_term.lower() in guild.name.lower():
+                matching_guilds.append(guild)
+        e = self.views.render_guilds(matching_guilds)
+        await self.answer(message, e)
+
+    @owner_required
+    async def kick_guild(self, message, guild_id, **kwargs):
+        guild_id = int(guild_id)
+        guild = discord.utils.find(lambda g: g.id == guild_id, self.guilds)
+        e = self.generate_response('Guild management', self.RED, 'Kick', f'Could not find a guild with that id.')
+        if guild:
+            await guild.leave()
+            e = self.generate_response('Guild management', self.RED, 'Kick', f'Left guild {guild.name}')
+        await self.answer(message, e)
+
+    @owner_required
+    async def ban_guild(self, message, guild_id, **kwargs):
+        pass
 
     async def register_slash_commands(self):
         guild_id = CONFIG.get('slash_command_guild_id')

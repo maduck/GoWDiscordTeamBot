@@ -534,3 +534,7 @@ class Views:
             'rewards': _('[REWARDS]', lang),
         }
         return self.render_embed(e, 'current_event.jinja', **data)
+
+    def render_guilds(self, matching_guilds):
+        e = discord.Embed(title='List of guilds', color=self.RED)
+        return self.render_embed(e, 'guilds.jinja', guilds=matching_guilds)

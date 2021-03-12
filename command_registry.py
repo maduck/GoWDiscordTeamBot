@@ -477,7 +477,19 @@ COMMAND_REGISTRY = [
             },
             STANDARD_OPTIONS['lang']
         ],
-    }
+    },
+    {
+        'function': 'search_guild',
+        'pattern': re.compile(SEARCH_PATTERN.format('search_guild'), MATCH_OPTIONS),
+    },
+    {
+        'function': 'kick_guild',
+        'pattern': re.compile(DEFAULT_PATTERN + r'kick_guild (?P<guild_id>\d+)', MATCH_OPTIONS),
+    },
+    {
+        'function': 'ban_guild',
+        'pattern': re.compile(DEFAULT_PATTERN + r'ban_guild (?P<guild_id>\d+)', MATCH_OPTIONS),
+    },
 ]
 
 
