@@ -488,7 +488,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'ban_guild',
-        'pattern': re.compile(DEFAULT_PATTERN + r'ban_guild (?P<guild_id>\d+)', MATCH_OPTIONS),
+        'pattern': re.compile(DEFAULT_PATTERN + r'ban_guild (?P<guild_id>\d+) (?P<reason>.+)$', MATCH_OPTIONS),
     },
 ]
 

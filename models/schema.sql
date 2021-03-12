@@ -51,9 +51,12 @@ CREATE TABLE IF NOT EXISTS PetRescue
 
 CREATE TABLE IF NOT EXISTS PetRescueConfig
 (
-    guild_name TEXT,
-    guild_id INTEGER,
-    channel_name TEXT,
+    guild_name
+    TEXT,
+    guild_id
+    INTEGER,
+    channel_name
+    TEXT,
     channel_id
     INTEGER,
     mention
@@ -72,10 +75,62 @@ UNIQUE INDEX PetRescueConfig_index
 
 CREATE TABLE IF NOT EXISTS Bookmark
 (
-    id          TEXT NOT NULL CONSTRAINT Bookmark_pk PRIMARY KEY,
-    author_id   TEXT NOT NULL,
-    author_name TEXT NOT NULL,
-    description TEXT NOT NULL,
-    team_code   TEXT NOT NULL,
-    created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+    id
+    TEXT
+    NOT
+    NULL
+    CONSTRAINT
+    Bookmark_pk
+    PRIMARY
+    KEY,
+    author_id
+    TEXT
+    NOT
+    NULL,
+    author_name
+    TEXT
+    NOT
+    NULL,
+    description
+    TEXT
+    NOT
+    NULL,
+    team_code
+    TEXT
+    NOT
+    NULL,
+    created
+    TIMESTAMP
+    DEFAULT
+    CURRENT_TIMESTAMP
+    NOT
+    NULL
 );
+
+CREATE TABLE IF NOT EXISTS Ban
+(
+    guild_id
+    INTEGER
+    NOT
+    NULL
+    CONSTRAINT
+    Ban_pk
+    PRIMARY
+    KEY,
+    author_name
+    TEXT
+    NOT
+    NULL,
+    reason
+    TEXT,
+    ban_time
+    TIMESTAMP
+    DEFAULT
+    CURRENT_TIMESTAMP
+    NOT
+    NULL
+);
+CREATE
+UNIQUE INDEX Ban_guild_id_uindex
+    ON Ban (guild_id);
+

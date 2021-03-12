@@ -24,6 +24,7 @@ from configurations import CONFIG
 from discord_wrappers import admin_required, guild_required, owner_required
 from game_constants import CAMPAIGN_COLORS, RARITY_COLORS, TASK_SKIP_COSTS
 from jobs.news_downloader import NewsDownloader
+from models.ban import Ban
 from models.bookmark import BookmarkError
 from models.pet_rescue import PetRescue
 from models.pet_rescue_config import PetRescueConfig
@@ -39,7 +40,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.49.1'
+    VERSION = '0.49.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -72,6 +73,10 @@ class DiscordBot(BaseBot):
 
     async def on_guild_join(self, guild):
         await super().on_guild_join(guild)
+        ban = Ban.get(guild.id)
+        if ban:
+            log.debug(f'Guild {guild} ({guild.id}) was banned by {ban["author_name"]} because: {ban["reason"]}.')
+            guild.leave()
         welcome_message = self.views.render_welcome_message(self.prefix.get(guild))
         for channel in guild.text_channels:
             if channel.permissions_for(guild.me).send_messages:
@@ -863,8 +868,9 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     @owner_required
-    async def ban_guild(self, message, guild_id, **kwargs):
-        pass
+    async def ban_guild(self, message, guild_id, reason, **kwargs):
+        Ban.add(guild_id, reason, message.author.display_name)
+        await self.kick_guild(message, guild_id)
 
     async def register_slash_commands(self):
         guild_id = CONFIG.get('slash_command_guild_id')
