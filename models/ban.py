@@ -7,7 +7,7 @@ class Ban:
     @staticmethod
     def get(guild_id):
         db = DB()
-        result = db.cursor.execute(f'SELECT * FROM Ban WHERE guild_id = ?;', guild_id)
+        result = db.cursor.execute(f'SELECT * FROM Ban WHERE guild_id = ?;', (guild_id,))
         ban = result.fetchone()
         db.close()
         return ban

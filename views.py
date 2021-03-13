@@ -502,6 +502,14 @@ class Views:
         e = discord.Embed(title='Thank you for inviting me!', color=self.WHITE)
         return self.render_embed(e, 'welcome.jinja', prefix=prefix)
 
+    def render_ban_message(self, ban):
+        e = discord.Embed(title='Invalid Server', color=self.RED)
+        thumbnail_url = f'{CONFIG.get("graphics_url")}/Liveevents/Liveeventscurrencies_skull_full.png'
+        e.set_thumbnail(url=thumbnail_url)
+        e.set_footer(text='Ban time')
+        e.timestamp = ban['ban_time']
+        return self.render_embed(e, 'ban.jinja', ban=ban)
+
     def render_current_event(self, current_event, lang):
         title = f'{_("[WEEKLY_EVENT]", lang)}: {current_event["name"]}'
         e = discord.Embed(title=title, color=self.WHITE)

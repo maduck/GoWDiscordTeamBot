@@ -40,7 +40,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.49.2'
+    VERSION = '0.49.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -73,15 +73,21 @@ class DiscordBot(BaseBot):
 
     async def on_guild_join(self, guild):
         await super().on_guild_join(guild)
+        first_writable_channel = self.first_writable_channel(guild)
+
         ban = Ban.get(guild.id)
         if ban:
-            log.debug(f'Guild {guild} ({guild.id}) was banned by {ban["author_name"]} because: {ban["reason"]}.')
-            guild.leave()
+            log.debug(f'Guild {guild} ({guild.id}) was banned by {ban["author_name"]} because: {ban["reason"]}')
+            if first_writable_channel:
+                try:
+                    ban_message = self.views.render_ban_message(ban)
+                    await first_writable_channel.send(embed=ban_message)
+                finally:
+                    return await guild.leave()
+
         welcome_message = self.views.render_welcome_message(self.prefix.get(guild))
-        for channel in guild.text_channels:
-            if channel.permissions_for(guild.me).send_messages:
-                await channel.send(embed=welcome_message)
-                return
+        if first_writable_channel:
+            await first_writable_channel.send(embed=welcome_message)
 
     async def on_slash_command(self, function, options, message):
         try:
@@ -869,8 +875,8 @@ class DiscordBot(BaseBot):
 
     @owner_required
     async def ban_guild(self, message, guild_id, reason, **kwargs):
-        Ban.add(guild_id, reason, message.author.display_name)
-        await self.kick_guild(message, guild_id)
+        Ban.add(int(guild_id), reason, message.author.display_name)
+        await self.kick_guild(message=message, guild_id=guild_id)
 
     async def register_slash_commands(self):
         guild_id = CONFIG.get('slash_command_guild_id')

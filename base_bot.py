@@ -253,3 +253,9 @@ class BaseBot(discord.Client):
             raise EmbedLimitsExceed('embed.author.name')
         if len(embed) > 6000:
             raise EmbedLimitsExceed('total length of embed')
+
+    @staticmethod
+    def first_writable_channel(guild):
+        for channel in guild.text_channels:
+            if channel.permissions_for(guild.me).send_messages:
+                return channel
