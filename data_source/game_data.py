@@ -672,14 +672,15 @@ class GameData:
                 '[ROSTER]': self.event_raw_data['PlayerTeamRestrictions']['RosterIds'],
             }
 
-        def extract_currency(raw_data):
+        def extract_currencies(raw_data):
             if 'CurrencyData' not in raw_data:
                 return {'name': {}, 'value': '-'}
-            return {
-                'icon': f'Liveevents/Liveeventscurrencies_{self.event_raw_data["CurrencyData"][0]["Icon"]}_full.png',
-                'value': self.event_raw_data['CurrencyData'][0]['Value'],
-                'name': {lang[0:2]: c for lang, c in self.event_raw_data['CurrencyData'][0]['Name'].items()},
-            }
+            currencies = [{
+                'icon': f'Liveevents/Liveeventscurrencies_{currency["Icon"]}_full.png',
+                'value': currency['Value'],
+                'name': {lang[0:2]: translation for lang, translation in currency['Name'].items()},
+            } for currency in self.event_raw_data['CurrencyData']]
+            return currencies
 
         def extract_rewards(raw_data):
             rewards = {}
@@ -710,7 +711,7 @@ class GameData:
             'token': self.event_raw_data.get('TokenId'),
             'badge': self.event_raw_data.get('BadgeId'),
             'medal': self.event_raw_data.get('MedalId'),
-            'currency': extract_currency(self.event_raw_data),
+            'currencies': extract_currencies(self.event_raw_data),
             'rewards': extract_rewards(self.event_raw_data),
             'start': datetime.datetime.utcfromtimestamp(self.event_raw_data['StartDate']),
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),

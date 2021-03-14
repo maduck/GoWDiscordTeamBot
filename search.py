@@ -983,8 +983,10 @@ class TeamExpander:
             event['kingdom'] = kingdoms[0]
         event['name'] = event['name'].get(lang, _(EVENT_TYPES[event['type']], lang))
         event['lore'] = event['lore'].get(lang, '')
-        event['currency']['name'] = event['currency']['name'].get(lang, '')
-        event['currency']['value'] = _('[N_TIMES_POINTS]', lang).replace('%1', str(event['currency']['value']))
+        event['currencies'] = [{
+            'name': currency['name'].get(lang, ''),
+            'value': _('[N_TIMES_POINTS]', lang).replace('%1', str(currency['value']))
+        } for currency in event['currencies']]
 
         for stage in event['rewards'].keys():
             for reward in event['rewards'][stage]:
