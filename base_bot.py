@@ -207,7 +207,8 @@ class BaseBot(discord.Client):
         log.debug(f'Joined guild {guild} (id {guild.id}) Now in {len(self.guilds)} guilds.')
 
     async def on_guild_remove(self, guild):
-        log.debug(f'Guild {guild} (id {guild.id}) kicked me out. Now in {len(self.guilds)} guilds.')
+        if guild:
+            log.debug(f'Guild {guild} (id {guild.id}) kicked me out. Now in {len(self.guilds)} guilds.')
 
     async def update_base_emojis(self):
         guilds = [CONFIG.get('base_guild'), CONFIG.get('base_guild_2')]
