@@ -9,7 +9,7 @@
 **{{ event.badge.name }}**: {{ event.badge.description }}
 **{{ event.medal.name }}**: {{ event.medal.description }}{% endif %}
 {% if event.restrictions %}<T>__**{{ troop_restrictions }}**__</T>
-{% for r, v in event.restrictions.items() %}
+{% for r, v in event.restrictions.items() -%}
 {{ r }}: {{ v }}
 {% endfor %}{% endif %}
 {% if event.rewards %}<T>__**{{ rewards }}**__</T>
