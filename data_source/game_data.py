@@ -674,7 +674,7 @@ class GameData:
 
         def extract_currencies(raw_data):
             if 'CurrencyData' not in raw_data:
-                return {'name': {}, 'value': '-'}
+                return []
             currencies = [{
                 'icon': f'Liveevents/Liveeventscurrencies_{currency["Icon"]}_full.png',
                 'value': currency['Value'],
