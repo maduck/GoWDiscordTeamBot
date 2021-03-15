@@ -149,7 +149,7 @@ COMMAND_REGISTRY = [
         'function': 'pet_rescue',
         'pattern': re.compile(
             DEFAULT_PATTERN +
-            '(pr|pet rescue) (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?min)?)?( (?P<mention><?@.+))?$',
+            '(pr|pet rescue) (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?m(ins?)?)?)?( (?P<mention><?@.+))?$',
             MATCH_OPTIONS),
         'description': 'Shows general information about the bot',
         'options': [STANDARD_OPTIONS['search_term'],
