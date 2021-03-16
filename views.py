@@ -262,6 +262,7 @@ class Views:
         e.timestamp = toplist['created']
         chunk_size = 4
         item_chunks = chunks(toplist['items'], chunk_size)
+        character_count = 0
         for i, chunk in enumerate(item_chunks, start=1):
             formatted_chunk = [
                 f'**{chunk_size * (i - 1) + j}. {self.my_emojis.get(item["color_code"])} {item["name"]}** '
@@ -272,8 +273,9 @@ class Views:
             title = f'__{(i - 1) * chunk_size + 1}...{(i - 1) * chunk_size + len(chunk)}__'
             if i == 1:
                 title = toplist['description']
-            e.add_field(name=title, value=chunk_message, inline=False)
-
+            character_count += len(chunk_message) + len(title)
+            if character_count < 6000:
+                e.add_field(name=title, value=chunk_message, inline=False)
         return e
 
     def render_my_toplists(self, toplists, author_name):
