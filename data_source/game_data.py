@@ -659,6 +659,9 @@ class GameData:
             return {}
 
         def extract_restrictions(raw_data):
+            def roles_translation(roles):
+                return [f'[TROOP_ROLE_{role.upper()}]' for role in roles]
+
             if 'PlayerTeamRestrictions' not in raw_data:
                 return {}
             return {
@@ -668,7 +671,7 @@ class GameData:
                 '[TROOP_TYPES]': self.event_raw_data['PlayerTeamRestrictions']['TroopTypes'],
                 '[FILTER_WEAPONTYPE]': self.event_raw_data['PlayerTeamRestrictions']['WeaponTypes'],
                 '[RARITY]': self.event_raw_data['PlayerTeamRestrictions']['TroopRarities'],
-                '[FILTER_ROLE]': self.event_raw_data['PlayerTeamRestrictions']['Roles'],
+                '[FILTER_ROLE]': roles_translation(self.event_raw_data['PlayerTeamRestrictions']['Roles']),
                 '[ROSTER]': self.event_raw_data['PlayerTeamRestrictions']['RosterIds'],
             }
 
