@@ -423,7 +423,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'update_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN + r'toplist update (?P<toplist_id>[a-zA-Z0-9]+) (?P<description>.+)? (?P<items>(.+,?)+)$',
+            DEFAULT_PATTERN + r'toplist update (?P<toplist_id>[a-zA-Z0-9]+) (?P<description>[^,]+)? (?P<items>(.+,?)+)$',
             MATCH_OPTIONS)
     },
     {
