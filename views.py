@@ -269,7 +269,7 @@ class Views:
                 f'{item["spell"]["description"]}'
                 for j, item in enumerate(chunk, start=1)]
             chunk_message = '\n'.join(formatted_chunk)
-            title = f'__{(i - 1) * chunk_size + 1}...{i * chunk_size}__'
+            title = f'__{(i - 1) * chunk_size + 1}...{(i - 1) * chunk_size + len(chunk)}__'
             if i == 1:
                 title = toplist['description']
             e.add_field(name=title, value=chunk_message, inline=False)
