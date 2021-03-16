@@ -706,7 +706,6 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def create_toplist(self, message, description, items, lang, **kwargs):
-        print(kwargs)
         try:
             toplist_ids = self.expander.get_toplist_troop_ids(items, lang)
             items = ','.join(toplist_ids)
