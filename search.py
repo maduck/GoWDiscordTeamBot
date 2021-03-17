@@ -799,11 +799,13 @@ class TeamExpander:
             return None
         result = toplist.copy()
         result['items'] = []
-        for troop_search in toplist['items']:
-            troops = self.search_troop(troop_search, lang)
-            if not troops:
+        for item_search in toplist['items']:
+            items = self.search_troop(item_search, lang)
+            if not items:
+                items = self.search_weapon(item_search, lang)
+            if not items:
                 continue
-            result['items'].append(troops[0])
+            result['items'].append(items[0])
         return result
 
     async def create_toplist(self, message, description, items, lang, update_id):
@@ -883,9 +885,11 @@ class TeamExpander:
     def get_toplist_troop_ids(self, items, lang):
         result = []
         for search_term in items.split(','):
-            troops = self.search_troop(search_term, lang)
-            if troops:
-                result.append(str(troops[0]['id']))
+            items = self.search_troop(search_term, lang)
+            if not items:
+                items = self.search_weapon(search_term, lang)
+            if items:
+                result.append(str(items[0]['id']))
         return result
 
     def get_soulforge_weapon_image_data(self, search_term, date, switch, lang):
