@@ -596,6 +596,8 @@ class GameData:
             reward_type = '[PORTRAIT]'
         elif reward_type == '[TROOP]':
             reward_type = self.troops.get(data)['name']
+        elif reward_type == '[CHAOSSHARD]':
+            reward_type = '[N_CHAOS_SHARD]'
         return reward_type
 
     def populate_drop_chances(self):
