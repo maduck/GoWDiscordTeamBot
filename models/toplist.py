@@ -5,7 +5,7 @@ from hashids import Hashids
 
 from models import DB
 
-MAX_TOPLISTS = 5
+MAX_TOPLISTS = 30
 
 
 class ToplistError(Exception):
