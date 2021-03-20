@@ -275,6 +275,8 @@ class GameData:
                 extra_data = t
                 task_order = i
 
+        if task['TaskTitle'].endswith('CRYSTALS]'):
+            extra_data['Value1'] = task['YValue']
         translated_task = {
             'reward': task['Rewards'][0]['Amount'],
             'condition': task.get('Condition'),
