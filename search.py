@@ -1014,9 +1014,23 @@ class TeamExpander:
                 return emojis.get(COLORS[r])
             return _(r, lang)
 
+        def translate_battle(b):
+            result = b.copy()
+            result['name'] = b['names'].get(lang)
+            del result['names']
+            return result
+
         event['restrictions'] = {_(r, lang): ', '.join([translate_restriction(i) for i in v]) for r, v in
                                  event['restrictions'].items() if v}
         event['troop'] = _(event['troop'], lang)
         if event['weapon_id']:
             event['weapon'] = _(self.weapons.get(event['weapon_id'], {'name': ''})['name'], lang)
+
+        new_battles = []
+        for battle in event['battles']:
+            tb = translate_battle(battle)
+            if tb not in new_battles:
+                new_battles.append(tb)
+        event['battles'] = new_battles
+
         return event

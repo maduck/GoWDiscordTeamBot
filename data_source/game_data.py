@@ -4,7 +4,7 @@ import re
 
 from data_source import Pets
 from game_assets import GameAssets
-from game_constants import COLORS, EVENT_TYPES, SOULFORGE_ALWAYS_AVAILABLE
+from game_constants import COLORS, EVENT_TYPES, SOULFORGE_ALWAYS_AVAILABLE, TROOP_RARITIES
 from util import U, convert_color_array
 
 NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
@@ -705,6 +705,13 @@ class GameData:
                 'amount': reward['Amount'],
             }
 
+        def transform_battle(battle):
+            return {
+                'names': {lang[0:2]: translation for lang, translation in battle['Name'].items()},
+                'icon': f'Liveevents/Liveeventslocationicons_{battle["Icon"]}_full.png',
+                'rarity': TROOP_RARITIES[battle['Color']],
+            }
+
         self.weekly_event = {
             'kingdom_id': str(self.event_raw_data.get('Kingdom')),
             'type': self.event_raw_data.get('Type'),
@@ -720,6 +727,7 @@ class GameData:
             'medal': self.event_raw_data.get('MedalId'),
             'currencies': extract_currencies(self.event_raw_data),
             'rewards': extract_rewards(self.event_raw_data),
+            'battles': [transform_battle(b) for b in self.event_raw_data.get('BattleArray', [])],
             'start': datetime.datetime.utcfromtimestamp(self.event_raw_data['StartDate']),
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
         }
