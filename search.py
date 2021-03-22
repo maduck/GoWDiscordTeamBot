@@ -674,9 +674,21 @@ class TeamExpander:
         tiers = ['bronze', 'silver', 'gold']
         result['campaigns'] = {
             f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(t, lang) for t in self.campaign_tasks[tier]]
-            for i, tier in enumerate(tiers) if _filter is None or tier.lower() == _filter.lower()
+            for i, tier in reversed(list(enumerate(tiers))) if _filter is None or tier.lower() == _filter.lower()
         }
         result['has_content'] = any([len(c) > 0 for c in result['campaigns'].values()])
+        result['background'] = f'Background/{self.campaign_tasks["kingdom"]["filename"]}_full.png'
+        result['gow_logo'] = 'Atlas/gow_logo.png'
+        kingdom_filebase = self.campaign_tasks['kingdom']['filename']
+        result['kingdom_logo'] = f'Troopcardshields_{kingdom_filebase}_full.png'
+        result['kingdom'] = _(self.campaign_tasks['kingdom']['name'], lang)
+        result['start_date'] = format_locale_date(date=None, lang=lang)
+        result['date'] = result['start_date']
+        result['lang'] = lang
+        result['texts'] = {
+            'campaign': _('[CAMPAIGN]', lang),
+            'team': _('[EVENT_TEAM]', lang),
+        }
         return result
 
     def translate_campaign_task(self, task, lang):

@@ -16,6 +16,7 @@ import prettytable
 import requests
 
 import bot_tasks
+import campaign_preview
 import models
 import soulforge_preview
 from base_bot import BaseBot, log
@@ -40,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.49.13'
+    VERSION = '0.50.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -135,6 +136,24 @@ class DiscordBot(BaseBot):
             if groups.get('prefix', user_prefix) == user_prefix:
                 return getattr(self, command['function']), groups
         return None, None
+
+    @owner_required
+    async def campaign_preview(self, message, lang, switch=None, team_code=None, **kwargs):
+        switch = switch or CONFIG.get('default_news_platform') == 'switch'
+        async with message.channel.typing():
+            start = time.time()
+            campaign_data = self.expander.get_campaign_tasks(lang)
+            campaign_data['switch'] = switch
+            campaign_data['team'] = None
+            if team_code:
+                campaign_data['team'] = self.expander.get_team_from_message(team_code, lang)
+            from pprint import pprint
+            pprint(campaign_data)
+            image_data = campaign_preview.render_all(campaign_data)
+            result = discord.File(image_data, f'campaign_{campaign_data["start_date"]}.png')
+            duration = time.time() - start
+            log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
+            await message.channel.send(file=result)
 
     @owner_required
     async def soulforge_preview(self, message, lang, search_term, release_date=None, switch=None, **kwargs):

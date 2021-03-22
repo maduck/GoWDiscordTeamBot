@@ -479,6 +479,27 @@ COMMAND_REGISTRY = [
         ],
     },
     {
+        'function': 'campaign_preview',
+        'pattern': re.compile(
+            DEFAULT_PATTERN + r'campaign_preview(?P<switch> Switch)?( (?P<team_code>.*))?$', MATCH_OPTIONS),
+        'description': 'Generate a Campaign Preview image',
+        'options': [
+            {
+                'name': 'team_code',
+                'description': 'Proposed team to solve campaign tasks',
+                'type': OptionType.STRING.value,
+                'required': False,
+            },
+            {
+                'name': 'switch',
+                'description': 'Add Nintendo Switch logo',
+                'type': OptionType.BOOLEAN.value,
+                'required': False,
+            },
+            STANDARD_OPTIONS['lang']
+        ],
+    },
+    {
         'function': 'search_guild',
         'pattern': re.compile(SEARCH_PATTERN.format('search_guild'), MATCH_OPTIONS),
     },

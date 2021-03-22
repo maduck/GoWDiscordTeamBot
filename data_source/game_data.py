@@ -258,9 +258,11 @@ class GameData:
         event_kingdom_id = self.get_current_event_kingdom_id()
 
         tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
-        for level in ('Bronze', 'Silver', 'Gold'):
+
+        for level in ('Gold', 'Silver', 'Bronze'):
             task_list = [self.transform_campaign_task(task) for task in tasks[level]]
             self.campaign_tasks[level.lower()] = sorted(task_list, key=operator.itemgetter('order'))
+        self.campaign_tasks['kingdom'] = self.kingdoms[event_kingdom_id]
 
     def transform_campaign_task(self, task):
         extra_data = {}
