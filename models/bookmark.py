@@ -5,7 +5,7 @@ from hashids import Hashids
 
 from models import DB
 
-MAX_BOOKMARKS = 10
+MAX_BOOKMARKS = 30
 
 
 class BookmarkError(Exception):
