@@ -16,9 +16,9 @@ import prettytable
 import requests
 
 import bot_tasks
-import campaign_preview
+import graphic_campaign_preview
+import graphic_soulforge_preview
 import models
-import soulforge_preview
 from base_bot import BaseBot, log
 from command_registry import COMMAND_REGISTRY, add_slash_command, get_all_commands, remove_slash_command
 from configurations import CONFIG
@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.50.0'
+    VERSION = '0.50.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -147,9 +147,7 @@ class DiscordBot(BaseBot):
             campaign_data['team'] = None
             if team_code:
                 campaign_data['team'] = self.expander.get_team_from_message(team_code, lang)
-            from pprint import pprint
-            pprint(campaign_data)
-            image_data = campaign_preview.render_all(campaign_data)
+            image_data = graphic_campaign_preview.render_all(campaign_data)
             result = discord.File(image_data, f'campaign_{campaign_data["start_date"]}.png')
             duration = time.time() - start
             log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
@@ -167,7 +165,7 @@ class DiscordBot(BaseBot):
                                   description=':(',
                                   color=self.BLACK)
                 return await self.answer(message, e)
-            image_data = soulforge_preview.render_all(weapon_data)
+            image_data = graphic_soulforge_preview.render_all(weapon_data)
             result = discord.File(image_data, f'soulforge_{release_date}.png')
             duration = time.time() - start
             log.debug(f'Soulforge generation took {duration:0.2f} seconds.')

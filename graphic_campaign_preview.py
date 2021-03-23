@@ -5,60 +5,15 @@ from wand.drawing import Drawing
 from wand.image import Image
 
 from game_constants import CAMPAIGN_COLORS, TASK_SKIP_COSTS
+from graphic_base_preview import BasePreview, FONTS, download_image, scale_down
 from search import _
-from soulforge_preview import FONTS, download_image, scale_down, word_wrap
 
 
-class CampaignPreview:
+class CampaignPreview(BasePreview):
     def __init__(self, data):
         self.data = data
         self.img = None
         self.spacing = 0
-
-    def render_background(self):
-        self.img = download_image(self.data['background'])
-        self.spacing = self.img.width // 2 - 980
-        gow_logo = download_image(self.data['gow_logo'])
-        ratio = gow_logo.width / gow_logo.height
-        gow_logo.resize(round(200 * ratio), 200)
-        switch_logo = Image(filename='switch_logo.png')
-        ratio = switch_logo.width / switch_logo.height
-        switch_logo.resize(round(100 * ratio), 100)
-        with Drawing() as draw:
-            color = Color('rgba(0, 0, 0, 0.7)')
-            draw.fill_color = color
-            draw.rectangle(0, 0, self.img.width, 300)
-            draw.composite(operator='atop',
-                           left=(300 - gow_logo.height) // 2, top=(300 - gow_logo.height) // 2,
-                           width=gow_logo.width, height=gow_logo.height,
-                           image=gow_logo)
-            if self.data['switch']:
-                draw.composite(operator='atop',
-                               left=(300 - switch_logo.height) // 2 - 15, top=300 - switch_logo.height - 15,
-                               width=switch_logo.width, height=switch_logo.height,
-                               image=switch_logo)
-            draw.fill_color = Color('white')
-            draw.font_size = 100
-            draw.text_antialias = True
-            draw.font = FONTS['raleway']
-            draw.text(450, 200, f'{self.data["texts"]["campaign"]}: {self.data["date"]}')
-
-            kingdom_logo = download_image(self.data['kingdom_logo'])
-            kingdom_width, kingdom_height = scale_down(kingdom_logo.width, kingdom_logo.height, 220)
-            kingdom_logo.resize(kingdom_width, kingdom_height)
-            draw.composite(operator='atop',
-                           left=self.img.width - kingdom_width - 15, top=15,
-                           width=kingdom_width, height=kingdom_height,
-                           image=kingdom_logo
-                           )
-            draw.font_size = 40
-            draw.text_alignment = 'center'
-            kingdom = word_wrap(self.img, draw, self.data['kingdom'], kingdom_width + 10, int(1.5 * draw.font_size))
-            x = self.img.width - kingdom_width // 2 - 15
-            y = kingdom_logo.height + int(1.5 * draw.font_size)
-            draw.text(x, y, kingdom)
-
-            draw(self.img)
 
     def render_tasks(self):
         y = 350
@@ -182,7 +137,7 @@ class CampaignPreview:
 
 def render_all(result):
     overview = CampaignPreview(result)
-    overview.render_background()
+    overview.render_background('{0[texts][campaign]}: {0[date]}')
     overview.draw_watermark()
     overview.render_tasks()
     overview.render_team()

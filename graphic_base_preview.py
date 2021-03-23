@@ -1,0 +1,125 @@
+import io
+import os
+from textwrap import wrap
+
+import requests
+from wand.color import Color
+from wand.drawing import Drawing
+from wand.image import Image
+
+BASE_URL = 'https://garyatrics.com/gow_assets'
+FONTS = {
+    'opensans': r'fonts/OpenSans-Regular.ttf',
+    'raleway': r'fonts/Raleway-Regular.ttf',
+}
+
+
+class BasePreview:
+    def render_background(self, title):
+        self.img = download_image(self.data['background'])
+        self.spacing = self.img.width // 2 - 980
+        gow_logo = download_image(self.data['gow_logo'])
+        ratio = gow_logo.width / gow_logo.height
+        gow_logo.resize(round(200 * ratio), 200)
+        switch_logo = Image(filename='switch_logo.png')
+        ratio = switch_logo.width / switch_logo.height
+        switch_logo.resize(round(100 * ratio), 100)
+        with Drawing() as draw:
+            color = Color('rgba(0, 0, 0, 0.7)')
+            draw.fill_color = color
+            draw.rectangle(0, 0, self.img.width, 300)
+            draw.composite(operator='atop',
+                           left=(300 - gow_logo.height) // 2, top=(300 - gow_logo.height) // 2,
+                           width=gow_logo.width, height=gow_logo.height,
+                           image=gow_logo)
+            if self.data['switch']:
+                draw.composite(operator='atop',
+                               left=(300 - switch_logo.height) // 2 - 15, top=300 - switch_logo.height - 15,
+                               width=switch_logo.width, height=switch_logo.height,
+                               image=switch_logo)
+            draw.fill_color = Color('white')
+            draw.font_size = 100
+            draw.text_antialias = True
+            draw.font = FONTS['raleway']
+            draw.text(450, 200, title.format(self.data))
+
+            kingdom_logo = download_image(self.data['kingdom_logo'])
+            kingdom_width, kingdom_height = scale_down(kingdom_logo.width, kingdom_logo.height, 220)
+            kingdom_logo.resize(kingdom_width, kingdom_height)
+            draw.composite(operator='atop',
+                           left=self.img.width - kingdom_width - 15, top=15,
+                           width=kingdom_width, height=kingdom_height,
+                           image=kingdom_logo
+                           )
+            draw.font_size = 40
+            draw.text_alignment = 'center'
+            kingdom = word_wrap(self.img, draw, self.data['kingdom'], kingdom_width + 10, int(1.5 * draw.font_size))
+            x = self.img.width - kingdom_width // 2 - 15
+            y = kingdom_logo.height + int(1.5 * draw.font_size)
+            draw.text(x, y, kingdom)
+
+            draw(self.img)
+
+
+def download_image(path):
+    cache_path = '.cache'
+    cache_filename = os.path.join(cache_path, path)
+    if os.path.exists(cache_filename):
+        f = open(cache_filename, 'rb')
+    else:
+        url = f'{BASE_URL}/{path}'
+        r = requests.get(url)
+        f = io.BytesIO(r.content)
+        cache_subdir = os.path.dirname(cache_filename)
+        if not os.path.exists(cache_subdir):
+            os.makedirs(cache_subdir)
+        with open(cache_filename, 'wb') as cache:
+            cache.write(f.read())
+        f.seek(0)
+    img = Image(file=f)
+    img.alpha_channel = True
+    f.close()
+    return img
+
+
+def scale_down(width, height, max_size):
+    ratio = width / height
+    if width > height:
+        return max_size, round(max_size / ratio)
+    else:
+        return round(ratio * max_size), max_size
+
+
+def word_wrap(image, draw, text, roi_width, roi_height):
+    """Break long text to multiple lines, and reduce point size
+    until all text fits within a bounding box."""
+    mutable_message = text
+    iteration_attempts = 100
+
+    def eval_metrics(txt):
+        """Quick helper function to calculate width/height of text."""
+        metrics = draw.get_font_metrics(image, txt, True)
+        return metrics.text_width, metrics.text_height
+
+    while draw.font_size > 0 and iteration_attempts:
+        iteration_attempts -= 1
+        width, height = eval_metrics(mutable_message)
+        if height > roi_height:
+            draw.font_size -= 0.75  # Reduce pointsize
+            mutable_message = text  # Restore original text
+        elif width > roi_width:
+            columns = len(mutable_message)
+            while columns > 0:
+                columns -= 1
+                mutable_message = '\n'.join(wrap(mutable_message, columns))
+                wrapped_width, _ = eval_metrics(mutable_message)
+                if wrapped_width <= roi_width:
+                    break
+            if columns < 1:
+                draw.font_size -= 0.75  # Reduce pointsize
+                mutable_message = text  # Restore original text
+        else:
+            break
+    if iteration_attempts < 1:
+        raise RuntimeError("Unable to calculate word_wrap for " + text)
+    return mutable_message
