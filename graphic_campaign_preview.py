@@ -4,7 +4,7 @@ from wand.color import Color
 from wand.drawing import Drawing
 
 from game_constants import CAMPAIGN_COLORS, TASK_SKIP_COSTS
-from graphic_base_preview import BasePreview, FONTS, download_image, draw_watermark, scale_down
+from graphic_base_preview import BasePreview, FONTS, download_image, scale_down
 from search import _
 
 
@@ -111,7 +111,7 @@ class CampaignPreview(BasePreview):
 def render_all(result):
     overview = CampaignPreview(result)
     overview.render_background('{0[texts][campaign]}: {0[date]}')
-    draw_watermark(overview.img)
+    overview.draw_watermark()
     overview.render_tasks()
     overview.render_team()
 
