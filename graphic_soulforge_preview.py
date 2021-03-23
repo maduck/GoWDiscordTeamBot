@@ -4,17 +4,14 @@ from typing import Mapping
 
 from wand.color import Color
 from wand.drawing import Drawing
-from wand.image import Image
 
 from graphic_base_preview import BasePreview, FONTS, download_image, scale_down, word_wrap
 
 
 class WeeklyPreview(BasePreview):
     def __init__(self, data):
-        self.data = data
-        self.img = None
+        super().__init__(data)
         self.weapon = None
-        self.spacing = 0
 
     def get_box_coordinates(self, box_number):
         outer_spacing_percentage = 3
@@ -260,30 +257,6 @@ class WeeklyPreview(BasePreview):
 
                 draw.text(left + 25 + 55, top + 30 + offset, message)
                 offset += round(2.5 * base_size + int(draw.font_size) * len(message.split('\n')))
-            draw(self.img)
-
-    def draw_watermark(self):
-        with Drawing() as draw:
-            avatar = Image(filename='hawx_transparent.png')
-            max_size = 100
-            width, height = scale_down(*avatar.size, max_size)
-            draw.composite(operator='atop',
-                           left=self.img.width - width - 10, top=self.img.height - height - 10,
-                           width=width, height=height,
-                           image=avatar)
-
-            draw.font_size = 30
-            draw.font = FONTS['raleway']
-            draw.text_alignment = 'right'
-            draw.text_antialias = True
-            legal_notice = 'Produced by Hawx & Gary.\nNo redistribution without this notice.'
-            draw.fill_color = Color('black')
-            draw.text(self.img.width - width - 18, self.img.height - 2 - 2 * int(draw.font_size), legal_notice)
-            draw.text(self.img.width - width - 18, self.img.height + 2 - 2 * int(draw.font_size), legal_notice)
-            draw.text(self.img.width - width - 18, self.img.height - 2 + 2 * int(draw.font_size), legal_notice)
-            draw.text(self.img.width - width - 18, self.img.height + 2 + 2 * int(draw.font_size), legal_notice)
-            draw.fill_color = Color('white')
-            draw.text(self.img.width - width - 20, self.img.height - 2 * int(draw.font_size), legal_notice)
             draw(self.img)
 
     def save_image(self):

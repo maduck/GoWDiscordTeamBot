@@ -2,18 +2,15 @@ import io
 
 from wand.color import Color
 from wand.drawing import Drawing
-from wand.image import Image
 
 from game_constants import CAMPAIGN_COLORS, TASK_SKIP_COSTS
-from graphic_base_preview import BasePreview, FONTS, download_image, scale_down
+from graphic_base_preview import BasePreview, FONTS, download_image, draw_watermark, scale_down
 from search import _
 
 
 class CampaignPreview(BasePreview):
     def __init__(self, data):
-        self.data = data
-        self.img = None
-        self.spacing = 0
+        super().__init__(data)
 
     def render_tasks(self):
         y = 350
@@ -106,30 +103,6 @@ class CampaignPreview(BasePreview):
 
             draw(self.img)
 
-    def draw_watermark(self):
-        with Drawing() as draw:
-            avatar = Image(filename='hawx_transparent.png')
-            max_size = 100
-            width, height = scale_down(*avatar.size, max_size)
-            draw.composite(operator='atop',
-                           left=self.img.width - width - 10, top=self.img.height - height - 10,
-                           width=width, height=height,
-                           image=avatar)
-
-            draw.font_size = 30
-            draw.font = FONTS['raleway']
-            draw.text_alignment = 'right'
-            draw.text_antialias = True
-            legal_notice = 'Produced by Hawx & Gary.\nNo redistribution without this notice.'
-            draw.fill_color = Color('black')
-            draw.text(self.img.width - width - 18, self.img.height - 2 - 2 * int(draw.font_size), legal_notice)
-            draw.text(self.img.width - width - 18, self.img.height + 2 - 2 * int(draw.font_size), legal_notice)
-            draw.text(self.img.width - width - 18, self.img.height - 2 + 2 * int(draw.font_size), legal_notice)
-            draw.text(self.img.width - width - 18, self.img.height + 2 + 2 * int(draw.font_size), legal_notice)
-            draw.fill_color = Color('white')
-            draw.text(self.img.width - width - 20, self.img.height - 2 * int(draw.font_size), legal_notice)
-            draw(self.img)
-
     def save_image(self):
         self.img.format = 'png'
         self.img.save(filename='test.png')
@@ -138,7 +111,7 @@ class CampaignPreview(BasePreview):
 def render_all(result):
     overview = CampaignPreview(result)
     overview.render_background('{0[texts][campaign]}: {0[date]}')
-    overview.draw_watermark()
+    draw_watermark(overview.img)
     overview.render_tasks()
     overview.render_team()
 

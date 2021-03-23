@@ -15,6 +15,11 @@ FONTS = {
 
 
 class BasePreview:
+    def __init__(self, data):
+        self.data = data
+        self.img = None
+        self.spacing = 0
+
     def render_background(self, title):
         self.img = download_image(self.data['background'])
         self.spacing = self.img.width // 2 - 980
@@ -123,3 +128,28 @@ def word_wrap(image, draw, text, roi_width, roi_height):
     if iteration_attempts < 1:
         raise RuntimeError("Unable to calculate word_wrap for " + text)
     return mutable_message
+
+
+def draw_watermark(img):
+    with Drawing() as draw:
+        avatar = Image(filename='hawx_transparent.png')
+        max_size = 100
+        width, height = scale_down(*avatar.size, max_size)
+        draw.composite(operator='atop',
+                       left=img.width - width - 10, top=img.height - height - 10,
+                       width=width, height=height,
+                       image=avatar)
+
+        draw.font_size = 30
+        draw.font = FONTS['raleway']
+        draw.text_alignment = 'right'
+        draw.text_antialias = True
+        legal_notice = 'Produced by Hawx & Gary.\nNo redistribution without this notice.'
+        draw.fill_color = Color('black')
+        draw.text(img.width - width - 18, img.height - 2 - 2 * int(draw.font_size), legal_notice)
+        draw.text(img.width - width - 18, img.height + 2 - 2 * int(draw.font_size), legal_notice)
+        draw.text(img.width - width - 18, img.height - 2 + 2 * int(draw.font_size), legal_notice)
+        draw.text(img.width - width - 18, img.height + 2 + 2 * int(draw.font_size), legal_notice)
+        draw.fill_color = Color('white')
+        draw.text(img.width - width - 20, img.height - 2 * int(draw.font_size), legal_notice)
+        draw(img)
