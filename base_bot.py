@@ -1,6 +1,7 @@
 import datetime
 import logging
 import os
+from enum import Enum
 
 import aiohttp
 import discord
@@ -23,6 +24,12 @@ log.addHandler(handler)
 
 class EmbedLimitsExceed(Exception):
     pass
+
+
+class InteractionResponseType(Enum):
+    PONG = 1
+    MESSAGE = 4
+    DEFERRED_MESSAGE = 5
 
 
 class FakeMessage:
@@ -129,16 +136,16 @@ class BaseBot(discord.Client):
         return await message.channel.send(embed=embed)
 
     @staticmethod
-    async def send_slash_command_result(message, embed, content):
+    async def send_slash_command_result(message, embed, content, response_type=InteractionResponseType.MESSAGE.value):
         endpoint = f'interactions/{message.interaction_id}/{message.interaction_token}/callback'
         url = f'https://discord.com/api/v8/{endpoint}'
-        channel_message_with_source = 4
         response = {
-            'type': channel_message_with_source,
+            'type': response_type,
             'data': {
                 'embeds': [embed.to_dict()] if embed else [],
                 'content': content,
             },
+            'flags': 64 if response_type == InteractionResponseType.DEFERRED_MESSAGE else 0,
         }
         async with aiohttp.ClientSession() as session:
             await session.post(url, headers={"Authorization": f"Bot {os.getenv('DISCORD_TOKEN')}"}, json=response)

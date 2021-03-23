@@ -19,7 +19,7 @@ import bot_tasks
 import graphic_campaign_preview
 import graphic_soulforge_preview
 import models
-from base_bot import BaseBot, log
+from base_bot import BaseBot, InteractionResponseType, log
 from command_registry import COMMAND_REGISTRY, add_slash_command, get_all_commands, remove_slash_command
 from configurations import CONFIG
 from discord_wrappers import admin_required, guild_required, owner_required
@@ -141,6 +141,8 @@ class DiscordBot(BaseBot):
     async def campaign_preview(self, message, lang, switch=None, team_code=None, **kwargs):
         switch = switch or CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
+            if message.interaction_id:
+                await self.send_slash_command_result(message, response_type=InteractionResponseType.PONG.value)
             start = time.time()
             campaign_data = self.expander.get_campaign_tasks(lang)
             campaign_data['switch'] = switch
@@ -158,6 +160,9 @@ class DiscordBot(BaseBot):
         if switch is None:
             switch = CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
+            if message.interaction_id:
+                await self.send_slash_command_result(message, content=None, embed=None,
+                                                     response_type=InteractionResponseType.PONG.value)
             start = time.time()
             weapon_data = self.expander.get_soulforge_weapon_image_data(search_term, release_date, switch, lang)
             if not weapon_data:
