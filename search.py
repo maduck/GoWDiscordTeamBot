@@ -978,7 +978,7 @@ class TeamExpander:
 
     def translate_drop_chances(self, data: dict, lang):
         for key, item in data.copy().items():
-            if self.is_untranslated(key):
+            if not self.is_untranslated(key):
                 continue
             new_key = _(key, lang)
             if key == '[KEYTYPE_5_TITLE]':
