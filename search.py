@@ -42,6 +42,7 @@ class TeamExpander:
         self.troop_types = world.troop_types
         self.spells = world.spells
         self.effects = world.effects
+        self.positive_effects = world.positive_effects
         self.weapons = world.weapons
         self.classes = world.classes
         self.banners = world.banners
@@ -1049,10 +1050,18 @@ class TeamExpander:
         return event
 
     def get_effects(self, lang):
-        result = []
+        positive = _('[TROOPHELP_ALLPOSITIVESTATUSEFFECTS_1]', lang)
+        negative = _('[TROOPHELP_ALLNEGATIVESTATUSEFFECTS_1]', lang)
+        result = {
+            positive: [],
+            negative: [],
+        }
         for effect in self.effects:
-            result.append({
+            key = positive if effect in self.positive_effects else negative
+            result[key].append({
                 'name': _(f'[TROOPHELP_{effect}_1]', lang),
                 'description': _(f'[TROOPHELP_{effect}_2]', lang),
             })
-        return sorted(result, key=operator.itemgetter('name'))
+        result[positive] = sorted(result[positive], key=operator.itemgetter('name'))
+        result[negative] = sorted(result[negative], key=operator.itemgetter('name'))
+        return result

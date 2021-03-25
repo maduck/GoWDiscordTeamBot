@@ -30,6 +30,7 @@ class GameData:
         self.troop_types = set()
         self.spells = {}
         self.effects = set()
+        self.positive_effects = {'BARRIER', 'ENCHANTED', 'ENRAGED', 'SUBMERGED', 'BLESSED', 'MIRROR'}
         self.weapons = {}
         self.classes = {}
         self.banners = {}

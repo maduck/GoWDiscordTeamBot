@@ -554,14 +554,15 @@ class Views:
     def render_effects(self, effects, lang):
         title = f'{_("[OVERVIEW]", lang)}: {_("[FILTER_SPELLEFFECT]", lang)}'
         e = discord.Embed(title=title, color=self.WHITE)
-        chunk_size = 5
-        chunked_effects = chunks(effects, chunk_size=chunk_size)
-        for i, chunk in enumerate(chunked_effects, start=0):
-            chunk_title = _('[FILTER_SPELLEFFECT]', lang)
-            start = i * chunk_size + 1
-            end = i * chunk_size + len(chunk)
-            title = f'{chunk_title} {start:n} - {end:n}'
-            field_lines = [
-                f'**{effect["name"]}**: {effect["description"]}' for effect in chunk]
-            e.add_field(name=title, value='\n'.join(field_lines), inline=False)
+        chunk_size = 6
+        for category, c_effects in effects.items():
+            chunked_effects = chunks(c_effects, chunk_size=chunk_size)
+            for i, chunk in enumerate(chunked_effects, start=0):
+                chunk_title = _(category, lang)
+                start = i * chunk_size + 1
+                end = i * chunk_size + len(chunk)
+                title = f'{chunk_title} {start:n} - {end:n}'
+                field_lines = [
+                    f'**{effect["name"]}**: {effect["description"]}' for effect in chunk]
+                e.add_field(name=title, value='\n'.join(field_lines), inline=False)
         return e
