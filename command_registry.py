@@ -121,6 +121,11 @@ COMMAND_REGISTRY = [
         'description': 'Show Gems of War related tools',
     },
     {
+        'function': 'effects',
+        'pattern': re.compile(DEFAULT_PATTERN + 'effects$', MATCH_OPTIONS),
+        'description': 'Shows all possible spell effects',
+    },
+    {
         'function': 'class_level',
         'pattern': re.compile(DEFAULT_PATTERN + r'class_level( ((?P<from>\d{1,3})( ?- ?))?(?P<to>\d{1,3}))$'),
         'description': 'Calculate XP to level a class',

@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.50.1'
+    VERSION = '0.51.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -197,6 +197,11 @@ class DiscordBot(BaseBot):
     async def adventures(self, message, lang, **kwargs):
         adventures = self.expander.get_adventure_board(lang)
         e = self.views.render_adventure_board(adventures, lang)
+        return await self.answer(message, e)
+
+    async def effects(self, message, lang, **kwargs):
+        effects = self.expander.get_effects(lang)
+        e = self.views.render_effects(effects, lang)
         return await self.answer(message, e)
 
     async def spoilers(self, message, lang, **kwargs):

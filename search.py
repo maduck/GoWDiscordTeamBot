@@ -41,6 +41,7 @@ class TeamExpander:
         self.troops = world.troops
         self.troop_types = world.troop_types
         self.spells = world.spells
+        self.effects = world.effects
         self.weapons = world.weapons
         self.classes = world.classes
         self.banners = world.banners
@@ -1046,3 +1047,12 @@ class TeamExpander:
         event['battles'] = new_battles
 
         return event
+
+    def get_effects(self, lang):
+        result = []
+        for effect in self.effects:
+            result.append({
+                'name': _(f'[TROOPHELP_{effect}_1]', lang),
+                'description': _(f'[TROOPHELP_{effect}_2]', lang),
+            })
+        return sorted(result, key=operator.itemgetter('name'))

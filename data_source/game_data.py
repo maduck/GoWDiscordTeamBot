@@ -29,6 +29,7 @@ class GameData:
         self.troops = {'`?`': {'name': '`?`'}}
         self.troop_types = set()
         self.spells = {}
+        self.effects = set()
         self.weapons = {}
         self.classes = {}
         self.banners = {}
@@ -222,6 +223,9 @@ class GameData:
             boost = 0
             last_type = ""
             for step in spell['SpellSteps']:
+                if step.get('Type', '').lower().startswith('cause'):
+                    effect_code = step['Type'].upper().replace('CAUSE', '')
+                    self.effects.add(effect_code.upper())
                 if 'Type' in step and 'SpellPowerMultiplier' in step:
                     amount = step.get('Amount', 0)
                     multiplier = step.get('SpellPowerMultiplier', 1)
@@ -238,6 +242,8 @@ class GameData:
                 'effects': spell_effects,
                 'boost': boost,
             }
+
+        self.effects -= {'SPECIFICSTATUSEFFECTCONDITIONAL', 'ALLPOSITIVESTATUSEFFECTS', 'ALLNEGATIVESTATUSEFFECTS'}
 
     def get_current_event_kingdom_id(self):
         if 'CurrentEventKingdomId' in self.user_data['pEconomyModel']:
