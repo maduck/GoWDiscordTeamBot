@@ -341,6 +341,8 @@ class Views:
         content = self.transform_news_article(article['content'], article['url'])
         self.enrich_author(e, article['author'])
         for title, text in content.items():
+            if not text:
+                text = '-'
             e.add_field(name=title, value=text, inline=False)
         result = [e]
         for i, image_url in enumerate(article['images']):
@@ -548,3 +550,18 @@ class Views:
     def render_guilds(self, matching_guilds):
         e = discord.Embed(title='List of guilds', color=self.RED)
         return self.render_embed(e, 'guilds.jinja', guilds=matching_guilds)
+
+    def render_effects(self, effects, lang):
+        title = f'{_("[OVERVIEW]", lang)}: {_("[FILTER_SPELLEFFECT]", lang)}'
+        e = discord.Embed(title=title, color=self.WHITE)
+        chunk_size = 5
+        chunked_effects = chunks(effects, chunk_size=chunk_size)
+        for i, chunk in enumerate(chunked_effects, start=0):
+            chunk_title = _('[FILTER_SPELLEFFECT]', lang)
+            start = i * chunk_size + 1
+            end = i * chunk_size + len(chunk)
+            title = f'{chunk_title} {start:n} - {end:n}'
+            field_lines = [
+                f'**{effect["name"]}**: {effect["description"]}' for effect in chunk]
+            e.add_field(name=title, value='\n'.join(field_lines), inline=False)
+        return e
