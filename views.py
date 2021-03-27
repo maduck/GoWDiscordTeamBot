@@ -554,7 +554,7 @@ class Views:
     def render_effects(self, effects, lang):
         title = f'{_("[OVERVIEW]", lang)}: {_("[FILTER_SPELLEFFECT]", lang)}'
         e = discord.Embed(title=title, color=self.WHITE)
-        chunk_size = 6
+        chunk_size = 5
         for category, c_effects in effects.items():
             chunked_effects = chunks(c_effects, chunk_size=chunk_size)
             for i, chunk in enumerate(chunked_effects, start=0):
