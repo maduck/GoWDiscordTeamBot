@@ -141,7 +141,7 @@ class DiscordBot(BaseBot):
     async def campaign_preview(self, message, lang, switch=None, team_code=None, **kwargs):
         switch = switch or CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
-            if message.interaction_id:
+            if hasattr(message, 'interaction_id') and message.interaction_id:
                 await self.send_slash_command_result(message, response_type=InteractionResponseType.PONG.value)
             start = time.time()
             campaign_data = self.expander.get_campaign_tasks(lang)
