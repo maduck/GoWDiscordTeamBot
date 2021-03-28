@@ -69,3 +69,7 @@ class PetContainer(BaseGameDataContainer):
                 and str(kingdom_id) in self.translations['en'].effect_data:
             for pet in self.translations.values():
                 pet.set_effect_data(kingdom_reference_name)
+
+    def __repr__(self):
+        return f'<{self.data["filename"]} id={self.data["id"]} name={self.data["reference_name"]!r} ' \
+               f'kingdom_id={self.data["kingdom_id"]}>'
