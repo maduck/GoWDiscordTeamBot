@@ -261,17 +261,28 @@ class GameData:
         event_kingdom_id = weekly_events[0]['kingdom_id']
         return int(event_kingdom_id)
 
+    def get_current_campaign_week(self):
+        artifact_id = self.user_data['pEconomyModel']['LowestUnreleasedArtifactId']
+        artifact = [a for a in self.data['Artifacts'] if a['Id'] == artifact_id][0]
+        week = 0
+        for level in artifact['Levels']:
+            if level['KingdomId'] == self.user_data['pEconomyModel']['CurrentEventKingdomId']:
+                break
+            week += 1
+        return week
+
     def populate_campaign_tasks(self):
         event_kingdom_id = self.get_current_event_kingdom_id()
+        week = self.get_current_campaign_week()
 
         tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
 
         for level in ('Gold', 'Silver', 'Bronze'):
-            task_list = [self.transform_campaign_task(task) for task in tasks[level]]
+            task_list = [self.transform_campaign_task(task, week) for task in tasks[level]]
             self.campaign_tasks[level.lower()] = sorted(task_list, key=operator.itemgetter('order'))
         self.campaign_tasks['kingdom'] = self.kingdoms[event_kingdom_id]
 
-    def transform_campaign_task(self, task):
+    def transform_campaign_task(self, task, week):
         extra_data = {}
         m = re.match(r'Campaign_(?P<kingdom_id>\d+)_(?P<level>.+)_(?P<order>\d+)', task['Id'])
         task_id = m.groupdict()
@@ -286,6 +297,11 @@ class GameData:
 
         if task['TaskTitle'].endswith('CRYSTALS]'):
             extra_data['Value1'] = task['YValue']
+        elif task['TaskTitle'] == '[TASK_DEEP_DELVER]':
+            extra_data['Value1'] = 10 * (week + 1)
+        elif task['TaskTitle'] == '[TASK_INTREPID_EXPLORER]':
+            extra_data['Value1'] = week
+
         translated_task = {
             'reward': task['Rewards'][0]['Amount'],
             'condition': task.get('Condition'),
