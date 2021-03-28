@@ -689,7 +689,7 @@ class TeamExpander:
         result['lang'] = lang
         result['texts'] = {
             'campaign': _('[CAMPAIGN]', lang),
-            'team': _('[EVENT_TEAM]', lang),
+            'team': _('[LITE_CHAT_TEAM_START]', lang),
         }
         return result
 
