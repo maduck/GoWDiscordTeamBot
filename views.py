@@ -7,6 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 from configurations import CONFIG
 from game_constants import RARITY_COLORS
 from search import _
+from translations import LANGUAGE_CODE_MAPPING
 from util import chunks, flatten
 
 
@@ -334,6 +335,7 @@ class Views:
     def render_tower_help(self, prefix, lang):
         title = f'{_("[TOWER_OF_DOOM]", lang)} {_("[HELP]", lang)}'
         e = discord.Embed(title=title, color=self.WHITE)
+        lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         return self.render_embed(e, f'help/tower_of_doom-{lang}.jinja', prefix=prefix)
 
     def render_news(self, article):
