@@ -217,13 +217,12 @@ class BaseBot(discord.Client):
         log.debug(f'Guild {guild.name} (id {guild.id}) kicked me out. Now in {len(self.guilds)} guilds.')
 
     async def update_base_emojis(self):
-        guilds = [CONFIG.get('base_guild'), CONFIG.get('base_guild_2')]
-        for guild in guilds:
-            await self.fetch_emojis_from_guild(guild)
+        for guild_id in CONFIG.get('base_guilds'):
+            await self.fetch_emojis_from_guild(guild_id)
 
-    async def fetch_emojis_from_guild(self, guild):
-        my_guild = discord.utils.find(lambda g: g.name == guild, self.guilds)
-        for emoji in my_guild.emojis:
+    async def fetch_emojis_from_guild(self, guild_id):
+        guild = self.get_guild(guild_id)
+        for emoji in guild.emojis:
             self.my_emojis[emoji.name] = str(emoji)
 
     async def is_owner(self, message):

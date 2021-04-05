@@ -1,7 +1,9 @@
 {
   "graphics_url": "https://garyatrics.com/gow_assets",
-  "base_guild": "Garyatrics",
-  "base_guild_2": "Garyatrics Emoji Depot",
+  "base_guilds": [
+    733761045386231891,
+    780892751796764683
+  ],
   "default_prefix": "!",
   "default_language": "en",
   "default_news_platform": "pc",
