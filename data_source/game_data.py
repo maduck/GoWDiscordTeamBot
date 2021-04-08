@@ -660,9 +660,10 @@ class GameData:
     def populate_event_kingdoms(self):
         current_event_kingdom = self.get_current_event_kingdom_id()
         lowest_unreleased_artifact_id = self.user_data['pEconomyModel']['LowestUnreleasedArtifactId']
+        """
         lowest_unpurchasable_artifact_id = self.user_data['pEconomyModel']['LowestUnpurchasableArtifactId']
         if lowest_unpurchasable_artifact_id == lowest_unreleased_artifact_id:
-            return
+            return"""
         event_kingdoms = []
         for artifact in self.data['Artifacts']:
             if artifact['Id'] < lowest_unreleased_artifact_id - 1:
