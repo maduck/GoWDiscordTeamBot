@@ -43,7 +43,7 @@ class NewsDownloader:
             if not self.is_banner(source):
                 images.append(source)
 
-        forbidden_tags = re.compile(r'</?(a|img|div).*?>')
+        forbidden_tags = re.compile(r'</?(a|img|div|figure).*?>')
         tags_removed = re.sub(forbidden_tags, '', text) \
             .replace('\n', '') \
             .replace('</em>', '</em> ')
