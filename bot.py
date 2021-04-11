@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.51.5'
+    VERSION = '0.51.6'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',

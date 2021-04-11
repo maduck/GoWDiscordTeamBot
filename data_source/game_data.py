@@ -262,7 +262,7 @@ class GameData:
         return int(event_kingdom_id)
 
     def get_current_campaign_week(self):
-        artifact_id = self.user_data['pEconomyModel']['LowestUnreleasedArtifactId']
+        artifact_id = self.user_data['pEconomyModel']['LowestUnpurchasableArtifactId']
         artifact = [a for a in self.data['Artifacts'] if a['Id'] == artifact_id][0]
         week = 0
         for level in artifact['Levels']:
