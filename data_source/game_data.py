@@ -732,9 +732,10 @@ class GameData:
 
         def transform_battle(battle):
             return {
-                'names': {lang[0:2]: translation for lang, translation in battle['Name'].items()},
-                'icon': f'Liveevents/Liveeventslocationicons_{battle["Icon"]}_full.png',
-                'rarity': TROOP_RARITIES[battle['Color']],
+                'names': {lang[0:2]: translation for lang, translation in
+                          battle['Name'].items()} if 'Name' in battle else {},
+                'icon': f'Liveevents/Liveeventslocationicons_{battle["Icon"]}_full.png' if 'Icon' in battle else '',
+                'rarity': TROOP_RARITIES[battle['Color']] if 'Color' in battle else '',
             }
 
         self.weekly_event = {
