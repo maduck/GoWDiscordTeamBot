@@ -381,7 +381,9 @@ class GameData:
                       'names': release.get('Name'),
                       'gacha': gacha_troop,
                       'troops': gacha_troops,
-                      'kingdom_id': release.get('Kingdom')}
+                      'kingdom_id': release.get('Kingdom'),
+                      'artifact_id': release.get('ArtifactId'),
+                      }
             if gacha_troop and gacha_troop in self.troops:
                 self.troops[gacha_troop]['event'] = True
             self.events.append(result)
@@ -658,14 +660,13 @@ class GameData:
 
     def populate_event_kingdoms(self):
         current_event_kingdom = self.get_current_event_kingdom_id()
-        lowest_unreleased_artifact_id = self.user_data['pEconomyModel']['LowestUnreleasedArtifactId']
-        """
-        lowest_unpurchasable_artifact_id = self.user_data['pEconomyModel']['LowestUnpurchasableArtifactId']
-        if lowest_unpurchasable_artifact_id == lowest_unreleased_artifact_id:
-            return"""
+        campaign_events = [e for e in self.events if e['type'] == '[CAMPAIGN]' and e['start'] <= datetime.date.today()]
+        if not campaign_events:
+            return
+        current_artifact_id = campaign_events[0]['artifact_id']
         event_kingdoms = []
         for artifact in self.data['Artifacts']:
-            if artifact['Id'] < lowest_unreleased_artifact_id - 1:
+            if artifact['Id'] < current_artifact_id:
                 continue
             for level in artifact['Levels']:
                 if event_kingdoms and level['KingdomId'] == event_kingdoms[-1]:
