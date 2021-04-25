@@ -728,6 +728,18 @@ class TeamExpander:
                 new_task['title'] = new_task['title'].replace(before, translated)
                 new_task['name'] = new_task['name'].replace(before, translated)
 
+        where = ''
+        if task['name'] == '[TASK_KILL_TROOP_COLOR]':
+            color_kingdoms = self.get_color_kingdoms(lang)
+            target_kingdom = color_kingdoms[color.lower()]['name']
+            where = f' → {target_kingdom}'
+        elif task['name'] == '[TASK_KILL_TROOP_ID]':
+            target_kingdom = _(self.troops[int(task['value1'])]['kingdom']['name'], lang)
+            pvp = _('[PVP]', lang)
+            weekly_event = _('[WEEKLY_EVENT]', lang)
+            where = f' → {target_kingdom} / {pvp} / {weekly_event}'
+        new_task['name'] += where
+
         return new_task
 
     def get_spoilers(self, lang):
