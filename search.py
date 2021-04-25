@@ -732,12 +732,12 @@ class TeamExpander:
         if task['name'] == '[TASK_KILL_TROOP_COLOR]':
             color_kingdoms = self.get_color_kingdoms(lang)
             target_kingdom = color_kingdoms[color.lower()]['name']
-            where = f' → {target_kingdom}'
+            where = f' --> {target_kingdom}'
         elif task['name'] == '[TASK_KILL_TROOP_ID]':
             target_kingdom = _(self.troops[int(task['value1'])]['kingdom']['name'], lang)
             pvp = _('[PVP]', lang)
             weekly_event = _('[WEEKLY_EVENT]', lang)
-            where = f' → {target_kingdom} / {pvp} / {weekly_event}'
+            where = f' --> {target_kingdom} / {pvp} / {weekly_event}'
         new_task['name'] += where
 
         return new_task
