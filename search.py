@@ -245,6 +245,8 @@ class TeamExpander:
 
         kingdom['troops'] = []
         for troop_id in kingdom['troop_ids']:
+            if troop_id not in self.troops:
+                continue
             troop = self.troops[troop_id].copy()
             self.translate_troop(troop, lang)
             kingdom['troops'].append(troop)
