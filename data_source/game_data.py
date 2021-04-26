@@ -154,7 +154,8 @@ class GameData:
             }
             kingdom_troops = [troop_id for troop_id in kingdom['TroopIds'] if troop_id != -1]
             for troop_id in kingdom_troops:
-                self.troops[troop_id]['kingdom_id'] = kingdom['Id']
+                if troop_id in self.troops:
+                    self.troops[troop_id]['kingdom_id'] = kingdom['Id']
             kingdom_colors = convert_color_array(kingdom)
             self.kingdoms[kingdom['Id']] = {
                 'id': kingdom['Id'],
@@ -174,7 +175,8 @@ class GameData:
             if 'SisterKingdomId' in kingdom:
                 self.kingdoms[kingdom['SisterKingdomId']]['linked_kingdom_id'] = kingdom['Id']
             for troop_id in kingdom_troops:
-                self.troops[troop_id]['kingdom'] = self.kingdoms[kingdom['Id']]
+                if troop_id in self.troops:
+                    self.troops[troop_id]['kingdom'] = self.kingdoms[kingdom['Id']]
 
     @staticmethod
     def infer_kingdom_location(kingdom):
