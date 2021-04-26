@@ -854,7 +854,7 @@ class TeamExpander:
                 if kingdom['id'] in hidden_kingdoms:
                     continue
                 all_troops = [self.troops.get(t) for t in kingdom['troop_ids']]
-                available_troops = [t for t in all_troops if t.get('release_date', now) <= now]
+                available_troops = [t for t in all_troops if t and t.get('release_date', now) <= now]
                 if not available_troops:
                     continue
                 fitting_troops = [t for t in available_troops if filter_ in t[filter_name]]
