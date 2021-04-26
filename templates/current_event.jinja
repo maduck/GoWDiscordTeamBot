@@ -15,4 +15,7 @@
 {% if event.rewards %}<T>__**{{ rewards }}**__</T>
 {% for stage, rewards in event.rewards.items() -%}
 ` {{ "%02s" | format(stage) }} ` {% for reward in rewards.rewards %}{{ reward.amount }} {{ reward.type }}{% if not loop.last %}, {% endif %}{% endfor %}
-{% endfor %}{% endif %}
+{% endfor %}
+<T>__**Calculated score per Member**__</T>
+**{{ score_per_member }} {{ points }}** needed to get last reward.
+{% endif %}
