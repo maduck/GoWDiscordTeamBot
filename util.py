@@ -93,9 +93,12 @@ def translate_day(day_no, locale):
 def format_locale_date(date, lang):
     lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
     today = datetime.date.today()
+    monday = 0
     if date:
         month, day = date.split('-')
         date = today.replace(month=int(month), day=int(day))
+    elif today.weekday() == monday:
+        date = today
     else:
         date = today + datetime.timedelta(days=-today.weekday(), weeks=1)
     locale = lang
