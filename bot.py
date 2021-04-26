@@ -188,7 +188,7 @@ class DiscordBot(BaseBot):
             return await self.answer(message, e)
 
         for category, tasks in campaign_data['campaigns'].items():
-            category_lines = [f'**{task["title"]}**: {task["name"]}' for task in tasks]
+            category_lines = [f'**{task["title"]}**: {task["name"].replace("-->", "→")}' for task in tasks]
             color = CAMPAIGN_COLORS.get(category, self.WHITE)
             skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
             e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
