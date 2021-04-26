@@ -717,10 +717,16 @@ class GameData:
 
         def extract_rewards(raw_data):
             rewards = {}
+            points = 0
             for i, stage in enumerate(raw_data.get('RewardStageArray', []), start=1):
-                rewards[i] = []
+                rewards[i] = {
+                    'points': stage['Total'],
+                    'cumulative': points,
+                    'rewards': [],
+                }
+                points += stage['Total']
                 for reward in stage['RewardArray']:
-                    rewards[i].append(transform_reward(reward))
+                    rewards[i]['rewards'].append(transform_reward(reward))
             return rewards
 
         def transform_reward(reward):

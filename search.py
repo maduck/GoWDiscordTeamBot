@@ -1019,7 +1019,7 @@ class TeamExpander:
         } for currency in event['currencies']]
 
         for stage in event['rewards'].keys():
-            for reward in event['rewards'][stage]:
+            for reward in event['rewards'][stage]['rewards']:
                 reward_type = reward['type']
                 reward['type'] = _(reward_type, lang)
                 if reward_type == '[TITLE]':
