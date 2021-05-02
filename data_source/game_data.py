@@ -753,9 +753,20 @@ class GameData:
                 sum([r['points'] for r in self.weekly_event['rewards'].values()]) / 30)
             self.weekly_event['score_per_member'] = score_per_member
             minimum_battles = 0
-            for entry in self.event_raw_data['GlobalLeaderboard']:
+            entry_no = 0
+            for i, entry in enumerate(self.event_raw_data['GlobalLeaderboard']):
                 if entry['Score'] >= score_per_member:
                     minimum_battles = entry['BattlesWon']
+                    entry_no = i
+            # here basically everybody in the top 100 is over the required score already,
+            # that happens later throughout the week.
+            if entry_no == len(self.event_raw_data['GlobalLeaderboard']) - 1:
+                all_battles = [e['BattlesWon'] for e in self.event_raw_data['GlobalLeaderboard']]
+                all_scores = [e['Score'] for e in self.event_raw_data['GlobalLeaderboard']]
+                avg_battles = sum(all_battles) / len(all_battles)
+                avg_score = sum(all_scores) / len(all_scores)
+                minimum_battles = math.ceil(avg_battles * score_per_member / avg_score)
+
             self.weekly_event['minimum_battles'] = minimum_battles
             tier_battles = [62, 67, 75, 81, 94]
             minimum_tier = 5
