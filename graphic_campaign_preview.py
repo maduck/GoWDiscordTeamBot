@@ -4,7 +4,7 @@ from wand.color import Color
 from wand.drawing import Drawing
 
 from game_constants import CAMPAIGN_COLORS, TASK_SKIP_COSTS
-from graphic_base_preview import BasePreview, FONTS, download_image, scale_down
+from graphic_base_preview import BasePreview, FONTS, download_image, scale_down, word_wrap
 from search import _
 
 
@@ -44,7 +44,8 @@ class CampaignPreview(BasePreview):
                     draw.text_alignment = 'center'
                     draw.text(x + 30, font_y, str(i))
                     draw.text_alignment = 'left'
-                    draw.text(x + 70, font_y, task["name"])
+                    task_name = word_wrap(self.img, draw, task['name'], box_width - 60, 50)
+                    draw.text(x + 70, font_y, task_name)
 
                 draw.fill_color = Color('white')
                 draw.font_size = 2 * base_font_size
