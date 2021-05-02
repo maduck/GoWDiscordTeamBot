@@ -740,6 +740,11 @@ class TeamExpander:
             pvp = _('[PVP]', lang)
             weekly_event = _('[WEEKLY_EVENT]', lang)
             where = f' --> {target_kingdom} / {pvp} / {weekly_event}'
+        elif task['name'] == '[TASK_KILL_TROOP_TYPE]':
+            troop_type_kingdoms = dict(self.get_type_kingdoms(lang))
+            target_kingdom = troop_type_kingdoms[task['value1'].title()]['name']
+            where = f' --> {target_kingdom}'
+
         new_task['name'] += where
 
         return new_task
