@@ -1,4 +1,5 @@
 import datetime
+import math
 import operator
 import re
 
@@ -747,6 +748,23 @@ class GameData:
                 'rarity': TROOP_RARITIES[battle['Color']] if 'Color' in battle else '',
             }
 
+        def calculate_minimum_tier():
+            score_per_member = math.ceil(
+                sum([r['points'] for r in self.weekly_event['rewards'].values()]) / 30)
+            self.weekly_event['score_per_member'] = score_per_member
+            minimum_battles = 0
+            for entry in self.event_raw_data['GlobalLeaderboard']:
+                if entry['Score'] >= score_per_member:
+                    minimum_battles = entry['BattlesWon']
+            self.weekly_event['minimum_battles'] = minimum_battles
+            tier_battles = [62, 67, 75, 81, 94]
+            minimum_tier = 5
+            for tier, battles in enumerate(tier_battles):
+                if minimum_battles <= battles:
+                    minimum_tier = tier
+                    break
+            self.weekly_event['minimum_tier'] = minimum_tier
+
         self.weekly_event = {
             'kingdom_id': str(self.event_raw_data.get('Kingdom')),
             'type': self.event_raw_data.get('Type'),
@@ -766,3 +784,5 @@ class GameData:
             'start': datetime.datetime.utcfromtimestamp(self.event_raw_data['StartDate']),
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
         }
+        calculate_minimum_tier()
+        # pprint(self.weekly_event)

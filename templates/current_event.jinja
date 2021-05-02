@@ -17,5 +17,7 @@
 ` {{ "%02s" | format(stage) }} ` {% for reward in rewards.rewards %}{{ reward.amount }} {{ reward.type }}{% if not loop.last %}, {% endif %}{% endfor %}
 {% endfor %}
 <T>__**Calculated score per Member**__</T>
-**{{ score_per_member }} {{ points }}** needed to get last reward.
+**{{ event.score_per_member }} {{ points }}** needed to get last reward.
+**{{ event.minimum_battles }} battles** per player as of current leaderboard.
+**Tier {{ event.minimum_tier }} to buy** per player for last reward.
 {% endif %}

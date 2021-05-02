@@ -547,7 +547,6 @@ class Views:
             'event_weapon': f'{_("[GLOG_EVENT]", lang)} {_("[WEAPON]", lang)}',
             'rewards': _('[REWARDS]', lang),
             'points': _('[POINTS]', lang),
-            'score_per_member': math.ceil(sum([r['points'] for r in current_event['rewards'].values()]) / 30),
         }
         return self.render_embed(e, 'current_event.jinja', **data)
 
