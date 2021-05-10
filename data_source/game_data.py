@@ -695,17 +695,15 @@ class GameData:
             def roles_translation(roles):
                 return [f'[TROOP_ROLE_{role.upper()}]' for role in roles]
 
-            if 'PlayerTeamRestrictions' not in raw_data:
-                return {}
+            restrictions = raw_data.get('PlayerTeamRestrictions', {})
             return {
-                '[FILTER_MANACOLOR]': self.event_raw_data.get('PlayerTeamRestrictions', {}).get('ManaColors'),
-                '[KINGDOM]': [self.kingdoms[k]['name'] for k in
-                              self.event_raw_data['PlayerTeamRestrictions']['KingdomIds']],
-                '[TROOP_TYPES]': self.event_raw_data['PlayerTeamRestrictions']['TroopTypes'],
-                '[FILTER_WEAPONTYPE]': self.event_raw_data['PlayerTeamRestrictions']['WeaponTypes'],
-                '[RARITY]': self.event_raw_data['PlayerTeamRestrictions']['TroopRarities'],
-                '[FILTER_ROLE]': roles_translation(self.event_raw_data['PlayerTeamRestrictions']['Roles']),
-                '[ROSTER]': self.event_raw_data['PlayerTeamRestrictions']['RosterIds'],
+                '[FILTER_MANACOLOR]': restrictions.get('ManaColors'),
+                '[KINGDOM]': [self.kingdoms[k]['name'] for k in restrictions.get('KingdomIds')],
+                '[TROOP_TYPES]': restrictions.get('TroopTypes'),
+                '[FILTER_WEAPONTYPE]': restrictions.get('WeaponTypes'),
+                '[RARITY]': restrictions.get('TroopRarities'),
+                '[FILTER_ROLE]': roles_translation(restrictions.get('Roles')),
+                '[ROSTER]': restrictions.get('RosterIds'),
             }
 
         def extract_currencies(raw_data):
