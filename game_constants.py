@@ -96,3 +96,11 @@ SOULFORGE_REQUIREMENTS = {
         'Commonrewards_icon_soul_small_full.png': 60000,
     }
 }
+UNDERWORLD_SOULFORGE_REQUIREMENTS = {
+    'Epic': {
+        'jewels': 400,
+        'Runes_JewelDiamond_full.png': 200,
+        'Runes_Rune39_full.png': 2,
+        'Commonrewards_icon_soul_small_full.png': 10000,
+    },
+}

@@ -56,12 +56,30 @@ class BasePreview:
                            width=kingdom_width, height=kingdom_height,
                            image=kingdom_logo
                            )
-            draw.font_size = 40
+            base_font_size = 40
+            draw.font_size = base_font_size
             draw.text_alignment = 'center'
             kingdom = word_wrap(self.img, draw, self.data['kingdom'], kingdom_width + 10, int(1.5 * draw.font_size))
             x = self.img.width - kingdom_width // 2 - 15
-            y = kingdom_logo.height + int(1.5 * draw.font_size)
+            y = kingdom_logo.height + int(1.5 * base_font_size)
             draw.text(x, y, kingdom)
+
+            if self.data['alternate_kingdom']:
+                kingdom_logo = download_image(self.data['alternate_kingdom_logo'])
+                kingdom_width, kingdom_height = scale_down(kingdom_logo.width, kingdom_logo.height, 220)
+                kingdom_logo.resize(kingdom_width, kingdom_height)
+                draw.composite(operator='atop',
+                               left=self.img.width - 2 * (kingdom_width + 15) - 15, top=15,
+                               width=kingdom_width, height=kingdom_height,
+                               image=kingdom_logo
+                               )
+                draw.font_size = 40
+                draw.text_alignment = 'center'
+                kingdom = word_wrap(self.img, draw, self.data['alternate_kingdom'], kingdom_width + 10,
+                                    int(1.5 * draw.font_size))
+                x = int(self.img.width - 2 * (kingdom_width + 15) - 15 + 0.5 * kingdom_width)
+                y = kingdom_logo.height + int(1.5 * base_font_size)
+                draw.text(x, y, kingdom)
 
             draw(self.img)
 
@@ -152,5 +170,3 @@ def word_wrap(image, draw, text, roi_width, roi_height):
     if iteration_attempts < 1:
         raise RuntimeError("Unable to calculate word_wrap for " + text)
     return mutable_message
-
-

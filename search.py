@@ -7,7 +7,8 @@ import re
 
 import translations
 from data_source.game_data import GameData
-from game_constants import COLORS, EVENT_TYPES, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, WEAPON_RARITIES
+from game_constants import COLORS, EVENT_TYPES, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, \
+    UNDERWORLD_SOULFORGE_REQUIREMENTS, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
 from util import dig, extract_search_tag, format_locale_date, translate_day
@@ -933,6 +934,10 @@ class TeamExpander:
         weapon = search_result[0].copy()
 
         requirements = SOULFORGE_REQUIREMENTS[weapon['raw_rarity']].copy()
+        alternate_kingdom_id = weapon.get('event_faction')
+        if alternate_kingdom_id:
+            requirements = UNDERWORLD_SOULFORGE_REQUIREMENTS[weapon['raw_rarity']].copy()
+
         jewels = []
         for color in weapon['colors']:
             color_code = COLORS.index(color)
@@ -948,6 +953,13 @@ class TeamExpander:
             })
         requirements['jewels'] = jewels
         kingdom = self.kingdoms[weapon['kingdom_id']]
+        alternate_kingdom = None
+        alternate_kingdom_name = None
+        alternate_kingdom_filename = None
+        if alternate_kingdom_id:
+            alternate_kingdom = self.kingdoms[alternate_kingdom_id]
+            alternate_kingdom_name = _(alternate_kingdom['name'], lang)
+            alternate_kingdom_filename = alternate_kingdom['filename']
 
         affixes = [{
             'name': _(affix['name'], lang),
@@ -956,6 +968,10 @@ class TeamExpander:
         } for i, affix in enumerate(weapon['affixes'], start=1)]
         mana_colors = ''.join([c.title() for c in weapon['colors']]).replace('Brown', 'Orange')
         kingdom_filebase = self.kingdoms[weapon['kingdom_id']]['filename']
+        in_soulforge_text = _('[WEAPON_AVAILABLE_FROM_SOULFORGE]', lang)
+        if alternate_kingdom_id:
+            in_soulforge_text += ' (' + _(f'[{weapon["event_faction"]}_NAME]', lang) + ' ' + _(
+                '[FACTION_WEAPON]', lang) + ')'
         result = {
             'switch': switch,
             'name': weapon['name'],
@@ -964,7 +980,9 @@ class TeamExpander:
             'filename': f'Spells/Cards_{weapon["spell_id"]}_full.png',
             'description': weapon['spell']['description'],
             'kingdom': weapon['kingdom'],
+            'alternate_kingdom': alternate_kingdom_name,
             'kingdom_logo': f'Troopcardshields_{kingdom_filebase}_full.png',
+            'alternate_kingdom_logo': f'Troopcardshields_{alternate_kingdom_filename}_full.png',
             'type': _(weapon['type'], lang),
             'background': f'Background/{kingdom["filename"]}_full.png',
             'gow_logo': 'Atlas/gow_logo.png',
@@ -989,7 +1007,7 @@ class TeamExpander:
                 'dungeon_battles': _('[TASK_WIN_DUNGEON_BATTLES]', lang),
                 'tier_8': _('[CHALLENGE_TIER_8_ROMAN]', lang),
                 'available': _('[AVAILABLE]', lang),
-                'in_soulforge': _('[WEAPON_AVAILABLE_FROM_SOULFORGE]', lang),
+                'in_soulforge': in_soulforge_text,
                 'n_gems': _('[GEMS_GAINED]', lang).replace('%1', '50'),
             },
             'date': format_locale_date(date, lang),
