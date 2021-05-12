@@ -461,7 +461,10 @@ class GameData:
                     recipe['Name'] = self.troops[recipe_id]['name']
                     recipe['rarity'] = self.troops[recipe_id]['rarity']
                 if 'rarity' not in recipe:
-                    recipe['rarity'] = self.weapons[recipe_id]['rarity']
+                    if recipe_id in self.weapons:
+                        recipe['rarity'] = self.weapons[recipe_id]['rarity']
+                    elif recipe_id in self.troops:
+                        recipe['rarity'] = self.troops[recipe_id]['rarity']
                 category = tabs[recipe['Tab']]
                 self.soulforge.setdefault(category, []).append({
                     'name': recipe['Name'],
