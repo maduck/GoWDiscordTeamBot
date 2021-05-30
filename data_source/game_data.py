@@ -763,8 +763,8 @@ class GameData:
             # here basically everybody in the top 100 is over the required score already,
             # that happens later throughout the week.
             if entry_no == len(self.event_raw_data['GlobalLeaderboard']) - 1:
-                all_battles = [e['BattlesWon'] for e in self.event_raw_data['GlobalLeaderboard']]
-                all_scores = [e['Score'] for e in self.event_raw_data['GlobalLeaderboard']]
+                all_battles = [e.get('BattlesWon', 0) for e in self.event_raw_data['GlobalLeaderboard']]
+                all_scores = [e.get('Score', 0) for e in self.event_raw_data['GlobalLeaderboard']]
                 avg_battles = sum(all_battles) / len(all_battles)
                 avg_score = sum(all_scores) / len(all_scores)
                 minimum_battles = math.ceil(avg_battles * score_per_member / avg_score)
