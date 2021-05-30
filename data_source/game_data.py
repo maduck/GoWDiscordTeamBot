@@ -702,11 +702,11 @@ class GameData:
             restrictions = raw_data.get('PlayerTeamRestrictions', {})
             return {
                 '[FILTER_MANACOLOR]': restrictions.get('ManaColors'),
-                '[KINGDOM]': [self.kingdoms[k]['name'] for k in restrictions.get('KingdomIds')],
+                '[KINGDOM]': [self.kingdoms[k]['name'] for k in restrictions.get('KingdomIds', [])],
                 '[TROOP_TYPES]': restrictions.get('TroopTypes'),
                 '[FILTER_WEAPONTYPE]': restrictions.get('WeaponTypes'),
                 '[RARITY]': restrictions.get('TroopRarities'),
-                '[FILTER_ROLE]': roles_translation(restrictions.get('Roles')),
+                '[FILTER_ROLE]': roles_translation(restrictions.get('Roles', [])),
                 '[ROSTER]': restrictions.get('RosterIds'),
             }
 
