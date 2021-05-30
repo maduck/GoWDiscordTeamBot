@@ -329,6 +329,7 @@ class TowerOfDoomData:
             '1': 'iii',
             '2': 'iv',
             '3': 'v',
+            '4': 'vi',
         }
         scrolls = {
             'Armour': 'Armor',
