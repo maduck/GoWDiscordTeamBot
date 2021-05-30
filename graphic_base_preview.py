@@ -64,7 +64,7 @@ class BasePreview:
             y = kingdom_logo.height + int(1.5 * base_font_size)
             draw.text(x, y, kingdom)
 
-            if self.data['alternate_kingdom']:
+            if self.data.get('alternate_kingdom'):
                 kingdom_logo = download_image(self.data['alternate_kingdom_logo'])
                 kingdom_width, kingdom_height = scale_down(kingdom_logo.width, kingdom_logo.height, 220)
                 kingdom_logo.resize(kingdom_width, kingdom_height)
