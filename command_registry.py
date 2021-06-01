@@ -363,7 +363,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'memes',
-        'pattern': re.compile(DEFAULT_PATTERN + r'memes?( #?(?P<meme_no>[0-9]{1,2}))?$', MATCH_OPTIONS),
+        'pattern': re.compile(DEFAULT_PATTERN + r'memes?( #?(?P<meme_no>[0-9]{1,3}))?$', MATCH_OPTIONS),
         'description': 'Easteregg command #2.',
         'options': [
             {
