@@ -758,7 +758,7 @@ class GameData:
             entry_no = 0
             for i, entry in enumerate(self.event_raw_data['GlobalLeaderboard']):
                 if entry['Score'] >= score_per_member:
-                    minimum_battles = entry['BattlesWon']
+                    minimum_battles = entry.get('BattlesWon', 1)
                     entry_no = i
             # here basically everybody in the top 100 is over the required score already,
             # that happens later throughout the week.
