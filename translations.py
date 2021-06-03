@@ -1,5 +1,7 @@
-import humanize
+import json
+import os
 
+import humanize
 from game_assets import GameAssets
 
 LANGUAGES = {
@@ -40,6 +42,11 @@ class Translations:
         for lang_code, language in LANGUAGES.items():
             self._translations[lang_code] = GameAssets.load(
                 f'GemsOfWar_{language}.json')
+            addon_filename = f'extra_translations/{language}.json'
+            if os.path.exists(addon_filename):
+                with open(addon_filename) as f:
+                    addon_translations = json.load(f)
+                self._translations[lang_code].update(addon_translations)
 
     def get(self, key, lang=''):
         if lang not in self._translations:
