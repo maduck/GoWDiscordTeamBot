@@ -236,7 +236,9 @@ class GameData:
                     if last_type != step['Type']:
                         spell_effects.append([multiplier, amount])
                         last_type = step['Type']
-                elif step['Type'].startswith('Count'):
+                if step['Type'].startswith('Count') \
+                        and not step['Type'].endswith('Max') \
+                        and not step['Type'].endswith('Min'):
                     boost = step.get('Amount', 1)
             self.spells[spell['Id']] = {
                 'id': spell['Id'],
