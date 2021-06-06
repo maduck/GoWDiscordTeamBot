@@ -590,10 +590,10 @@ class TeamExpander:
             'description': description,
         }
 
-    @staticmethod
-    def translate_banner(banner, lang):
+    def translate_banner(self, banner, lang):
         result = {
             'name': _(banner['name'], lang),
+            'kingdom': _(self.kingdoms[banner['id']]['name'], lang),
             'colors': [(_(c[0], 'en').lower(), c[1]) for c in banner['colors'] if c[1]],
             'filename': banner['filename'],
         }

@@ -5,7 +5,7 @@
 
 {%- if team.banner %}
 <T>inline**{{ team.banner.name }}**</T>
-{% if not team.banner|banner_colors %}{{ team.banner.available }}{% endif %}{%- for color in team.banner|banner_colors %}
+{{ team.banner.kingdom }}{% if not team.banner|banner_colors %}{{ team.banner.available }}{% endif %}{%- for color in team.banner|banner_colors %}
 {{ color }}
 {%- endfor -%}
 {% endif %}
