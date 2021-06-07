@@ -629,6 +629,8 @@ class TeamExpander:
                 if troop['rarity'] == 'Mythic':
                     continue
                 kingdom = troop['kingdom']
+                if not kingdom.get('name') and not kingdom.get('reference_name'):
+                    continue
                 result[spoiler['date'].date()] = {
                     'start': spoiler['date'].date(),
                     'end': spoiler['date'].date() + datetime.timedelta(days=7),
