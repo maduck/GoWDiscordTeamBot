@@ -10,6 +10,7 @@
 {% endif %}{% if 'pet' in kingdom %}
 **{{ kingdom.pet_title }}**: {{ kingdom.pet.name }} `#{{ kingdom.pet.id }}`{% endif %}{% if 'class' in kingdom %}
 **{{ kingdom.class_title }}**: {{ kingdom.class }} `#{{ kingdom.class_id }}`{% endif %}
+
 **{{ kingdom.troop_title }}**:
 {%- for troop in kingdom.troops %}
 **{{ troop.spell.cost }}{{ troop.color_code|emoji }} {{ troop.name }}** `#{{ troop.id }}` {{ troop.spell.description }}
@@ -18,5 +19,6 @@
 {%- for weapon in kingdom.weapons -%}
 {% if loop.index != 1 %},{% endif %} {{ weapon.name }} `#{{ weapon.id }}`
 {%- endfor %}{%- endif -%}
-{% if kingdom.event_weapon %}**{{ kingdom.event_weapon_title }}**:
+{% if kingdom.event_weapon %}
+**{{ kingdom.event_weapon_title }}**:
 **{{ kingdom.event_weapon.spell.cost }}{{ kingdom.event_weapon.color_code|emoji }} {{ kingdom.event_weapon.name }}** `#{{ kingdom.event_weapon_id }}` {{ kingdom.event_weapon.spell.description }}{% endif %}
