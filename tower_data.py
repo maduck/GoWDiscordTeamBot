@@ -138,11 +138,13 @@ class TowerOfDoomData:
         self.set(message.guild, guild_data)
 
     def match_input_with_aliases(self, data, category, input_value):
+        if not input_value:
+            return None
         keys = self.DEFAULT_TOWER_DATA[category].keys()
 
         def matching_key(key):
             aliases = data[category].get(key, [])
-            return any(a.lower().startswith(input_value.lower()) for a in aliases)
+            return any(a.lower().startswith(input_value.lower()) for a in aliases if input_value)
 
         return next(filter(matching_key, keys))
 
@@ -152,6 +154,8 @@ class TowerOfDoomData:
         """
 
         my_data = self.get(message.guild)
+        if not my_data:
+            return True, ''
         channel = str(message.channel.id)
         floor = int(floor)
         try:
@@ -165,6 +169,8 @@ class TowerOfDoomData:
 
         try:
             scroll_key = self.match_input_with_aliases(my_data, 'scrolls', scroll)
+            if not scroll_key:
+                return True, '-'
             scroll_new_display = my_data["scrolls"][scroll_key][0]
             scroll_old_key, scroll_new_key = self.set_scroll(message.guild, channel, floor, room_key, scroll_key)
         except StopIteration:

@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.53.3'
+    VERSION = '0.53.4'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -645,7 +645,7 @@ class DiscordBot(BaseBot):
 
         rooms = [
             self.tower_data.edit_floor(message=message, floor=floor, room=room, scroll=scrolls[room_id])
-            for room_id, room in enumerate(rooms[:-1])
+            for room_id, room in enumerate(rooms)
         ]
         success = all([r[0] for r in rooms])
 
