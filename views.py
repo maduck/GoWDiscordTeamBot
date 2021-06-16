@@ -162,6 +162,9 @@ class Views:
         underworld = 'underworld' if kingdom['underworld'] else ''
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations{underworld}_{kingdom["filename"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
+        if 'release_date' in kingdom:
+            e.set_footer(text='Release date')
+            e.timestamp = kingdom['release_date']
 
         if shortened:
             return self.render_embed(e, 'kingdom_shortened.jinja', kingdom=kingdom)
