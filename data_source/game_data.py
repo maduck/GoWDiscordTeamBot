@@ -54,6 +54,7 @@ class GameData:
         self.event_kingdoms = []
         self.event_raw_data = {}
         self.weekly_event = {}
+        self.gem_events = {}
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -87,6 +88,7 @@ class GameData:
         self.populate_drop_chances()
         self.populate_event_kingdoms()
         self.populate_weekly_event_details()
+        self.populate_gem_events()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -801,3 +803,11 @@ class GameData:
         }
         calculate_minimum_tier()
         # pprint(self.weekly_event)
+
+    def populate_gem_events(self):
+        for gem_event in self.user_data['pGemEventData']:
+            self.gem_events[gem_event['Id']] = {
+                'id': gem_event['Id'],
+                'gem_type': COLORS[gem_event['GemType']],
+                'multiplier': gem_event['Multiplier'],
+            }
