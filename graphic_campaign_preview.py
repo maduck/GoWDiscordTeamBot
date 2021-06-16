@@ -28,7 +28,7 @@ class CampaignPreview(BasePreview):
 
                 box_height = 2 * base_font_size + (base_font_size + 5) * len(tasks) + 20
                 draw.fill_color = Color('black')
-                draw.rectangle(x + 50, y + 2 * base_font_size + 10, x + 55, y + box_height)
+                draw.rectangle(x + 55, y + 2 * base_font_size + 10, x + 60, y + box_height)
 
                 draw.fill_color = Color(f'rgba({color.r}, {color.g}, {color.b}, 0.8)')
                 draw.rectangle(x, y,
@@ -42,7 +42,8 @@ class CampaignPreview(BasePreview):
                 for i, task in enumerate(tasks, start=1):
                     font_y = y + 2 * base_font_size + (base_font_size + 5) * i
                     draw.text_alignment = 'center'
-                    draw.text(x + 30, font_y, str(i))
+                    task_number = f'{title[0]}{i}'
+                    draw.text(x + 30, font_y, task_number)
                     draw.text_alignment = 'left'
                     task_name = word_wrap(self.img, draw, task['name'], box_width - 60, 50)
                     draw.text(x + 70, font_y, task_name)
