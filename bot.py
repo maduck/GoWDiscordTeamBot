@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.53.5'
+    VERSION = '0.53.6'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -371,6 +371,7 @@ class DiscordBot(BaseBot):
 
         params['lang'] = params.get('lang') or self.language.get(message.guild)
         params['lang'] = params['lang'].lower()
+        params['lang'] = LANGUAGE_CODE_MAPPING.get(params['lang'], params['lang'])
         debug(message)
         await function(message=message, **params)
 
