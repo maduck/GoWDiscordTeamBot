@@ -80,6 +80,7 @@ class GameData:
         self.populate_classes()
         self.populate_release_dates()
         self.enrich_kingdoms()
+        self.add_troops_to_kingdoms_by_filename()
         self.populate_campaign_tasks()
         self.populate_soulforge()
         self.populate_traitstones()
@@ -455,6 +456,27 @@ class GameData:
                 weapon_id = faction_weapon_overrides.get(faction_id, weapon_id)
                 self.kingdoms[faction_id]['event_weapon'] = self.weapons[weapon_id]
                 self.weapons[weapon_id]['event_faction'] = faction_id
+
+    def add_troops_to_kingdoms_by_filename(self):
+        pattern = re.compile(r'.+_(?P<filebase>K[0-9]+).*')
+        for troop_id, troop in self.troops.items():
+            if troop_id == '`?`':
+                continue
+            kingdom = troop['kingdom']
+            if kingdom.get('name') or kingdom.get('reference_name'):
+                continue
+            match = pattern.match(troop['filename'])
+            if not match:
+                continue
+            kingdom_filename = match.group("filebase")
+            troop_kingdom = next((k for k in self.kingdoms.values() if k['filename'] == kingdom_filename), None)
+            if troop_kingdom:
+                troop['kingdom'] = troop_kingdom
+                troop_kingdom['troop_ids'].append(troop_id)
+
+                if troop_kingdom['underworld']:
+                    krystara_kingdom_id = self.kingdoms[troop_kingdom['id']]['linked_kingdom_id']
+                    self.kingdoms[krystara_kingdom_id]['troop_ids'].append(troop_id)
 
     def populate_soulforge(self):
         tabs = [
