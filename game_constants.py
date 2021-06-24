@@ -1,6 +1,39 @@
 import discord
 
-COLORS = ('blue', 'green', 'red', 'yellow', 'purple', 'brown', 'skull', '?', '?', '?', 'lycanthropy')
+COLORS = (
+    'blue',
+    'green',
+    'red',
+    'yellow',
+    'purple',
+    'brown',
+    'skull',
+    'doomskull',
+    'block',
+    'uberdoomskull',
+    'lycanthropy',
+    'bluemanapotion',
+    'greenmanapotion',
+    'redmanapotion',
+    'yellowmanapotion',
+    'purplemanapotion',
+    'brownmanapotion',
+    'wildcard2',
+    'wildcard3',
+    'wildcard4',
+    'burning',
+    'elementalstar',
+    'freeze',
+    'basegemtypes',
+    'lootbronze',
+    'lootsilver',
+    'lootgold',
+    'lootbag',
+    'lootchest0',
+    'lootchest1',
+    'lootchest2',
+    'lootsafe',
+)
 
 TROOP_RARITIES = (
     'Common',

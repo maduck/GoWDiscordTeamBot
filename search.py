@@ -65,6 +65,7 @@ class TeamExpander:
         self.drop_chances = world.drop_chances
         self.event_kingdoms = world.event_kingdoms
         self.weekly_event = world.weekly_event
+        self.active_gems = world.gem_events
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -1106,4 +1107,10 @@ class TeamExpander:
             })
         result[positive] = sorted(result[positive], key=operator.itemgetter('name'))
         result[negative] = sorted(result[negative], key=operator.itemgetter('name'))
+        return result
+
+    def get_active_gems(self):
+        result = []
+        for gem in self.active_gems.values():
+            result.append(gem['gem_type'])
         return result
