@@ -45,6 +45,7 @@ class GameData:
         self.soulforge_weapons = []
         self.campaign_tasks = {}
         self.campaign_data = {}
+        self.campaign_rerolls = {}
         self.soulforge = {}
         self.soulforge_raw_data = {}
         self.traitstones = {}
@@ -284,19 +285,27 @@ class GameData:
         week = self.get_current_campaign_week()
 
         tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
+        rerolls = self.user_data['pTasksData']['CampaignRerollTasks']
 
         for level in ('Gold', 'Silver', 'Bronze'):
             task_list = [self.transform_campaign_task(task, week) for task in tasks[level]]
             self.campaign_tasks[level.lower()] = sorted(task_list, key=operator.itemgetter('order'))
+            reroll_list = [self.transform_campaign_task(task, week) for task in rerolls[f'Campaign{level}']]
+            self.campaign_rerolls[level.lower()] = reroll_list
         self.campaign_tasks['kingdom'] = self.kingdoms[event_kingdom_id]
 
     def transform_campaign_task(self, task, week):
         extra_data = {}
-        m = re.match(r'Campaign_(?P<kingdom_id>\d+)_(?P<level>.+)_(?P<order>\d+)', task['Id'])
-        task_id = m.groupdict()
-        task_order = 1000 + int(task_id['order'])
-        kingdom_id = int(task_id['kingdom_id'])
-        level = task_id['level']
+        task_order = 0
+        kingdom_id = 0
+        if 'Reroll' not in task['Id']:
+            m = re.match(r'Campaign_(?P<kingdom_id>\d+)_(?P<level>.+)_(?P<order>\d+)', task['Id'])
+            task_id = m.groupdict()
+            task_order = 1000 + int(task_id['order'])
+            kingdom_id = int(task_id['kingdom_id'])
+            level = task_id['level']
+        else:
+            level = task['Id'].split('_')[2]
 
         for i, t in enumerate(self.campaign_data.get(f'Campaign{level}', [])):
             if t and t['Id'] == task['Id']:
@@ -317,7 +326,7 @@ class GameData:
             'task': task['Task'],
             'name': task['TaskName'],
             'title': task['TaskTitle'],
-            'tags': task['Tag'].split(','),
+            'tags': task.get('Tag', '').split(','),
             'x': task.get('XValue'),
             'y': task.get('YValue'),
             'value0': U(extra_data.get('Value0', '`?`')),
