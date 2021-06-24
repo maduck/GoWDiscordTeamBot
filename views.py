@@ -572,3 +572,7 @@ class Views:
                     f'**{effect["name"]}**: {effect["description"]}' for effect in chunk]
                 e.add_field(name=title, value='\n'.join(field_lines), inline=False)
         return e
+
+    def render_active_gems(self, gems, lang):
+        e = discord.Embed(title=_('[GEMS]', lang), description='\n'.join(gems), color=self.WHITE)
+        return e

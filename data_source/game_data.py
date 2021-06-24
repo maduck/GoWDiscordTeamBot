@@ -807,7 +807,8 @@ class GameData:
     def populate_gem_events(self):
         for gem_event in self.user_data['pGemEventData']:
             self.gem_events[gem_event['Id']] = {
-                'id': gem_event['Id'],
+                'event_id': gem_event['Id'],
+                'gem_id': gem_event['GemType'],
                 'gem_type': COLORS[gem_event['GemType']],
                 'multiplier': gem_event['Multiplier'],
             }
