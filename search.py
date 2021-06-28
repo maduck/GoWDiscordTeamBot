@@ -883,7 +883,7 @@ class TeamExpander:
         return result
 
     def get_color_kingdoms(self, lang):
-        colors_without_skulls = COLORS[:-1]
+        colors_without_skulls = COLORS[:6]
         return self.kingdom_percentage('colors', colors_without_skulls, lang)
 
     def get_type_kingdoms(self, lang):
