@@ -833,7 +833,6 @@ class GameData:
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
         }
         calculate_minimum_tier()
-        # pprint(self.weekly_event)
 
     def populate_gem_events(self):
         for gem_event in self.user_data['pGemEventData']:
