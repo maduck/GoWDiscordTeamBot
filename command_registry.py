@@ -490,6 +490,12 @@ COMMAND_REGISTRY = [
         ],
     },
     {
+        'function': 'storms',
+        'pattern': re.compile(DEFAULT_PATTERN + r'storms$', MATCH_OPTIONS),
+        'description': 'Show all available storms',
+        'options': [STANDARD_OPTIONS['lang']]
+    },
+    {
         'function': 'campaign_preview',
         'pattern': re.compile(
             DEFAULT_PATTERN + r'campaign_preview(?P<switch> Switch)?( (?P<team_code>.*))?$', MATCH_OPTIONS),

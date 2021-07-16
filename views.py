@@ -579,3 +579,11 @@ class Views:
             active_gems = [_('[QUEST9013_ENDCONV_1]', lang).split('&&')[0]]
         e = discord.Embed(title=_('[GEMS]', lang), description=' '.join(active_gems), color=self.WHITE)
         return e
+
+    @staticmethod
+    def render_storms(storms, lang):
+        contents = [_('[TROOPHELP_STORM_2]', lang), '']
+        for storm_id, storm_data in storms.items():
+            contents.append(f'**{storm_data["name"]}**: {storm_data["description"]}')
+        e = discord.Embed(title=_('[TROOPHELP_STORM_1]', lang), description='\n'.join(contents))
+        return e

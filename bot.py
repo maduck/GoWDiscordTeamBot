@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.54.0'
+    VERSION = '0.55.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -577,6 +577,11 @@ class DiscordBot(BaseBot):
                 self.server_status_cache['status'] = status['pGameArray'][:-1]
                 self.server_status_cache['last_updated'] = datetime.datetime.utcnow()
         e = self.views.render_server_status(self.server_status_cache)
+        await self.answer(message, e)
+
+    async def storms(self, message, lang, **kwargs):
+        storms = self.expander.get_storms(lang)
+        e = self.views.render_storms(storms, lang)
         await self.answer(message, e)
 
     async def show_prefix(self, message, prefix, **kwargs):

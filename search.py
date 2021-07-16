@@ -24,7 +24,8 @@ log = logging.getLogger(__name__)
 log.setLevel(LOGLEVEL)
 log.addHandler(handler)
 
-_ = translations.Translations().get
+t = translations.Translations()
+_ = t.get
 
 
 def update_translations():
@@ -1114,3 +1115,19 @@ class TeamExpander:
         for gem in self.active_gems.values():
             result.append(gem['gem_type'])
         return result
+
+    @staticmethod
+    def get_storms(lang):
+        storms = {}
+        fields = {
+            '1': 'name',
+            '2': 'description',
+        }
+        p = re.compile(r'\[TROOPHELP_STORM\d+_\d+')
+        for key, value in t.translations[lang].items():
+            if not p.match(key):
+                continue
+            field = fields[key[-2]]
+            storm_key = key[:-2]
+            storms.setdefault(storm_key, {})[field] = value
+        return storms
