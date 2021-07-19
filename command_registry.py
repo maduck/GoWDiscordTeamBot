@@ -408,6 +408,23 @@ COMMAND_REGISTRY = [
         ]
     },
     {
+        'function': 'reroll_tasks',
+        'pattern': re.compile(DEFAULT_PATTERN + 'reroll_tasks( (?P<tier>bronze|silver|gold))?$', MATCH_OPTIONS),
+        'description': "Show campaign re-roll tasks",
+        'options': [{
+            'name': 'tier',
+            'description': 'Tier filter for campaign re-roll tasks',
+            'type': OptionType.STRING.value,
+            'required': False,
+            'choices': [
+                {'name': 'Bronze', 'value': 'bronze'},
+                {'name': 'Silver', 'value': 'silver'},
+                {'name': 'Gold', 'value': 'gold'},
+            ],
+        }, STANDARD_OPTIONS['lang'],
+        ]
+    },
+    {
         'function': 'color_kingdoms',
         'pattern': re.compile(DEFAULT_PATTERN + 'color_kingdoms?$', MATCH_OPTIONS),
         'description': 'Shows the best farming kingdom for each mana color',

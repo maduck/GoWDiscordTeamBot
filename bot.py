@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.55.0'
+    VERSION = '0.56.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -189,6 +189,18 @@ class DiscordBot(BaseBot):
             return await self.answer(message, e)
 
         for category, tasks in campaign_data['campaigns'].items():
+            category_lines = [f'**{task["title"]}**: {task["name"].replace("-->", "→")}' for task in tasks]
+            color = CAMPAIGN_COLORS.get(category, self.WHITE)
+            skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
+            e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
+                              description='\n'.join(category_lines), color=color)
+            if any(['`?`' in line for line in category_lines]):
+                e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
+            await self.answer(message, e, no_interaction=True)
+
+    async def reroll_tasks(self, message, lang, tier=None, **kwargs):
+        rerolls = self.expander.get_reroll_tasks(lang, tier)
+        for category, tasks in rerolls.items():
             category_lines = [f'**{task["title"]}**: {task["name"].replace("-->", "→")}' for task in tasks]
             color = CAMPAIGN_COLORS.get(category, self.WHITE)
             skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'

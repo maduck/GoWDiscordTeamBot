@@ -313,12 +313,15 @@ class GameData:
                 extra_data = t
                 task_order = i
 
-        if task['TaskTitle'].endswith('CRYSTALS]'):
+        if task['TaskTitle'].endswith('CRYSTALS]') or (
+                task['TaskTitle'] == '[TASK_COLOR_SLAYER]' and 'Reroll' in task['Id']):
             extra_data['Value1'] = task['YValue']
         elif task['TaskTitle'] == '[TASK_DEEP_DELVER]':
             extra_data['Value1'] = 10 * (week + 1)
         elif task['TaskTitle'] == '[TASK_INTREPID_EXPLORER]':
             extra_data['Value1'] = week
+        elif task['TaskTitle'] == '[TASK_FORGOTTEN_EXPLORER]' and 'Reroll' in task['Id']:
+            extra_data['Value1'] = '`Current Campaign Week`'
 
         translated_task = {
             'reward': task['Rewards'][0]['Amount'],

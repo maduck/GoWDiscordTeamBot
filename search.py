@@ -56,6 +56,7 @@ class TeamExpander:
         self.spoilers = world.spoilers
         self.events = world.events
         self.campaign_tasks = world.campaign_tasks
+        self.reroll_tasks = world.campaign_rerolls
         self.soulforge = world.soulforge
         self.traitstones = world.traitstones
         self.levels = world.levels
@@ -699,6 +700,14 @@ class TeamExpander:
             'team': _('[LITE_CHAT_TEAM_START]', lang),
         }
         return result
+
+    def get_reroll_tasks(self, lang, _filter=None):
+        tiers = ['bronze', 'silver', 'gold']
+        tasks = {
+            f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(t, lang) for t in self.reroll_tasks[tier]]
+            for i, tier in reversed(list(enumerate(tiers))) if _filter is None or tier.lower() == _filter.lower()
+        }
+        return tasks
 
     def translate_campaign_task(self, task, lang):
         new_task = task.copy()
