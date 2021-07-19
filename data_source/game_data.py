@@ -811,7 +811,7 @@ class GameData:
             tier_battles = [62, 67, 75, 81, 94]
             minimum_tier = 5
             for tier, battles in enumerate(tier_battles):
-                if minimum_battles <= battles:
+                if minimum_battles and minimum_battles <= battles:
                     minimum_tier = tier
                     break
             self.weekly_event['minimum_tier'] = minimum_tier
