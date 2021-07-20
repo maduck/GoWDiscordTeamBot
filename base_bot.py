@@ -243,22 +243,22 @@ class BaseBot(discord.Client):
     @staticmethod
     def embed_check_limits(embed):
         if len(embed.title) > 256:
-            raise EmbedLimitsExceed(embed.title)
+            raise EmbedLimitsExceed(f'Embed title too long: {len(embed.title)}')
         if len(embed.description) > 4096:
-            raise EmbedLimitsExceed(embed.description)
+            raise EmbedLimitsExceed(f'Embed description too long: {len(embed.description)}')
         if embed.fields and len(embed.fields) > 25:
-            raise EmbedLimitsExceed(embed.fields)
+            raise EmbedLimitsExceed(f'Number of embed fields: {len(embed.fields)}')
         for field in embed.fields:
             if len(field.name) > 256:
-                raise EmbedLimitsExceed(field.name, field)
+                raise EmbedLimitsExceed(f'Field name too long: {len(field.name)}')
             if len(field.value) > 1024:
-                raise EmbedLimitsExceed(field.value, field)
+                raise EmbedLimitsExceed(f'Field value too long: {len(field.value)}')
         if getattr(embed, '_footer', None) and len(embed.footer.text) > 2048:
-            raise EmbedLimitsExceed(embed.footer.text)
+            raise EmbedLimitsExceed(f'Footer too long: {len(embed.footer.text)}')
         if getattr(embed, '__author', None) and len(embed.author.name) > 256:
-            raise EmbedLimitsExceed(embed.author.name)
+            raise EmbedLimitsExceed(f'Author name too long: {len(embed.author.name)}')
         if len(embed) > 6000:
-            raise EmbedLimitsExceed('total length of embed')
+            raise EmbedLimitsExceed(f'Total embed too big: {len(embed)}')
 
     @staticmethod
     def first_writable_channel(guild):
