@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.56.1'
+    VERSION = '0.57.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -553,6 +553,24 @@ class DiscordBot(BaseBot):
 
         e = self.generate_response(title, self.WHITE, subtitle, image_no)
         url = f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg'
+        e.set_image(url=url)
+        await self.answer(message, e)
+
+    async def burgers(self, message, lang, burger_no, **kwargs):
+        random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
+        max_burgers = 24
+        if burger_no and burger_no.isdigit() and 1 <= int(burger_no) <= max_burgers:
+            burger_no = int(burger_no)
+            image_no = f'~~{random_title}~~ #{burger_no}'
+        else:
+            burger_no = random.randrange(max_burgers + 1)
+            image_no = f'{random_title} #{burger_no}'
+
+        title = _('[QUEST9007_OBJ1_MSG]', lang)
+        subtitle = _('[3000_BATTLE15_NAME]', lang)
+
+        e = self.generate_response(title, self.WHITE, subtitle, image_no)
+        url = f'https://garyatrics.com/images/burgers/{burger_no:03d}.jpg'
         e.set_image(url=url)
         await self.answer(message, e)
 

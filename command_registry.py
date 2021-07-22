@@ -356,7 +356,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'waffles',
         'pattern': re.compile(DEFAULT_PATTERN + r'waffles?( #?(?P<waffle_no>[0-9]{1,2}))?$', MATCH_OPTIONS),
-        'description': 'Easteregg command.',
+        'description': 'Easter egg command.',
         'options': [
             {
                 'name': 'waffle_no',
@@ -370,11 +370,25 @@ COMMAND_REGISTRY = [
     {
         'function': 'memes',
         'pattern': re.compile(DEFAULT_PATTERN + r'memes?( #?(?P<meme_no>[0-9]{1,3}))?$', MATCH_OPTIONS),
-        'description': 'Easteregg command #2.',
+        'description': 'Easter egg command #2.',
         'options': [
             {
                 'name': 'meme_no',
                 'description': 'Meme number',
+                'type': OptionType.INTEGER.value,
+                'required': 'False',
+            },
+            STANDARD_OPTIONS['lang'],
+        ]
+    },
+    {
+        'function': 'burgers',
+        'pattern': re.compile(DEFAULT_PATTERN + r'burgers?( #?(?P<burger_no>[0-9]{1,2}))?$', MATCH_OPTIONS),
+        'description': 'Easter egg command #3.',
+        'options': [
+            {
+                'name': 'burger_no',
+                'description': 'Burger number',
                 'type': OptionType.INTEGER.value,
                 'required': 'False',
             },
