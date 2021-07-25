@@ -600,6 +600,13 @@ class TeamExpander:
             'colors': [(_(c[0], 'en').lower(), c[1]) for c in banner['colors'] if c[1]],
             'filename': banner['filename'],
         }
+        colors_shorthand = []
+        for color, amount in result['colors']:
+            if amount > 0:
+                colors_shorthand.append(color[0].upper())
+            else:
+                colors_shorthand.append(color[0].lower())
+        result['colors_shorthand'] = ''.join(colors_shorthand)
         if not result['colors']:
             result['available'] = _('[AVAILABLE_FROM_KINGDOM]', lang).replace('%1', _(f'[{banner["id"]}_NAME]', lang))
         return result
