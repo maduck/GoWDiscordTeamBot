@@ -587,3 +587,7 @@ class Views:
             contents.append(f'**{storm_data["name"]}**: {storm_data["description"]}')
         e = discord.Embed(title=_('[TROOPHELP_STORM_1]', lang), description='\n'.join(contents))
         return e
+
+    def render_warbands(self, warbands, lang):
+        e = discord.Embed(title=_('[WARBANDS]', lang), color=self.WHITE)
+        return self.render_embed(e, 'warbands.jinja', warbands=warbands)

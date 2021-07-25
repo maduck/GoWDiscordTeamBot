@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.57.0'
+    VERSION = '0.58.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -704,6 +704,11 @@ class DiscordBot(BaseBot):
     async def drop_rates(self, message, lang, **kwargs):
         drop_chances = self.expander.get_drop_chances(lang)
         e = self.views.render_drop_chances(drop_chances, lang)
+        await self.answer(message, e)
+
+    async def warbands(self, message, lang, **kwargs):
+        warbands = self.expander.get_warbands(lang)
+        e = self.views.render_warbands(warbands, lang)
         await self.answer(message, e)
 
     @guild_required

@@ -451,6 +451,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'warbands',
+        'pattern': re.compile(DEFAULT_PATTERN + 'warbands?$', MATCH_OPTIONS),
+        'description': 'Shows all available Warband banners',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'soulforge',
         'pattern': re.compile(DEFAULT_PATTERN + 'soulforge$', MATCH_OPTIONS),
         'description': 'Show this week\'s craftable items in Soulforge',

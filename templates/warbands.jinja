@@ -1,0 +1,3 @@
+{% for warband in warbands -%}
+{{ warband.banner|banner_colors|join(' ') }} **{{ warband.banner.name }}**
+{% endfor %}

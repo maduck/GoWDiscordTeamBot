@@ -1140,3 +1140,9 @@ class TeamExpander:
             storm_key = key[:-2]
             storms.setdefault(storm_key, {})[field] = value
         return storms
+
+    def get_warbands(self, lang):
+        warbands = [k.copy() for k in self.kingdoms.values() if 'WARBAND' in k['reference_name']]
+        for warband in warbands:
+            self.translate_kingdom(warband, lang)
+        return warbands
