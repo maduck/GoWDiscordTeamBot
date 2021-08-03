@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.58.0'
+    VERSION = '0.59.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -524,7 +524,7 @@ class DiscordBot(BaseBot):
         e.add_field(name=name, value=value)
         return e
 
-    async def handle_team_code(self, message, lang, team_code, shortened='', **kwargs):
+    async def handle_team_code(self, message, lang, team_code, shortened='', lengthened='', **kwargs):
         team = self.expander.get_team_from_message(team_code, lang)
         if not team or not team['troops']:
             log.debug(f'nothing found in message {team_code}.')
@@ -533,7 +533,7 @@ class DiscordBot(BaseBot):
         author = await pluralize_author(author)
         if kwargs.get('title') is None:
             team_code = None
-        e = self.views.render_team(team, author, shortened, team_code=team_code, title=kwargs.get('title'))
+        e = self.views.render_team(team, author, shortened, lengthened, team_code=team_code, title=kwargs.get('title'))
         await self.answer(message, e)
         if team_code:
             await message.channel.send(content=f'[{team_code}]')

@@ -338,7 +338,7 @@ COMMAND_REGISTRY = [
         # TODO adapt to something more strict, maybe this?
         # \[(?P<weapon_troops>([167]\d{3},?)+){1,4}(?P<banner>3\d{3},?)?(?P<talents>([0-3]{1},?){7})?(?P<class>\d{5})?\]
         'pattern': re.compile(
-            NO_QUOTE + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})].*',
+            NO_QUOTE + LANG_PATTERN + r'((?P<shortened>-)|(?P<lengthened>\+))?\[(?P<team_code>(\d+,?){1,13})].*',
             MATCH_OPTIONS | re.DOTALL)
     },
     {

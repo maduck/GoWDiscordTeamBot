@@ -90,14 +90,14 @@ class TeamExpander:
             troop = self.troops.get(element)
             weapon = self.weapons.get(element)
             if troop:
-                color_code = "".join(troop["colors"])
-                troop_name = _(troop['name'], lang)
-                result['troops'].append([color_code, troop_name, ''])
+                troop = troop.copy()
+                self.translate_troop(troop, lang)
+                result['troops'].append(troop)
                 continue
             elif weapon:
-                color_code = "".join(sorted(weapon["colors"]))
-                weapon_name = _(weapon['name'], lang)
-                result['troops'].append([color_code, weapon_name, 'weapon'])
+                weapon = weapon.copy()
+                self.translate_weapon(weapon, lang)
+                result['troops'].append(weapon)
                 has_weapon = True
                 continue
 
