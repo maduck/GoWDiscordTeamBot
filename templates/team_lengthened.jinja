@@ -1,6 +1,7 @@
 <T>inline**{{ team.troops_title }}**</T>
 {%- for troop in team.troops %}
-{{ troop.color_code|emoji }} {{ troop.name }}{% if 'affixes' in troop %} {{ 'weapon'|emoji }}{% endif %} ({{ troop.kingdom }} {{ troop.rarity }}) {{ troop.spell.description }}
+{{ troop.raw_rarity|emoji }} **{{ troop.name }}{% if 'affixes' in troop %} {{ 'weapon'|emoji }}{% endif %} ({{ troop.kingdom }})**
+{{ troop.spell.cost }} {{ troop.color_code|emoji }} {{ troop.spell.description }}
 {%- endfor -%}
 
 {%- if team.banner %}
