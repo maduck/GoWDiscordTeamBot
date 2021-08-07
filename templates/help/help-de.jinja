@@ -1,5 +1,5 @@
 <T>**__Team Codes__**</T>
-• __Grundlagen__: Einfach den Team Code eingeben, z.B. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. Dieser Code kann mitten im Text stehen und muss nicht alleine in einer Zeile eingegeben werden.
+• __Grundlagen__: Einfach den Team Code eingeben, z.B. `[1075,6251,6699,6007,3010,3,1,1,1,3,1,1,14007]`. Dieser Code kann mitten im Text stehen und muss nicht alleine in einer Zeile eingegeben werden. Die Ausgabe kann mit einem vorangestellten `-` kürzer und einem `+` länger gemacht werden.
 <T>**__Searches__**:</T>
 • `{{ prefix }}troop <Suche>`, z.B. `{{ prefix }}troop wilde königin`.
 • `{{ prefix }}weapon <Suche>`, z.B. `{{ prefix }}weapon axt der verdammnis`.
@@ -16,18 +16,22 @@
 • Leerzeichen, Apostrophe (') und Bindestriche (-) werden ignoriert.
 • Wenn mehrere Ergebnisse passen, wird eine Liste mit diesen angezeigt.
 • Wenn genau ein Ergebnis gefunden wird, passt sich die Farge der Antwort der Seltenheit an.
+<T>**__Aktuelle Woche / Aktueller Tag__**:</T>
+• Details zum aktuellen Wochen-Event: `{{ prefix }}current_event`.
+• Aktuelle Abenteuer-Pinnwand: `{{ prefix }}adventures`.
+• Aktive Heroische Steine: `{{ prefix }}active_gems`.
+• Wöchentliche Kampagne: `{{ prefix }}campaign`. Kann mit folgenden Parametern gefiltert werden: `bronze`, `silver` oder `gold`: `{{ prefix }}campaign silver`.
+• Herstellbare Gegenstände in der Seelenschmiede: `{{ prefix }}soulforge`
 <T>**__Überblicke__**:</T>
 • Spoiler: `{{ prefix }}spoilers`. Kann mit folgenden Parametern eingegrenzt werden: `pets`, `troops`, `weapons`, `kingdoms`, `events`: `{{ prefix }}spoilers weapons` oder auch `{{ prefix }}events`
-• Details zum aktuellen Wochen-Event: `{{ prefix }}current_event`.
-• Wöchentliche Kampagne: `{{ prefix }}campaign`. Kann mit folgenden Parametern gefiltert werden: `bronze`, `silver` oder `gold`: `{{ prefix }}campaign silver`.
 • Alle Klassen: `{{ prefix }}class summary`
 • Alle Königreiche: `{{ prefix }}kingdom summary`
-• Herstellbare Gegenstände in der Seelenschmiede: `{{ prefix }}soulforge`
 • Spieler-Level Boni: `{{ prefix }}levels`
 • Königreiche nach Einheitenfarben: `{{ prefix }}color_kingdoms`
 • Königreiche nach Einheitentypen: `{{ prefix }}troop_type_kingdoms`
 • Truhen Drop-Raten `{{ prefix }}drop_rates`
 • Effekte `{{ prefix }}effects`
+• Alle Kriegsmeuten: `{{ prefix }}warbands`.
 <T>**__Turm der Verdammnis__**:</T>
 Bitte `{{ prefix }}towerhelp` benutzen.
 <T>**__Haustierrettungen__**:</T>
@@ -53,6 +57,7 @@ Bitte `{{ prefix }}towerhelp` benutzen.
 • Überprüfen der Kanal-spezifischen Berechtigungen: `{{ prefix }}permissions`
 • Anzeige der Bot-Version, Laufzeit, Verfügbarkeit, Einladungscode und mehr: `{{ prefix }}about`
 • Zufällige Hochmotivations-Waffel: `{{ prefix }}waffles`
+• Zufälliger Hochmotivations-Burger: `{{ prefix }}burgers`
 • Kurzhilfe: `{{ prefix }}quickhelp` für eine gekürzte Übersicht aller Befehle.
 <T>**__Administrative Befehle__**:</T>
 Administrative Befehle können nur von Server-Besitzern, Benutzern mit Administrationsrechten oder Mitglieder der "Admin"-Gruppe aufgerufen werden.
