@@ -76,7 +76,7 @@ class CampaignPreview(BasePreview):
             draw.text_alignment = 'left'
             draw.font_size = 25
             for i, item in enumerate(self.data['team']['troops']):
-                mana_url = f'emojis/{item[0]}.png'
+                mana_url = f'emojis/{item["color_code"]}.png'
                 mana = download_image(mana_url)
                 mana_width, mana_height = scale_down(mana.width, mana.height, 30)
                 mana.resize(mana_width, mana_height)
@@ -85,11 +85,10 @@ class CampaignPreview(BasePreview):
                                left=x + 20, top=y + 80 + i * (mana.height + 15),
                                width=mana.width, height=mana.height,
                                image=mana)
-                troop_title = item[1]
-                if item[2]:
+                if 'affix' in item:
                     pass
 
-                draw.text(x + 55, int(y + 80 + (i + 0.5) * (mana.height + 15)), troop_title)
+                draw.text(x + 55, int(y + 80 + (i + 0.5) * (mana.height + 15)), item['name'])
             banner_filename = f'Banners/Banners_{self.data["team"]["banner"]["filename"]}_full.png'
             banner = download_image(banner_filename)
             banner_width, banner_height = scale_down(banner.width, banner.height, 120)
