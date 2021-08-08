@@ -134,7 +134,7 @@ class Views:
         e.title = 'Talent search found one exact match'
         return self.render_embed(e, 'talent.jinja', tree=tree)
 
-    def render_team(self, team, author, shortened, team_code=None, title=None):
+    def render_team(self, team, author, shortened, lengthened, team_code=None, title=None):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(color=color)
         if team['banner']:
@@ -145,9 +145,9 @@ class Views:
             troops = []
             for troop in team['troops']:
                 addon = ''
-                if troop[2]:
-                    addon = self.my_emojis.get(troop[2])
-                troops.append(f'{troop[1]}{addon}')
+                if 'affixes' in troop:
+                    addon = self.my_emojis.get('weapon')
+                troops.append(f'{troop["name"]}{addon}')
 
             e.title = ', '.join(troops)
             return self.render_embed(e, 'team_shortened.jinja', team=team)
@@ -155,7 +155,10 @@ class Views:
         e.title = f"{author} team"
         if title:
             e.title = title
-        return self.render_embed(e, 'team.jinja', team=team)
+        template_file = 'team.jinja'
+        if lengthened:
+            template_file = 'team_lengthened.jinja'
+        return self.render_embed(e, template_file, team=team)
 
     def render_kingdom(self, kingdom, shortened):
         e = discord.Embed(title='Kingdom search found one exact match', color=self.WHITE)
@@ -574,5 +577,20 @@ class Views:
         return e
 
     def render_active_gems(self, gems, lang):
-        e = discord.Embed(title=_('[GEMS]', lang), description='\n'.join(gems), color=self.WHITE)
+        active_gems = [self.my_emojis.get(gem, gem) for gem in gems]
+        if not active_gems:
+            active_gems = [_('[QUEST9013_ENDCONV_1]', lang).split('&&')[0]]
+        e = discord.Embed(title=_('[GEMS]', lang), description=' '.join(active_gems), color=self.WHITE)
         return e
+
+    @staticmethod
+    def render_storms(storms, lang):
+        contents = [_('[TROOPHELP_STORM_2]', lang), '']
+        for storm_id, storm_data in storms.items():
+            contents.append(f'**{storm_data["name"]}**: {storm_data["description"]}')
+        e = discord.Embed(title=_('[TROOPHELP_STORM_1]', lang), description='\n'.join(contents))
+        return e
+
+    def render_warbands(self, warbands, lang):
+        e = discord.Embed(title=_('[WARBANDS]', lang), color=self.WHITE)
+        return self.render_embed(e, 'warbands.jinja', warbands=warbands)

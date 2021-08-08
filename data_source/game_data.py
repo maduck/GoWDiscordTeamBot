@@ -313,12 +313,15 @@ class GameData:
                 extra_data = t
                 task_order = i
 
-        if task['TaskTitle'].endswith('CRYSTALS]'):
+        if task['TaskTitle'].endswith('CRYSTALS]') or (
+                task['TaskTitle'] == '[TASK_COLOR_SLAYER]' and 'Reroll' in task['Id']):
             extra_data['Value1'] = task['YValue']
         elif task['TaskTitle'] == '[TASK_DEEP_DELVER]':
             extra_data['Value1'] = 10 * (week + 1)
         elif task['TaskTitle'] == '[TASK_INTREPID_EXPLORER]':
             extra_data['Value1'] = week
+        elif task['TaskTitle'] == '[TASK_FORGOTTEN_EXPLORER]' and 'Reroll' in task['Id']:
+            extra_data['Value1'] = '`Current Campaign Week`'
 
         translated_task = {
             'reward': task['Rewards'][0]['Amount'],
@@ -798,7 +801,7 @@ class GameData:
             # here basically everybody in the top 100 is over the required score already,
             # that happens later throughout the week.
             if entry_no == len(self.event_raw_data['GlobalLeaderboard']) - 1:
-                all_battles = [e.get('BattlesWon', 0) for e in self.event_raw_data['GlobalLeaderboard']]
+                all_battles = [e.get('BattlesWon', 0) or 0 for e in self.event_raw_data['GlobalLeaderboard']]
                 all_scores = [e.get('Score', 0) for e in self.event_raw_data['GlobalLeaderboard']]
                 avg_battles = sum(all_battles) / len(all_battles)
                 avg_score = sum(all_scores) / len(all_scores)
@@ -808,7 +811,7 @@ class GameData:
             tier_battles = [62, 67, 75, 81, 94]
             minimum_tier = 5
             for tier, battles in enumerate(tier_battles):
-                if minimum_battles <= battles:
+                if minimum_battles and minimum_battles <= battles:
                     minimum_tier = tier
                     break
             self.weekly_event['minimum_tier'] = minimum_tier
@@ -833,7 +836,6 @@ class GameData:
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
         }
         calculate_minimum_tier()
-        # pprint(self.weekly_event)
 
     def populate_gem_events(self):
         for gem_event in self.user_data['pGemEventData']:

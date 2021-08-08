@@ -157,6 +157,8 @@ class TowerOfDoomData:
         if not my_data:
             return True, ''
         channel = str(message.channel.id)
+        if not floor.isdigit():
+            return False, 'Invalid floor number'
         floor = int(floor)
         try:
             room_key = self.match_input_with_aliases(my_data, 'rooms', room)

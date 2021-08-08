@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.54.0'
+    VERSION = '0.59.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -189,6 +189,18 @@ class DiscordBot(BaseBot):
             return await self.answer(message, e)
 
         for category, tasks in campaign_data['campaigns'].items():
+            category_lines = [f'**{task["title"]}**: {task["name"].replace("-->", "→")}' for task in tasks]
+            color = CAMPAIGN_COLORS.get(category, self.WHITE)
+            skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
+            e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
+                              description='\n'.join(category_lines), color=color)
+            if any(['`?`' in line for line in category_lines]):
+                e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
+            await self.answer(message, e, no_interaction=True)
+
+    async def reroll_tasks(self, message, lang, tier=None, **kwargs):
+        rerolls = self.expander.get_reroll_tasks(lang, tier)
+        for category, tasks in rerolls.items():
             category_lines = [f'**{task["title"]}**: {task["name"].replace("-->", "→")}' for task in tasks]
             color = CAMPAIGN_COLORS.get(category, self.WHITE)
             skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
@@ -512,7 +524,7 @@ class DiscordBot(BaseBot):
         e.add_field(name=name, value=value)
         return e
 
-    async def handle_team_code(self, message, lang, team_code, shortened='', **kwargs):
+    async def handle_team_code(self, message, lang, team_code, shortened='', lengthened='', **kwargs):
         team = self.expander.get_team_from_message(team_code, lang)
         if not team or not team['troops']:
             log.debug(f'nothing found in message {team_code}.')
@@ -521,14 +533,14 @@ class DiscordBot(BaseBot):
         author = await pluralize_author(author)
         if kwargs.get('title') is None:
             team_code = None
-        e = self.views.render_team(team, author, shortened, team_code=team_code, title=kwargs.get('title'))
+        e = self.views.render_team(team, author, shortened, lengthened, team_code=team_code, title=kwargs.get('title'))
         await self.answer(message, e)
         if team_code:
             await message.channel.send(content=f'[{team_code}]')
 
     async def waffles(self, message, lang, waffle_no, **kwargs):
         random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
-        max_waffles = 69
+        max_waffles = 71
         if waffle_no and waffle_no.isdigit() and 1 <= int(waffle_no) <= max_waffles:
             waffle_no = int(waffle_no)
             image_no = f'~~{random_title}~~ #{waffle_no}'
@@ -541,6 +553,24 @@ class DiscordBot(BaseBot):
 
         e = self.generate_response(title, self.WHITE, subtitle, image_no)
         url = f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg'
+        e.set_image(url=url)
+        await self.answer(message, e)
+
+    async def burgers(self, message, lang, burger_no, **kwargs):
+        random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
+        max_burgers = 24
+        if burger_no and burger_no.isdigit() and 1 <= int(burger_no) <= max_burgers:
+            burger_no = int(burger_no)
+            image_no = f'~~{random_title}~~ #{burger_no}'
+        else:
+            burger_no = random.randrange(max_burgers + 1)
+            image_no = f'{random_title} #{burger_no}'
+
+        title = _('[QUEST9007_OBJ1_MSG]', lang)
+        subtitle = _('[3000_BATTLE15_NAME]', lang)
+
+        e = self.generate_response(title, self.WHITE, subtitle, image_no)
+        url = f'https://garyatrics.com/images/burgers/{burger_no:03d}.jpg'
         e.set_image(url=url)
         await self.answer(message, e)
 
@@ -577,6 +607,11 @@ class DiscordBot(BaseBot):
                 self.server_status_cache['status'] = status['pGameArray'][:-1]
                 self.server_status_cache['last_updated'] = datetime.datetime.utcnow()
         e = self.views.render_server_status(self.server_status_cache)
+        await self.answer(message, e)
+
+    async def storms(self, message, lang, **kwargs):
+        storms = self.expander.get_storms(lang)
+        e = self.views.render_storms(storms, lang)
         await self.answer(message, e)
 
     async def show_prefix(self, message, prefix, **kwargs):
@@ -669,6 +704,11 @@ class DiscordBot(BaseBot):
     async def drop_rates(self, message, lang, **kwargs):
         drop_chances = self.expander.get_drop_chances(lang)
         e = self.views.render_drop_chances(drop_chances, lang)
+        await self.answer(message, e)
+
+    async def warbands(self, message, lang, **kwargs):
+        warbands = self.expander.get_warbands(lang)
+        e = self.views.render_warbands(warbands, lang)
         await self.answer(message, e)
 
     @guild_required

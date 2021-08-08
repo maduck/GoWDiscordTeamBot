@@ -338,7 +338,7 @@ COMMAND_REGISTRY = [
         # TODO adapt to something more strict, maybe this?
         # \[(?P<weapon_troops>([167]\d{3},?)+){1,4}(?P<banner>3\d{3},?)?(?P<talents>([0-3]{1},?){7})?(?P<class>\d{5})?\]
         'pattern': re.compile(
-            NO_QUOTE + LANG_PATTERN + r'(?P<shortened>-)?\[(?P<team_code>(\d+,?){1,13})].*',
+            NO_QUOTE + LANG_PATTERN + r'((?P<shortened>-)|(?P<lengthened>\+))?\[(?P<team_code>(\d+,?){1,13})].*',
             MATCH_OPTIONS | re.DOTALL)
     },
     {
@@ -356,7 +356,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'waffles',
         'pattern': re.compile(DEFAULT_PATTERN + r'waffles?( #?(?P<waffle_no>[0-9]{1,2}))?$', MATCH_OPTIONS),
-        'description': 'Easteregg command.',
+        'description': 'Easter egg command.',
         'options': [
             {
                 'name': 'waffle_no',
@@ -370,11 +370,25 @@ COMMAND_REGISTRY = [
     {
         'function': 'memes',
         'pattern': re.compile(DEFAULT_PATTERN + r'memes?( #?(?P<meme_no>[0-9]{1,3}))?$', MATCH_OPTIONS),
-        'description': 'Easteregg command #2.',
+        'description': 'Easter egg command #2.',
         'options': [
             {
                 'name': 'meme_no',
                 'description': 'Meme number',
+                'type': OptionType.INTEGER.value,
+                'required': 'False',
+            },
+            STANDARD_OPTIONS['lang'],
+        ]
+    },
+    {
+        'function': 'burgers',
+        'pattern': re.compile(DEFAULT_PATTERN + r'burgers?( #?(?P<burger_no>[0-9]{1,2}))?$', MATCH_OPTIONS),
+        'description': 'Easter egg command #3.',
+        'options': [
+            {
+                'name': 'burger_no',
+                'description': 'Burger number',
                 'type': OptionType.INTEGER.value,
                 'required': 'False',
             },
@@ -408,6 +422,23 @@ COMMAND_REGISTRY = [
         ]
     },
     {
+        'function': 'reroll_tasks',
+        'pattern': re.compile(DEFAULT_PATTERN + 'reroll_tasks( (?P<tier>bronze|silver|gold))?$', MATCH_OPTIONS),
+        'description': "Show campaign re-roll tasks",
+        'options': [{
+            'name': 'tier',
+            'description': 'Tier filter for campaign re-roll tasks',
+            'type': OptionType.STRING.value,
+            'required': False,
+            'choices': [
+                {'name': 'Bronze', 'value': 'bronze'},
+                {'name': 'Silver', 'value': 'silver'},
+                {'name': 'Gold', 'value': 'gold'},
+            ],
+        }, STANDARD_OPTIONS['lang'],
+        ]
+    },
+    {
         'function': 'color_kingdoms',
         'pattern': re.compile(DEFAULT_PATTERN + 'color_kingdoms?$', MATCH_OPTIONS),
         'description': 'Shows the best farming kingdom for each mana color',
@@ -417,6 +448,12 @@ COMMAND_REGISTRY = [
         'function': 'troop_type_kingdoms',
         'pattern': re.compile(DEFAULT_PATTERN + 'troop_type_kingdoms?$', MATCH_OPTIONS),
         'description': 'Shows the best farming kingdom for each troop type',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
+        'function': 'warbands',
+        'pattern': re.compile(DEFAULT_PATTERN + 'warbands?$', MATCH_OPTIONS),
+        'description': 'Shows all available Warband banners',
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
@@ -488,6 +525,12 @@ COMMAND_REGISTRY = [
             },
             STANDARD_OPTIONS['lang']
         ],
+    },
+    {
+        'function': 'storms',
+        'pattern': re.compile(DEFAULT_PATTERN + r'storms$', MATCH_OPTIONS),
+        'description': 'Show all available storms',
+        'options': [STANDARD_OPTIONS['lang']]
     },
     {
         'function': 'campaign_preview',

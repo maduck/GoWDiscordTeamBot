@@ -24,7 +24,8 @@ log = logging.getLogger(__name__)
 log.setLevel(LOGLEVEL)
 log.addHandler(handler)
 
-_ = translations.Translations().get
+t = translations.Translations()
+_ = t.get
 
 
 def update_translations():
@@ -55,6 +56,7 @@ class TeamExpander:
         self.spoilers = world.spoilers
         self.events = world.events
         self.campaign_tasks = world.campaign_tasks
+        self.reroll_tasks = world.campaign_rerolls
         self.soulforge = world.soulforge
         self.traitstones = world.traitstones
         self.levels = world.levels
@@ -88,14 +90,14 @@ class TeamExpander:
             troop = self.troops.get(element)
             weapon = self.weapons.get(element)
             if troop:
-                color_code = "".join(troop["colors"])
-                troop_name = _(troop['name'], lang)
-                result['troops'].append([color_code, troop_name, ''])
+                troop = troop.copy()
+                self.translate_troop(troop, lang)
+                result['troops'].append(troop)
                 continue
             elif weapon:
-                color_code = "".join(sorted(weapon["colors"]))
-                weapon_name = _(weapon['name'], lang)
-                result['troops'].append([color_code, weapon_name, 'weapon'])
+                weapon = weapon.copy()
+                self.translate_weapon(weapon, lang)
+                result['troops'].append(weapon)
                 has_weapon = True
                 continue
 
@@ -598,6 +600,13 @@ class TeamExpander:
             'colors': [(_(c[0], 'en').lower(), c[1]) for c in banner['colors'] if c[1]],
             'filename': banner['filename'],
         }
+        colors_shorthand = []
+        for color, amount in result['colors']:
+            if amount > 0:
+                colors_shorthand.append(color[0].upper())
+            else:
+                colors_shorthand.append(color[0].lower())
+        result['colors_shorthand'] = ''.join(colors_shorthand)
         if not result['colors']:
             result['available'] = _('[AVAILABLE_FROM_KINGDOM]', lang).replace('%1', _(f'[{banner["id"]}_NAME]', lang))
         return result
@@ -698,6 +707,14 @@ class TeamExpander:
             'team': _('[LITE_CHAT_TEAM_START]', lang),
         }
         return result
+
+    def get_reroll_tasks(self, lang, _filter=None):
+        tiers = ['bronze', 'silver', 'gold']
+        tasks = {
+            f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(t, lang) for t in self.reroll_tasks[tier]]
+            for i, tier in reversed(list(enumerate(tiers))) if _filter is None or tier.lower() == _filter.lower()
+        }
+        return tasks
 
     def translate_campaign_task(self, task, lang):
         new_task = task.copy()
@@ -883,7 +900,7 @@ class TeamExpander:
         return result
 
     def get_color_kingdoms(self, lang):
-        colors_without_skulls = COLORS[:-1]
+        colors_without_skulls = COLORS[:6]
         return self.kingdom_percentage('colors', colors_without_skulls, lang)
 
     def get_type_kingdoms(self, lang):
@@ -1114,3 +1131,25 @@ class TeamExpander:
         for gem in self.active_gems.values():
             result.append(gem['gem_type'])
         return result
+
+    @staticmethod
+    def get_storms(lang):
+        storms = {}
+        fields = {
+            '1': 'name',
+            '2': 'description',
+        }
+        p = re.compile(r'\[TROOPHELP_STORM\d+_\d+')
+        for key, value in t.translations[lang].items():
+            if not p.match(key):
+                continue
+            field = fields[key[-2]]
+            storm_key = key[:-2]
+            storms.setdefault(storm_key, {})[field] = value
+        return storms
+
+    def get_warbands(self, lang):
+        warbands = [k.copy() for k in self.kingdoms.values() if 'WARBAND' in k['reference_name']]
+        for warband in warbands:
+            self.translate_kingdom(warband, lang)
+        return warbands

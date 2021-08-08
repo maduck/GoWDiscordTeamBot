@@ -21,7 +21,7 @@ def admin_required(function):
         if not self.is_guild_admin(message):
             e = discord.Embed(title='Administrative change', color=self.RED)
             e.add_field(name='Error',
-                        value=f'Only the server owner has permission to use this command.')
+                        value=f'You need to be server owner or administrator to use this command.')
             await self.answer(message, e)
             return
         await function(*args, **kwargs)
