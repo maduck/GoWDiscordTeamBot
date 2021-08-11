@@ -556,7 +556,7 @@ class DiscordBot(BaseBot):
         e.set_image(url=url)
         await self.answer(message, e)
 
-    async def burgers(self, message, lang, burger_no, **kwargs):
+    async def burgers(self, message, lang, burger_no=None, **kwargs):
         random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
         max_burgers = 24
         if burger_no and burger_no.isdigit() and 1 <= int(burger_no) <= max_burgers:
