@@ -564,7 +564,6 @@ class DiscordBot(BaseBot):
         title = _('[QUEST9007_OBJ1_MSG]', lang)
         subtitle = _('[3000_BATTLE15_NAME]', lang)
         base_url = 'https://garyatrics.com/images/burgers/{0:03d}.jpg'
-        print(base_url)
         return await self.foodies(message, lang, burger_no, max_burgers, base_url, title, subtitle)
 
     async def memes(self, message, lang, meme_no=None, **kwargs):
