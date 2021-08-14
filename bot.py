@@ -538,41 +538,34 @@ class DiscordBot(BaseBot):
         if team_code:
             await message.channel.send(content=f'[{team_code}]')
 
-    async def waffles(self, message, lang, waffle_no, **kwargs):
+    async def foodies(self, message, lang, foodie_no, max_foodies, base_url, title, subtitle):
         random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
-        max_waffles = 71
-        if waffle_no and waffle_no.isdigit() and 0 <= int(waffle_no) <= max_waffles:
-            waffle_no = int(waffle_no)
-            image_no = f'~~{random_title}~~ #{waffle_no}'
+        if foodie_no and foodie_no.isdigit() and 0 <= int(foodie_no) <= max_foodies:
+            foodie_no = int(foodie_no)
+            image_no = f'~~{random_title}~~ #{foodie_no}'
         else:
-            waffle_no = random.randrange(max_waffles + 1)
-            image_no = f'{random_title} #{waffle_no}'
+            foodie_no = random.randrange(max_foodies + 1)
+            image_no = f'{random_title} #{foodie_no}'
 
+        e = self.generate_response(title, self.WHITE, subtitle, image_no)
+        url = base_url.format(foodie_no)
+        e.set_image(url=url)
+        await self.answer(message, e)
+
+    async def waffles(self, message, lang, waffle_no, **kwargs):
+        max_waffles = 71
         title = _('[QUEST9480_OBJ0_MSG]', lang)
         subtitle = _('[HAND_FEED]', lang)
-
-        e = self.generate_response(title, self.WHITE, subtitle, image_no)
-        url = f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg'
-        e.set_image(url=url)
-        await self.answer(message, e)
+        base_url = 'https://garyatrics.com/images/waffles/{0:03d}.jpg'
+        return await self.foodies(message, lang, waffle_no, max_waffles, base_url, title, subtitle)
 
     async def burgers(self, message, lang, burger_no=None, **kwargs):
-        random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
         max_burgers = 24
-        if burger_no and burger_no.isdigit() and 1 <= int(burger_no) <= max_burgers:
-            burger_no = int(burger_no)
-            image_no = f'~~{random_title}~~ #{burger_no}'
-        else:
-            burger_no = random.randrange(max_burgers + 1)
-            image_no = f'{random_title} #{burger_no}'
-
         title = _('[QUEST9007_OBJ1_MSG]', lang)
         subtitle = _('[3000_BATTLE15_NAME]', lang)
-
-        e = self.generate_response(title, self.WHITE, subtitle, image_no)
-        url = f'https://garyatrics.com/images/burgers/{burger_no:03d}.jpg'
-        e.set_image(url=url)
-        await self.answer(message, e)
+        base_url = 'https://garyatrics.com/images/burgers/{0:03d}.jpg'
+        print(base_url)
+        return await self.foodies(message, lang, burger_no, max_burgers, base_url, title, subtitle)
 
     async def memes(self, message, lang, meme_no=None, **kwargs):
         base_url = 'https://garyatrics.com/images/memes'
