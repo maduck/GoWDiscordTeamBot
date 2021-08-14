@@ -643,35 +643,23 @@ class GameData:
     def translate_reward_type(self, reward):
         reward_type = f'[{reward["Type"].upper()}]'
         data = reward['Data']
-        if reward_type == '[GEM]':
-            reward_type = '[GEMS]'
-        elif reward_type == '[SOUL]':
-            reward_type = '[SOULS]'
-        elif reward_type == '[DEED]':
-            reward_type = f'[DEED{data:02d}]'
-        elif reward_type == '[RUNE]':
-            reward_type = f'[RUNE{data:02d}_NAME]'
-        elif reward_type == '[PETFOOD]':
-            reward_type = f'[PETFOOD{data:02d}_NAME]'
-        elif reward_type == '[KEY]':
-            reward_type = f'[KEYTYPE_{data}_TITLE]'
-        elif reward_type == '[VAULTKEY]':
-            reward_type = '[LIVEEVENTENERGY3]'
-        elif reward_type == '[ORB]':
-            reward_type = f'[REWARD_HELP_HEADING_ORB_{data}]'
-        elif reward_type == '[DIAMOND]':
-            reward_type = '[DIAMONDS_GAINED]'
-        elif reward_type == '[MEDAL]':
-            reward_type = f'[WONDER_{data}_NAME]'
-        elif reward_type == '[CHATTITLE]':
-            reward_type = '[TITLE]'
-        elif reward_type == '[CHATPORTRAIT]':
-            reward_type = '[PORTRAIT]'
-        elif reward_type == '[TROOP]':
-            reward_type = self.troops.get(data)['name']
-        elif reward_type == '[CHAOSSHARD]':
-            reward_type = '[N_CHAOS_SHARD]'
-        return reward_type
+        reward_translation = {
+            '[GEM]': '[GEMS]',
+            '[SOUL]': '[SOULS]',
+            '[DEED]': '[DEED{data:02d}]',
+            '[RUNE]': '[RUNE{data:02d}_NAME]',
+            '[PETFOOD]': '[PETFOOD{data:02d}_NAME]',
+            '[KEY]': '[KEYTYPE_{data}_TITLE]',
+            '[VAULTKEY]': '[LIVEEVENTENERGY3]',
+            '[ORB]': '[REWARD_HELP_HEADING_ORB_{data}]',
+            '[DIAMOND]': '[DIAMONDS_GAINED]',
+            '[MEDAL]': '[WONDER_{data}_NAME]',
+            '[CHATTITLE]': '[TITLE]',
+            '[CHATPORTRAIT]': '[PORTRAIT]',
+            '[TROOP]': '{self.troops.get(data)["name"]}',
+            '[CHAOSSHARD]': '[N_CHAOS_SHARD]',
+        }
+        return reward_translation.get(reward_type, reward_type).format(data=data)
 
     def populate_drop_chances(self):
         for chest_id, chest in self.user_data['ChestInfo'].items():
