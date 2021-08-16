@@ -271,15 +271,14 @@ class GameData:
         return int(event_kingdom_id)
 
     def get_current_campaign_week(self):
-        artifact_id = self.user_data['pEconomyModel']['LowestUnreleasedArtifactId']
-        artifact = [a for a in self.data['Artifacts'] if a['Id'] == artifact_id][0]
-        week = 0
-        event_kingdom_id = self.user_data['pEconomyModel']['CurrentEventKingdomId']
-        for level in artifact['Levels']:
-            if level['KingdomId'] == event_kingdom_id:
-                break
-            week += 1
-        return week
+        release_dates = self.user_data['pEconomyModel']['ArtifactReleaseDates']
+        now = datetime.datetime.utcnow()
+        for release in release_dates:
+            artifact_release = datetime.datetime.strptime(release['Date'], '%m/%d/%Y %H:%M:%S %p %Z')
+            release_age = now - artifact_release
+            if datetime.timedelta(days=0) <= release_age <= datetime.timedelta(days=10 * 7):
+                week_no = math.ceil(release_age / datetime.timedelta(days=7))
+                return week_no
 
     def populate_campaign_tasks(self):
         event_kingdom_id = self.get_current_event_kingdom_id()
