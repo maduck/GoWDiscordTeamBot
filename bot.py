@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.60.0'
+    VERSION = '0.60.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -163,7 +163,7 @@ class DiscordBot(BaseBot):
         if switch is None:
             switch = CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
-            if message.interaction_id:
+            if hasattr(message, 'interaction_id'):
                 await self.send_slash_command_result(message, content=None, embed=None,
                                                      response_type=InteractionResponseType.PONG.value)
             start = time.time()

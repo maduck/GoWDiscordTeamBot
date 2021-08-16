@@ -811,7 +811,8 @@ class GameData:
             'lore': extract_lore(self.event_raw_data),
             'restrictions': extract_restrictions(self.event_raw_data),
             'troop_id': self.event_raw_data.get('GachaTroop'),
-            'troop': self.troops[self.event_raw_data.get('GachaTroop', 6000)]['name'],
+            'troop': self.troops[self.event_raw_data.get('GachaTroop', 6000)]['name']
+            if self.event_raw_data.get('GachaTroop') else None,
             'color': COLORS[self.event_raw_data.get('Color')] if 'Color' in self.event_raw_data else None,
             'weapon_id': self.event_raw_data.get('EventWeaponId'),
             'token': self.event_raw_data.get('TokenId'),
