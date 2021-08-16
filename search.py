@@ -1028,7 +1028,7 @@ class TeamExpander:
                 'soulforge': _('[SOULFORGE]', lang),
                 'resources': _('[RESOURCES]', lang),
                 'dungeon': _('[DUNGEON]', lang),
-                'dungeon_battles': _('[TASK_WIN_DUNGEON_BATTLES]', lang),
+                'dungeon_battles': _('[TASK_WIN_DUNGEON_BATTLES]', lang).replace('{0}', '3').replace('\x19', 's'),
                 'tier_8': _('[CHALLENGE_TIER_8_ROMAN]', lang),
                 'available': _('[AVAILABLE]', lang),
                 'in_soulforge': in_soulforge_text,
