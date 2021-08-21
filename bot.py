@@ -540,7 +540,7 @@ class DiscordBot(BaseBot):
 
     async def foodies(self, message, lang, foodie_no, max_foodies, base_url, title, subtitle):
         random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
-        if foodie_no and foodie_no.isdigit() and 0 <= int(foodie_no) <= max_foodies:
+        if foodie_no and str(foodie_no).isdigit() and 0 <= int(foodie_no) <= max_foodies:
             foodie_no = int(foodie_no)
             image_no = f'~~{random_title}~~ #{foodie_no}'
         else:
