@@ -639,7 +639,8 @@ class GameData:
                 result[reward_type] += amount
         return result
 
-    def translate_reward_type(self, reward):
+    @staticmethod
+    def translate_reward_type(reward):
         reward_type = f'[{reward["Type"].upper()}]'
         data = reward['Data']
         reward_translation = {
