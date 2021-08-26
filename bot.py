@@ -271,7 +271,7 @@ class DiscordBot(BaseBot):
     async def about(self, message, lang, **kwargs):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(title=_('[INFO]', lang), description='<https://garyatrics.com/>', color=color)
-        e.set_thumbnail(url=self.user.avatar_url)
+        e.set_thumbnail(url=self.user.avatar.url)
         version_title = _('[SETTINGS_VERSION_NO]', lang).replace(':', '')
         e.add_field(name=f'__{version_title}__:', value=self.VERSION, inline=False)
 
