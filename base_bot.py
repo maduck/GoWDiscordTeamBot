@@ -119,7 +119,7 @@ class BaseBot(discord.Client):
             if not embed:
                 return await self.answer_or_react(message, embed, content)
             self.embed_check_limits(embed)
-            embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
+            embed.set_author(name=message.author.display_name, icon_url=message.author.avatar.url)
             return await self.answer_or_react(message, embed, content, no_interaction)
         except discord.errors.Forbidden:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
