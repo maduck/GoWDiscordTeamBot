@@ -117,6 +117,8 @@ class TeamExpander:
                 result['talents'].append(element)
                 continue
 
+            result['troops'].append(self.troops['`?`'])
+
         if has_weapon and has_class:
             new_talents = []
             for talent_no, talent_code in enumerate(result['talents']):

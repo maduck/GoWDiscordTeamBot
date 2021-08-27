@@ -27,7 +27,7 @@ class GameData:
             }
         }
 
-        self.troops = {'`?`': {'name': '`?`'}}
+        self.troops = {'`?`': {'name': '`?`', 'color_code': 'questionmark'}}
         self.troop_types = set()
         self.spells = {}
         self.effects = set()
