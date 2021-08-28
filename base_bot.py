@@ -156,6 +156,8 @@ class BaseBot(discord.Client):
 
     async def on_interaction(self, interaction):
         channel = interaction.channel
+        if isinstance(channel, discord.channel.PartialMessageable):
+            channel = 'Private Message'
         guild = interaction.guild
         author = interaction.user
         function = getattr(self, interaction.data['name'])
