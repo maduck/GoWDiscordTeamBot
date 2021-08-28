@@ -9,11 +9,11 @@ import time
 import urllib
 from functools import partial, partialmethod
 
-import dbl
 import discord
 import humanize
 import prettytable
 import requests
+import topgg
 
 import bot_tasks
 import graphic_campaign_preview
@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.60.4'
+    VERSION = '0.60.5'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -67,10 +67,10 @@ class DiscordBot(BaseBot):
         self.pet_rescues = []
         self.pet_rescue_config: PetRescueConfig = None
         token = CONFIG.get('dbl_token')
-        self.dbl_client = None
+        self.topgg_client = None
         self.server_status_cache = {'last_updated': datetime.datetime.min}
         if token:
-            self.dbl_client = dbl.DBLClient(self, token)
+            self.topgg_client = topgg.DBLClient(self, token)
 
     async def on_guild_join(self, guild):
         await super().on_guild_join(guild)
