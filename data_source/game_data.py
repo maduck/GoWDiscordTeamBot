@@ -38,7 +38,7 @@ class GameData:
         self.traits = {}
         self.kingdoms = {
             '`?`': {'name': '[REQUIREMENTS_NOT_MET]', 'underworld': False, 'filename': None, 'id': '`?`',
-                    'location': None}}
+                    'location': None, 'reference_name': '`?`'}}
         self.pet_effects = ()
         self.pets: Pets = None
         self.talent_trees = {}
