@@ -86,7 +86,7 @@ class TeamExpander:
         has_weapon = False
         has_class = False
 
-        for element in code:
+        for i, element in enumerate(code):
             troop = self.troops.get(element)
             weapon = self.weapons.get(element)
             if troop:
@@ -116,8 +116,23 @@ class TeamExpander:
             if 0 <= element <= 3:
                 result['talents'].append(element)
                 continue
-
-            result['troops'].append(self.troops['`?`'])
+            if i <= 3:
+                result['troops'].append(self.troops['`?`'])
+                continue
+            elif i == 4:
+                banner = {
+                    'colors': [('questionmark', 1)],
+                    'name': '[REQUIREMENTS_NOT_MET]',
+                    'filename': 'Locked',
+                    'id': '`?`'
+                }
+                result['banner'] = self.translate_banner(banner, lang)
+                continue
+            elif i == 12:
+                result['class'] = _('[REQUIREMENTS_NOT_MET]', lang)
+                result['talents'] = []
+                has_class = True
+                continue
 
         if has_weapon and has_class:
             new_talents = []
@@ -150,7 +165,7 @@ class TeamExpander:
             return []
         possible_matches = []
         for base_item in items.values():
-            if base_item['name'] == '`?`':
+            if base_item['name'] == '`?`' or base_item['id'] == '`?`':
                 continue
             item = base_item.copy()
             translator(item, lang)
