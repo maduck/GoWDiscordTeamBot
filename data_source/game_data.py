@@ -315,7 +315,8 @@ class GameData:
                 task_order = i
 
         if task['TaskTitle'].endswith('CRYSTALS]') or (
-                task['TaskTitle'] == '[TASK_COLOR_SLAYER]' and 'Reroll' in task['Id']):
+                task['TaskTitle'] == '[TASK_COLOR_SLAYER]' and 'Reroll' in task['Id']) or (
+                task['TaskTitle'] == '[TASK_GRAVE_KEEPER]'):
             extra_data['Value1'] = task['YValue']
         elif task['TaskTitle'] == '[TASK_DEEP_DELVER]':
             extra_data['Value1'] = 10 * (week + 1)
