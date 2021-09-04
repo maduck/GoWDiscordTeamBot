@@ -147,7 +147,7 @@ class PetRescue:
                 'alert_message_id, pet_message_id, start_time, lang, mention) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         channel_type = self.message.channel.type
         if channel_type == discord.ChannelType.private:
-            channel_name = self.message.channel.recipient.name
+            channel_name = self.message.author.name
         else:
             channel_name = self.message.channel.name
 
