@@ -1146,10 +1146,7 @@ class TeamExpander:
         return result
 
     def get_active_gems(self):
-        result = []
-        for gem in self.active_gems.values():
-            result.append(gem['gem_type'])
-        return result
+        return [g['gem_type'] for g in self.active_gems.values()]
 
     @staticmethod
     def get_storms(lang):
