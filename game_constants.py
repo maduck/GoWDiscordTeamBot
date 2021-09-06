@@ -1,16 +1,16 @@
 import discord
 
-GEM_COLORS = {
-    0: 'blue',
-    1: 'green',
-    2: 'red',
-    3: 'yellow',
-    4: 'purple',
-    5: 'brown',
-    6: 'skull',
-    7: 'doomskull',
-    8: 'block',
-    9: 'uberdoomskull',
+COLORS = list({
+                  0: 'blue',
+                  1: 'green',
+                  2: 'red',
+                  3: 'yellow',
+                  4: 'purple',
+                  5: 'brown',
+                  6: 'skull',
+                  7: 'doomskull',
+                  8: 'block',
+                  9: 'uberdoomskull',
     10: 'lycanthropy',
     11: 'bluemanapotion',
     12: 'greenmanapotion',
@@ -26,18 +26,17 @@ GEM_COLORS = {
     22: 'freeze',
     23: 'wish',
     24: 'lightdarkstar',
-    25: 'curse',
-    26: 'basegemtypes',
-    27: 'lootbronze',
-    28: 'lootsilver',
-    29: 'lootgold',
-    30: 'lootbag',
-    31: 'lootchest0',
-    32: 'lootchest1',
-    33: 'lootchest2',
-    34: 'lootsafe',
-}
-COLORS = list(GEM_COLORS.values())
+                  25: 'curse',
+                  26: 'basegemtypes',
+                  27: 'lootbronze',
+                  28: 'lootsilver',
+                  29: 'lootgold',
+                  30: 'lootbag',
+                  31: 'lootchest0',
+                  32: 'lootchest1',
+                  33: 'lootchest2',
+                  34: 'lootsafe',
+              }.values())
 
 TROOP_RARITIES = (
     'Common',
