@@ -26,7 +26,8 @@ class BaseGameData:
         return self.data[item]
 
     def __str__(self):
-        return f'<Pet id={self.data["id"]} name={self.data["reference_name"]} kingdom={self.data["kingdom_id"]}>'
+        return f'<{self.__class__.__name__} id={self.data["id"]} name={self.data["reference_name"]}' \
+               f' kingdom={self.data["kingdom_id"]}>'
 
 
 class BaseGameDataContainer:
