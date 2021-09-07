@@ -93,6 +93,8 @@ EVENT_TYPES = {
     10: '[WEEKLY_EVENT]',
     11: '[CAMPAIGN]',
     12: '[ARENA]',
+    13: '[JOURNEY]',
+    14: '[KINGDOM_PASS]',
 }
 SOULFORGE_ALWAYS_AVAILABLE = [
     6428,  # Xathenos
