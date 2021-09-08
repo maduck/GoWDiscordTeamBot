@@ -647,6 +647,8 @@ class GameData:
     def translate_reward_type(self, reward):
         reward_type = f'[{reward["Type"].upper()}]'
         data = reward['Data']
+        if reward_type == '[TROOP]':
+            data = self.troops.get(data)
         reward_translation = {
             '[GEM]': '[GEMS]',
             '[SOUL]': '[SOULS]',
@@ -660,7 +662,7 @@ class GameData:
             '[MEDAL]': '[WONDER_{data}_NAME]',
             '[CHATTITLE]': '[TITLE]',
             '[CHATPORTRAIT]': '[PORTRAIT]',
-            '[TROOP]': '{self.troops.get(data)["name"]}',
+            '[TROOP]': '{data[name]}',
             '[CHAOSSHARD]': '[N_CHAOS_SHARD]',
         }
         return reward_translation.get(reward_type, reward_type).format(data=data)
@@ -760,7 +762,7 @@ class GameData:
                     'rewards': [],
                 }
                 points += stage['Total']
-                for reward in stage['RewardArray']:
+                for reward in stage.get('RewardArray', []):
                     rewards[i]['rewards'].append(transform_reward(reward))
             return rewards
 
