@@ -12,11 +12,13 @@ class PetRescue:
     SECONDS_PER_MINUTE = 60
     DISPLAY_TIME = datetime.timedelta(minutes=61)
 
-    def __init__(self, pet, time_left, message, mention, lang, answer_method, config):
+    def __init__(self, pet, time_left, message, mention, lang, answer_method, config, override_time_left=None):
         self.pet = pet
         time_left = int(time_left or 59)
         if time_left >= 60:
             time_left = 59
+        if override_time_left:
+            time_left = override_time_left
         self.start_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=60 - time_left)
         self.active = True
         self.message = message

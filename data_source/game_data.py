@@ -399,7 +399,9 @@ class GameData:
             gacha_troop = release['GachaTroop']
             gacha_troops = release.get('GachaTroops', [])
             result = {'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
+                      'start_time': datetime.datetime.utcfromtimestamp(release['StartDate']),
                       'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
+                      'end_time': datetime.datetime.utcfromtimestamp(release['EndDate']),
                       'type': EVENT_TYPES.get(release['Type'], release['Type']),
                       'names': release.get('Name'),
                       'gacha': gacha_troop,
@@ -642,8 +644,7 @@ class GameData:
                 result[reward_type] += amount
         return result
 
-    @staticmethod
-    def translate_reward_type(reward):
+    def translate_reward_type(self, reward):
         reward_type = f'[{reward["Type"].upper()}]'
         data = reward['Data']
         reward_translation = {

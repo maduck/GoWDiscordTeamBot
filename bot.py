@@ -449,9 +449,17 @@ class DiscordBot(BaseBot):
                               color=self.BLACK)
             return await self.answer(message, e)
         pet = pets[0]
+        events = self.expander.get_events(lang)
+        now = datetime.datetime.utcnow()
+        pet_events = [e for e in events if e['raw_type'] == '[PETRESCUE]']
+        override_time_left = None
+        for event in pet_events:
+            if event['start_time'] <= now <= event['end_time'] and event['gacha'] == pet.id:
+                override_time_left = (event['end_time'] - now) / datetime.timedelta(minutes=1)
 
         answer_method = partial(self.answer, no_interaction=True)
-        rescue = PetRescue(pet, time_left, message, mention, lang, answer_method, self.pet_rescue_config)
+        rescue = PetRescue(pet, time_left, message, mention, lang, answer_method, self.pet_rescue_config,
+                           override_time_left)
         e = self.views.render_pet_rescue(rescue)
         await rescue.create_or_edit_posts(e)
         await rescue.add(self.pet_rescues)

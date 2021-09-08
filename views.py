@@ -299,7 +299,9 @@ class Views:
         lang = rescue.lang
         e = self.render_pet(rescue.pet, lang)
         e.title = _('[PETRESCUE]', lang)
-        time_left = _('[PETRESCUE_ENDS_IN_HOURS]', lang).replace('%1', '00').replace('%2', f'{rescue.time_left:02d}')
+        hours = rescue.time_left // 60
+        minutes = rescue.time_left % 60
+        time_left = _('[PETRESCUE_ENDS_IN_HOURS]', lang).replace('%1', f'{hours:02d}').replace('%2', f'{minutes:02d}')
         rescue_message = f'{_("[PETRESCUE_OVERVIEW_PETSUBTITLE]", lang)}\n{time_left}'
         e.add_field(name=_('[PETRESCUE_HELP_SHORT]', lang), value=rescue_message)
         return e
