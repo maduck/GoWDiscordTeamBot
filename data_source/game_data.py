@@ -138,7 +138,7 @@ class GameData:
                 'spell_id': weapon['SpellId'],
                 'kingdom': self.kingdoms[weapon['KingdomId']],
                 'kingdom_id': weapon['KingdomId'],
-                'requirement': weapon['MasteryRequirement'],
+                'requirement': weapon.get('MasteryRequirement', 0),
                 'armor_increase': weapon['ArmorIncrease'],
                 'attack_increase': weapon['AttackIncrease'],
                 'health_increase': weapon['HealthIncrease'],
