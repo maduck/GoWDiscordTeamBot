@@ -226,14 +226,18 @@ class TeamExpander:
             troop['kingdom'] = reference_name
         troop['spell'] = self.translate_spell(troop['spell_id'], lang)
         troop['spell_title'] = _('[TROOPHELP_SPELL0]', lang)
-        troop['traitstones_title'] = _('[SOULFORGE_TAB_TRAITSTONES]', lang)
-        if 'traitstones' not in troop:
-            troop['traitstones'] = []
-        traitstones = []
-        for rune in troop['traitstones']:
-            traitstones.append(f'{_(rune["name"], lang)} ({rune["amount"]})')
-        troop['traitstones'] = traitstones
+        self.translate_traitstones(troop, lang)
         troop['bonuses_title'] = _('[BONUSES]', lang)
+
+    @staticmethod
+    def translate_traitstones(item, lang):
+        item['traitstones_title'] = _('[SOULFORGE_TAB_TRAITSTONES]', lang)
+        if 'traitstones' not in item:
+            item['traitstones'] = []
+        traitstones = []
+        for rune in item['traitstones']:
+            traitstones.append(f'{_(rune["name"], lang)} ({rune["amount"]})')
+        item['traitstones'] = traitstones
 
     @staticmethod
     def enrich_traits(traits, lang):
@@ -341,6 +345,7 @@ class TeamExpander:
                     'description': _(talent['description'], lang)
                 })
             translated_trees.append(translated_talents)
+        self.translate_traitstones(_class, lang)
         _class['talents_title'] = _('[TALENT_TREES]', lang)
         _class['kingdom_title'] = _('[KINGDOM]', lang)
         _class['traits_title'] = _('[TRAITS]', lang)

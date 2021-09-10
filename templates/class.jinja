@@ -8,6 +8,8 @@
 {%- for trait in _class.traits %}
 **{{ trait.name }}**: {{ trait.description }}
 {%- endfor -%}
+{% if _class.traitstones -%}<T>{{ _class.traitstones_title }}</T>
+{{ _class.traitstones|join(', ') }}{% endif %}
 
 {%- for tree in _class.talents %}
 <T>inline__{{ _class.trees[loop.index - 1] }}__</T>
