@@ -1,4 +1,4 @@
-beautifulsoup4~=4.9.3
+beautifulsoup4~=4.10
 -e git+https://github.com/Rapptz/discord.py#egg=discord.py
 feedparser~=6.0
 html2markdown~=0.1.7
