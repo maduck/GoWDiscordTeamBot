@@ -84,7 +84,9 @@ class DiscordBot(BaseBot):
                     ban_message = self.views.render_ban_message(ban)
                     await first_writable_channel.send(embed=ban_message)
                 finally:
-                    return await guild.leave()
+                    pass
+            await guild.leave()
+            return
 
         welcome_message = self.views.render_welcome_message(self.prefix.get(guild))
         if first_writable_channel:
