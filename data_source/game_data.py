@@ -281,6 +281,16 @@ class GameData:
             if datetime.timedelta(days=0) <= release_age <= datetime.timedelta(days=10 * 7):
                 week_no = math.ceil(release_age / datetime.timedelta(days=7))
                 return week_no
+        current_artifact_id = self.user_data['pEconomyModel']['LowestUnpurchasableArtifactId']
+        event_kingdom_id = self.get_current_event_kingdom_id()
+        week = 1
+        for artifact in self.data['Artifacts']:
+            if artifact['Id'] != current_artifact_id:
+                continue
+            for week, level in enumerate(artifact['Levels']):
+                if level['KingdomId'] == event_kingdom_id:
+                    break
+        return week
 
     def populate_campaign_tasks(self):
         event_kingdom_id = self.get_current_event_kingdom_id()
