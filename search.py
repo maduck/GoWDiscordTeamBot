@@ -745,6 +745,7 @@ class TeamExpander:
         if isinstance(new_task.get('y'), str):
             new_task['y'] = _(f'[{new_task["y"].upper()}]', lang)
         new_task['plural'] = int(new_task.get('x', 1)) != 1
+        plural_char = _('[BOT_PLURAL]', lang, default='s')
 
         replacements = {
             '{WeaponType}': '[WEAPONTYPE_{c:u}]',
@@ -759,7 +760,7 @@ class TeamExpander:
             '{0}': '{x}',
             '{1}': task['c'],
             '{2}': '{x} {y}',
-            '\x19': 's' if new_task['plural'] else '',
+            '\x19': plural_char if new_task['plural'] else '',
         }
         new_task['title'] = _(new_task['title'], lang)
         new_task['name'] = _(new_task["name"], lang)
