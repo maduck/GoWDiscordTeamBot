@@ -44,7 +44,7 @@ class Translations:
                 f'GemsOfWar_{language}.json')
             addon_filename = f'extra_translations/{language}.json'
             if os.path.exists(addon_filename):
-                with open(addon_filename) as f:
+                with open(addon_filename, encoding='utf8') as f:
                     addon_translations = json.load(f)
                 self.translations[lang_code].update(addon_translations)
 
