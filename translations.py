@@ -48,11 +48,12 @@ class Translations:
                     addon_translations = json.load(f)
                 self.translations[lang_code].update(addon_translations)
 
-    def get(self, key, lang=''):
+    def get(self, key, lang='', default=None):
         if lang not in self.translations:
             lang = self.BASE_LANG
-
-        return self.translations[lang].get(key, key)
+        if not default:
+            default = key
+        return self.translations[lang].get(key, default)
 
 
 class HumanizeTranslator:
