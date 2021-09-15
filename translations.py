@@ -48,12 +48,21 @@ class Translations:
                     addon_translations = json.load(f)
                 self.translations[lang_code].update(addon_translations)
 
-    def get(self, key, lang='', default=None):
+    def get(self, key, lang='', default=None, plural=False):
         if lang not in self.translations:
             lang = self.BASE_LANG
         if not default:
             default = key
-        return self.translations[lang].get(key, default)
+        result = self.translations[lang].get(key, default)
+        return self.pluralize(result, plural)
+
+    @staticmethod
+    def pluralize(text, plural: bool):
+        if '\x19' not in text:
+            return text
+        fragments = text.split('\x19')
+        del fragments[2 - plural]
+        return ''.join(fragments)
 
 
 class HumanizeTranslator:
