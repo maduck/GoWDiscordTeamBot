@@ -11,7 +11,7 @@ from game_constants import COLORS, EVENT_TYPES, RARITY_COLORS, SOULFORGE_REQUIRE
     UNDERWORLD_SOULFORGE_REQUIREMENTS, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
-from util import dig, extract_search_tag, format_locale_date, translate_day
+from util import dig, extract_search_tag, get_next_monday_in_locale, translate_day
 
 LOGLEVEL = logging.DEBUG
 
@@ -715,14 +715,15 @@ class TeamExpander:
             f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(t, lang) for t in self.campaign_tasks[tier]]
             for i, tier in reversed(list(enumerate(tiers))) if _filter is None or tier.lower() == _filter.lower()
         }
+        formatted_start, start_date = get_next_monday_in_locale(date=None, lang=lang)
         result['has_content'] = any([len(c) > 0 for c in result['campaigns'].values()])
         result['background'] = f'Background/{self.campaign_tasks["kingdom"]["filename"]}_full.png'
         result['gow_logo'] = 'Atlas/gow_logo.png'
         kingdom_filebase = self.campaign_tasks['kingdom']['filename']
         result['kingdom_logo'] = f'Troopcardshields_{kingdom_filebase}_full.png'
         result['kingdom'] = _(self.campaign_tasks['kingdom']['name'], lang)
-        result['start_date'] = format_locale_date(date=None, lang=lang)
-        result['date'] = result['start_date']
+        result['raw_date'] = start_date
+        result['date'] = formatted_start
         result['lang'] = lang
         result['texts'] = {
             'campaign': _('[CAMPAIGN]', lang),
@@ -1017,6 +1018,7 @@ class TeamExpander:
         if alternate_kingdom_id:
             in_soulforge_text += ' (' + _(f'[{weapon["event_faction"]}_NAME]', lang) + ' ' + _(
                 '[FACTION_WEAPON]', lang) + ')'
+        date = get_next_monday_in_locale(date, lang)[0]
         result = {
             'switch': switch,
             'name': weapon['name'],
@@ -1055,7 +1057,7 @@ class TeamExpander:
                 'in_soulforge': in_soulforge_text,
                 'n_gems': _('[GEMS_GAINED]', lang).replace('%1', '50'),
             },
-            'date': format_locale_date(date, lang),
+            'date': date,
         }
         return result
 

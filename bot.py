@@ -155,7 +155,7 @@ class DiscordBot(BaseBot):
             if team_code:
                 campaign_data['team'] = self.expander.get_team_from_message(team_code, lang)
             image_data = graphic_campaign_preview.render_all(campaign_data)
-            result = discord.File(image_data, f'campaign_{campaign_data["start_date"]}.png')
+            result = discord.File(image_data, f'campaign_{lang}_{campaign_data["raw_date"]}.png')
             duration = time.time() - start
             log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
             await message.channel.send(file=result)

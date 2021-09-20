@@ -90,7 +90,7 @@ def translate_day(day_no, locale):
         return day_name[day_no]
 
 
-def format_locale_date(date, lang):
+def get_next_monday_in_locale(date, lang):
     lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
     today = datetime.date.today()
     monday = 0
@@ -105,8 +105,8 @@ def format_locale_date(date, lang):
     if platform.system() != 'Windows':
         locale = LOCALE_MAPPING.get(lang, 'en_GB') + '.UTF8'
     with different_locale(locale):
-        date = date.strftime('%b %d')
-    return date
+        formatted_date = date.strftime('%b %d')
+    return formatted_date, date
 
 
 def convert_color_array(data_object):
