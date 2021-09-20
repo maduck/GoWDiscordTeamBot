@@ -334,12 +334,22 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(DEFAULT_PATTERN + r'bookmarks$', MATCH_OPTIONS)
     },
     {
-        'function': 'handle_team_code',
+        'function': 'team_code',
         # TODO adapt to something more strict, maybe this?
         # \[(?P<weapon_troops>([167]\d{3},?)+){1,4}(?P<banner>3\d{3},?)?(?P<talents>([0-3]{1},?){7})?(?P<class>\d{5})?\]
         'pattern': re.compile(
             NO_QUOTE + LANG_PATTERN + r'((?P<shortened>-)|(?P<lengthened>\+))?\[(?P<team_code>(\d+,?){1,13})].*',
-            MATCH_OPTIONS | re.DOTALL)
+            MATCH_OPTIONS | re.DOTALL),
+        'description': 'display team with code copied from the game',
+        'options': [
+            {
+                'name': 'team_code',
+                'description': 'team code',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['lang'],
+        ],
     },
     {
         'function': 'news_subscribe',
