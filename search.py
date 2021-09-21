@@ -503,7 +503,7 @@ class TeamExpander:
         elif weapon['requirement'] == 1000:
             weapon['requirement_text'] = _('[WEAPON_AVAILABLE_FROM_CHESTS_AND_EVENTS]', lang)
         elif weapon['requirement'] == 1002:
-            _class = _(weapon['class'], lang)
+            _class = _(weapon.get('class', '[NO_CLASS]'), lang)
             weapon['requirement_text'] = _('[CLASS_REWARD_TITLE]', lang) + f' ({_class})'
         elif weapon['requirement'] == 1003:
             weapon['requirement_text'] = _('[SOULFORGE_WEAPONS_TAB_EMPTY_ERROR]', lang)
