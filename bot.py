@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.61.5'
+    VERSION = '0.61.6'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -248,7 +248,7 @@ class DiscordBot(BaseBot):
                 result = self.views.trim_text_to_length('\n'.join(message_lines), limit)
                 e.add_field(name=troop_title, value=f'```{result}```', inline=False)
 
-        categories = ('kingdom', 'pet', 'weapon')
+        categories = ('kingdom', 'pet', 'weapon', 'class')
         translated = self.expander.translate_categories(categories, lang)
 
         for spoil_type in [c for c in categories if (not _filter or _filter.lower() == c)]:
