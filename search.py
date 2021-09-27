@@ -11,7 +11,7 @@ from game_constants import COLORS, EVENT_TYPES, RARITY_COLORS, SOULFORGE_REQUIRE
     UNDERWORLD_SOULFORGE_REQUIREMENTS, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
-from util import dig, extract_search_tag, format_locale_date, translate_day
+from util import dig, extract_search_tag, get_next_monday_in_locale, translate_day
 
 LOGLEVEL = logging.DEBUG
 
@@ -86,7 +86,7 @@ class TeamExpander:
         has_weapon = False
         has_class = False
 
-        for element in code:
+        for i, element in enumerate(code):
             troop = self.troops.get(element)
             weapon = self.weapons.get(element)
             if troop:
@@ -115,6 +115,23 @@ class TeamExpander:
 
             if 0 <= element <= 3:
                 result['talents'].append(element)
+                continue
+            if i <= 3:
+                result['troops'].append(self.troops['`?`'])
+                continue
+            elif i == 4:
+                banner = {
+                    'colors': [('questionmark', 1)],
+                    'name': '[REQUIREMENTS_NOT_MET]',
+                    'filename': 'Locked',
+                    'id': '`?`'
+                }
+                result['banner'] = self.translate_banner(banner, lang)
+                continue
+            elif i == 12:
+                result['class'] = _('[REQUIREMENTS_NOT_MET]', lang)
+                result['talents'] = []
+                has_class = True
                 continue
 
         if has_weapon and has_class:
@@ -148,7 +165,7 @@ class TeamExpander:
             return []
         possible_matches = []
         for base_item in items.values():
-            if base_item['name'] == '`?`':
+            if base_item['name'] == '`?`' or base_item['id'] == '`?`':
                 continue
             item = base_item.copy()
             translator(item, lang)
@@ -209,14 +226,18 @@ class TeamExpander:
             troop['kingdom'] = reference_name
         troop['spell'] = self.translate_spell(troop['spell_id'], lang)
         troop['spell_title'] = _('[TROOPHELP_SPELL0]', lang)
-        troop['traitstones_title'] = _('[SOULFORGE_TAB_TRAITSTONES]', lang)
-        if 'traitstones' not in troop:
-            troop['traitstones'] = []
-        traitstones = []
-        for rune in troop['traitstones']:
-            traitstones.append(f'{_(rune["name"], lang)} ({rune["amount"]})')
-        troop['traitstones'] = traitstones
+        self.translate_traitstones(troop, lang)
         troop['bonuses_title'] = _('[BONUSES]', lang)
+
+    @staticmethod
+    def translate_traitstones(item, lang):
+        item['traitstones_title'] = _('[SOULFORGE_TAB_TRAITSTONES]', lang)
+        if 'traitstones' not in item:
+            item['traitstones'] = []
+        traitstones = []
+        for rune in item['traitstones']:
+            traitstones.append(f'{_(rune["name"], lang)} ({rune["amount"]})')
+        item['traitstones'] = traitstones
 
     @staticmethod
     def enrich_traits(traits, lang):
@@ -324,6 +345,7 @@ class TeamExpander:
                     'description': _(talent['description'], lang)
                 })
             translated_trees.append(translated_talents)
+        self.translate_traitstones(_class, lang)
         _class['talents_title'] = _('[TALENT_TREES]', lang)
         _class['kingdom_title'] = _('[KINGDOM]', lang)
         _class['traits_title'] = _('[TRAITS]', lang)
@@ -481,7 +503,7 @@ class TeamExpander:
         elif weapon['requirement'] == 1000:
             weapon['requirement_text'] = _('[WEAPON_AVAILABLE_FROM_CHESTS_AND_EVENTS]', lang)
         elif weapon['requirement'] == 1002:
-            _class = _(weapon['class'], lang)
+            _class = _(weapon.get('class', '[NO_CLASS]'), lang)
             weapon['requirement_text'] = _('[CLASS_REWARD_TITLE]', lang) + f' ({_class})'
         elif weapon['requirement'] == 1003:
             weapon['requirement_text'] = _('[SOULFORGE_WEAPONS_TAB_EMPTY_ERROR]', lang)
@@ -693,14 +715,15 @@ class TeamExpander:
             f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(t, lang) for t in self.campaign_tasks[tier]]
             for i, tier in reversed(list(enumerate(tiers))) if _filter is None or tier.lower() == _filter.lower()
         }
+        formatted_start, start_date = get_next_monday_in_locale(date=None, lang=lang)
         result['has_content'] = any([len(c) > 0 for c in result['campaigns'].values()])
         result['background'] = f'Background/{self.campaign_tasks["kingdom"]["filename"]}_full.png'
         result['gow_logo'] = 'Atlas/gow_logo.png'
         kingdom_filebase = self.campaign_tasks['kingdom']['filename']
         result['kingdom_logo'] = f'Troopcardshields_{kingdom_filebase}_full.png'
         result['kingdom'] = _(self.campaign_tasks['kingdom']['name'], lang)
-        result['start_date'] = format_locale_date(date=None, lang=lang)
-        result['date'] = result['start_date']
+        result['raw_date'] = start_date
+        result['date'] = formatted_start
         result['lang'] = lang
         result['texts'] = {
             'campaign': _('[CAMPAIGN]', lang),
@@ -722,6 +745,7 @@ class TeamExpander:
         color = COLORS[color_code].upper() if color_code < len(COLORS) else '`?`'
         if isinstance(new_task.get('y'), str):
             new_task['y'] = _(f'[{new_task["y"].upper()}]', lang)
+        new_task['plural'] = int(new_task.get('x', 1)) != 1
 
         replacements = {
             '{WeaponType}': '[WEAPONTYPE_{c:u}]',
@@ -737,15 +761,15 @@ class TeamExpander:
             '{1}': task['c'],
             '{2}': '{x} {y}',
         }
-        new_task['title'] = _(new_task['title'], lang)
-        new_task['name'] = _(new_task["name"], lang)
+        new_task['title'] = _(new_task['title'], lang, plural=new_task['plural'])
+        new_task['name'] = _(new_task["name"], lang, plural=new_task['plural'])
 
         if '{0}' not in new_task['name'] and '{2}' not in new_task['name']:
             new_task['name'] = f'{task["x"]}x ' + new_task['name']
 
         for before, after in replacements.items():
             if before in new_task['title'] or before in new_task['name']:
-                translated = _(after.format(**new_task).format(self.troops), lang)
+                translated = _(after.format(**new_task).format(self.troops), lang, plural=new_task['plural'])
                 if '`?`' in translated:
                     translated = '`?`'
                 new_task['title'] = new_task['title'].replace(before, translated)
@@ -994,6 +1018,7 @@ class TeamExpander:
         if alternate_kingdom_id:
             in_soulforge_text += ' (' + _(f'[{weapon["event_faction"]}_NAME]', lang) + ' ' + _(
                 '[FACTION_WEAPON]', lang) + ')'
+        date = get_next_monday_in_locale(date, lang)[0]
         result = {
             'switch': switch,
             'name': weapon['name'],
@@ -1026,13 +1051,13 @@ class TeamExpander:
                 'soulforge': _('[SOULFORGE]', lang),
                 'resources': _('[RESOURCES]', lang),
                 'dungeon': _('[DUNGEON]', lang),
-                'dungeon_battles': _('[TASK_WIN_DUNGEON_BATTLES]', lang),
+                'dungeon_battles': _('[TASK_WIN_DUNGEON_BATTLES]', lang).replace('{0}', '3').replace('\x19', 's'),
                 'tier_8': _('[CHALLENGE_TIER_8_ROMAN]', lang),
                 'available': _('[AVAILABLE]', lang),
                 'in_soulforge': in_soulforge_text,
                 'n_gems': _('[GEMS_GAINED]', lang).replace('%1', '50'),
             },
-            'date': format_locale_date(date, lang),
+            'date': date,
         }
         return result
 
@@ -1127,10 +1152,7 @@ class TeamExpander:
         return result
 
     def get_active_gems(self):
-        result = []
-        for gem in self.active_gems.values():
-            result.append(gem['gem_type'])
-        return result
+        return [g['gem_type'] for g in self.active_gems.values()]
 
     @staticmethod
     def get_storms(lang):

@@ -21,7 +21,7 @@ class Pet(BaseGameData):
 
 class PetContainer(BaseGameDataContainer):
     DATA_CLASS = Pet
-    LOOKUP_KEYS = ['name', 'kingdom']
+    LOOKUP_KEYS = ['name', 'kingdom_name']
 
     def __init__(self, data):
         super().__init__()

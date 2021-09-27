@@ -119,7 +119,10 @@ class BaseBot(discord.Client):
             if not embed:
                 return await self.answer_or_react(message, embed, content)
             self.embed_check_limits(embed)
-            embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
+            if message.author and message.author.avatar:
+                embed.set_author(name=message.author.display_name, icon_url=message.author.avatar.url)
+            elif message.author and not message.author.avatar:
+                embed.set_author(name=message.author.display_name)
             return await self.answer_or_react(message, embed, content, no_interaction)
         except discord.errors.Forbidden:
             log.warning(f'[{message.guild}][{message.channel}] Could not post response, channel is forbidden for me.')
@@ -153,27 +156,18 @@ class BaseBot(discord.Client):
     async def on_slash_command(self, function, options, message):
         raise NotImplemented('This function has not been implemented.')
 
-    async def on_socket_response(self, response):
-        if response.get('t') != 'INTERACTION_CREATE':
-            return
-        event = response['d']
-        function = getattr(self, event['data']['name'])
-        try:
-            guild = None
-            if 'guild_id' in event:
-                guild = await self.fetch_guild(event['guild_id'])
-            channel = await self.fetch_channel(event['channel_id'])
-            if 'member' in event:
-                author = await guild.fetch_member(event['member']['user']['id'])
-            else:
-                author = await self.fetch_user(event['user']['id'])
-            options = {o['name']: o['value'] for o in event['data'].get('options', [])}
-            options_text = ' '.join([f'{k}={v}' for k, v in options.items()])
-            content = f'/{event["data"]["name"]} {options_text}'
-            message = FakeMessage(author, guild, channel, content, event['id'], event['token'])
-            await self.on_slash_command(function, options, message)
-        except discord.HTTPException as e:
-            log.debug(f'Slash command triggered in broken channel: {e}')
+    async def on_interaction(self, interaction):
+        channel = interaction.channel
+        if isinstance(channel, discord.channel.PartialMessageable):
+            channel = 'Private Message'
+        guild = interaction.guild
+        author = interaction.user
+        function = getattr(self, interaction.data['name'])
+        options = {o['name']: o['value'] for o in interaction.data.get('options', [])}
+        options_text = ' '.join([f'{k}={v}' for k, v in options.items()])
+        content = f'/{interaction.data["name"]} {options_text}'
+        message = FakeMessage(author, guild, channel, content, interaction.id, interaction.token)
+        await self.on_slash_command(function, options, message)
 
     async def on_raw_reaction_add(self, payload):
         if not payload.member or payload.member.bot:

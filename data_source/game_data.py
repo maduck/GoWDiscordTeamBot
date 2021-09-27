@@ -27,7 +27,7 @@ class GameData:
             }
         }
 
-        self.troops = {'`?`': {'name': '`?`'}}
+        self.troops = {'`?`': {'name': '`?`', 'color_code': 'questionmark'}}
         self.troop_types = set()
         self.spells = {}
         self.effects = set()
@@ -36,7 +36,9 @@ class GameData:
         self.classes = {}
         self.banners = {}
         self.traits = {}
-        self.kingdoms = {}
+        self.kingdoms = {
+            '`?`': {'name': '[REQUIREMENTS_NOT_MET]', 'underworld': False, 'filename': None, 'id': '`?`',
+                    'location': None, 'reference_name': '`?`'}}
         self.pet_effects = ()
         self.pets: Pets = None
         self.talent_trees = {}
@@ -136,7 +138,7 @@ class GameData:
                 'spell_id': weapon['SpellId'],
                 'kingdom': self.kingdoms[weapon['KingdomId']],
                 'kingdom_id': weapon['KingdomId'],
-                'requirement': weapon['MasteryRequirement'],
+                'requirement': weapon.get('MasteryRequirement', 0),
                 'armor_increase': weapon['ArmorIncrease'],
                 'attack_increase': weapon['AttackIncrease'],
                 'health_increase': weapon['HealthIncrease'],
@@ -271,14 +273,23 @@ class GameData:
         return int(event_kingdom_id)
 
     def get_current_campaign_week(self):
-        artifact_id = self.user_data['pEconomyModel']['LowestUnreleasedArtifactId']
-        artifact = [a for a in self.data['Artifacts'] if a['Id'] == artifact_id][0]
-        week = 0
-        event_kingdom_id = self.user_data['pEconomyModel']['CurrentEventKingdomId']
-        for level in artifact['Levels']:
-            if level['KingdomId'] == event_kingdom_id:
-                break
-            week += 1
+        release_dates = self.user_data['pEconomyModel']['ArtifactReleaseDates']
+        now = datetime.datetime.utcnow()
+        for release in release_dates:
+            artifact_release = datetime.datetime.strptime(release['Date'], '%m/%d/%Y %H:%M:%S %p %Z')
+            release_age = now - artifact_release
+            if datetime.timedelta(days=0) <= release_age <= datetime.timedelta(days=10 * 7):
+                week_no = math.ceil(release_age / datetime.timedelta(days=7))
+                return week_no
+        current_artifact_id = self.user_data['pEconomyModel']['LowestUnpurchasableArtifactId']
+        event_kingdom_id = self.get_current_event_kingdom_id()
+        week = 1
+        for artifact in self.data['Artifacts']:
+            if artifact['Id'] != current_artifact_id:
+                continue
+            for week, level in enumerate(artifact['Levels']):
+                if level['KingdomId'] == event_kingdom_id:
+                    break
         return week
 
     def populate_campaign_tasks(self):
@@ -314,7 +325,8 @@ class GameData:
                 task_order = i
 
         if task['TaskTitle'].endswith('CRYSTALS]') or (
-                task['TaskTitle'] == '[TASK_COLOR_SLAYER]' and 'Reroll' in task['Id']):
+                task['TaskTitle'] == '[TASK_COLOR_SLAYER]' and 'Reroll' in task['Id']) or (
+                task['TaskTitle'] == '[TASK_GRAVE_KEEPER]'):
             extra_data['Value1'] = task['YValue']
         elif task['TaskTitle'] == '[TASK_DEEP_DELVER]':
             extra_data['Value1'] = 10 * (week + 1)
@@ -397,7 +409,9 @@ class GameData:
             gacha_troop = release['GachaTroop']
             gacha_troops = release.get('GachaTroops', [])
             result = {'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
+                      'start_time': datetime.datetime.utcfromtimestamp(release['StartDate']),
                       'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
+                      'end_time': datetime.datetime.utcfromtimestamp(release['EndDate']),
                       'type': EVENT_TYPES.get(release['Type'], release['Type']),
                       'names': release.get('Name'),
                       'gacha': gacha_troop,
@@ -643,35 +657,25 @@ class GameData:
     def translate_reward_type(self, reward):
         reward_type = f'[{reward["Type"].upper()}]'
         data = reward['Data']
-        if reward_type == '[GEM]':
-            reward_type = '[GEMS]'
-        elif reward_type == '[SOUL]':
-            reward_type = '[SOULS]'
-        elif reward_type == '[DEED]':
-            reward_type = f'[DEED{data:02d}]'
-        elif reward_type == '[RUNE]':
-            reward_type = f'[RUNE{data:02d}_NAME]'
-        elif reward_type == '[PETFOOD]':
-            reward_type = f'[PETFOOD{data:02d}_NAME]'
-        elif reward_type == '[KEY]':
-            reward_type = f'[KEYTYPE_{data}_TITLE]'
-        elif reward_type == '[VAULTKEY]':
-            reward_type = '[LIVEEVENTENERGY3]'
-        elif reward_type == '[ORB]':
-            reward_type = f'[REWARD_HELP_HEADING_ORB_{data}]'
-        elif reward_type == '[DIAMOND]':
-            reward_type = '[DIAMONDS_GAINED]'
-        elif reward_type == '[MEDAL]':
-            reward_type = f'[WONDER_{data}_NAME]'
-        elif reward_type == '[CHATTITLE]':
-            reward_type = '[TITLE]'
-        elif reward_type == '[CHATPORTRAIT]':
-            reward_type = '[PORTRAIT]'
-        elif reward_type == '[TROOP]':
-            reward_type = self.troops.get(data)['name']
-        elif reward_type == '[CHAOSSHARD]':
-            reward_type = '[N_CHAOS_SHARD]'
-        return reward_type
+        if reward_type == '[TROOP]':
+            data = self.troops.get(data)
+        reward_translation = {
+            '[GEM]': '[GEMS]',
+            '[SOUL]': '[SOULS]',
+            '[DEED]': '[DEED{data:02d}]',
+            '[RUNE]': '[RUNE{data:02d}_NAME]',
+            '[PETFOOD]': '[PETFOOD{data:02d}_NAME]',
+            '[KEY]': '[KEYTYPE_{data}_TITLE]',
+            '[VAULTKEY]': '[LIVEEVENTENERGY3]',
+            '[ORB]': '[REWARD_HELP_HEADING_ORB_{data}]',
+            '[DIAMOND]': '[DIAMONDS_GAINED]',
+            '[MEDAL]': '[WONDER_{data}_NAME]',
+            '[CHATTITLE]': '[TITLE]',
+            '[CHATPORTRAIT]': '[PORTRAIT]',
+            '[TROOP]': '{data[name]}',
+            '[CHAOSSHARD]': '[N_CHAOS_SHARD]',
+        }
+        return reward_translation.get(reward_type, reward_type).format(data=data)
 
     def populate_drop_chances(self):
         for chest_id, chest in self.user_data['ChestInfo'].items():
@@ -768,7 +772,7 @@ class GameData:
                     'rewards': [],
                 }
                 points += stage['Total']
-                for reward in stage['RewardArray']:
+                for reward in stage.get('RewardArray', []):
                     rewards[i]['rewards'].append(transform_reward(reward))
             return rewards
 
@@ -823,7 +827,8 @@ class GameData:
             'lore': extract_lore(self.event_raw_data),
             'restrictions': extract_restrictions(self.event_raw_data),
             'troop_id': self.event_raw_data.get('GachaTroop'),
-            'troop': self.troops[self.event_raw_data.get('GachaTroop', 6000)]['name'],
+            'troop': self.troops[self.event_raw_data.get('GachaTroop', 6000)]['name']
+            if self.event_raw_data.get('GachaTroop') else None,
             'color': COLORS[self.event_raw_data.get('Color')] if 'Color' in self.event_raw_data else None,
             'weapon_id': self.event_raw_data.get('EventWeaponId'),
             'token': self.event_raw_data.get('TokenId'),

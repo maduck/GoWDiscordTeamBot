@@ -9,11 +9,11 @@ import time
 import urllib
 from functools import partial, partialmethod
 
-import dbl
 import discord
 import humanize
 import prettytable
 import requests
+import topgg
 
 import bot_tasks
 import graphic_campaign_preview
@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.59.2'
+    VERSION = '0.61.6'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -67,10 +67,10 @@ class DiscordBot(BaseBot):
         self.pet_rescues = []
         self.pet_rescue_config: PetRescueConfig = None
         token = CONFIG.get('dbl_token')
-        self.dbl_client = None
+        self.topgg_client = None
         self.server_status_cache = {'last_updated': datetime.datetime.min}
         if token:
-            self.dbl_client = dbl.DBLClient(self, token)
+            self.topgg_client = topgg.DBLClient(self, token)
 
     async def on_guild_join(self, guild):
         await super().on_guild_join(guild)
@@ -84,7 +84,9 @@ class DiscordBot(BaseBot):
                     ban_message = self.views.render_ban_message(ban)
                     await first_writable_channel.send(embed=ban_message)
                 finally:
-                    return await guild.leave()
+                    pass
+            await guild.leave()
+            return
 
         welcome_message = self.views.render_welcome_message(self.prefix.get(guild))
         if first_writable_channel:
@@ -153,7 +155,7 @@ class DiscordBot(BaseBot):
             if team_code:
                 campaign_data['team'] = self.expander.get_team_from_message(team_code, lang)
             image_data = graphic_campaign_preview.render_all(campaign_data)
-            result = discord.File(image_data, f'campaign_{campaign_data["start_date"]}.png')
+            result = discord.File(image_data, f'campaign_{lang}_{campaign_data["raw_date"]}.png')
             duration = time.time() - start
             log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
             await message.channel.send(file=result)
@@ -163,7 +165,7 @@ class DiscordBot(BaseBot):
         if switch is None:
             switch = CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
-            if message.interaction_id:
+            if hasattr(message, 'interaction_id'):
                 await self.send_slash_command_result(message, content=None, embed=None,
                                                      response_type=InteractionResponseType.PONG.value)
             start = time.time()
@@ -246,7 +248,7 @@ class DiscordBot(BaseBot):
                 result = self.views.trim_text_to_length('\n'.join(message_lines), limit)
                 e.add_field(name=troop_title, value=f'```{result}```', inline=False)
 
-        categories = ('kingdom', 'pet', 'weapon')
+        categories = ('kingdom', 'pet', 'weapon', 'class')
         translated = self.expander.translate_categories(categories, lang)
 
         for spoil_type in [c for c in categories if (not _filter or _filter.lower() == c)]:
@@ -271,7 +273,7 @@ class DiscordBot(BaseBot):
     async def about(self, message, lang, **kwargs):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(title=_('[INFO]', lang), description='<https://garyatrics.com/>', color=color)
-        e.set_thumbnail(url=self.user.avatar_url)
+        e.set_thumbnail(url=self.user.avatar.url)
         version_title = _('[SETTINGS_VERSION_NO]', lang).replace(':', '')
         e.add_field(name=f'__{version_title}__:', value=self.VERSION, inline=False)
 
@@ -449,9 +451,17 @@ class DiscordBot(BaseBot):
                               color=self.BLACK)
             return await self.answer(message, e)
         pet = pets[0]
+        events = self.expander.get_events(lang)
+        now = datetime.datetime.utcnow()
+        pet_events = [e for e in events if e['raw_type'] == '[PETRESCUE]']
+        override_time_left = None
+        for event in pet_events:
+            if event['start_time'] <= now <= event['end_time'] and event['gacha'] == pet.id:
+                override_time_left = (event['end_time'] - now) / datetime.timedelta(minutes=1)
 
         answer_method = partial(self.answer, no_interaction=True)
-        rescue = PetRescue(pet, time_left, message, mention, lang, answer_method, self.pet_rescue_config)
+        rescue = PetRescue(pet, time_left, message, mention, lang, answer_method, self.pet_rescue_config,
+                           override_time_left)
         e = self.views.render_pet_rescue(rescue)
         await rescue.create_or_edit_posts(e)
         await rescue.add(self.pet_rescues)
@@ -524,7 +534,9 @@ class DiscordBot(BaseBot):
         e.add_field(name=name, value=value)
         return e
 
-    async def handle_team_code(self, message, lang, team_code, shortened='', lengthened='', **kwargs):
+    async def team_code(self, message, lang, team_code, shortened='', lengthened='', **kwargs):
+        if team_code.startswith('['):
+            team_code = team_code[1:-1]
         team = self.expander.get_team_from_message(team_code, lang)
         if not team or not team['troops']:
             log.debug(f'nothing found in message {team_code}.')
@@ -538,41 +550,33 @@ class DiscordBot(BaseBot):
         if team_code:
             await message.channel.send(content=f'[{team_code}]')
 
-    async def waffles(self, message, lang, waffle_no, **kwargs):
+    async def foodies(self, message, lang, foodie_no, max_foodies, base_url, title, subtitle):
         random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
-        max_waffles = 71
-        if waffle_no and waffle_no.isdigit() and 1 <= int(waffle_no) <= max_waffles:
-            waffle_no = int(waffle_no)
-            image_no = f'~~{random_title}~~ #{waffle_no}'
+        if foodie_no and str(foodie_no).isdigit() and 0 <= int(foodie_no) <= max_foodies:
+            foodie_no = int(foodie_no)
+            image_no = f'~~{random_title}~~ #{foodie_no}'
         else:
-            waffle_no = random.randrange(max_waffles + 1)
-            image_no = f'{random_title} #{waffle_no}'
+            foodie_no = random.randrange(max_foodies + 1)
+            image_no = f'{random_title} #{foodie_no}'
 
+        e = self.generate_response(title, self.WHITE, subtitle, image_no)
+        url = base_url.format(foodie_no)
+        e.set_image(url=url)
+        await self.answer(message, e)
+
+    async def waffles(self, message, lang, waffle_no, **kwargs):
+        max_waffles = 71
         title = _('[QUEST9480_OBJ0_MSG]', lang)
         subtitle = _('[HAND_FEED]', lang)
+        base_url = 'https://garyatrics.com/images/waffles/{0:03d}.jpg'
+        return await self.foodies(message, lang, waffle_no, max_waffles, base_url, title, subtitle)
 
-        e = self.generate_response(title, self.WHITE, subtitle, image_no)
-        url = f'https://garyatrics.com/images/waffles/{waffle_no:03d}.jpg'
-        e.set_image(url=url)
-        await self.answer(message, e)
-
-    async def burgers(self, message, lang, burger_no, **kwargs):
-        random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
+    async def burgers(self, message, lang, burger_no=None, **kwargs):
         max_burgers = 24
-        if burger_no and burger_no.isdigit() and 1 <= int(burger_no) <= max_burgers:
-            burger_no = int(burger_no)
-            image_no = f'~~{random_title}~~ #{burger_no}'
-        else:
-            burger_no = random.randrange(max_burgers + 1)
-            image_no = f'{random_title} #{burger_no}'
-
         title = _('[QUEST9007_OBJ1_MSG]', lang)
         subtitle = _('[3000_BATTLE15_NAME]', lang)
-
-        e = self.generate_response(title, self.WHITE, subtitle, image_no)
-        url = f'https://garyatrics.com/images/burgers/{burger_no:03d}.jpg'
-        e.set_image(url=url)
-        await self.answer(message, e)
+        base_url = 'https://garyatrics.com/images/burgers/{0:03d}.jpg'
+        return await self.foodies(message, lang, burger_no, max_burgers, base_url, title, subtitle)
 
     async def memes(self, message, lang, meme_no=None, **kwargs):
         base_url = 'https://garyatrics.com/images/memes'
@@ -755,7 +759,7 @@ class DiscordBot(BaseBot):
             e = self.generate_response('Bookmark', self.BLACK, 'Error', f'Bookmark id `{bookmark_id}` does not exist.')
             return await self.answer(message, e)
         title = f'Bookmark `{bookmark_id}` by {bookmark["author_name"]}\n{bookmark["description"]}'
-        return await self.handle_team_code(message, lang, bookmark['team_code'], title=title, shortened=shortened)
+        return await self.team_code(message, lang, bookmark['team_code'], title=title, shortened=shortened)
 
     async def show_my_bookmarks(self, message, **kwargs):
         bookmarks = self.expander.bookmarks.get_my_bookmarks(message.author.id)
