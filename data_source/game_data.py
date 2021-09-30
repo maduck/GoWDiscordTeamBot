@@ -486,8 +486,9 @@ class GameData:
             if not match:
                 continue
             kingdom_filename = match.group("filebase")
-            #skip Apocalypse (3034) and HoG (3042), because they share filename with Sin of Maraj and Guardians resp. and unlikely to get new troops
-            troop_kingdom = next((k for k in self.kingdoms.values() if k['filename'] == kingdom_filename and k['id'] not in [3034, 3042]), None)
+            # Skip Apocalypse (3034) and HoG (3042), because they share filename with Sin of Maraj and Guardians resp. and are unlikely to get new troops
+            skip_kingdoms = [3034, 3042]
+            troop_kingdom = next((k for k in self.kingdoms.values() if k['filename'] == kingdom_filename and k['id'] not in skip_kingdoms), None)
             if troop_kingdom:
                 troop['kingdom'] = troop_kingdom
                 troop_kingdom['troop_ids'].append(troop_id)
