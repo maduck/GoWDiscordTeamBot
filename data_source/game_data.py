@@ -545,8 +545,11 @@ class GameData:
                         'total_amount': rune['amount'],
                     }
                 if 'ClassCode' in traits:
-                    class_id = [_class for _class in self.classes.values()
-                                if _class['code'] == traits['ClassCode']][0]['id']
+                    my_class = [_class for _class in self.classes.values()
+                                if _class['code'] == traits['ClassCode']]
+                    if not my_class:
+                        continue
+                    class_id = my_class[0]['id']
                     self.classes[class_id]['traitstones'] = runes
                     self.traitstones[rune['name']]['class_ids'].append(class_id)
                 elif traits['Troop'] in self.troops:
