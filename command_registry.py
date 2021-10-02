@@ -515,7 +515,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'world_map',
         'pattern': re.compile(DEFAULT_PATTERN + r'world_map$', MATCH_OPTIONS),
-        'descriptions': 'Renders a world map',
+        'description': 'Renders a world map',
         'options': [
             STANDARD_OPTIONS['lang'],
         ]
