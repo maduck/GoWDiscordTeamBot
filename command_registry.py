@@ -515,6 +515,10 @@ COMMAND_REGISTRY = [
     {
         'function': 'world_map',
         'pattern': re.compile(DEFAULT_PATTERN + r'world_map$', MATCH_OPTIONS),
+        'descriptions': 'Renders a world map',
+        'options': [
+            STANDARD_OPTIONS['lang'],
+        ]
     },
     {
         'function': 'soulforge_preview',
