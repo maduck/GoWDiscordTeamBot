@@ -30,7 +30,7 @@ class NewsDownloader:
         image = Image.open(BytesIO(request.content))
         size = image.size
         ratio = size[0] / size[1]
-        arbitrary_ratio_limit_for_banners = 10
+        arbitrary_ratio_limit_for_banners = 5
         log.debug(f'[NEWS] Found a ration of {ratio} in {source}.')
         return ratio >= arbitrary_ratio_limit_for_banners
 
