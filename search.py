@@ -1178,3 +1178,23 @@ class TeamExpander:
         for warband in warbands:
             self.translate_kingdom(warband, lang)
         return warbands
+
+    def get_map_data(self, lang):
+        base_folder = 'Worldmap/Main'
+        result = {
+            'map': f'{base_folder}/Main_Albedo_full.png',
+            'water': f'{base_folder}/Water_Main_Albedo_full.png',
+            'height': f'{base_folder}/Main_Height_full.png',
+            'kingdoms': []
+        }
+        for kingdom in self.kingdoms.values():
+            if 'description' not in kingdom:
+                continue
+            if kingdom['location'] != 'krystara':
+                continue
+            if kingdom['links'] == {-1}:
+                continue
+            my_kingdom = kingdom.copy()
+            self.translate_kingdom(my_kingdom, lang)
+            result['kingdoms'].append(my_kingdom)
+        return result

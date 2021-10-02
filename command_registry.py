@@ -513,6 +513,10 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(DEFAULT_PATTERN + r'permissions?$', MATCH_OPTIONS)
     },
     {
+        'function': 'world_map',
+        'pattern': re.compile(DEFAULT_PATTERN + r'world_map$', MATCH_OPTIONS),
+    },
+    {
         'function': 'soulforge_preview',
         'pattern': re.compile(
             DEFAULT_PATTERN + r'soulforge_preview (?P<search_term>.+?)( '

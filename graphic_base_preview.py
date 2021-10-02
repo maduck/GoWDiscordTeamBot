@@ -116,6 +116,7 @@ def download_image(path):
     else:
         url = f'{BASE_URL}/{path}'
         r = requests.get(url)
+        r.raise_for_status()
         f = io.BytesIO(r.content)
         cache_subdir = os.path.dirname(cache_filename)
         if not os.path.exists(cache_subdir):

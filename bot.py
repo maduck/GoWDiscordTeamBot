@@ -17,6 +17,7 @@ import topgg
 
 import bot_tasks
 import graphic_campaign_preview
+import graphic_map
 import graphic_soulforge_preview
 import models
 from base_bot import BaseBot, InteractionResponseType, log
@@ -41,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.61.6'
+    VERSION = '0.62.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -138,6 +139,17 @@ class DiscordBot(BaseBot):
             if groups.get('prefix', user_prefix) == user_prefix:
                 return getattr(self, command['function']), groups
         return None, None
+
+    @owner_required
+    async def world_map(self, message, lang, **kwargs):
+        async with message.channel.typing():
+            start = time.time()
+            map_data = self.expander.get_map_data(lang)
+            image_data = graphic_map.render_all(map_data)
+            result = discord.File(image_data, f'gow_world_map.png')
+            duration = time.time() - start
+            log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
+            await message.channel.send(file=result)
 
     @owner_required
     async def campaign_preview(self, message, lang, switch=None, team_code=None, **kwargs):

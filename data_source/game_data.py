@@ -178,6 +178,8 @@ class GameData:
                 'colors': sorted(kingdom_colors),
                 'filename': kingdom['FileBase'],
                 'reference_name': kingdom['ReferenceName'],
+                'coordinates': (kingdom['XPos'], kingdom['YPos']),
+                'links': set(kingdom['Links']),
             }
             if 'SisterKingdomId' in kingdom:
                 self.kingdoms[kingdom['SisterKingdomId']]['linked_kingdom_id'] = kingdom['Id']
