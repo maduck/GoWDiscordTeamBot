@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.62.0'
+    VERSION = '0.62.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -141,10 +141,10 @@ class DiscordBot(BaseBot):
         return None, None
 
     @owner_required
-    async def world_map(self, message, lang, **kwargs):
+    async def world_map(self, message, lang, location, **kwargs):
         async with message.channel.typing():
             start = time.time()
-            map_data = self.expander.get_map_data(lang)
+            map_data = self.expander.get_map_data(lang, location)
             image_data = graphic_map.render_all(map_data)
             result = discord.File(image_data, f'gow_world_map.png')
             duration = time.time() - start

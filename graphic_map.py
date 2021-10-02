@@ -1,5 +1,6 @@
 import io
 
+import requests.exceptions
 from wand.color import Color
 from wand.drawing import Drawing
 
@@ -41,7 +42,7 @@ class WorldMap(BasePreview):
                            left=0, top=0,
                            width=self.SIZE, height=self.SIZE,
                            image=height)
-            draw.composite(operator='overlay',
+            draw.composite(operator=self.data['blend_mode'],
                            left=0, top=0,
                            width=self.SIZE, height=self.SIZE, image=world_map)
             draw(self.img)
@@ -57,7 +58,7 @@ class WorldMap(BasePreview):
             draw.text_antialias = True
             draw.font = FONTS['raleway']
             draw.text_alignment = 'center'
-            draw.text(self.SIZE // 2, 150, 'Gary\'s Gems of War Map')
+            draw.text(self.SIZE // 2, 150, self.data['title'])
             draw(self.img)
 
     def render_kingdoms(self):
@@ -73,7 +74,10 @@ class WorldMap(BasePreview):
                 t, t2 = x / 2048, y / 2048
                 x = 3 / 4 * lerp(x, x, t) + 250
                 y = 3 / 4 * lerp(y, y, t2) + 250
-                icon = download_image(f'Troopcardshields_{kingdom["filename"]}_full.png')
+                try:
+                    icon = download_image(f'Troopcardshields_{kingdom["filename"]}_full.png')
+                except requests.exceptions.HTTPError:
+                    continue
                 draw.composite(operator='atop',
                                left=x - 0.5 * icon.width, top=y - 0.5 * icon.height,
                                width=icon.width, height=icon.height,
@@ -86,7 +90,9 @@ class WorldMap(BasePreview):
                 draw.rectangle(int(text_x - metrics.text_width / 2 - 15),
                                int(text_y - metrics.text_height + 10),
                                int(text_x + metrics.text_width / 2 + 15),
-                               int(text_y + 10))
+                               int(text_y + 10),
+                               radius=10
+                               )
                 draw.fill_color = text_color
                 draw.text(int(text_x), int(text_y), kingdom['name'])
             draw(self.img)

@@ -514,9 +514,19 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'world_map',
-        'pattern': re.compile(DEFAULT_PATTERN + r'world_map$', MATCH_OPTIONS),
+        'pattern': re.compile(DEFAULT_PATTERN + r'world_map( (?P<location>krystara|underworld))?', MATCH_OPTIONS),
         'description': 'Renders a world map',
         'options': [
+            {
+                'name': 'location',
+                'description': 'Which map to render?',
+                'type': OptionType.STRING.value,
+                'required': False,
+                'choices': [
+                    {'name': 'Krystara (Default)', 'value': 'krystara'},
+                    {'name': 'Underworld', 'value': 'underworld'},
+                ],
+            },
             STANDARD_OPTIONS['lang'],
         ]
     },

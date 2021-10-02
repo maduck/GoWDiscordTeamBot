@@ -1179,22 +1179,43 @@ class TeamExpander:
             self.translate_kingdom(warband, lang)
         return warbands
 
-    def get_map_data(self, lang):
-        base_folder = 'Worldmap/Main'
-        result = {
-            'map': f'{base_folder}/Main_Albedo_full.png',
-            'water': f'{base_folder}/Water_Main_Albedo_full.png',
-            'height': f'{base_folder}/Main_Height_full.png',
-            'kingdoms': []
+    def get_map_data(self, lang, location):
+        if not location:
+            location = 'krystara'
+        base_folder = 'Worldmap'
+        map_data = {
+            'krystara': {
+                'title': _('[MAPNAME_MAIN]', lang),
+                'map': f'{base_folder}/Main/Main_Albedo_full.png',
+                'water': f'{base_folder}/Main/Water_Main_Albedo_full.png',
+                'height': f'{base_folder}/Main/Main_Height_full.png',
+                'blend_mode': 'overlay',
+            },
+            'underworld': {
+                'title': _('[MAPNAME_UNDERWORLD]', lang),
+                'map': f'{base_folder}/Underworld/Underworld_Albedo_full.png',
+                'water': f'{base_folder}/Underworld/Water_Underworld_Albedo_full.png',
+                'height': f'{base_folder}/Underworld/Underworld_Height_full.png',
+                'blend_mode': 'stereo',
+            }
         }
+        result = map_data[location]
+        result['kingdoms'] = []
+        result['title'] = f"Gary's Gems of War Map: {result['title']}"
+
+        def is_pseudo_kingdom(k):
+            return k['location'] == 'krystara' and k['links'] == {-1}
+
         for kingdom in self.kingdoms.values():
             if 'description' not in kingdom:
                 continue
-            if kingdom['location'] != 'krystara':
+            if kingdom['location'] != location:
                 continue
-            if kingdom['links'] == {-1}:
+            if is_pseudo_kingdom(kingdom):
                 continue
             my_kingdom = kingdom.copy()
             self.translate_kingdom(my_kingdom, lang)
+            if self.is_untranslated(my_kingdom['name']):
+                continue
             result['kingdoms'].append(my_kingdom)
         return result
