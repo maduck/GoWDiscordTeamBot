@@ -4,6 +4,7 @@ import importlib
 import logging
 import operator
 import re
+from calendar import different_locale
 
 import translations
 from data_source.game_data import GameData
@@ -704,8 +705,15 @@ class TeamExpander:
             entry['extra_info'] = f'{troop_name} ({kingdom})'
             entry['kingdom'] = kingdom
 
+        locale = translations.LANGUAGE_CODE_MAPPING.get(lang, lang)
+        locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
+        with different_locale(locale):
+            entry['formatted_start'] = entry['start'].strftime('%b %d')
+            entry['formatted_end'] = entry['end'].strftime('%b %d')
+
         entry['raw_type'] = entry['type']
         entry['type'] = _(entry['type'], lang)
+
         return entry
 
     def get_campaign_tasks(self, lang, _filter=None):

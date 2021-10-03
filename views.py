@@ -226,10 +226,10 @@ class Views:
             if event['start'] > last_event_date and event['start'].weekday() == 0 and not _filter:
                 message_lines.append('')
             last_event_date = event['start']
-            end = f'- {event["end"].strftime("%b %d")} '
+            end = f'- {event["formatted_end"]} '
             if event['end'] == event['start'] + datetime.timedelta(days=1):
                 end = ''
-            this_line = f'{event["start"].strftime("%b %d")} ' \
+            this_line = f'{event["formatted_start"]} ' \
                         f'{end}' \
                         f'{event["type"]}' \
                         f'{":" if event["extra_info"] else ""} ' \
