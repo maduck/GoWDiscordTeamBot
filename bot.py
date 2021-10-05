@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.62.2'
+    VERSION = '0.62.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -342,10 +342,10 @@ class DiscordBot(BaseBot):
         e = self.views.render_events(events, kwargs.get('filter'), lang)
         await self.answer(message, e)
 
-    async def current_event(self, message, lang, **kwargs):
+    async def current_event(self, message, lang, shortened, **kwargs):
         lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         current_event = self.expander.get_current_event(lang, self.my_emojis)
-        e = self.views.render_current_event(current_event, lang)
+        e = self.views.render_current_event(current_event, shortened, lang)
         await self.answer(message, e)
 
     async def active_gems(self, message, lang, **kwargs):

@@ -524,7 +524,7 @@ class Views:
         e.timestamp = ban['ban_time']
         return self.render_embed(e, 'ban.jinja', ban=ban)
 
-    def render_current_event(self, current_event, lang):
+    def render_current_event(self, current_event, shortened, lang):
         title = f'{_("[WEEKLY_EVENT]", lang)}: {current_event["name"]}'
         e = discord.Embed(title=title, color=self.WHITE)
         if 'kingdom' in current_event:
@@ -556,7 +556,10 @@ class Views:
             'rewards': _('[REWARDS]', lang),
             'points': _('[POINTS]', lang),
         }
-        return self.render_embed(e, 'current_event.jinja', **data)
+        template_file = 'current_event.jinja'
+        if shortened:
+            template_file = 'current_event_shortened.jinja'
+        return self.render_embed(e, template_file, **data)
 
     def render_guilds(self, matching_guilds):
         e = discord.Embed(title='List of guilds', color=self.RED)

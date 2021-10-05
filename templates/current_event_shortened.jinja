@@ -1,0 +1,15 @@
+<T>__**{{ overview }}**__</T>{% if 'kingdom' in event %}
+**{{ kingdom_title }}**: {{ event.kingdom.name }} `#{{ event.kingdom.id }}`{% else %}-{% endif %}{% if event.currencies %}
+**{{ score }}**: {% for currency in event.currencies %}{{ currency.name }} ({{ currency.value }}){% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% if event.weapon %}
+**{{ event_weapon }}**: {{ event.weapon }} `#{{ event.weapon_id }}`{% endif %}{% if event.troop_id %}
+**{{ event_troop }}**: {{ event.troop }} `#{{ event.troop_id }}`{% endif %}{% if event.color %}
+**{{ event_color }}**: {{ event.color | emoji }}{% endif %}
+{% if event.token %}**{{ event.medal.name }}**: {{ event.medal.description }}{% endif %}
+{% if event.restrictions %}<T>__**{{ troop_restrictions }}**__</T>
+{% for r, v in event.restrictions.items() -%}
+{{ r }}: {{ v }}
+{% endfor %}{% endif %}
+<T>__**Calculated score per Member**__</T>
+**{{ event.score_per_member }} {{ points }}** needed to get last reward.
+**{{ event.minimum_battles }} battles** per player as of current leaderboard.
+**Tier {{ event.minimum_tier }} to buy** per player for last reward.
