@@ -333,7 +333,7 @@ class TeamExpander:
 
     def translate_class(self, _class, lang):
         kingdom = self.kingdoms[_class['kingdom_id']]
-        _class['kingdom'] = _(kingdom['name'], lang)
+        _class['kingdom'] = _(kingdom['name'], lang, default=kingdom['reference_name'])
         weapon = self.weapons[_class['weapon_id']]
         _class['weapon'] = _(weapon['name'], lang)
         _class['name'] = _(_class['name'], lang)
