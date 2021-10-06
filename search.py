@@ -647,6 +647,8 @@ class TeamExpander:
                     'end': end,
                     'kingdom': _(self.kingdoms[kingdom_id]['name'], lang),
                 }
+                if self.is_untranslated(event_data['kingdom']):
+                    event_data['kingdom'] = self.kingdoms[kingdom_id]['reference_name']
                 result[start] = event_data
             start = end
         return sorted(result.values(), key=operator.itemgetter('start'))
