@@ -97,6 +97,7 @@ class DiscordBot(BaseBot):
         try:
             if 'lang' not in options:
                 options['lang'] = self.language.get(message.guild)
+            options['lang'] = LANGUAGE_CODE_MAPPING.get(options['lang'], options['lang'])
             debug(message)
             await function(message=message, **options)
         except discord.HTTPException as e:
