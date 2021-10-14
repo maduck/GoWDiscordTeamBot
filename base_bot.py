@@ -32,13 +32,30 @@ class InteractionResponseType(Enum):
     DEFERRED_MESSAGE = 5
 
 
+class FakeTyping:
+    async def __aenter__(self):
+        pass
+
+    async def __aexit__(self, type, value, traceback):
+        pass
+
+
+class FakeChannel:
+    def __init__(self, channel_name):
+        self.typing = FakeTyping
+        self.channel_name = channel_name
+
+    def __str__(self):
+        return self.channel_name
+
+
 class FakeMessage:
     id = 0
 
     def __init__(self, author, guild, channel, content, interaction_id=None, interaction_token=None):
         self.author = author
         self.guild = guild
-        self.channel = channel
+        self.channel = FakeChannel(channel)
         self.content = content
         self.interaction_id = interaction_id
         self.interaction_token = interaction_token
