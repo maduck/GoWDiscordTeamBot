@@ -46,7 +46,7 @@ class FakeChannel:
         self.channel_name = channel_name
 
     def __str__(self):
-        return self.channel_name
+        return str(self.channel_name)
 
 
 class FakeMessage:
