@@ -461,6 +461,7 @@ class GameData:
 
         faction_weapon_overrides = {
             3053: 1274,
+            3069: 1272,
         }
         for faction_id, faction_data in factions:
             kingdom_id = faction_data['linked_kingdom_id']
