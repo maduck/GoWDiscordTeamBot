@@ -41,12 +41,15 @@ class FakeTyping:
 
 
 class FakeChannel:
-    def __init__(self, channel_name):
+    def __init__(self, channel):
         self.typing = FakeTyping
-        self.channel_name = channel_name
+        self.channel = channel
 
-    def __str__(self):
-        return str(self.channel_name)
+    def send(self, *args, **kwargs):
+        return self.channel.send(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return str(self.channel)
 
 
 class FakeMessage:
