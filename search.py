@@ -668,7 +668,8 @@ class TeamExpander:
                 result[spoiler['date'].date()] = {
                     'start': spoiler['date'].date(),
                     'end': spoiler['date'].date() + datetime.timedelta(days=7),
-                    'kingdom': _(kingdom.get('name'), lang) + ' *',
+                    'kingdom': _(kingdom['name'], lang,
+                                 default=kingdom['reference_name']) + ' *',
                 }
                 latest_date = spoiler['date']
         return result
