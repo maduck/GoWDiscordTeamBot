@@ -48,6 +48,18 @@ class FakeChannel:
     def send(self, *args, **kwargs):
         return self.channel.send(*args, **kwargs)
 
+    @property
+    def id(self):
+        return self.channel.id
+
+    @property
+    def type(self):
+        return self.channel.type
+
+    @property
+    def name(self):
+        return self.channel.name
+
     def __str__(self) -> str:
         return str(self.channel)
 
