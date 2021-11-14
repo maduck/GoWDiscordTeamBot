@@ -1107,7 +1107,7 @@ class TeamExpander:
         for stage in event['rewards'].keys():
             for reward in event['rewards'][stage]['rewards']:
                 reward_type = reward['type']
-                reward['type'] = _(reward_type, lang)
+                reward['type'] = _(reward_type, lang).replace('%1', '').strip()
                 if reward_type == '[TITLE]':
                     reward['type'] += ' (' + _(f'[TITLE_{reward["data"]}]', lang) + ')'
                 if reward_type == '[TROOP]':
