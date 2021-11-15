@@ -100,11 +100,12 @@ class CampaignPreview(BasePreview):
                            image=banner)
             banner_text = self.data['team']['banner']['name']
             banner_text = word_wrap(self.img, draw, banner_text, width - 90, banner_height)
-            class_text = self.data['team']['class']
-            class_text = word_wrap(self.img, draw, class_text, width - 90, banner_height)
-
             draw.text(x + 120, banner_y + 25, banner_text)
-            draw.text(x + 120, banner_y + 4 * int(draw.font_size), class_text)
+
+            if self.data['team']['class']:
+                class_text = self.data['team']['class']
+                class_text = word_wrap(self.img, draw, class_text, width - 90, banner_height)
+                draw.text(x + 120, banner_y + 4 * int(draw.font_size), class_text)
 
             draw(self.img)
 
