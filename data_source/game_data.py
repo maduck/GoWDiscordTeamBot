@@ -301,9 +301,17 @@ class GameData:
         tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
         rerolls = self.user_data['pTasksData']['CampaignRerollTasks']
 
+        level_nums = {
+            'Gold': 2,
+            'Silver': 4,
+            'Bronze': 10,
+        }
+
         for level in ('Gold', 'Silver', 'Bronze'):
             task_list = [self.transform_campaign_task(task, week) for task in tasks[level]]
-            self.campaign_tasks[level.lower()] = sorted(task_list, key=operator.itemgetter('order'))
+            task_list = sorted(task_list, key=operator.itemgetter('order'))
+            task_list = task_list[-level_nums[level]:]
+            self.campaign_tasks[level.lower()] = task_list
             reroll_list = [self.transform_campaign_task(task, week) for task in rerolls[f'Campaign{level}']]
             self.campaign_rerolls[level.lower()] = reroll_list
         self.campaign_tasks['kingdom'] = self.kingdoms[event_kingdom_id]
@@ -315,7 +323,7 @@ class GameData:
         if 'Reroll' not in task['Id']:
             m = re.match(r'Campaign_(?P<kingdom_id>\d+)_(?P<level>.+)_(?P<order>\d+)', task['Id'])
             task_id = m.groupdict()
-            task_order = 1000 + int(task_id['order'])
+            task_order = 1
             kingdom_id = int(task_id['kingdom_id'])
             level = task_id['level']
         else:
