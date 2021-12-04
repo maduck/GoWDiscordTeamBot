@@ -32,7 +32,10 @@ _ = t.get
 def update_translations():
     global _
     importlib.reload(translations)
-    del _
+    try:
+        del _
+    except NameError:
+        pass
     _ = translations.Translations().get
 
 
