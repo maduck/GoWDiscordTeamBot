@@ -734,10 +734,10 @@ class GameData:
         for artifact in self.data['Artifacts']:
             if artifact['Id'] < current_artifact_id:
                 continue
-            for level in artifact['Levels']:
-                if event_kingdoms and level['KingdomId'] == event_kingdoms[-1]:
-                    continue
-                event_kingdoms.append(level['KingdomId'])
+            current_campaign_week = self.get_current_campaign_week()
+            if artifact['Id'] > current_artifact_id:
+                current_campaign_week = 1
+            event_kingdoms.extend([level['KingdomId'] for level in artifact['Levels']][current_campaign_week:])
             event_kingdoms.append(0)
         if current_event_kingdom in event_kingdoms:
             index = event_kingdoms.index(current_event_kingdom)
