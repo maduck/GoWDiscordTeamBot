@@ -2,7 +2,7 @@ from data_source.base_game_data import BaseGameData, BaseGameDataContainer
 from game_constants import COLORS
 from util import convert_color_array
 
-EFFECTS = (
+EFFECT_TRANSLATIONS = (
     '[PETTYPE_BUFFTEAMCOLOR]',
     '[PETTYPE_BUFFGEMMASTERY]',
     '[PETTYPE_BUFFTEAMKINGDOM]',
@@ -23,14 +23,15 @@ class PetContainer(BaseGameDataContainer):
     DATA_CLASS = Pet
     LOOKUP_KEYS = ['name', 'kingdom_name']
 
-    def __init__(self, data):
+    def __init__(self, data, user_data):
         super().__init__()
+        self.user_data = user_data
         self.data = {
             'id': data['Id'],
             'name': data['Name'],
             'colors': convert_color_array(data),
             'color_code': ''.join(convert_color_array(data)),
-            'effect': EFFECTS[data['Effect']],
+            'effect': EFFECT_TRANSLATIONS[data['Effect']],
             'effect_data': data.get('EffectData'),
             'effect_title': '[PET_TYPE]',
             'troop_type': data.get('EffectTroopType'),
@@ -51,9 +52,13 @@ class PetContainer(BaseGameDataContainer):
             troop_type = self.data['troop_type'].upper()
             self.data['effect_data'] = f'[TROOPTYPE_{troop_type}]'
         elif effect == '[PETTYPE_BUFFTEAMCOLOR]':
-            color = self.data['colors'][0].upper()
-            self.data['effect'] = f'[PET_{color}_BUFF]'
             self.data['effect_data'] = None
+            self.data['effect'] = f'[PET_TEAM_BONUS]'
+            effects_user_data = self.user_data['pEconomyModel']['PetEffects'][0]['Bonuses']
+            self.data['effect_replacement'] = {
+                '%1': '/'.join([f'`{b}`' for b in effects_user_data]),
+                '%2': f'[{self.data["color_code"].upper()}]',
+            }
         elif effect == '[PETTYPE_BUFFGEMMASTERY]':
             if self.data['effect_data']:
                 color = COLORS[self.data['effect_data']].upper()
@@ -61,6 +66,13 @@ class PetContainer(BaseGameDataContainer):
                 self.data['effect_data'] = None
             else:
                 self.data['effect'] = f'[PET_{self.data["colors"][0].upper()}_BUFF]'
+
+    def translate(self):
+        super().translate()
+        for translation in self.translations.values():
+            if 'effect_replacement' in translation:
+                for before, after in translation.data['effect_replacement'].items():
+                    translation.data['effect'] = translation.data['effect'].replace(before, after)
 
     def fill_untranslated_kingdom_name(self, kingdom_id, kingdom_reference_name):
         super().fill_untranslated_kingdom_name(kingdom_id, kingdom_reference_name)

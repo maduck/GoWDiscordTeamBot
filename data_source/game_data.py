@@ -72,7 +72,7 @@ class GameData:
     def populate_world_data(self):
         self.read_json_data()
 
-        self.pets = Pets(self.data['Pets'])
+        self.pets = Pets(self.data['Pets'], self.user_data)
         self.populate_spells()
         self.populate_traits()
         self.populate_troops()

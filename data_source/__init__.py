@@ -9,13 +9,13 @@ from translations import LANGUAGE_CODE_MAPPING
 
 
 class Collection:
-    def __init__(self, data):
+    def __init__(self, data, user_data=None):
         data_class_name = self.__class__.__name__[:-1] + 'Container'
         data_class = globals()[data_class_name]
 
         self.items = {}
         for entry in data:
-            item = data_class(entry)
+            item = data_class(entry, user_data)
             self.items[item.id] = item
 
     def __contains__(self, key):
