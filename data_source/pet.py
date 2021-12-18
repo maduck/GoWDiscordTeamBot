@@ -74,7 +74,12 @@ class PetContainer(BaseGameDataContainer):
             self.data['effect_data'] = None
         elif effect == '[PETTYPE_BUFFTEAMTROOPTYPE]':
             troop_type = self.data['troop_type'].upper()
-            self.data['effect_data'] = f'[TROOPTYPE_{troop_type}]'
+            self.data['effect'] = f'[PET_TEAM_BONUS]'
+            self.data['effect_replacement'] = {
+                '%1': '/'.join([f'`{b}`' for b in effect_levels]),
+                '%2': f'[TROOPTYPE_{troop_type}]',
+            }
+            self.data['effect_data'] = None
 
     def get_effect_bonuses(self):
         for bonus in self.user_data['pEconomyModel']['PetEffects']:
