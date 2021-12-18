@@ -1,5 +1,4 @@
 from data_source.base_game_data import BaseGameData, BaseGameDataContainer
-from game_constants import COLORS
 from util import convert_color_array
 
 EFFECT_TRANSLATIONS = (
@@ -22,6 +21,7 @@ class Pet(BaseGameData):
 class PetContainer(BaseGameDataContainer):
     DATA_CLASS = Pet
     LOOKUP_KEYS = ['name', 'kingdom_name']
+    EFFECT_BONUS = {}
 
     def __init__(self, data, user_data):
         super().__init__()
@@ -46,26 +46,35 @@ class PetContainer(BaseGameDataContainer):
 
     def populate_effect_data(self):
         effect = self.data['effect']
-        if effect == '[PETTYPE_BUFFTEAMKINGDOM]':
+
+        if not self.EFFECT_BONUS:
+            self.get_effect_bonuses()
+        effect_levels = self.EFFECT_BONUS.get(effect, [])
+
+        if effect == '[PETTYPE_BUFFTEAMCOLOR]':
+            self.data['effect_data'] = None
+            self.data['effect'] = f'[PET_TEAM_BONUS]'
+            self.data['effect_replacement'] = {
+                '%1': '/'.join([f'`{b}`' for b in effect_levels]),
+                '%2': f'[{self.data["color_code"].upper()}]',
+            }
+        elif effect == '[PETTYPE_BUFFGEMMASTERY]':
+            self.data['effect_data'] = None
+            self.data['effect'] = f'[PET_MASTERY_BONUS]'
+            self.data['effect_replacement'] = {
+                '%1': '/'.join([f'`{b}`' for b in effect_levels]),
+                '%2': f'[{self.data["color_code"].upper()}]',
+            }
+        elif effect == '[PETTYPE_BUFFTEAMKINGDOM]':
             self.data['effect_data'] = f'[{self.data["effect_data"]}_NAME]'
         elif effect == '[PETTYPE_BUFFTEAMTROOPTYPE]':
             troop_type = self.data['troop_type'].upper()
             self.data['effect_data'] = f'[TROOPTYPE_{troop_type}]'
-        elif effect == '[PETTYPE_BUFFTEAMCOLOR]':
-            self.data['effect_data'] = None
-            self.data['effect'] = f'[PET_TEAM_BONUS]'
-            effects_user_data = self.user_data['pEconomyModel']['PetEffects'][0]['Bonuses']
-            self.data['effect_replacement'] = {
-                '%1': '/'.join([f'`{b}`' for b in effects_user_data]),
-                '%2': f'[{self.data["color_code"].upper()}]',
-            }
-        elif effect == '[PETTYPE_BUFFGEMMASTERY]':
-            if self.data['effect_data']:
-                color = COLORS[self.data['effect_data']].upper()
-                self.data['effect'] = f'[PET_{color}_BUFF]'
-                self.data['effect_data'] = None
-            else:
-                self.data['effect'] = f'[PET_{self.data["colors"][0].upper()}_BUFF]'
+
+    def get_effect_bonuses(self):
+        for bonus in self.user_data['pEconomyModel']['PetEffects']:
+            bonus_name = f'[PETTYPE_{bonus["EffectName"].upper()}]'
+            self.EFFECT_BONUS[bonus_name] = bonus['Bonuses']
 
     def translate(self):
         super().translate()
