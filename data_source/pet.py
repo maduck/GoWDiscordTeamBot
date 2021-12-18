@@ -66,7 +66,12 @@ class PetContainer(BaseGameDataContainer):
                 '%2': f'[{self.data["color_code"].upper()}]',
             }
         elif effect == '[PETTYPE_BUFFTEAMKINGDOM]':
-            self.data['effect_data'] = f'[{self.data["effect_data"]}_NAME]'
+            self.data['effect'] = f'[PET_TEAM_BONUS]'
+            self.data['effect_replacement'] = {
+                '%1': '/'.join([f'`{b}`' for b in effect_levels]),
+                '%2': f'[{self.data["effect_data"]}_NAME]',
+            }
+            self.data['effect_data'] = None
         elif effect == '[PETTYPE_BUFFTEAMTROOPTYPE]':
             troop_type = self.data['troop_type'].upper()
             self.data['effect_data'] = f'[TROOPTYPE_{troop_type}]'
