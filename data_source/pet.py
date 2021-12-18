@@ -98,6 +98,19 @@ class PetContainer(BaseGameDataContainer):
                 '%1': '/'.join([f'`{b}`' for b in effect_levels]),
                 '%2': '[XP]',
             }
+        elif effect == '[PETTYPE_BONUSGNOMECHANCE]':
+            self.data['effect'] = '[PET_GNOME_BONUS]'
+            self.data['effect_replacement'] = {
+                '%1': '/'.join([f'`{100 * b}`' for b in effect_levels]),
+            }
+        elif effect == '[PETTYPE_BONUSMAPTURNS]':
+            self.data['effect'] = '[PET_MAPTURNS_BONUS]'
+            self.data['effect_replacement'] = {
+                '%1': '/'.join([f'`{b}`' for b in effect_levels]),
+            }
+        elif effect == '[PETTYPE_NOEFFECT]':
+            self.data['effect'] = '[PET_NO_BONUS]'
+            self.data['effect_data'] = '[PET_BONUS_DESCRIPTION_EVENT]'
 
     def get_effect_bonuses(self):
         for bonus in self.user_data['pEconomyModel']['PetEffects']:
