@@ -33,7 +33,7 @@ class PetContainer(BaseGameDataContainer):
             'color_code': ''.join(convert_color_array(data)),
             'effect': EFFECT_TRANSLATIONS[data['Effect']],
             'effect_data': data.get('EffectData'),
-            'effect_title': '[PET_TYPE]',
+            'effect_title': '[BONUS]',
             'troop_type': data.get('EffectTroopType'),
             'reference_name': data['ReferenceName'],
             'filename': data['FileBase'],
@@ -85,6 +85,18 @@ class PetContainer(BaseGameDataContainer):
             self.data['effect_replacement'] = {
                 '%1': '/'.join([f'`{b}`' for b in effect_levels]),
                 '%2': '[GOLD]',
+            }
+        elif effect == '[PETTYPE_LOOTSOULS]':
+            self.data['effect'] = '[PET_LOOT_BONUS]'
+            self.data['effect_replacement'] = {
+                '%1': '/'.join([f'`{b}`' for b in effect_levels]),
+                '%2': '[SOULS]',
+            }
+        elif effect == '[PETTYPE_LOOTXP]':
+            self.data['effect'] = '[PET_LOOT_BONUS]'
+            self.data['effect_replacement'] = {
+                '%1': '/'.join([f'`{b}`' for b in effect_levels]),
+                '%2': '[XP]',
             }
 
     def get_effect_bonuses(self):
