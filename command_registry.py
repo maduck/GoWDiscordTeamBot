@@ -119,7 +119,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'show_pet_rescue_config',
-        'pattern': re.compile(DEFAULT_PATTERN + '(pr|pet rescue) config$', MATCH_OPTIONS),
+        'pattern': re.compile(DEFAULT_PATTERN + '(pr|rp|pet rescue) config$', MATCH_OPTIONS),
     },
     {
         'function': 'tools',
