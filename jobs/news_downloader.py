@@ -66,7 +66,7 @@ class NewsDownloader:
 
         posts = []
         for entry in feed['entries']:
-            platform = 'switch' if 'Nintendo Switch' in entry.title else 'pc'
+            platform = 'switch' if 'switch' in entry.title.lower() else 'pc'
 
             posted_date = datetime.datetime.fromtimestamp(time.mktime(entry.published_parsed))
             if posted_date <= self.last_post_date:
