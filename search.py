@@ -69,6 +69,7 @@ class TeamExpander:
         self.bookmarks = Bookmark()
         self.adventure_board = world.adventure_board
         self.drop_chances = world.drop_chances
+        self.event_key_drops = world.event_chest_drops
         self.event_kingdoms = world.event_kingdoms
         self.weekly_event = world.weekly_event
         self.active_gems = world.gem_events
@@ -1246,6 +1247,14 @@ class TeamExpander:
         if glory_troops and glory_troops[0]['troop_id']:
             glory_troop = self.search_troop(str(glory_troops[0]['troop_id']), lang)[0]
 
+        event_kingdom = self.search_kingdom(str(self.event_key_drops['kingdom_id']), lang)[0]
+        event_mythics = [t for t in event_kingdom['troops'] if t['raw_rarity'] == 'Mythic' and 'release_date' not in t]
+
+        event_chest_drops = {
+            'troops': event_mythics,
+            'kingdom': event_kingdom,
+        }
+
         result = {
             'world_event': self.get_current_event(lang, emojis),
             'class_trial': get_single_event('[CLASS_EVENT]'),
@@ -1253,5 +1262,6 @@ class TeamExpander:
             'faction_assault': get_single_event('[DELVE_EVENT]'),
             'weekend': self.translate_event(weekend_events[0], lang),
             'glory_troop': glory_troop,
+            'event_chest_drops': event_chest_drops,
         }
         return result

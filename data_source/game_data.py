@@ -54,6 +54,7 @@ class GameData:
         self.levels = []
         self.adventure_board = []
         self.drop_chances = {}
+        self.event_chest_drops = {}
         self.event_kingdoms = []
         self.event_raw_data = {}
         self.weekly_event = {}
@@ -94,6 +95,7 @@ class GameData:
         self.populate_max_power_levels()
         self.populate_adventure_board()
         self.populate_drop_chances()
+        self.populate_event_key_drops()
         self.populate_event_kingdoms()
         self.populate_weekly_event_details()
         self.populate_gem_events()
@@ -729,6 +731,12 @@ class GameData:
                 else:
                     self.drop_chances[chest_type].setdefault('[RESOURCES]', {})
                     self.drop_chances[chest_type]['[RESOURCES]'][title] = {'chance': sum(drop['RarityChance'])}
+
+    def populate_event_key_drops(self):
+        self.event_chest_drops = {
+            'troop_ids': self.user_data['ChestInfo']['3']['DisplayTroopIds'],
+            'kingdom_id': self.user_data['ChestInfo']['3']['KingdomId'],
+        }
 
     def populate_event_kingdoms(self):
         current_event_kingdom = self.get_current_event_kingdom_id()

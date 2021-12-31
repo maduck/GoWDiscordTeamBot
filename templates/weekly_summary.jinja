@@ -1,7 +1,8 @@
-<T>Glory Shop {{ 'glory'|emoji }}</T>
+<T>{{ 'glory'|emoji }} Glory Shop</T>
 ✪ {{ summary.glory_troop.name }}{% if summary.glory_troop.id %} `#{{ summary.glory_troop.id }}`{% endif %}
-<T>Event Keys - *kingdom* {{ 'event_key' | emoji }}</T>
-✪ __TODO__ (`ChestInfo` --> `3` --> `DisplayTroopIds`)
+<T>{{ 'event_key' | emoji }} Event Keys - {{ summary.event_chest_drops.kingdom.name }} `#{{ summary.event_chest_drops.kingdom.id }}`</T>
+{% for troop in summary.event_chest_drops.troops %}✪ {{ troop.raw_rarity|emoji }} {{ troop.name }} `#{{ troop.id }}`
+{% endfor %}
 <T>World Event: {{ summary.world_event.name }}</T>
 ✪ {% if summary.world_event.restrictions %}Restrictions: {% for r, v in summary.world_event.restrictions.items() %}
    - {{ r }}: {{ v }}{% endfor %}{% endif %}
