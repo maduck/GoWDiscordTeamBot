@@ -1263,5 +1263,6 @@ class TeamExpander:
             'weekend': self.translate_event(weekend_events[0], lang),
             'glory_troop': glory_troop,
             'event_chest_drops': event_chest_drops,
+            'world_event_title': _('[WEEKLY_EVENT]', lang),
         }
         return result

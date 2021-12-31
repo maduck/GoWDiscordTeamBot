@@ -3,7 +3,7 @@
 <T>{{ 'event_key' | emoji }} Event Keys - {{ summary.event_chest_drops.kingdom.name }} `#{{ summary.event_chest_drops.kingdom.id }}`</T>
 {% for troop in summary.event_chest_drops.troops %}✪ {{ troop.raw_rarity|emoji }} {{ troop.name }} `#{{ troop.id }}`
 {% endfor %}
-<T>World Event: {{ summary.world_event.name }}</T>
+<T>{{ summary.world_event_title }}: {{ summary.world_event.name }}</T>
 ✪ {% if summary.world_event.restrictions %}Restrictions: {% for r, v in summary.world_event.restrictions.items() %}
    - {{ r }}: {{ v }}{% endfor %}{% endif %}
 ✪ Subscribe to [Flight School](https://discord.gg/35GXXtz3xD) #world-event for more details
