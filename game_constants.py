@@ -143,3 +143,10 @@ UNDERWORLD_SOULFORGE_REQUIREMENTS = {
         'Commonrewards_icon_soul_small_full.png': 10000,
     },
 }
+
+COST_TYPES = (
+    'Cash',
+    'Gems',
+    'Glory',
+    'Count',
+)

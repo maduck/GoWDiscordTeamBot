@@ -72,6 +72,7 @@ class TeamExpander:
         self.event_kingdoms = world.event_kingdoms
         self.weekly_event = world.weekly_event
         self.active_gems = world.gem_events
+        self.store_data = world.store_data
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -1240,6 +1241,10 @@ class TeamExpander:
                 return self.translate_event(filtered_events[0], lang)
 
         weekend_events = [e for e in self.events if e['start_time'].weekday() == 4 and e['end_time'].weekday() == 0]
+        glory_troops = [e for e in self.store_data.values() if e['tab'] == 'WeeklyEvent' and e['currency'] == 'Glory']
+        glory_troop = self.troops['`?`']
+        if glory_troops and glory_troops[0]['troop_id']:
+            glory_troop = self.search_troop(str(glory_troops[0]['troop_id']), lang)[0]
 
         result = {
             'world_event': self.get_current_event(lang, emojis),
@@ -1247,5 +1252,6 @@ class TeamExpander:
             'pet_rescue': get_single_event('[PETRESCUE]'),
             'faction_assault': get_single_event('[DELVE_EVENT]'),
             'weekend': self.translate_event(weekend_events[0], lang),
+            'glory_troop': glory_troop,
         }
         return result

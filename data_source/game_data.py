@@ -5,7 +5,7 @@ import re
 
 from data_source import Pets
 from game_assets import GameAssets
-from game_constants import COLORS, EVENT_TYPES, SOULFORGE_ALWAYS_AVAILABLE, TROOP_RARITIES
+from game_constants import COLORS, COST_TYPES, EVENT_TYPES, SOULFORGE_ALWAYS_AVAILABLE, TROOP_RARITIES
 from util import U, convert_color_array
 
 NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
@@ -58,6 +58,8 @@ class GameData:
         self.event_raw_data = {}
         self.weekly_event = {}
         self.gem_events = {}
+        self.store_raw_data = {}
+        self.store_data = {}
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -68,6 +70,8 @@ class GameData:
             self.soulforge_raw_data = GameAssets.load('Soulforge.json')
         if GameAssets.exists('Event.json'):
             self.event_raw_data = GameAssets.load('Event.json')
+        if GameAssets.exists('Store.json'):
+            self.store_raw_data = GameAssets.load('Store.json')
 
     def populate_world_data(self):
         self.read_json_data()
@@ -93,6 +97,7 @@ class GameData:
         self.populate_event_kingdoms()
         self.populate_weekly_event_details()
         self.populate_gem_events()
+        self.populate_store_data()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -499,7 +504,8 @@ class GameData:
             kingdom_filename = match.group("filebase")
             # Skip Apocalypse (3034) and HoG (3042), because they share filename with Sin of Maraj and Guardians resp. and are unlikely to get new troops
             skip_kingdoms = [3034, 3042]
-            troop_kingdom = next((k for k in self.kingdoms.values() if k['filename'] == kingdom_filename and k['id'] not in skip_kingdoms), None)
+            troop_kingdom = next((k for k in self.kingdoms.values() if
+                                  k['filename'] == kingdom_filename and k['id'] not in skip_kingdoms), None)
             if troop_kingdom:
                 troop['kingdom'] = troop_kingdom
                 troop_kingdom['troop_ids'].append(troop_id)
@@ -867,3 +873,21 @@ class GameData:
                 'gem_type': COLORS[gem_event['GemType']],
                 'multiplier': gem_event['Multiplier'],
             }
+
+    def populate_store_data(self):
+
+        for entry in self.store_raw_data['ShopData']:
+            if entry['Visible']:
+                troop_id = None
+                if entry['RewardType'] == 11:  # bundle
+                    for reward in entry.get('BundleData', {}):
+                        if reward['RewardType'] == 5:  # troop
+                            troop_id = reward['RewardData']
+                self.store_data[entry['TitleId']] = {
+                    'title': entry['TitleId'],
+                    'reference': entry['ReferenceName'],
+                    'cost': entry['Cost'],
+                    'currency': COST_TYPES[entry['CostType']],
+                    'tab': entry.get('Tab'),
+                    'troop_id': troop_id,
+                }
