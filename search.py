@@ -1277,5 +1277,6 @@ class TeamExpander:
             'today_weekday': datetime.datetime.utcnow().weekday(),
             'glory_shop_title': f'{_("[GLORY]", lang)} {_("[SHOP]", lang)}',
             'event_ended': _('[EVENT_HAS_ENDED]', lang),
+            'medal': _('[REWARD_HELP_HEADING_MEDAL_2]', lang),
         }
         return result
