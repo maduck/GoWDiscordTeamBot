@@ -716,7 +716,9 @@ class TeamExpander:
         locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
         with different_locale(locale):
             entry['formatted_start'] = entry['start'].strftime('%b %d')
+            entry['start_day'] = entry['start'].strftime('%A')
             entry['formatted_end'] = entry['end'].strftime('%b %d')
+            entry['end_day'] = entry['end'].strftime('%A')
 
         entry['raw_type'] = entry['type']
         entry['type'] = _(entry['type'], lang)

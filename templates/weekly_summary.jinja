@@ -7,12 +7,12 @@
 ✪ {% if summary.world_event.restrictions %}{{ summary.restrictions_title }}: {% for r, v in summary.world_event.restrictions.items() %}
    - {{ r }}: {{ v }}{% endfor %}{% endif %}
 ✪ Subscribe to [Flight School](https://discord.gg/35GXXtz3xD) #world-event for more details
-<T>{{ summary.faction_assault.start.strftime('%A') }}: {{ summary.faction_assault.type }}</T>
+<T>{{ summary.faction_assault.start_day }}: {{ summary.faction_assault.type }}</T>
 ✪ {{ summary.faction_assault.extra_info }} `#{{ summary.faction_assault.kingdom_id }}`
-<T>{{ summary.pet_rescue.start.strftime('%A') }}: {{ summary.pet_rescue.type }}</T>
+<T>{{ summary.pet_rescue.start_day }}: {{ summary.pet_rescue.type }}</T>
 ✪ {{ summary.pet_rescue.extra_info }} `#{{ summary.pet_rescue.gacha }}`
-<T>{{ summary.class_trial.start.strftime('%A') }}: {{ summary.class_trial.type }}</T>
+<T>{{ summary.class_trial.start_day }}: {{ summary.class_trial.type }}</T>
 ✪ {{ summary.class_trial.extra_info }} `#{{ summary.class_trial.gacha }}`
-<T>{{ summary.weekend.start.strftime('%A') }} - {{ summary.weekend.end.strftime('%A') }}: {{ summary.weekend.type }}</T>
+<T>{{ summary.weekend.start_day }} - {{ summary.weekend.end_day }}: {{ summary.weekend.type }}</T>
 ✪ {% if summary.weekend.restrictions %}{{ summary.restrictions_title }}: {% for r, v in summary.weekend.restrictions.items() %}
    - {{ r }}: {{ v }}{% endfor %}{% else %} - {% endif %}
