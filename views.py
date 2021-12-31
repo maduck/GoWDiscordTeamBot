@@ -600,7 +600,7 @@ class Views:
         e = discord.Embed(title=_('[WARBANDS]', lang), color=self.WHITE)
         return self.render_embed(e, 'warbands.jinja', warbands=warbands)
 
-    def render_weekly_summary(self, summary):
-        title = f'{_("[ROSTER_WEEKLY]")} {_("[OVERVIEW]")}'
+    def render_weekly_summary(self, summary, lang):
+        title = f'{_("[ROSTER_WEEKLY]", lang)} {_("[OVERVIEW]", lang)}'
         e = discord.Embed(title=title, color=self.WHITE)
         return self.render_embed(e, 'weekly_summary.jinja', summary=summary)

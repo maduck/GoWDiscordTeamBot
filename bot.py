@@ -985,7 +985,7 @@ class DiscordBot(BaseBot):
         summary = self.expander.get_weekly_summary(lang, self.my_emojis)
         # from pprint import pprint
         # pprint(summary)
-        e = self.views.render_weekly_summary(summary)
+        e = self.views.render_weekly_summary(summary, lang)
         await self.answer(message, e)
 
     async def register_slash_commands(self):
