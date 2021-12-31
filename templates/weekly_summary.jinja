@@ -1,0 +1,17 @@
+<T>Glory Shop {{ 'glory'|emoji }}</T>
+✪ __TODO__ (needs `get_store_data` asset, then filter for `"CostType": 2`)
+<T>Event Keys - *kingdom* {{ 'event_key' | emoji }}</T>
+✪ __TODO__ (`ChestInfo` --> `3` --> `DisplayTroopIds`)
+<T>World Event: {{ summary.world_event.name }}</T>
+✪ {% if summary.world_event.restrictions %}Restrictions: {% for r, v in summary.world_event.restrictions.items() %}
+   - {{ r }}: {{ v }}{% endfor %}{% endif %}
+✪ Subscribe to [Flight School](https://discord.gg/35GXXtz3xD) #world-event for more details
+<T>{{ summary.faction_assault.formatted_start }}: {{ summary.faction_assault.type }}</T>
+✪ {{ summary.faction_assault.extra_info }} `#{{ summary.faction_assault.kingdom_id }}`
+<T>{{ summary.pet_rescue.formatted_start }}: {{ summary.pet_rescue.type }}</T>
+✪ {{ summary.pet_rescue.extra_info }} `#{{ summary.pet_rescue.gacha }}`
+<T>{{ summary.class_trial.formatted_start }}: {{ summary.class_trial.type }}</T>
+✪ {{ summary.class_trial.extra_info }} `#{{ summary.class_trial.gacha }}`
+<T>Weekend: {{ summary.weekend.type }}</T>
+✪ {% if summary.weekend.restrictions %}Restrictions: {% for r, v in summary.weekend.restrictions.items() %}
+   - {{ r }}: {{ v }}{% endfor %}{% else %} - {% endif %}

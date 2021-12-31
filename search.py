@@ -1232,3 +1232,20 @@ class TeamExpander:
                 continue
             result['kingdoms'].append(my_kingdom)
         return result
+
+    def get_weekly_summary(self, lang, emojis):
+        def get_single_event(event_type):
+            filtered_events = [e for e in self.events if e['type'] == event_type]
+            if filtered_events:
+                return self.translate_event(filtered_events[0], lang)
+
+        weekend_events = [e for e in self.events if e['start_time'].weekday() == 4 and e['end_time'].weekday() == 0]
+
+        result = {
+            'world_event': self.get_current_event(lang, emojis),
+            'class_trial': get_single_event('[CLASS_EVENT]'),
+            'pet_rescue': get_single_event('[PETRESCUE]'),
+            'faction_assault': get_single_event('[DELVE_EVENT]'),
+            'weekend': self.translate_event(weekend_events[0], lang),
+        }
+        return result

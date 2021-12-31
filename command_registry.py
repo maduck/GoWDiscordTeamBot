@@ -127,6 +127,12 @@ COMMAND_REGISTRY = [
         'description': 'Show Gems of War related tools',
     },
     {
+        'function': 'weekly_summary',
+        'pattern': re.compile(DEFAULT_PATTERN + '(ws|weekly_summary)$', MATCH_OPTIONS),
+        'description': 'Shows a weekly summary',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'effects',
         'pattern': re.compile(DEFAULT_PATTERN + 'effects$', MATCH_OPTIONS),
         'description': 'Shows all possible spell effects',

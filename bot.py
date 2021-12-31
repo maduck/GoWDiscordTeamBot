@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.62.10'
+    VERSION = '0.63.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -980,6 +980,13 @@ class DiscordBot(BaseBot):
     async def ban_guild(self, message, guild_id, reason, **kwargs):
         Ban.add(int(guild_id), reason, message.author.display_name)
         await self.kick_guild(message=message, guild_id=guild_id)
+
+    async def weekly_summary(self, message, lang, **kwargs):
+        summary = self.expander.get_weekly_summary(lang, self.my_emojis)
+        # from pprint import pprint
+        # pprint(summary)
+        e = self.views.render_weekly_summary(summary)
+        await self.answer(message, e)
 
     async def register_slash_commands(self):
         guild_id = CONFIG.get('slash_command_guild_id')
