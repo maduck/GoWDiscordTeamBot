@@ -7,12 +7,18 @@
 ✪ {% if summary.world_event.restrictions %}{{ summary.restrictions_title }}: {% for r, v in summary.world_event.restrictions.items() %}
    - {{ r }}: {{ v }}{% endfor %}{% endif %}
 ✪ Subscribe to [Flight School](https://discord.gg/35GXXtz3xD) #world-event for more details
+{% if summary.today_weekday > summary.faction_assault.start.weekday() %}<T>{{ summary.faction_assault.type }}</T>
+{{ summary.event_ended }}{% else %}
 <T>{{ summary.faction_assault.start_day }}: {{ summary.faction_assault.type }} ({{ summary.faction_assault.formatted_start }})</T>
-✪ {{ summary.faction_assault.extra_info }} `#{{ summary.faction_assault.kingdom_id }}`
+✪ {{ summary.faction_assault.extra_info }} `#{{ summary.faction_assault.kingdom_id }}`{% endif %}
+{% if summary.today_weekday > summary.pet_rescue.start.weekday() %}<T>{{ summary.pet_rescue.type }}</T>
+{{ summary.event_ended }}{% else %}
 <T>{{ summary.pet_rescue.start_day }}: {{ summary.pet_rescue.type }} ({{ summary.pet_rescue.formatted_start }})</T>
-✪ {{ summary.pet_rescue.extra_info }} `#{{ summary.pet_rescue.gacha }}`
+✪ {{ summary.pet_rescue.extra_info }} `#{{ summary.pet_rescue.gacha }}`{% endif %}
+{% if summary.today_weekday > summary.class_trial.start.weekday() %}<T>{{ summary.class_trial.type }}</T>
+{{ summary.event_ended }}{% else %}
 <T>{{ summary.class_trial.start_day }}: {{ summary.class_trial.type }} ({{ summary.class_trial.formatted_start }})</T>
-✪ {{ summary.class_trial.extra_info }} `#{{ summary.class_trial.gacha }}`
+✪ {{ summary.class_trial.extra_info }} `#{{ summary.class_trial.gacha }}`{% endif %}
 <T>{{ summary.weekend.start_day }} - {{ summary.weekend.end_day }}: {{ summary.weekend.type }} ({{ summary.weekend.formatted_start }} - {{ summary.weekend.formatted_end }})</T>
 ✪ {% if summary.weekend.restrictions %}{{ summary.restrictions_title }}: {% for r, v in summary.weekend.restrictions.items() %}
    - {{ r }}: {{ v }}{% endfor %}{% else %} - {% endif %}

@@ -1274,6 +1274,8 @@ class TeamExpander:
             'world_event_title': _('[WEEKLY_EVENT]', lang),
             'restrictions_title': _('[TROOP_RESTRICTIONS]', lang),
             'event_keys_title': _('[KEYTYPE_3_TITLE]', lang),
+            'today_weekday': datetime.datetime.utcnow().weekday(),
             'glory_shop_title': f'{_("[GLORY]", lang)} {_("[SHOP]", lang)}',
+            'event_ended': _('[EVENT_HAS_ENDED]', lang),
         }
         return result
