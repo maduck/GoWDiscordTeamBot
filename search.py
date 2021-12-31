@@ -1152,6 +1152,12 @@ class TeamExpander:
                 new_battles.append(tb)
         event['battles'] = new_battles
 
+        locale = translations.LANGUAGE_CODE_MAPPING.get(lang, lang)
+        locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
+        with different_locale(locale):
+            event['formatted_start'] = event['start'].strftime('%b %d')
+            event['formatted_end'] = event['end'].strftime('%b %d')
+
         return event
 
     def get_effects(self, lang):
