@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.63.1'
+    VERSION = '0.63.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -983,8 +983,6 @@ class DiscordBot(BaseBot):
 
     async def weekly_summary(self, message, lang, **kwargs):
         summary = self.expander.get_weekly_summary(lang, self.my_emojis)
-        # from pprint import pprint
-        # pprint(summary)
         e = self.views.render_weekly_summary(summary, lang)
         await self.answer(message, e)
 
