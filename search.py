@@ -1264,5 +1264,6 @@ class TeamExpander:
             'glory_troop': glory_troop,
             'event_chest_drops': event_chest_drops,
             'world_event_title': _('[WEEKLY_EVENT]', lang),
+            'restrictions_title': _('[TROOP_RESTRICTIONS]', lang),
         }
         return result
