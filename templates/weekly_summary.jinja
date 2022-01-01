@@ -21,5 +21,4 @@
 <T>{{ summary.class_trial.start_day }}: {{ summary.class_trial.type }} ({{ summary.class_trial.formatted_start }})</T>
 ✪ {{ summary.class_trial.extra_info }} `#{{ summary.class_trial.gacha }}`{% endif %}
 <T>{{ summary.weekend.start_day }} - {{ summary.weekend.end_day }}: {{ summary.weekend.type }} ({{ summary.weekend.formatted_start }} - {{ summary.weekend.formatted_end }})</T>
-✪ {{ summary.restrictions_title }}: {% if summary.weekend.restrictions %}{% for r, v in summary.weekend.restrictions.items() %}
-   - {{ r }}: {{ v }}{% endfor %}{% else %} - {% endif %}
+✪ {{ summary.kingdom_title }}: {{ summary.weekend.kingdom }}

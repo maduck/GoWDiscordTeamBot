@@ -712,6 +712,10 @@ class TeamExpander:
             entry['extra_info'] = f'{troop_name} ({kingdom})'
             entry['kingdom'] = kingdom
 
+        if entry['kingdom_id']:
+            kingdom = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
+            entry['kingdom'] = kingdom
+
         locale = translations.LANGUAGE_CODE_MAPPING.get(lang, lang)
         locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
         with different_locale(locale):
@@ -1276,6 +1280,7 @@ class TeamExpander:
             'event_keys_title': _('[KEYTYPE_3_TITLE]', lang),
             'today_weekday': datetime.datetime.utcnow().weekday(),
             'glory_shop_title': f'{_("[GLORY]", lang)} {_("[SHOP]", lang)}',
+            'kingdom_title': _('[KINGDOM]', lang),
             'event_ended': _('[EVENT_HAS_ENDED]', lang),
             'medal': _('[REWARD_HELP_HEADING_MEDAL_2]', lang),
         }
