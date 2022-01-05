@@ -22,3 +22,5 @@
 ✪ {{ summary.class_trial.extra_info }} `#{{ summary.class_trial.gacha }}`{% endif %}
 <T>{{ summary.weekend.start_day }} - {{ summary.weekend.end_day }}: {{ summary.weekend.type }} ({{ summary.weekend.formatted_start }} - {{ summary.weekend.formatted_end }})</T>
 ✪ {{ summary.kingdom_title }}: {{ summary.weekend.kingdom }}
+{% if summary.saturday_pet %}<T>{{ summary.saturday_pet.start_day }}: {{ summary.saturday_pet.type }} ({{summary.saturday_pet.formatted_start}})</T>
+✪ {{ summary.saturday_pet.extra_info }} `#{{ summary.saturday_pet.gacha }}`{% endif %}

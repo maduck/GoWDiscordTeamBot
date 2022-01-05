@@ -1255,6 +1255,9 @@ class TeamExpander:
 
         weekend_events = [e for e in self.events if e['start_time'].weekday() == 4 and e['end_time'].weekday() == 0]
         glory_troops = [e for e in self.store_data.values() if e['tab'] == 'WeeklyEvent' and e['currency'] == 'Glory']
+        saturday_pet = [e for e in self.events if e['type'] == '[PETRESCUE]' and e['start_time'].weekday() == 5]
+        if saturday_pet:
+            saturday_pet = self.translate_event(saturday_pet[0], lang)
         glory_troop = self.troops['`?`']
         if glory_troops and glory_troops[0]['troop_id']:
             glory_troop = self.search_troop(str(glory_troops[0]['troop_id']), lang)[0]
@@ -1271,6 +1274,7 @@ class TeamExpander:
             'world_event': self.get_current_event(lang, emojis),
             'class_trial': get_single_event('[CLASS_EVENT]'),
             'pet_rescue': get_single_event('[PETRESCUE]'),
+            'saturday_pet': saturday_pet,
             'faction_assault': get_single_event('[DELVE_EVENT]'),
             'weekend': self.translate_event(weekend_events[0], lang),
             'glory_troop': glory_troop,
