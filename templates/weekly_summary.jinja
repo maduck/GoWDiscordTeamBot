@@ -8,7 +8,7 @@
    - {{ r }}: {{ v }}{% endfor %}{% else %} - {% endif %}
 ✪ {{ summary.medal }}: {{ summary.world_event.medal.description }}
 ✪ Subscribe to [Flight School](https://discord.gg/35GXXtz3xD) #world-event for more details
-{% if summary.today_weekday > summary.faction_assault.start.weekday() %}<T>{{ summary.faction_assault.type }}</T>
+{% if not summary.faction_assault or summary.today_weekday > summary.faction_assault.start.weekday() %}<T>{{ summary.faction_assault.type }}</T>
 {{ summary.event_ended }}{% else %}
 <T>{{ summary.faction_assault.start_day }}: {{ summary.faction_assault.type }} ({{ summary.faction_assault.formatted_start }})</T>
 ✪ {{ summary.faction_assault.extra_info }} `#{{ summary.faction_assault.kingdom_id }}`{% endif %}

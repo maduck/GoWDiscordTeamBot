@@ -1248,10 +1248,19 @@ class TeamExpander:
         return result
 
     def get_weekly_summary(self, lang, emojis):
-        def get_single_event(event_type):
-            filtered_events = [e for e in self.events if e['type'] == event_type]
+        world_event = self.get_current_event(lang, emojis)
+
+        def get_single_event(event_type, weekday):
+            filtered_events = [e for e in self.events if
+                               e['type'] == event_type and
+                               e['start_time'] >= world_event['start'] and
+                               e['end_time'] <= world_event['end'] and
+                               e['start_time'].weekday() == weekday
+                               ]
             if filtered_events:
                 return self.translate_event(filtered_events[0], lang)
+            else:
+                return {'type': _(event_type, lang), 'start': datetime.datetime.utcnow() - datetime.timedelta(hours=24)}
 
         weekend_events = [e for e in self.events if e['start_time'].weekday() == 4 and e['end_time'].weekday() == 0]
         glory_troops = [e for e in self.store_data.values() if e['tab'] == 'WeeklyEvent' and e['currency'] == 'Glory']
@@ -1271,11 +1280,11 @@ class TeamExpander:
         }
 
         result = {
-            'world_event': self.get_current_event(lang, emojis),
-            'class_trial': get_single_event('[CLASS_EVENT]'),
-            'pet_rescue': get_single_event('[PETRESCUE]'),
+            'world_event': world_event,
+            'class_trial': get_single_event('[CLASS_EVENT]', 1),
+            'pet_rescue': get_single_event('[PETRESCUE]', 2),
             'saturday_pet': saturday_pet,
-            'faction_assault': get_single_event('[DELVE_EVENT]'),
+            'faction_assault': get_single_event('[DELVE_EVENT]', 3),
             'weekend': self.translate_event(weekend_events[0], lang),
             'glory_troop': glory_troop,
             'event_chest_drops': event_chest_drops,
