@@ -1126,6 +1126,16 @@ class TeamExpander:
                 if reward_type == '[TROOP]':
                     reward['type'] = _(self.troops.get(reward['data'])['name'], lang)
 
+        event['shop_title'] = _('[SHOP]', lang)
+        event['shop'] = []
+        for shop_tier in event['shop_tiers']:
+            rewards = [_(k, lang).replace('%1', str(v)) for k, v in shop_tier['rewards'].items()]
+            if rewards:
+                shop_display = f'**{_(shop_tier["title"], lang)}** ({shop_tier["cost"]} ' \
+                               f'{_(shop_tier["currency"], lang)}): ' \
+                               f'{", ".join(rewards)}'
+                event['shop'].append(shop_display)
+
         for item in ('token', 'badge', 'medal'):
             if not event[item]:
                 continue

@@ -2,7 +2,6 @@ import datetime
 import math
 import operator
 import re
-from pprint import pprint
 
 from data_source import Pets
 from game_assets import GameAssets
