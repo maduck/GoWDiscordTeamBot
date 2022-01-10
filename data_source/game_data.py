@@ -889,12 +889,15 @@ class GameData:
             if entry['Visible']:
                 troop_id = None
                 weapon_id = None
-                if entry['RewardType'] == REWARD_TYPES.Bundle.value:
+                troop_pool = None
+                if entry['RewardType'] == REWARD_TYPES.Bundle:
                     for reward in entry.get('BundleData', {}):
-                        if reward['RewardType'] == REWARD_TYPES.Troop.value:
+                        if reward['RewardType'] == REWARD_TYPES.Troop:
                             troop_id = reward['RewardData']
-                        elif reward['RewardType'] == REWARD_TYPES.Weapon.value:
+                        elif reward['RewardType'] == REWARD_TYPES.Weapon:
                             weapon_id = reward['RewardData']
+                        elif reward['RewardType'] == REWARD_TYPES.LiveEventPoolTroop:
+                            troop_pool = reward['Reward']
                 self.store_data[entry['Code']] = {
                     'title': entry['TitleId'],
                     'reference': entry['ReferenceName'],
@@ -903,4 +906,5 @@ class GameData:
                     'tab': entry.get('Tab'),
                     'troop_id': troop_id,
                     'weapon_id': weapon_id,
+                    'troop_pool': troop_pool,
                 }

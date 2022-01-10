@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import IntEnum
 
 import discord
 
@@ -154,7 +154,7 @@ COST_TYPES = (
 )
 
 
-class REWARD_TYPES(Enum):
+class REWARD_TYPES(IntEnum):
     Gems = 0
     Gold = 1
     Skin = 3
