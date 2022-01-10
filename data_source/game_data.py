@@ -97,9 +97,9 @@ class GameData:
         self.populate_drop_chances()
         self.populate_event_key_drops()
         self.populate_event_kingdoms()
+        self.populate_store_data()
         self.populate_weekly_event_details()
         self.populate_gem_events()
-        self.populate_store_data()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -852,6 +852,8 @@ class GameData:
             self.weekly_event['minimum_tier'] = minimum_tier
 
         self.weekly_event = {
+            'id': self.event_raw_data['Id'],
+            'shop_tiers': [self.store_data[gacha] for gacha in self.event_raw_data['GachaItems']],
             'kingdom_id': str(self.event_raw_data.get('Kingdom')),
             'type': self.event_raw_data.get('Type'),
             'name': extract_name(self.event_raw_data),
@@ -893,7 +895,7 @@ class GameData:
                             troop_id = reward['RewardData']
                         elif reward['RewardType'] == REWARD_TYPES.Weapon.value:
                             weapon_id = reward['RewardData']
-                self.store_data[entry['TitleId']] = {
+                self.store_data[entry['Code']] = {
                     'title': entry['TitleId'],
                     'reference': entry['ReferenceName'],
                     'cost': entry['Cost'],
