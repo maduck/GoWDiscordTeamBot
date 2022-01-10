@@ -154,7 +154,7 @@ COST_TYPES = (
 )
 
 
-class REWARD_TYPES(IntEnum):
+class RewardTypes(IntEnum):
     Gems = 0
     Gold = 1
     Skin = 3

@@ -2,10 +2,11 @@ import datetime
 import math
 import operator
 import re
+from pprint import pprint
 
 from data_source import Pets
 from game_assets import GameAssets
-from game_constants import COLORS, COST_TYPES, EVENT_TYPES, REWARD_TYPES, SOULFORGE_ALWAYS_AVAILABLE, TROOP_RARITIES
+from game_constants import COLORS, COST_TYPES, EVENT_TYPES, RewardTypes, SOULFORGE_ALWAYS_AVAILABLE, TROOP_RARITIES
 from util import U, convert_color_array
 
 NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
@@ -887,24 +888,21 @@ class GameData:
     def populate_store_data(self):
         for entry in self.store_raw_data['ShopData']:
             if entry['Visible']:
-                troop_id = None
-                weapon_id = None
-                troop_pool = None
-                if entry['RewardType'] == REWARD_TYPES.Bundle:
+                rewards = {}
+
+                if entry['RewardType'] == RewardTypes.Bundle:
                     for reward in entry.get('BundleData', {}):
-                        if reward['RewardType'] == REWARD_TYPES.Troop:
-                            troop_id = reward['RewardData']
-                        elif reward['RewardType'] == REWARD_TYPES.Weapon:
-                            weapon_id = reward['RewardData']
-                        elif reward['RewardType'] == REWARD_TYPES.LiveEventPoolTroop:
-                            troop_pool = reward['Reward']
+                        if reward['RewardType'] == RewardTypes.Troop:
+                            rewards['troop_id'] = reward['RewardData']
+                        elif reward['RewardType'] == RewardTypes.Weapon:
+                            rewards['weapon_id'] = reward['RewardData']
+                        elif reward['RewardType'] == RewardTypes.LiveEventPoolTroop:
+                            rewards['[N_EVENT_POOL_TROOPS]'] = reward['Reward']
                 self.store_data[entry['Code']] = {
                     'title': entry['TitleId'],
                     'reference': entry['ReferenceName'],
                     'cost': entry['Cost'],
                     'currency': COST_TYPES[entry['CostType']],
                     'tab': entry.get('Tab'),
-                    'troop_id': troop_id,
-                    'weapon_id': weapon_id,
-                    'troop_pool': troop_pool,
+                    'rewards': rewards,
                 }
