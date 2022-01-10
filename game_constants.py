@@ -148,9 +148,9 @@ UNDERWORLD_SOULFORGE_REQUIREMENTS = {
 
 COST_TYPES = (
     'Cash',
-    'Gems',
-    'Glory',
-    'Count',
+    '[GEMS]',
+    '[GLORY]',
+    '[TROOPHELP_COUNT0]',
 )
 
 
