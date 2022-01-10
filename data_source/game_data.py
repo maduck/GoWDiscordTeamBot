@@ -5,7 +5,7 @@ import re
 
 from data_source import Pets
 from game_assets import GameAssets
-from game_constants import COLORS, COST_TYPES, EVENT_TYPES, SOULFORGE_ALWAYS_AVAILABLE, TROOP_RARITIES
+from game_constants import COLORS, COST_TYPES, EVENT_TYPES, REWARD_TYPES, SOULFORGE_ALWAYS_AVAILABLE, TROOP_RARITIES
 from util import U, convert_color_array
 
 NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
@@ -883,14 +883,16 @@ class GameData:
             }
 
     def populate_store_data(self):
-
         for entry in self.store_raw_data['ShopData']:
             if entry['Visible']:
                 troop_id = None
-                if entry['RewardType'] == 11:  # bundle
+                weapon_id = None
+                if entry['RewardType'] == REWARD_TYPES.Bundle.value:
                     for reward in entry.get('BundleData', {}):
-                        if reward['RewardType'] == 5:  # troop
+                        if reward['RewardType'] == REWARD_TYPES.Troop.value:
                             troop_id = reward['RewardData']
+                        elif reward['RewardType'] == REWARD_TYPES.Weapon.value:
+                            weapon_id = reward['RewardData']
                 self.store_data[entry['TitleId']] = {
                     'title': entry['TitleId'],
                     'reference': entry['ReferenceName'],
@@ -898,4 +900,5 @@ class GameData:
                     'currency': COST_TYPES[entry['CostType']],
                     'tab': entry.get('Tab'),
                     'troop_id': troop_id,
+                    'weapon_id': weapon_id,
                 }

@@ -1,3 +1,5 @@
+from enum import Enum
+
 import discord
 
 COLORS = list(
@@ -150,3 +152,72 @@ COST_TYPES = (
     'Glory',
     'Count',
 )
+
+
+class REWARD_TYPES(Enum):
+    Gems = 0
+    Gold = 1
+    Skin = 3
+    Weapon = 4
+    Troop = 5
+    Souls = 6
+    TreasureMaps = 8
+    Bundle = 11
+    Subscription = 12
+    GoldKeys = 13
+    GloryKeys = 14
+    GemKeys = 15
+    EventKeys = 16
+    VIPKeys = 17
+    TraitStones = 18
+    GuildSeals = 19
+    GuildKeysForAll = 20
+    GuildKeys = 21
+    Race = 22
+    PathToGlory1 = 23
+    PathToGlory2 = 24
+    GrowthPack = 25
+    Diamonds = 26
+    Shards = 27
+    Jewels = 28
+    RingOfWonder = 29
+    Glory = 30
+    LiveEventPoolTroop = 31
+    LiveEventTroop = 32
+    Pet = 33
+    PetFood = 34
+    Orbs = 35
+    LiveEventEnergy = 36
+    VaultKeys = 37
+    Ingots = 38
+    ChampionXP = 39
+    ChaosShards = 40
+    PathToGlory3 = 41
+    PathToGlory4 = 42
+    Gift = 43
+    LiveEventScroll = 44
+    ForgeScroll = 45
+    ChatPortrait = 46
+    ChatTitle = 47
+    ChatEmoji = 48
+    ChatSticker = 49
+    LiveEventPotion = 50
+    Deed = 51
+    Medal = 52
+    ExploreMythStones = 53
+    Writ = 54
+    GnomeBait = 55
+    ExploreBoss = 56
+    LiveEventCurrency = 57
+    ElitePass = 58
+    ElitePassPlus = 59
+    ArtifactLevel = 60
+    DeedBook = 61
+    EpicVaultKeys = 62
+    RandomTroop = 63
+    ChampionLevelUp = 64
+    ChampionTraitsUnlocked = 65
+    DelveChestUpgrade = 66
+    DelveAttempts = 67
+    FactionRenown = 68
+    LiveEventPoints = 69
