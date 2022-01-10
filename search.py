@@ -1283,10 +1283,10 @@ class TeamExpander:
 
         result = {
             'world_event': world_event,
-            'class_trial': get_single_event('[CLASS_EVENT]', 1),
+            'class_trial': get_single_event('[CLASS_EVENT]', 3),
             'pet_rescue': get_single_event('[PETRESCUE]', 2),
             'saturday_pet': saturday_pet,
-            'faction_assault': get_single_event('[DELVE_EVENT]', 3),
+            'faction_assault': get_single_event('[DELVE_EVENT]', 1),
             'weekend': self.translate_event(weekend_events[0], lang),
             'glory_troop': glory_troop,
             'event_chest_drops': event_chest_drops,
