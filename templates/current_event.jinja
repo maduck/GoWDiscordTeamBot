@@ -1,6 +1,6 @@
 <T>__**{{ overview }}**__</T>{% if 'kingdom' in event %}
 **{{ kingdom_title }}**: {{ event.kingdom.name }} `#{{ event.kingdom.id }}`{% else %}-{% endif %}{% if event.currencies %}
-**{{ score }}**: {% for currency in event.currencies %}{{ currency.name }} ({{ currency.value }}){% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% if event.weapon %}
+**{{ score }}**: {% for currency in event.currencies %}{{ currency.icon | emoji }} {{ currency.name }} ({{ currency.value }}){% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% if event.weapon %}
 **{{ event_weapon }}**: {{ event.weapon }} `#{{ event.weapon_id }}`{% endif %}{% if event.troop_id %}
 **{{ event_troop }}**: {{ event.troop }} `#{{ event.troop_id }}`{% endif %}{% if event.color %}
 **{{ event_color }}**: {{ event.color | emoji }}{% endif %}

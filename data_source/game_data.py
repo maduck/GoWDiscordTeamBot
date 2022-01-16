@@ -787,7 +787,7 @@ class GameData:
             if 'CurrencyData' not in raw_data:
                 return []
             currencies = [{
-                'icon': f'Liveevents/Liveeventscurrencies_{currency["Icon"]}_full.png',
+                'icon': f'Liveeventscurrencies_{currency["Icon"]}_full',
                 'value': currency['Value'],
                 'name': {lang[0:2]: translation for lang, translation in currency['Name'].items()},
             } for currency in self.event_raw_data['CurrencyData']]

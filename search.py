@@ -1114,6 +1114,7 @@ class TeamExpander:
         event['lore'] = event['lore'].get(lang, '')
         event['currencies'] = [{
             'name': currency['name'].get(lang, ''),
+            'icon': currency['icon'],
             'value': _('[N_TIMES_POINTS]', lang).replace('%1', str(currency['value']))
         } for currency in event['currencies']]
 
@@ -1203,7 +1204,7 @@ class TeamExpander:
             '1': 'name',
             '2': 'description',
         }
-        p = re.compile(r'\[TROOPHELP_STORM\d+_\d+')
+        p = re.compile(r'\[TROOPHELP_STORM(\d+_?)+')
         for key, value in t.translations[lang].items():
             if not p.match(key):
                 continue
