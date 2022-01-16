@@ -250,6 +250,7 @@ class BaseBot(discord.Client):
         guild = self.get_guild(guild_id)
         for emoji in guild.emojis:
             self.my_emojis[emoji.name] = str(emoji)
+        log.debug(f'Loaded {len(guild.emojis)} emojis from {guild.name}')
 
     async def is_owner(self, message):
         app_info = await self.application_info()
