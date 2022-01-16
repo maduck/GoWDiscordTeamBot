@@ -2,7 +2,9 @@
   "graphics_url": "https://garyatrics.com/gow_assets",
   "base_guilds": [
     733761045386231891,
-    780892751796764683
+    780892751796764683,
+    932188602354524240,
+    932189595938988052
   ],
   "default_prefix": "!",
   "default_language": "en",
