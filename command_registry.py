@@ -38,6 +38,7 @@ STANDARD_OPTIONS = {
 NO_QUOTE = r'^([^>].*?)??'
 LANG_PATTERN = r'(?P<lang>' + '|'.join(LANGUAGES) + ')?'
 DEFAULT_PATTERN = '^' + LANG_PATTERN + '(?P<shortened>-)?(?P<prefix>.)'
+LENGTHENED_PATTERN = '^' + LANG_PATTERN + r'((?P<shortened>-)|(?P<lengthened>\+))?(?P<prefix>.)'
 SEARCH_PATTERN = DEFAULT_PATTERN + '{0} #?(?P<search_term>.*)$'
 MATCH_OPTIONS = re.IGNORECASE | re.MULTILINE
 COMMAND_REGISTRY = [
@@ -49,7 +50,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'current_event',
-        'pattern': re.compile(DEFAULT_PATTERN + 'current_event$', MATCH_OPTIONS),
+        'pattern': re.compile(LENGTHENED_PATTERN + 'current_event$', MATCH_OPTIONS),
         'description': 'Shows current event details',
         'options': [STANDARD_OPTIONS['lang']],
     },
