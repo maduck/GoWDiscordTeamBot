@@ -1276,13 +1276,14 @@ class TeamExpander:
                 return {'type': _(event_type, lang), 'start': datetime.datetime.utcnow() - datetime.timedelta(hours=24)}
 
         weekend_events = [e for e in self.events if e['start_time'].weekday() == 4 and e['end_time'].weekday() == 0]
-        glory_troops = [e for e in self.store_data.values() if e['tab'] == 'WeeklyEvent' and e['currency'] == 'Glory']
+        glory_troops = [e for e in self.store_data.values() if
+                        e['tab'] == 'WeeklyEvent' and e['currency'] == '[GLORY]']
         saturday_pet = [e for e in self.events if e['type'] == '[PETRESCUE]' and e['start_time'].weekday() == 5]
         if saturday_pet:
             saturday_pet = self.translate_event(saturday_pet[0], lang)
         glory_troop = self.troops['`?`']
-        if glory_troops and glory_troops[0]['troop_id']:
-            glory_troop = self.search_troop(str(glory_troops[0]['troop_id']), lang)[0]
+        if glory_troops and 'troop_id' in glory_troops[0]['rewards']:
+            glory_troop = self.search_troop(str(glory_troops[0]['rewards']['troop_id']), lang)[0]
 
         event_kingdom = self.search_kingdom(str(self.event_key_drops['kingdom_id']), lang)[0]
         event_mythics = [t for t in event_kingdom['troops'] if t['raw_rarity'] == 'Mythic' and 'release_date' not in t]
