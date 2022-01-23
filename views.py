@@ -24,11 +24,14 @@ class Views:
         return [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
 
     def render_embed(self, embed, template_name, **kwargs):
-        self.jinja_env.filters['emoji'] = self.my_emojis.get
+        def get_emoji(name):
+            cut_name = name[:32]
+            return self.my_emojis.get(cut_name, cut_name)
+
+        self.jinja_env.filters['emoji'] = get_emoji
         self.jinja_env.filters['banner_colors'] = self.banner_colors
         self.jinja_env.globals.update({
-            'emoji': self.my_emojis.get,
-            'flatten': flatten
+            'flatten': flatten,
         })
 
         template = self.jinja_env.get_template(template_name)
