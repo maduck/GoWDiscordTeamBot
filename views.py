@@ -24,7 +24,7 @@ class Views:
         return [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
 
     def render_embed(self, embed, template_name, **kwargs):
-        def get_emoji(name):
+        def get_emoji(name, _=None):
             cut_name = name[:32]
             return self.my_emojis.get(cut_name, cut_name)
 
