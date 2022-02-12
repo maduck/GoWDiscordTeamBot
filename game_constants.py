@@ -2,6 +2,7 @@ import enum
 
 import discord
 
+# public enum GemColor
 COLORS = list(
     {
         0: 'blue',
@@ -43,6 +44,7 @@ COLORS = list(
         36: 'lootsafe',
     }.values())
 
+# public enum TutorialStep
 GEM_TUTORIAL_IDS = {
     'uberdoomskull': 3340,
     'lycanthropy': 3341,
@@ -105,6 +107,7 @@ TASK_SKIP_COSTS = {
     '[MEDAL_LEVEL_2]': 150,
 }
 
+# public enum EventType
 EVENT_TYPES = {
     0: '[GUILD_WARS]',
     1: '[RAIDBOSS]',
