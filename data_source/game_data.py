@@ -5,7 +5,8 @@ import re
 
 from data_source import Pets
 from game_assets import GameAssets
-from game_constants import COLORS, COST_TYPES, EVENT_TYPES, RewardTypes, SOULFORGE_ALWAYS_AVAILABLE, TROOP_RARITIES
+from game_constants import COLORS, COST_TYPES, EVENT_TYPES, GEM_TUTORIAL_IDS, RewardTypes, SOULFORGE_ALWAYS_AVAILABLE, \
+    TROOP_RARITIES
 from util import U, convert_color_array
 
 NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
@@ -877,11 +878,13 @@ class GameData:
 
     def populate_gem_events(self):
         for gem_event in self.user_data['pGemEventData']:
+            color = COLORS[gem_event['GemType']]
             self.gem_events[gem_event['Id']] = {
                 'event_id': gem_event['Id'],
                 'gem_id': gem_event['GemType'],
-                'gem_type': COLORS[gem_event['GemType']],
+                'gem_type': color,
                 'multiplier': gem_event['Multiplier'],
+                'tutorial': GEM_TUTORIAL_IDS[color],
             }
 
     def populate_store_data(self):

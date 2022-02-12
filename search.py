@@ -1194,8 +1194,14 @@ class TeamExpander:
         result[negative] = sorted(result[negative], key=operator.itemgetter('name'))
         return result
 
-    def get_active_gems(self):
-        return [g['gem_type'] for g in self.active_gems.values()]
+    def get_active_gems(self, lang):
+        result = []
+        for gem in self.active_gems.values():
+            active_gem = gem.copy()
+            tutorial_key = f'[TUTORIAL_DESCRIPTION_{gem["tutorial"]}]'
+            active_gem['tutorial'] = _(tutorial_key, lang)
+            result.append(active_gem)
+        return result
 
     @staticmethod
     def get_storms(lang):

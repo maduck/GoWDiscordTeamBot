@@ -1,4 +1,4 @@
-from enum import IntEnum
+import enum
 
 import discord
 
@@ -42,6 +42,28 @@ COLORS = list(
         35: 'lootchest2',
         36: 'lootsafe',
     }.values())
+
+GEM_TUTORIAL_IDS = {
+    'uberdoomskull': 3340,
+    'lycanthropy': 3341,
+    'bluemanapotion': 3342,
+    'greenmanapotion': 3342,
+    'redmanapotion': 3342,
+    'yellowmanapotion': 3342,
+    'purplemanapotion': 3342,
+    'brownmanapotion': 3342,
+    'wildcard2': 3343,
+    'wildcard3': 3343,
+    'wildcard4': 3343,
+    'burning': 3344,
+    'freeze': 3345,
+    'elementalstar': 3346,
+    'wish': 3347,
+    'lightdarkstar': 3348,
+    'curse': 3349,
+    'goodgargoyle': 3350,
+    'badgargoyle': 3350,
+}
 
 TROOP_RARITIES = (
     'Common',
@@ -156,7 +178,7 @@ COST_TYPES = (
 )
 
 
-class RewardTypes(IntEnum):
+class RewardTypes(enum.IntEnum):
     Gems = 0
     Gold = 1
     Skin = 3

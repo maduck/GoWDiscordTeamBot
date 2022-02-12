@@ -587,7 +587,9 @@ class Views:
         return e
 
     def render_active_gems(self, gems, lang):
-        active_gems = [self.my_emojis.get(gem, gem) for gem in gems]
+        emojis = [self.my_emojis.get(gem['gem_type'], gem['gem_type']) for gem in gems]
+        helps = [gem['tutorial'] for gem in gems]
+        active_gems = [f'{emoji} {help}' for emoji, help in zip(emojis, helps)]
         if not active_gems:
             active_gems = [_('[QUEST9013_ENDCONV_1]', lang).split('&&')[0]]
         e = discord.Embed(title=_('[GEMS]', lang), description=' '.join(active_gems), color=self.WHITE)
