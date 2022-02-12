@@ -595,6 +595,10 @@ class Views:
         e = discord.Embed(title=_('[GEMS]', lang), description=' '.join(active_gems), color=self.WHITE)
         return e
 
+    def render_heroic_gems(self, gems, lang):
+        e = discord.Embed(title=_('[GEMS]', lang), color=self.WHITE)
+        return self.render_embed(e, 'heroic_gems.jinja', gems=gems)
+
     @staticmethod
     def render_storms(storms, lang):
         contents = [_('[TROOPHELP_STORM_2]', lang), '']

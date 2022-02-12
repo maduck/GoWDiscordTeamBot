@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.65.0'
+    VERSION = '0.66.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -356,6 +356,11 @@ class DiscordBot(BaseBot):
     async def active_gems(self, message, lang, **kwargs):
         gems = self.expander.get_active_gems(lang)
         e = self.views.render_active_gems(gems, lang)
+        await self.answer(message, e)
+
+    async def heroic_gems(self, message, lang, **kwargs):
+        gems = self.expander.get_heroic_gems(lang)
+        e = self.views.render_heroic_gems(gems, lang)
         await self.answer(message, e)
 
     async def color_kingdoms(self, message, lang, **kwargs):

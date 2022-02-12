@@ -30,7 +30,7 @@ COLORS = list(
         22: 'freeze',
         23: 'wish',
         24: 'lightdarkstar',
-        25: 'curse',
+        25: 'cursed',
         26: 'goodgargoyle',
         27: 'badgargoyle',
         28: 'basegemtypes',
@@ -62,7 +62,7 @@ GEM_TUTORIAL_IDS = {
     'elementalstar': 3346,
     'wish': 3347,
     'lightdarkstar': 3348,
-    'curse': 3349,
+    'cursed': 3349,
     'goodgargoyle': 3350,
     'badgargoyle': 3350,
 }
@@ -76,6 +76,7 @@ TROOP_RARITIES = (
     'Mythic',
     'Doomed'
 )
+
 WEAPON_RARITIES = (
     'Common',
     'Uncommon',

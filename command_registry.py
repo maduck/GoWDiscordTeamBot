@@ -61,6 +61,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'heroic_gems',
+        'pattern': re.compile(DEFAULT_PATTERN + 'heroic_gems$', MATCH_OPTIONS),
+        'description': 'Shows all possible heroic gems',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'server_status',
         'pattern': re.compile(DEFAULT_PATTERN + 'server_status$', MATCH_OPTIONS),
         'description': 'Show Gems of War server status',

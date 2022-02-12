@@ -8,7 +8,7 @@ from calendar import different_locale
 
 import translations
 from data_source.game_data import GameData
-from game_constants import COLORS, EVENT_TYPES, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, \
+from game_constants import COLORS, EVENT_TYPES, GEM_TUTORIAL_IDS, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, \
     UNDERWORLD_SOULFORGE_REQUIREMENTS, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
@@ -1201,6 +1201,14 @@ class TeamExpander:
             tutorial_key = f'[TUTORIAL_DESCRIPTION_{gem["tutorial"]}]'
             active_gem['tutorial'] = _(tutorial_key, lang)
             result.append(active_gem)
+        return result
+
+    @staticmethod
+    def get_heroic_gems(lang):
+        result = {}
+        for gem, tutorial_id in GEM_TUTORIAL_IDS.items():
+            tutorial = _(f'[TUTORIAL_DESCRIPTION_{tutorial_id}]', lang)
+            result.setdefault(tutorial, []).append(gem)
         return result
 
     @staticmethod
