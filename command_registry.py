@@ -50,7 +50,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'current_event',
-        'pattern': re.compile(LENGTHENED_PATTERN + 'current_event$', MATCH_OPTIONS),
+        'pattern': re.compile(LENGTHENED_PATTERN + '(ce|current_event)$', MATCH_OPTIONS),
         'description': 'Shows current event details',
         'options': [STANDARD_OPTIONS['lang']],
     },
