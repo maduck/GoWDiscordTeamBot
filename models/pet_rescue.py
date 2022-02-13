@@ -45,9 +45,11 @@ class PetRescue:
 
     @staticmethod
     def get_amount():
-        query = "SELECT seq FROM SQLITE_SEQUENCE WHERE name='PetRescue';";
+        query = "SELECT seq FROM SQLITE_SEQUENCE WHERE name='PetRescue';"
         db = DB()
         db_result = db.cursor.execute(query).fetchone()
+        if not db_result:
+            return 0
         return db_result[0]
 
     @property
