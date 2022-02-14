@@ -10,6 +10,8 @@
 ✪ Subscribe to [Flight School](https://discord.gg/35GXXtz3xD) #world-event for more details
 {% if not summary.faction_assault or summary.today_weekday > summary.faction_assault.start.weekday() %}<T>{{ summary.faction_assault.type }}</T>
 {{ summary.event_ended }}{% else %}
+{% if summary.extra_events %}<T>{{ summary.world_event_title }} ({{ summary.world_event.formatted_start }} - {{ summary.world_event.formatted_end }})</T>{% for event in summary.extra_events %}
+✪ {{ event.type }}{% endfor %}{% endif %}
 <T>{{ summary.faction_assault.start_day }}: {{ summary.faction_assault.type }} ({{ summary.faction_assault.formatted_start }})</T>
 ✪ {{ summary.faction_assault.extra_info }} `#{{ summary.faction_assault.kingdom_id }}`{% endif %}
 {% if summary.today_weekday > summary.pet_rescue.start.weekday() %}<T>{{ summary.pet_rescue.type }}</T>

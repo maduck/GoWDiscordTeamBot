@@ -1290,6 +1290,12 @@ class TeamExpander:
                 return {'type': _(event_type, lang), 'start': datetime.datetime.utcnow() - datetime.timedelta(hours=24)}
 
         weekend_events = [e for e in self.events if e['start_time'].weekday() == 4 and e['end_time'].weekday() == 0]
+        extra_events = [
+            self.translate_event(e, lang) for e in self.events if
+            e['start_time'] == world_event['start'] and
+            e['end_time'] == world_event['end'] and
+            e['type'] != '[WEEKLY_EVENT]'
+        ]
         glory_troops = [e for e in self.store_data.values() if
                         e['tab'] == 'WeeklyEvent' and e['currency'] == '[GLORY]']
         saturday_pet = [e for e in self.events if e['type'] == '[PETRESCUE]' and e['start_time'].weekday() == 5]
@@ -1309,6 +1315,7 @@ class TeamExpander:
 
         result = {
             'world_event': world_event,
+            'extra_events': extra_events,
             'class_trial': get_single_event('[CLASS_EVENT]', 3),
             'pet_rescue': get_single_event('[PETRESCUE]', 2),
             'saturday_pet': saturday_pet,
