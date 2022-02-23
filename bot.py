@@ -170,7 +170,7 @@ class DiscordBot(BaseBot):
             image_data = graphic_campaign_preview.render_all(campaign_data)
             result = discord.File(image_data, f'campaign_{lang}_{campaign_data["raw_date"]}.png')
             duration = time.time() - start
-            log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
+            log.debug(f'Campaign generation took {duration:0.2f} seconds.')
             await message.channel.send(file=result)
 
     @owner_required
@@ -240,7 +240,7 @@ class DiscordBot(BaseBot):
         spoilers = self.expander.get_spoilers(lang)
         e = discord.Embed(title='Spoilers', color=self.WHITE)
         troop_title = self.expander.translate_categories(['troop'], lang)['troop']
-        headers = ['Date', 'Rarity', 'Name (ID)']
+        headers = [_('[DAY]', lang), _('[RARITY]', lang), 'Name (ID)']
         if not _filter or _filter.lower() == 'troop':
             troop_spoilers = [s for s in spoilers if s['type'] == 'troop']
             extra_spacing = 2
