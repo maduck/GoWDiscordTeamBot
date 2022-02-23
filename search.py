@@ -59,6 +59,8 @@ class TeamExpander:
         self.talent_trees = world.talent_trees
         self.spoilers = world.spoilers
         self.events = world.events
+        self.campaign_week = world.campaign_week
+        self.campaign_name = world.campaign_name
         self.campaign_tasks = world.campaign_tasks
         self.reroll_tasks = world.campaign_rerolls
         self.soulforge = world.soulforge
@@ -1326,7 +1328,7 @@ class TeamExpander:
             'world_event_title': _('[WEEKLY_EVENT]', lang),
             'restrictions_title': _('[TROOP_RESTRICTIONS]', lang),
             'event_keys_title': _('[KEYTYPE_3_TITLE]', lang),
-            'today_weekday': datetime.datetime.utcnow().weekday(),
+            'today_weekday': (datetime.datetime.utcnow() + datetime.timedelta(hours=24)).weekday(),
             'glory_shop_title': f'{_("[GLORY]", lang)} {_("[SHOP]", lang)}',
             'kingdom_title': _('[KINGDOM]', lang),
             'event_ended': _('[EVENT_HAS_ENDED]', lang),

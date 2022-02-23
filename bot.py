@@ -165,6 +165,8 @@ class DiscordBot(BaseBot):
             campaign_data = self.expander.get_campaign_tasks(lang)
             campaign_data['switch'] = switch
             campaign_data['team'] = None
+            campaign_data['week'] = _('[WEEK]', lang).format(self.expander.campaign_week)
+            campaign_data['campaign_name'] = _(self.expander.campaign_name, lang)
             if team_code:
                 campaign_data['team'] = self.expander.get_team_from_message(team_code, lang)
             image_data = graphic_campaign_preview.render_all(campaign_data)

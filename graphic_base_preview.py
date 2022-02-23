@@ -46,7 +46,10 @@ class BasePreview:
             draw.font_size = 100
             draw.text_antialias = True
             draw.font = FONTS['raleway']
-            draw.text(450, 200, title.format(self.data))
+            y_offset = 200
+            if '\n' in title:
+                y_offset = 120
+            draw.text(450, y_offset, title.format(self.data))
 
             kingdom_logo = download_image(self.data['kingdom_logo'])
             kingdom_width, kingdom_height = scale_down(kingdom_logo.width, kingdom_logo.height, 220)

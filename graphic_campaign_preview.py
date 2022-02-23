@@ -109,6 +109,22 @@ class CampaignPreview(BasePreview):
 
             draw(self.img)
 
+    def render_campaign_name(self):
+        with Drawing() as draw:
+            draw.font = FONTS['raleway']
+            draw.text_alignment = 'left'
+            draw.text_antialias = True
+            draw.font_size = 50
+            draw.fill_color = Color('black')
+            x = 50
+            y = self.img.height - 60
+            draw.text(x, y - 2, self.data['campaign_name'])
+            draw.text(x, y + 2, self.data['campaign_name'])
+            draw.fill_color = Color('white')
+            draw.text(x, y, self.data['campaign_name'])
+
+            draw(self.img)
+
     def save_image(self):
         self.img.format = 'png'
         self.img.save(filename='test.png')
@@ -116,9 +132,10 @@ class CampaignPreview(BasePreview):
 
 def render_all(result):
     overview = CampaignPreview(result)
-    overview.render_background('{0[texts][campaign]}: {0[date]}')
+    overview.render_background('{0[texts][campaign]} {0[week]}, {0[date]}')
     overview.draw_watermark()
     overview.render_tasks()
     overview.render_team()
+    overview.render_campaign_name()
 
     return io.BytesIO(overview.img.make_blob('png'))
