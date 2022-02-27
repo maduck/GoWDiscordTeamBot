@@ -1150,6 +1150,9 @@ class TeamExpander:
         def translate_restriction(r):
             if isinstance(r, int):
                 return emojis.get(COLORS[r])
+            trooptype = _(f'[TROOPTYPE_{r.upper()}]', lang)
+            if not self.is_untranslated(trooptype):
+                return trooptype
             return _(r, lang)
 
         def translate_battle(b):
