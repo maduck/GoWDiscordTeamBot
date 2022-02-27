@@ -50,6 +50,7 @@ class GameData:
         self.campaign_data = {}
         self.campaign_rerolls = {}
         self.campaign_week = None
+        self.artifact_id = None
         self.campaign_name = ''
         self.soulforge = {}
         self.soulforge_raw_data = {}
@@ -294,6 +295,7 @@ class GameData:
             release_age = now - artifact_release
             if datetime.timedelta(days=0) <= release_age <= datetime.timedelta(days=10 * 7):
                 week_no = math.ceil(release_age / datetime.timedelta(days=7))
+                self.artifact_id = release['ArtifactId']
                 self.campaign_week = week_no
                 return week_no
         current_artifact_id = self.user_data['pEconomyModel']['LowestUnpurchasableArtifactId']
@@ -305,13 +307,16 @@ class GameData:
             for week, level in enumerate(artifact['Levels']):
                 if level['KingdomId'] == event_kingdom_id:
                     break
+        self.artifact_id = current_artifact_id
         self.campaign_week = week
         return week
 
     def populate_campaign_tasks(self):
         event_kingdom_id = self.get_current_event_kingdom_id()
         week = self.get_current_campaign_week()
-        self.campaign_name = self.data['Artifacts'][week]['Name']
+        for artifact in self.data['Artifacts']:
+            if artifact['Id'] == self.artifact_id:
+                self.campaign_name = artifact['Name']
 
         tasks = self.user_data['pTasksData']['CampaignTasks'][str(event_kingdom_id)]
         rerolls = self.user_data['pTasksData']['CampaignRerollTasks']
@@ -752,6 +757,7 @@ class GameData:
         if not campaign_events:
             return
         current_artifact_id = campaign_events[0]['artifact_id']
+        self.artifact_id = current_artifact_id
         event_kingdoms = []
         for artifact in self.data['Artifacts']:
             if artifact['Id'] < current_artifact_id:
