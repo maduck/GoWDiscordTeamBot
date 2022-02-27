@@ -1147,13 +1147,29 @@ class TeamExpander:
                 'description': _(f'[WONDER_{event[item]}_DESC]', lang),
             }
 
-        def translate_restriction(r):
-            if isinstance(r, int):
-                return emojis.get(COLORS[r])
-            trooptype = _(f'[TROOPTYPE_{r.upper()}]', lang)
-            if not self.is_untranslated(trooptype):
-                return trooptype
-            return _(r, lang)
+        def translate_restriction(title, restriction):
+            if title == '[FILTER_MANACOLOR]':
+                return emojis.get(COLORS[restriction])
+            elif title == '[FILTER_ROLE]':
+                pass
+            elif title == '[FILTER_WEAPONTYPE]':
+                pass
+            elif title == '[KINGDOM]':
+                pass
+            elif title == '[RARITY]':
+                pass
+            elif title == '[ROSTER]':
+                pass
+            elif title == '[TROOP_TYPES]':
+                return _(f'[TROOPTYPE_{restriction.upper()}]', lang)
+
+        def translate_restrictions(title, restrictions):
+            result = []
+            for r in restrictions:
+                translated = translate_restriction(title, r)
+                if translated:
+                    result.append(translated)
+            return result
 
         def translate_battle(b):
             result = b.copy()
@@ -1161,7 +1177,7 @@ class TeamExpander:
             del result['names']
             return result
 
-        event['restrictions'] = {_(r, lang): ', '.join([translate_restriction(i) for i in v]) for r, v in
+        event['restrictions'] = {_(r, lang): ', '.join(translate_restrictions(r, v)) for r, v in
                                  event['restrictions'].items() if v}
         event['troop'] = _(event['troop'], lang)
         if event['weapon_id']:
@@ -1331,7 +1347,7 @@ class TeamExpander:
             'world_event_title': _('[WEEKLY_EVENT]', lang),
             'restrictions_title': _('[TROOP_RESTRICTIONS]', lang),
             'event_keys_title': _('[KEYTYPE_3_TITLE]', lang),
-            'today_weekday': datetime.datetime.utcnow().weekday(),
+            'today_weekday': (datetime.datetime.utcnow() + datetime.timedelta(hours=24)).weekday(),
             'glory_shop_title': f'{_("[GLORY]", lang)} {_("[SHOP]", lang)}',
             'kingdom_title': _('[KINGDOM]', lang),
             'event_ended': _('[EVENT_HAS_ENDED]', lang),
