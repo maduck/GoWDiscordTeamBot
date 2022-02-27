@@ -1310,7 +1310,11 @@ class TeamExpander:
             else:
                 return {'type': _(event_type, lang), 'start': datetime.datetime.utcnow() - datetime.timedelta(hours=24)}
 
-        weekend_events = [e for e in self.events if e['start_time'].weekday() == 4 and e['end_time'].weekday() == 0]
+        weekend_events = [e for e in self.events
+                          if e['start_time'].weekday() == 4
+                          and e['end_time'].weekday() == 0
+                          and e['end_time'] == world_event['end']
+                          ]
         extra_events = [
             self.translate_event(e, lang) for e in self.events if
             e['start_time'] == world_event['start'] and
@@ -1341,7 +1345,7 @@ class TeamExpander:
             'pet_rescue': get_single_event('[PETRESCUE]', 2),
             'saturday_pet': saturday_pet,
             'faction_assault': get_single_event('[DELVE_EVENT]', 1),
-            'weekend': self.translate_event(weekend_events[0], lang),
+            'weekend': self.translate_event(weekend_events[0], lang) if weekend_events else None,
             'glory_troop': glory_troop,
             'event_chest_drops': event_chest_drops,
             'world_event_title': _('[WEEKLY_EVENT]', lang),
