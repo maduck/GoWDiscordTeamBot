@@ -672,6 +672,8 @@ class TeamExpander:
                 kingdom = troop['kingdom']
                 if not kingdom.get('name') and not kingdom.get('reference_name'):
                     continue
+                if kingdom['id'] in self.event_kingdoms:
+                    continue
                 result[spoiler['date'].date()] = {
                     'start': spoiler['date'].date(),
                     'end': spoiler['date'].date() + datetime.timedelta(days=7),
