@@ -130,6 +130,9 @@ SOULFORGE_ALWAYS_AVAILABLE = [
     6428,  # Xathenos
     6529,  # Zuul'Goth
     6919,  # Enraged Kurandara
+    6997,  # Leonis Tower
+    7033,  # Hatir Ascendent
+    7034,  # Scroll Reborn
     1104,  # Eye of Xathenos
     1176,  # Heart of Xathenos
     1177,  # Soul of Xathenos
