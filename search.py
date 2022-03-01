@@ -1333,7 +1333,10 @@ class TeamExpander:
             glory_troop = self.search_troop(str(glory_troops[0]['rewards']['troop_id']), lang)[0]
 
         event_kingdom = self.search_kingdom(str(self.event_key_drops['kingdom_id']), lang)[0]
-        event_mythics = [t for t in event_kingdom['troops'] if t['raw_rarity'] == 'Mythic' and 'release_date' not in t]
+        event_mythics = [t for t in event_kingdom['troops']
+                         if t['raw_rarity'] == 'Mythic'
+                         and 'release_date' not in t
+                         and 'Boss' not in t['raw_types']]
 
         event_chest_drops = {
             'troops': event_mythics,
