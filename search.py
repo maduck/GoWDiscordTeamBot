@@ -1157,7 +1157,7 @@ class TeamExpander:
             elif title == '[FILTER_WEAPONTYPE]':
                 pass
             elif title == '[KINGDOM]':
-                pass
+                return _(restriction, lang)
             elif title == '[RARITY]':
                 pass
             elif title == '[ROSTER]':
