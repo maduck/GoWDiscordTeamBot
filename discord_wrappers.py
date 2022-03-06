@@ -7,7 +7,11 @@ def guild_required(function):
     async def wrapper(*args, **kwargs):
         message = kwargs['message']
         if not message.guild:
-            await message.channel.send(content='This command is not available in private messages.')
+            self = args[0]
+            e = discord.Embed(title='Restricted Command', color=self.RED)
+            e.add_field(name='Error',
+                        value=f'This command is not available in private messages.')
+            await self.answer(message, e)
             return
         await function(*args, **kwargs)
 
