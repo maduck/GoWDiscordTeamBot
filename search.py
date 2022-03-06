@@ -1363,3 +1363,8 @@ class TeamExpander:
             'medal': _('[REWARD_HELP_HEADING_MEDAL_2]', lang),
         }
         return result
+
+    def faction_summary(self, lang):
+        factions = [k.copy() for k in self.kingdoms.values() if k['underworld'] and k['troop_ids']]
+        [self.translate_kingdom(f, lang) for f in factions]
+        return sorted(factions, key=operator.itemgetter('name'))

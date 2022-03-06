@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.66.5'
+    VERSION = '0.66.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -550,6 +550,11 @@ class DiscordBot(BaseBot):
         e = await self.generate_embed_from_text(table.get_string().split('\n'),
                                                 _('[KINGDOMS]', lang),
                                                 _('[OVERVIEW]', lang))
+        await self.answer(message, e)
+
+    async def faction_summary(self, message, lang, **kwargs):
+        factions = self.expander.faction_summary(lang)
+        e = self.views.render_faction_summary(factions, lang)
         await self.answer(message, e)
 
     @staticmethod

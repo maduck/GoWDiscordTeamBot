@@ -119,6 +119,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'faction_summary',
+        'pattern': re.compile(DEFAULT_PATTERN + 'factions$', MATCH_OPTIONS),
+        'description': 'Show all factions and their colours',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'kingdom',
         'pattern': re.compile(SEARCH_PATTERN.format('(kingdom|faction)'), MATCH_OPTIONS),
         'description': 'Search kingdoms',

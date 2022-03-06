@@ -1,0 +1,2 @@
+{% for faction in factions %}
+{% for color in faction.colors %}{{ color|emoji(':' + color + ':') }}{% endfor %} {{ faction.name }} `{{ faction.id }}`{% endfor %}
