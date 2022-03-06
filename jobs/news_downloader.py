@@ -31,7 +31,7 @@ class NewsDownloader:
         size = image.size
         ratio = size[0] / size[1]
         arbitrary_ratio_limit_for_banners = 5
-        log.debug(f'[NEWS] Found a ration of {ratio} in {source}.')
+        log.debug(f'[NEWS] Found a ratio of {ratio} in {source}.')
         return ratio >= arbitrary_ratio_limit_for_banners
 
     def remove_tags(self, text):
