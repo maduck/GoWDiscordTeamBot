@@ -618,5 +618,6 @@ class Views:
         return self.render_embed(e, 'weekly_summary.jinja', summary=summary)
 
     def render_faction_summary(self, factions, lang):
-        e = discord.Embed(title=_('[FACTIONS]', lang), color=self.WHITE)
+        title = f'{_("[FACTIONS]", lang)} ({_("[NAME_A_Z]", lang)})'
+        e = discord.Embed(title=title, color=self.WHITE)
         return self.render_embed(e, 'factions_overview.jinja', factions=factions)
