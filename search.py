@@ -1361,6 +1361,7 @@ class TeamExpander:
             'kingdom_title': _('[KINGDOM]', lang),
             'event_ended': _('[EVENT_HAS_ENDED]', lang),
             'medal': _('[REWARD_HELP_HEADING_MEDAL_2]', lang),
+            'troop_title': _('[TROOP]', lang),
         }
         return result
 
