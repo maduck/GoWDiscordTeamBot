@@ -28,5 +28,6 @@
   "[TASK_OPEN_GOLD_CHEST]": "Usa {0} \u0019Chiave\u0019Chiavi\u0019 Oro",
   "[TASK_SUMMON_TROOPS]": "Evoca truppe per {0} \u0019volta\u0019volte\u0019",
   "[TASK_EXPLODE_GEM_SINGLE]": "Fai esplodere {0} \u0019Gemma\u0019Gemme\u0019",
-  "[WEEK]": "Settimana {}"
+  "[WEEK]": "Settimana {}",
+  "[FLIGHT_SCHOOL]": "Iscriviti a [Flight School](https://discord.gg/35GXXtz3xD) #world-event per maggiori dettagli."
 }
