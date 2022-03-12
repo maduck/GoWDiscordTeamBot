@@ -558,6 +558,11 @@ class Views:
             'event_weapon': f'{_("[GLOG_EVENT]", lang)} {_("[WEAPON]", lang)}',
             'rewards': _('[REWARDS]', lang),
             'points': _('[POINTS]', lang),
+            'calculated_score_title': _('[CALCULATED_SCORE_TITLE]', lang),
+            'points_needed': _('[POINTS_NEEDED]', lang).format(current_event['score_per_member'], _('[POINTS]', lang)),
+            'battles_needed': _('[BATTLES_NEEDED]', lang).format(current_event['minimum_battles'],
+                                                                 _('[BATTLES]', lang)),
+            'tier_needed': _('[TIER_NEEDED]', lang).format(_(f'[TIER_{current_event["minimum_tier"]}_ROMAN]', lang))
         }
         template_file = 'current_event.jinja'
         if shortened:

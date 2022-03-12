@@ -19,8 +19,8 @@
 <T>__**{{ event.shop_title }}**__</T>
 {% for tier in event.shop %}{{ tier }}
 {% endfor %}
-<T>__**Calculated score per Member**__</T>
-**{{ event.score_per_member }} {{ points }}** needed to get last reward.
-**{{ event.minimum_battles }} battles** per player as of current leaderboard.
-**Tier {{ event.minimum_tier }} to buy** per player for last reward.
+<T>__**{{ calculated_score_title }}**__</T>
+{{ points_needed }}
+{{ battles_needed }}
+{{ tier_needed }}
 {% endif %}

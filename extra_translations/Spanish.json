@@ -1,4 +1,9 @@
 {
   "[WEEK]": "Semana {}",
-  "[FLIGHT_SCHOOL]": "Suscríbase a [Flight School](https://discord.gg/35GXXtz3xD) #world-event para más detalles."
+  "[FLIGHT_SCHOOL]": "Suscríbase a [Flight School](https://discord.gg/35GXXtz3xD) #world-event para más detalles.",
+  "[CALCULATED_SCORE_TITLE]": "Puntuación calculada por diputado",
+  "[POINTS_NEEDED]": "**{} {}** necesario para obtener la última recompensa.",
+  "[BATTLES_NEEDED]": "**{} {}** por jugador a partir de la tabla de clasificación actual.",
+  "[TIER_NEEDED]": "**{} para comprar** por jugador para la última recompensa.",
+  "[TIER_0_ROMAN]": "Escalón 0"
 }
