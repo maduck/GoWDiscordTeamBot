@@ -1184,7 +1184,7 @@ class TeamExpander:
             '[FILTER_MANACOLOR]', '[FILTER_ROLE]', '[KINGDOM]', '[RARITY]', '[ROSTER]', '[TROOP_TYPES]')
         event['troop_restrictions'] = {_(r, lang): ', '.join(translate_restrictions(r, v)) for r, v in
                                        event['restrictions'].items() if v and r in troop_restriction_types}
-        weapon_restriction_types = ('[FILTER_MANACOLOR]', '[FILTER_WEAPONTYPE]')
+        weapon_restriction_types = ('[FILTER_MANACOLOR]', '[FILTER_WEAPONTYPE]', '[KINGDOM]')
         event['weapon_restrictions'] = {_(r, lang): ', '.join(translate_restrictions(r, v)) for r, v in
                                         event['restrictions'].items() if v and r in weapon_restriction_types}
         event['troop'] = _(event['troop'], lang)
