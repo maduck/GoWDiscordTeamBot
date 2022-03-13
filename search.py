@@ -1180,8 +1180,13 @@ class TeamExpander:
             del result['names']
             return result
 
-        event['restrictions'] = {_(r, lang): ', '.join(translate_restrictions(r, v)) for r, v in
-                                 event['restrictions'].items() if v}
+        troop_restriction_types = (
+            '[FILTER_MANACOLOR]', '[FILTER_ROLE]', '[KINGDOM]', '[RARITY]', '[ROSTER]', '[TROOP_TYPES]')
+        event['troop_restrictions'] = {_(r, lang): ', '.join(translate_restrictions(r, v)) for r, v in
+                                       event['restrictions'].items() if v and r in troop_restriction_types}
+        weapon_restriction_types = ('[FILTER_MANACOLOR]', '[FILTER_WEAPONTYPE]')
+        event['weapon_restrictions'] = {_(r, lang): ', '.join(translate_restrictions(r, v)) for r, v in
+                                        event['restrictions'].items() if v and r in weapon_restriction_types}
         event['troop'] = _(event['troop'], lang)
         if event['weapon_id']:
             event['weapon'] = _(self.weapons.get(event['weapon_id'], {'name': ''})['name'], lang)

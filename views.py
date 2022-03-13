@@ -553,6 +553,7 @@ class Views:
             'score': _('[SCORE]', lang),
             'medals': _('[MEDALS]', lang),
             'troop_restrictions': _('[TROOP_RESTRICTIONS]', lang),
+            'weapon_title': _('[WEAPON]', lang),
             'event_troop': _('[EVENT_TROOP]', lang),
             'event_color': _('[FILTER_MANACOLOR]', lang),
             'event_weapon': f'{_("[GLOG_EVENT]", lang)} {_("[WEAPON]", lang)}',
