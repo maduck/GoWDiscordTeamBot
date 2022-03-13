@@ -5,10 +5,11 @@
 **{{ event_troop }}**: {{ event.troop }} `#{{ event.troop_id }}`{% endif %}{% if event.color %}
 **{{ event_color }}**: {{ event.color | emoji }}{% endif %}
 {% if event.token %}**{{ event.medal.name }}**: {{ event.medal.description }}{% endif %}
-{% if event.restrictions %}<T>__**{{ troop_restrictions }}**__</T>
-{% for r, v in event.restrictions.items() -%}
+{% if event.troop_restrictions %}<T>__**{{ troop_restrictions }}**__</T>
+{% for r, v in event.troop_restrictions.items() -%}
 {{ r }}: {{ v }}
-{% endfor %}{% endif %}
+{% endfor %}{% if event.weapon_restrictions %}**{{ weapon_title }}**: {% for r, v in event.weapon_restrictions.items() -%}
+{{ r }}: {{ v }}{% endfor %}{% endif %}{% endif %}
 <T>__**{{ calculated_score_title }}**__</T>
 {{ points_needed }}
 {{ battles_needed }}
