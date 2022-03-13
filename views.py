@@ -562,7 +562,7 @@ class Views:
             'points_needed': _('[POINTS_NEEDED]', lang).format(current_event['score_per_member'], _('[POINTS]', lang)),
             'battles_needed': _('[BATTLES_NEEDED]', lang).format(current_event['minimum_battles'],
                                                                  _('[BATTLES]', lang)),
-            'tier_needed': _('[TIER_NEEDED]', lang).format(_(f'[TIER_{current_event["minimum_tier"]}_ROMAN]', lang))
+            'tier_needed': _('[TIER_NEEDED]', lang).format(f'{_("[TIER]", lang)} {current_event["minimum_tier"]}')
         }
         template_file = 'current_event.jinja'
         if shortened:
