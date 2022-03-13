@@ -34,5 +34,6 @@
   "[POINTS_NEEDED]": "**{} {}** benötigt für die letzte Belohnungsstufe.",
   "[BATTLES_NEEDED]": "**{} {}** pro Spieler nach aktueller Bestenliste.",
   "[TIER_NEEDED]": "**{}** zu kaufen pro Spieler für die letzte Belohnungsstufe.",
-  "[TIER_0_ROMAN]": "Stufe 0"
+  "[TIER_0_ROMAN]": "Stufe 0",
+  "[CREATED_BY_HAWX_AND_GARY]": "Erstellt von Hawx & Gary für die Gems of War Community."
 }

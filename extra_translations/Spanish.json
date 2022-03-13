@@ -5,5 +5,6 @@
   "[POINTS_NEEDED]": "**{} {}** necesario para obtener la última recompensa.",
   "[BATTLES_NEEDED]": "**{} {}** por jugador a partir de la tabla de clasificación actual.",
   "[TIER_NEEDED]": "**{} para comprar** por jugador para la última recompensa.",
-  "[TIER_0_ROMAN]": "Escalón 0"
+  "[TIER_0_ROMAN]": "Escalón 0",
+  "[CREATED_BY_HAWX_AND_GARY]": "Creado por Hawx y Gary para la comunidad de Gems of War."
 }

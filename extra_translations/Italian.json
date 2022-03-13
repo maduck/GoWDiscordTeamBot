@@ -34,5 +34,6 @@
   "[POINTS_NEEDED]": "**{} {}** necessario per ottenere l'ultima ricompensa.",
   "[BATTLES_NEEDED]": "**{} {}** per giocatore a partire dalla classifica attuale.",
   "[TIER_NEEDED]": "**{} da comprare** per giocatore per l'ultima ricompensa.",
-  "[TIER_0_ROMAN]": "Livello 0"
+  "[TIER_0_ROMAN]": "Livello 0",
+  "[CREATED_BY_HAWX_AND_GARY]": "Creato da Hawx & Gary per la comunità di Gems of War."
 }
