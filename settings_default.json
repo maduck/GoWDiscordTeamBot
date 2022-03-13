@@ -16,5 +16,6 @@
   "deregister_slash_commands": false,
   "register_slash_commands": true,
   "slash_command_guild_id": null,
-  "special_users": []
+  "special_users": [],
+  "data_shift_hours": 0
 }

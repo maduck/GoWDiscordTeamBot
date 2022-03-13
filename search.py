@@ -7,6 +7,7 @@ import re
 from calendar import different_locale
 
 import translations
+from configurations import CONFIG
 from data_source.game_data import GameData
 from game_constants import COLORS, EVENT_TYPES, GEM_TUTORIAL_IDS, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, \
     UNDERWORLD_SOULFORGE_REQUIREMENTS, WEAPON_RARITIES
@@ -1356,7 +1357,8 @@ class TeamExpander:
             'world_event_title': _('[WEEKLY_EVENT]', lang),
             'restrictions_title': _('[TROOP_RESTRICTIONS]', lang),
             'event_keys_title': _('[KEYTYPE_3_TITLE]', lang),
-            'today_weekday': datetime.datetime.utcnow().weekday(),
+            'today_weekday': (datetime.datetime.utcnow() + datetime.timedelta(
+                hours=CONFIG.get('data_shift_hours'))).weekday(),
             'glory_shop_title': f'{_("[GLORY]", lang)} {_("[SHOP]", lang)}',
             'kingdom_title': _('[KINGDOM]', lang),
             'event_ended': _('[EVENT_HAS_ENDED]', lang),
