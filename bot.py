@@ -113,7 +113,7 @@ class DiscordBot(BaseBot):
             client_id=self.user.id,
             permissions=self.permissions
         )
-        subscriptions = sum([s.get('pc', True) for s in self.subscriptions])
+        subscriptions = sum(s.get('pc', True) for s in self.subscriptions)
         log.info(f'{subscriptions} channels subscribed to PC news.')
 
         game = discord.Game("Gems of War")
@@ -147,7 +147,7 @@ class DiscordBot(BaseBot):
             start = time.time()
             map_data = self.expander.get_map_data(lang, location)
             image_data = graphic_map.render_all(map_data)
-            result = discord.File(image_data, f'gow_world_map.png')
+            result = discord.File(image_data, 'gow_world_map.png')
             duration = time.time() - start
             log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
             await message.channel.send(file=result)
@@ -211,7 +211,7 @@ class DiscordBot(BaseBot):
             skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
             e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
                               description='\n'.join(category_lines), color=color)
-            if any(['`?`' in line for line in category_lines]):
+            if any('`?`' in line for line in category_lines):
                 e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
             await self.answer(message, e, no_interaction=True)
 
@@ -223,7 +223,7 @@ class DiscordBot(BaseBot):
             skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
             e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
                               description='\n'.join(category_lines), color=color)
-            if any(['`?`' in line for line in category_lines]):
+            if any('`?`' in line for line in category_lines):
                 e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
             await self.answer(message, e, no_interaction=True)
 
@@ -246,18 +246,16 @@ class DiscordBot(BaseBot):
         if not _filter or _filter.lower() == 'troop':
             troop_spoilers = [s for s in spoilers if s['type'] == 'troop']
             extra_spacing = 2
-            rarity_width = max([len(t['rarity']) for t in troop_spoilers]) + extra_spacing
+            rarity_width = max(len(t['rarity']) for t in troop_spoilers) + extra_spacing
             header_widths = [12, rarity_width, 5]
             header = ''.join([f'{h.ljust(header_widths[i])}' for i, h in enumerate(headers)])
             message_lines = [header]
 
-            for troop in troop_spoilers:
-                message_lines.append(f'{troop["date"]}  '
-                                     f'{troop["rarity"].ljust(rarity_width)}'
-                                     f'{troop["event"]}'
-                                     f'{troop["name"]} '
-                                     f'({troop["id"]})')
-
+            message_lines.extend(f'{troop["date"]}  '
+                                 f'{troop["rarity"].ljust(rarity_width)}'
+                                 f'{troop["event"]}'
+                                 f'{troop["name"]} '
+                                 f'({troop["id"]})' for troop in troop_spoilers)
             if len(message_lines) > 1:
                 limit = 1024 - len('``````')
                 result = self.views.trim_text_to_length('\n'.join(message_lines), limit)
@@ -268,9 +266,12 @@ class DiscordBot(BaseBot):
 
         for spoil_type in [c for c in categories if (not _filter or _filter.lower() == c)]:
             message_lines = ['Date        Name (ID)']
-            for spoiler in spoilers:
-                if spoiler['type'] == spoil_type:
-                    message_lines.append(f'{spoiler["date"]}  {spoiler["name"]} ({spoiler["id"]})')
+            message_lines.extend(
+                f'{spoiler["date"]}  {spoiler["name"]} ({spoiler["id"]})'
+                for spoiler in spoilers
+                if spoiler['type'] == spoil_type
+            )
+
             if len(message_lines) > 1:
                 result = '\n'.join(self.views.trim_text_lines_to_length(message_lines, 900))
                 e.add_field(name=translated[spoil_type], value=f'```{result}```', inline=False)
@@ -326,13 +327,13 @@ class DiscordBot(BaseBot):
     async def stats(self, message, lang, **kwargs):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(title=_('[PVPSTATS]', lang), description='<https://garyatrics.com/>', color=color)
-        members = sum([g.member_count for g in self.guilds])
+        members = sum(g.member_count for g in self.guilds)
 
         collections = [
             f'**{_("[GUILD]", lang)} {_("[AMOUNT]", lang)}**: {len(self.guilds)}',
             f'**{_("[PLAYER]", lang)} {_("[AMOUNT]", lang)}**: {members}',
-            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (PC)**: {sum([s.get("pc", True) for s in self.subscriptions])}',
-            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (Switch)**: {sum([s.get("switch", True) for s in self.subscriptions])}',
+            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (PC)**: {sum(s.get("pc", True) for s in self.subscriptions)}',
+            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (Switch)**: {sum(s.get("switch", True) for s in self.subscriptions)}',
             f'**{_("[PETRESCUE]", lang)} ({_("[JUST_NOW]", lang)})**: {len(self.pet_rescues)}',
             f'**{_("[PETRESCUE]", lang)} ({_("[TRAIT_ALL]", lang)})**: {PetRescue.get_amount()}',
         ]
@@ -721,7 +722,7 @@ class DiscordBot(BaseBot):
             self.tower_data.edit_floor(message=message, floor=floor, room=room, scroll=scrolls[room_id])
             for room_id, room in enumerate(rooms)
         ]
-        success = all([r[0] for r in rooms])
+        success = all(r[0] for r in rooms)
 
         if self.tower_data.get(message.guild)['short']:
             return await self.react(message, bool_to_emoticon(success))
