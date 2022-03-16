@@ -352,7 +352,7 @@ class DiscordBot(BaseBot):
         e = self.views.render_current_event(current_event, shortened, lengthened, lang)
         for i, field in enumerate(e.fields):
             if len(field.value) >= 1024:
-                new_value = field.value[:1020] + ' ...'
+                new_value = f'{field.value[:1020]} ...'
                 e.set_field_at(i, name=field.name, value=new_value)
         await self.answer(message, e)
 
@@ -862,7 +862,7 @@ class DiscordBot(BaseBot):
     async def news_unsubscribe(self, message, **kwargs):
         await self.subscriptions.remove(message.guild, message.channel)
 
-        e = self.generate_response('News management', self.WHITE, f'News for all platforms',
+        e = self.generate_response('News management', self.WHITE, 'News for all platforms',
                                    f'News will *not* be posted into channel {message.channel.name} anymore.')
         await self.answer(message, e)
 
@@ -983,7 +983,7 @@ class DiscordBot(BaseBot):
     async def kick_guild(self, message, guild_id, **kwargs):
         guild_id = int(guild_id)
         guild = discord.utils.find(lambda g: g.id == guild_id, self.guilds)
-        e = self.generate_response('Guild management', self.RED, 'Kick', f'Could not find a guild with that id.')
+        e = self.generate_response('Guild management', self.RED, 'Kick', 'Could not find a guild with that id.')
         if guild:
             await guild.leave()
             e = self.generate_response('Guild management', self.RED, 'Kick', f'Left guild {guild.name}')
