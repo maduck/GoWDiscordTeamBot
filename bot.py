@@ -77,8 +77,7 @@ class DiscordBot(BaseBot):
         await super().on_guild_join(guild)
         first_writable_channel = self.first_writable_channel(guild)
 
-        ban = Ban.get(guild.id)
-        if ban:
+        if ban := Ban.get(guild.id):
             log.debug(f'Guild {guild} ({guild.id}) was banned by {ban["author_name"]} because: {ban["reason"]}')
             if first_writable_channel:
                 try:
@@ -635,9 +634,7 @@ class DiscordBot(BaseBot):
             async with message.channel.typing():
                 r = requests.get('https://status.infinityplustwo.net/status_v2.txt')
                 await asyncio.sleep(2)
-                status = {'pGameArray': []}
-                if r.status_code == 200:
-                    status = r.json()
+                status = r.json() if r.status_code == 200 else {'pGameArray': []}
                 self.server_status_cache['status'] = status['pGameArray'][:-1]
                 self.server_status_cache['last_updated'] = datetime.datetime.utcnow()
         e = self.views.render_server_status(self.server_status_cache)
@@ -972,10 +969,12 @@ class DiscordBot(BaseBot):
 
     @owner_required
     async def search_guild(self, message, search_term, **kwargs):
-        matching_guilds = []
-        for guild in self.guilds:
-            if search_term.lower() in guild.name.lower():
-                matching_guilds.append(guild)
+        matching_guilds = [
+            guild
+            for guild in self.guilds
+            if search_term.lower() in guild.name.lower()
+        ]
+
         e = self.views.render_guilds(matching_guilds)
         await self.answer(message, e)
 
