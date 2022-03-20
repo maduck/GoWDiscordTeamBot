@@ -8,8 +8,8 @@
 {% if event.troop_restrictions %}<T>__**{{ troop_restrictions }}**__</T>
 {% for r, v in event.troop_restrictions.items() -%}
 {{ r }}: {{ v }}
-{% endfor %}{% if event.weapon_restrictions %}**{{ weapon_title }}**: {% for r, v in event.weapon_restrictions.items() -%}
-{{ r }}: {{ v }}{% endfor %}{% endif %}{% endif %}
+{% endfor %}**{{ weapon_title }}**: {% if event.weapon_restrictions %}{% for r, v in event.weapon_restrictions.items() -%}
+{{ r }}: {{ v }}{% endfor %}{% else %}-{% endif %}{% endif %}
 <T>__**{{ calculated_score_title }}**__</T>
 {{ points_needed }}
 {{ battles_needed }}

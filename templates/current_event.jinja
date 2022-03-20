@@ -11,8 +11,8 @@
 {% if event.troop_restrictions %}<T>__**{{ troop_restrictions }}**__</T>
 {% for r, v in event.troop_restrictions.items() -%}
 {{ r }}: {{ v }}
-{% endfor %}{% if event.weapon_restrictions %}**{{ weapon_title }}**: {% for r, v in event.weapon_restrictions.items() -%}
-{{ r }}: {{ v }}{% endfor %}{% endif %}{% endif %}
+{% endfor %}**{{ weapon_title }}**: {% if event.weapon_restrictions %}{% for r, v in event.weapon_restrictions.items() -%}
+{{ r }}: {{ v }}{% endfor %}{% else %}-{% endif %}{% endif %}
 {% if event.rewards %}<T>__**{{ rewards }}**__</T>
 {% for stage, rewards in event.rewards.items() -%}
 ` {{ "%02s" | format(stage) }} ` {% for reward in rewards.rewards %}{{ reward.amount }} {{ reward.type }}{% if not loop.last %}, {% endif %}{% endfor %} | {{ rewards.points }}

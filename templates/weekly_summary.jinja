@@ -7,9 +7,9 @@
 ✪ {{ summary.restrictions_title }}: {% if summary.world_event.troop_restrictions %}
 {% for r, v in summary.world_event.troop_restrictions.items() -%}
 {{ r }}: {{ v }}
-{% endfor %}{% if summary.world_event.weapon_restrictions %}**{{ summary.weapon_title }}**: {% for r, v in summary.world_event.weapon_restrictions.items() -%}
-{{ r }}: {{ v }}{% endfor %}{% endif %}{% endif %}
-✪ {{ summary.medal }}: {{ summary.world_event.medal.description }}
+{% endfor %}**{{ summary.weapon_title }}**: {% if summary.world_event.weapon_restrictions %}{% for r, v in summary.world_event.weapon_restrictions.items() -%}
+{{ r }}: {{ v }}{% endfor %}{% else %}-{% endif %}{% endif %}{% if summary.medal.description %}
+✪ {{ summary.medal }}: {{ summary.world_event.medal.description }}{% endif %}
 ✪ {{ summary.flight_school }}
 {% if not summary.faction_assault or summary.today_weekday > summary.faction_assault.start.weekday() %}<T>{{ summary.faction_assault.type }}</T>
 {{ summary.event_ended }}{% else %}

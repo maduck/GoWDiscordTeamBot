@@ -776,12 +776,12 @@ class GameData:
     def populate_weekly_event_details(self):
         def extract_name(raw_data):
             if 'Name' in raw_data:
-                return {lang[0:2]: name for lang, name in self.event_raw_data['Name'].items()}
+                return {lang[:2]: name for lang, name in self.event_raw_data['Name'].items()}
             return {}
 
         def extract_lore(raw_data):
             if 'Lore' in raw_data:
-                return {lang[0:2]: lore for lang, lore in self.event_raw_data['Lore'].items()}
+                return {lang[:2]: lore for lang, lore in self.event_raw_data['Lore'].items()}
             return {}
 
         def extract_restrictions(raw_data):
@@ -789,6 +789,8 @@ class GameData:
                 return [f'[TROOP_ROLE_{role.upper()}]' for role in roles]
 
             restrictions = raw_data.get('PlayerTeamRestrictions', {})
+            if EVENT_TYPES[raw_data['Type']] == '[TOWER_OF_DOOM]':
+                restrictions = {'ManaColors': [raw_data['Color']]}
             return {
                 '[FILTER_MANACOLOR]': restrictions.get('ManaColors'),
                 '[KINGDOM]': [self.kingdoms[k]['name'] for k in restrictions.get('KingdomIds', [])],
@@ -802,12 +804,17 @@ class GameData:
         def extract_currencies(raw_data):
             if 'CurrencyData' not in raw_data:
                 return []
-            currencies = [{
-                'icon': f'Liveeventscurrencies_{currency["Icon"]}_full',
-                'value': currency['Value'],
-                'name': {lang[0:2]: translation for lang, translation in currency['Name'].items()},
-            } for currency in self.event_raw_data['CurrencyData']]
-            return currencies
+            return [
+                {
+                    'icon': f'Liveeventscurrencies_{currency["Icon"]}_full',
+                    'value': currency['Value'],
+                    'name': {
+                        lang[:2]: translation
+                        for lang, translation in currency['Name'].items()
+                    },
+                }
+                for currency in self.event_raw_data['CurrencyData']
+            ]
 
         def extract_rewards(raw_data):
             rewards = {}

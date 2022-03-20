@@ -686,8 +686,11 @@ class TeamExpander:
 
     def get_events(self, lang):
         today = datetime.date.today()
-        events = [self.translate_event(e, lang) for e in self.events if today <= e['start']]
-        return events
+        return [
+            self.translate_event(e, lang)
+            for e in self.events
+            if today <= e['start']
+        ]
 
     def translate_event(self, event, lang):
         entry = event.copy()
@@ -1185,8 +1188,9 @@ class TeamExpander:
         event['troop_restrictions'] = {_(r, lang): ', '.join(translate_restrictions(r, v)) for r, v in
                                        event['restrictions'].items() if v and r in troop_restriction_types}
         weapon_restriction_types = ('[FILTER_MANACOLOR]', '[FILTER_WEAPONTYPE]', '[KINGDOM]')
-        event['weapon_restrictions'] = {_(r, lang): ', '.join(translate_restrictions(r, v)) for r, v in
-                                        event['restrictions'].items() if v and r in weapon_restriction_types}
+        if EVENT_TYPES[event['type']] != '[TOWER_OF_DOOM]':
+            event['weapon_restrictions'] = {_(r, lang): ', '.join(translate_restrictions(r, v)) for r, v in
+                                            event['restrictions'].items() if v and r in weapon_restriction_types}
         event['troop'] = _(event['troop'], lang)
         if event['weapon_id']:
             event['weapon'] = _(self.weapons.get(event['weapon_id'], {'name': ''})['name'], lang)
@@ -1307,13 +1311,12 @@ class TeamExpander:
         world_event = self.get_current_event(lang, emojis)
 
         def get_single_event(event_type, weekday):
-            filtered_events = [e for e in self.events if
-                               e['type'] == event_type and
-                               e['start_time'] >= world_event['start'] and
-                               e['end_time'] <= world_event['end'] and
-                               e['start_time'].weekday() == weekday
-                               ]
-            if filtered_events:
+            if filtered_events := [e for e in self.events
+                                   if e['type'] == event_type
+                                      and e['start_time'] >= world_event['start']
+                                      and e['end_time'] <= world_event['end']
+                                      and e['start_time'].weekday() == weekday
+                                   ]:
                 return self.translate_event(filtered_events[0], lang)
             else:
                 return {'type': _(event_type, lang), 'start': datetime.datetime.utcnow() - datetime.timedelta(hours=24)}
