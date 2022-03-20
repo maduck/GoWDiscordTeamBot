@@ -400,7 +400,8 @@ class GameData:
                 self.spoilers.append({'type': 'troop', 'date': release_date, 'id': troop_id})
                 if self.troops[troop_id]['rarity'] == 'Mythic' and 'Id' in self.troops[troop_id]['kingdom']:
                     self.events.append(
-                        {'start': release_date.date(),
+                        {'id': 0,
+                         'start': release_date.date(),
                          'end': release_date.date() + datetime.timedelta(days=7),
                          'type': '[RARITY_5]',
                          'names': self.troops[troop_id]['name'],
@@ -438,7 +439,8 @@ class GameData:
         for release in self.user_data['BasicLiveEventArray']:
             gacha_troop = release['GachaTroop']
             gacha_troops = release.get('GachaTroops', [])
-            result = {'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
+            result = {'id': release['Id'],
+                      'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
                       'start_time': datetime.datetime.utcfromtimestamp(release['StartDate']),
                       'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
                       'end_time': datetime.datetime.utcfromtimestamp(release['EndDate']),

@@ -1327,7 +1327,8 @@ class TeamExpander:
             self.translate_event(e, lang) for e in self.events if
             e['start_time'] == world_event['start'] and
             e['end_time'] == world_event['end'] and
-            e['type'] != '[WEEKLY_EVENT]'
+            e['type'] != '[WEEKLY_EVENT]' and
+            e['id'] != world_event['id']
         ]
         glory_troops = [e for e in self.store_data.values() if
                         e['tab'] == 'WeeklyEvent' and e['currency'] == '[GLORY]']
