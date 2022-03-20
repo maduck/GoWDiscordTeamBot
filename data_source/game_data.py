@@ -919,8 +919,8 @@ class GameData:
                     for reward in entry.get('BundleData', {}):
                         if reward['RewardType'] == RewardTypes.Troop:
                             rewards['troop_id'] = reward['RewardData']
-                        elif reward['RewardType'] == RewardTypes.Weapon:
-                            rewards['weapon_id'] = reward['RewardData']
+                        elif reward['RewardType'] == RewardTypes.Weapon and reward['RewardData'] in self.weapons:
+                            rewards[self.weapons[reward['RewardData']]['name']] = 1
                         elif reward['RewardType'] == RewardTypes.LiveEventPoolTroop:
                             rewards['[N_EVENT_POOL_TROOPS]'] = reward['Reward']
                 self.store_data[entry['Code']] = {
