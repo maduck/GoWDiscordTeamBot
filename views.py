@@ -117,7 +117,7 @@ class Views:
         if shortened:
             troop_chunks = None
             classes = None
-        kingdom_list = [k for k in traitstone['kingdoms']]
+        kingdom_list = list(traitstone['kingdoms'])
         kingdoms = self.trim_text_to_length(", ".join(sorted(kingdom_list)), 900, ',', ', ...')
 
         return self.render_embed(e, 'traitstone.jinja',
@@ -218,8 +218,7 @@ class Views:
         read_more = ''
         if len(trimmed_text) != len(text):
             read_more = f'[...]\n\n[Read full news article]({link}).'
-        result = f'{trimmed_text}{read_more}'
-        return result
+        return f'{trimmed_text}{read_more}'
 
     def render_events(self, events, _filter, lang):
         e = discord.Embed(title=_('[EVENTS]', lang), color=self.WHITE)
@@ -249,14 +248,13 @@ class Views:
     def render_event_kingdoms(self, events):
         e = discord.Embed(title='Upcoming Event Kingdoms', color=self.WHITE)
         message_lines = ['```']
-        for event in events:
-            message_lines.append(f'{event["start"].strftime("%b %d")} - '
-                                 f'{event["end"].strftime("%b %d")}  '
-                                 f'{event["kingdom"]}')
+        message_lines.extend(f'{event["start"].strftime("%b %d")} - '
+                             f'{event["end"].strftime("%b %d")}  '
+                             f'{event["kingdom"]}' for event in events)
         message_lines = self.trim_text_lines_to_length(message_lines, 900)
         message_lines.append('```')
         e.add_field(name='Spoilers', value='\n'.join(message_lines))
-        e.set_footer(text='* Projected from troop spoilers.')
+        e.set_footer(text='* Predicted from troop spoilers.')
         return e
 
     def render_levels(self, levels):
@@ -290,9 +288,10 @@ class Views:
 
     def render_my_toplists(self, toplists, author_name):
         e = discord.Embed(title='Toplists', color=self.WHITE)
-        message_lines = []
-        for toplist in toplists:
-            message_lines.append(f'**{toplist["id"]}** {toplist["description"]}')
+        message_lines = [
+            f'**{toplist["id"]}** {toplist["description"]}' for toplist in toplists
+        ]
+
         if not message_lines:
             message_lines = ['No toplists created yet.']
         e.add_field(name=f'Overview for {author_name}', value='\n'.join(message_lines), inline=False)
@@ -426,7 +425,7 @@ class Views:
         return e
 
     def render_adventure_board(self, adventures, lang):
-        highest_rarity = max([a['raw_rarity'] for a in adventures])
+        highest_rarity = max(a['raw_rarity'] for a in adventures)
         color = list(RARITY_COLORS.values())[highest_rarity]
         e = discord.Embed(title=_('[ADVENTURE_BOARD]', lang), color=discord.Color.from_rgb(*color))
 
@@ -465,9 +464,11 @@ class Views:
 
     def render_my_bookmarks(self, bookmarks, display_name):
         e = discord.Embed(title='Bookmarks', color=self.WHITE)
-        message_lines = []
-        for bookmark in bookmarks:
-            message_lines.append(f'**{bookmark["id"]}** {bookmark["description"]}')
+        message_lines = [
+            f'**{bookmark["id"]}** {bookmark["description"]}'
+            for bookmark in bookmarks
+        ]
+
         if not message_lines:
             message_lines = ['No bookmarks created yet.']
         e.add_field(name=f'Overview for {display_name}', value='\n'.join(message_lines), inline=False)
@@ -486,15 +487,14 @@ class Views:
                             'user_avatar/community.gemsofwar.com/saltypatra/360/59750.png'},
         }
         e.set_author(name=author)
-        details = author_details.get(author)
-        if details:
+        if details := author_details.get(author):
             e.set_author(name=author, **details)
 
     def render_server_status(self, status):
         e = discord.Embed(title=_('[SERVER_STATUS]'), color=self.WHITE)
         e.timestamp = status['last_updated']
         e.set_footer(text='Last Updated')
-        return self.render_embed(e, f'server_status.jinja', status=status['status'])
+        return self.render_embed(e, 'server_status.jinja', status=status['status'])
 
     def render_drop_chances(self, drop_chances, lang):
         chest = _('[CHEST]', lang)
@@ -598,8 +598,11 @@ class Views:
         active_gems = [f'{emoji} {help}' for emoji, help in zip(emojis, helps)]
         if not active_gems:
             active_gems = [_('[QUEST9013_ENDCONV_1]', lang).split('&&')[0]]
-        e = discord.Embed(title=_('[GEMS]', lang), description=' '.join(active_gems), color=self.WHITE)
-        return e
+        return discord.Embed(
+            title=_('[GEMS]', lang),
+            description=' '.join(active_gems),
+            color=self.WHITE,
+        )
 
     def render_heroic_gems(self, gems, lang):
         e = discord.Embed(title=_('[GEMS]', lang), color=self.WHITE)
@@ -608,10 +611,11 @@ class Views:
     @staticmethod
     def render_storms(storms, lang):
         contents = [_('[TROOPHELP_STORM_2]', lang), '']
-        for storm_id, storm_data in storms.items():
-            contents.append(f'**{storm_data["name"]}**: {storm_data["description"]}')
-        e = discord.Embed(title=_('[TROOPHELP_STORM_1]', lang), description='\n'.join(contents))
-        return e
+        contents.extend(
+            f'**{storm_data["name"]}**: {storm_data["description"]}'
+            for storm_id, storm_data in storms.items()
+        )
+        return discord.Embed(title=_('[TROOPHELP_STORM_1]', lang), description='\n'.join(contents))
 
     def render_warbands(self, warbands, lang):
         e = discord.Embed(title=_('[WARBANDS]', lang), color=self.WHITE)
