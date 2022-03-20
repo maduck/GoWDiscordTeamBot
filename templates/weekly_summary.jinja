@@ -1,5 +1,6 @@
-<T>{{ 'glory'|emoji }} {{ summary.glory_shop_title }}</T>
-✪ {{ summary.glory_troop.name }}{% if summary.glory_troop.id %} `#{{ summary.glory_troop.id }}`{% endif %}
+{% if summary.glory_rewards %}<T>{{ summary.glory_shop_title }} ({{ summary.glory_cost }} {{ 'glory'|emoji }})</T>
+{% for name, count in summary.glory_rewards %}
+✪ {% if count != 1 %}x{{ count}} {% endif %}{{ name }}{% if count != 1 %} (x1 = {{ summary.glory_cost // count }} {{ 'glory'|emoji }}){% endif %}{% endfor %}{% endif %}
 <T>{{ 'event_key' | emoji }} {{ summary.event_keys_title }} - {{ summary.event_chest_drops.kingdom.name }} `#{{ summary.event_chest_drops.kingdom.id }}`</T>
 {% for troop in summary.event_chest_drops.troops %}✪ {{ troop.raw_rarity|emoji }} {{ troop.name }} `#{{ troop.id }}`
 {% endfor %}

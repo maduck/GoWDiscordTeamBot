@@ -1330,14 +1330,17 @@ class TeamExpander:
             e['type'] != '[WEEKLY_EVENT]' and
             e['id'] != world_event['id']
         ]
-        glory_troops = [e for e in self.store_data.values() if
-                        e['tab'] == 'WeeklyEvent' and e['currency'] == '[GLORY]']
         saturday_pet = [e for e in self.events if e['type'] == '[PETRESCUE]' and e['start_time'].weekday() == 5]
         if saturday_pet:
             saturday_pet = self.translate_event(saturday_pet[0], lang)
-        glory_troop = self.troops['`?`']
-        if glory_troops and 'troop_id' in glory_troops[0]['rewards']:
-            glory_troop = self.search_troop(str(glory_troops[0]['rewards']['troop_id']), lang)[0]
+
+        glory_shops = [e for e in self.store_data.values() if e['tab'] == 'WeeklyEvent' and e['currency'] == '[GLORY]']
+        glory_costs = None
+        glory_rewards = []
+        if glory_shops:
+            glory_shop = glory_shops[0]
+            glory_costs = glory_shop['cost']
+            glory_rewards = [(_(name, lang), count) for name, count in glory_shop['rewards'].items()]
 
         event_kingdom = self.search_kingdom(str(self.event_key_drops['kingdom_id']), lang)[0]
         event_mythics = [t for t in event_kingdom['troops']
@@ -1358,7 +1361,8 @@ class TeamExpander:
             'saturday_pet': saturday_pet,
             'faction_assault': get_single_event('[DELVE_EVENT]', 1),
             'weekend': self.translate_event(weekend_events[0], lang) if weekend_events else None,
-            'glory_troop': glory_troop,
+            'glory_cost': glory_costs,
+            'glory_rewards': glory_rewards,
             'event_chest_drops': event_chest_drops,
             'world_event_title': _('[WEEKLY_EVENT]', lang),
             'restrictions_title': _('[TROOP_RESTRICTIONS]', lang),

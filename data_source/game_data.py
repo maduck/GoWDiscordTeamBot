@@ -917,12 +917,15 @@ class GameData:
 
                 if entry['RewardType'] == RewardTypes.Bundle:
                     for reward in entry.get('BundleData', {}):
-                        if reward['RewardType'] == RewardTypes.Troop:
-                            rewards['troop_id'] = reward['RewardData']
+                        if reward['RewardType'] == RewardTypes.Troop and reward['RewardData'] in self.troops:
+                            rewards[self.troops[reward['RewardData']]['name']] = reward['Reward']
                         elif reward['RewardType'] == RewardTypes.Weapon and reward['RewardData'] in self.weapons:
-                            rewards[self.weapons[reward['RewardData']]['name']] = 1
+                            rewards[self.weapons[reward['RewardData']]['name']] = reward['Reward']
                         elif reward['RewardType'] == RewardTypes.LiveEventPoolTroop:
                             rewards['[N_EVENT_POOL_TROOPS]'] = reward['Reward']
+                        elif reward['RewardType'] == RewardTypes.TraitStones and reward['RewardData'] >= 18:
+                            # rune 18 is the first arcane traitstone, so filtering for that.
+                            rewards[f'[RUNE{reward["RewardData"]:02d}_NAME]'] = reward['Reward']
                 self.store_data[entry['Code']] = {
                     'title': entry['TitleId'],
                     'reference': entry['ReferenceName'],
