@@ -1170,12 +1170,9 @@ class TeamExpander:
                 return _(f'[TROOPTYPE_{restriction.upper()}]', lang)
 
         def translate_restrictions(title, restrictions):
-            result = []
-            for r in restrictions:
-                translated = translate_restriction(title, r)
-                if translated:
-                    result.append(translated)
-            return result
+            return [translated
+                    for r in restrictions
+                    if (translated := translate_restriction(title, r))]
 
         def translate_battle(b):
             result = b.copy()
