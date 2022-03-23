@@ -498,6 +498,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'summoning_stones',
+        'pattern': re.compile(DEFAULT_PATTERN + '(summoning_stones|summons)$', MATCH_OPTIONS),
+        'description': 'Show this week\'s craftable summoning stones contents',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'levels',
         'pattern': re.compile(DEFAULT_PATTERN + 'levels$', MATCH_OPTIONS),
         'description': 'Show the player\'s level progression bonuses',

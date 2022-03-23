@@ -53,6 +53,7 @@ class GameData:
         self.artifact_id = None
         self.campaign_name = ''
         self.soulforge = {}
+        self.summons = {}
         self.soulforge_raw_data = {}
         self.traitstones = {}
         self.levels = []
@@ -563,6 +564,10 @@ class GameData:
                     'end': recipe['EndDate'],
                     'rarity': recipe['rarity'],
                 })
+        for colour, troops in enumerate(self.soulforge_raw_data.get('pSummonTroopArray', [])):
+            stone_name = f'[RECIPE_SUMMONS_{colour}]'
+            self.summons[stone_name] = [{'troop_id': troop['nTroopId'], 'count': troop['nQuantity']}
+                                        for troop in troops]
 
     def populate_traitstones(self):
         for traits in self.user_data['pTraitsTable']:

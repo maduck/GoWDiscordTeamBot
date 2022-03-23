@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.70.0'
+    VERSION = '0.71.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -283,6 +283,15 @@ class DiscordBot(BaseBot):
             recipes = sorted(recipes, key=operator.itemgetter('rarity_number', 'id'))
             message_lines = '\n'.join([f'{r["name"]} `#{r["id"]}` ({r["rarity"]})' for r in recipes])
             e.add_field(name=category, value=message_lines, inline=False)
+        await self.answer(message, e)
+
+    async def summoning_stones(self, message, lang, **kwargs):
+        title, stones = self.expander.get_summons(lang)
+        e = discord.Embed(title=title, description=_('[SUMMONING_STONE_DESC]', lang), color=self.WHITE)
+        for category, troops in stones.items():
+            message_lines = '\n'.join([f'{t["count"]}x {self.my_emojis.get(t["rarity"])} {t["name"]}' for t in troops])
+            e.add_field(name=category, value=message_lines, inline=True)
+        e.set_footer(text=_('[SUMMONING_STONE_MENU_TIP]', lang))
         await self.answer(message, e)
 
     async def about(self, message, lang, **kwargs):

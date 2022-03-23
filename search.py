@@ -65,6 +65,7 @@ class TeamExpander:
         self.campaign_tasks = world.campaign_tasks
         self.reroll_tasks = world.campaign_rerolls
         self.soulforge = world.soulforge
+        self.summons = world.summons
         self.traitstones = world.traitstones
         self.levels = world.levels
         self.rooms = {}
@@ -876,6 +877,23 @@ class TeamExpander:
             recipe_type = _(category, lang)
             craftable_items[recipe_type] = [self.translate_recipe(r, lang) for r in recipes]
         return title, craftable_items
+
+    def get_summons(self, lang):
+        title = _('[SUMMONING_STONE_MENU_HEADING]', lang)
+        result = {}
+        for stone, contents in self.summons.items():
+            stone_name = _(stone, lang)
+            troops = [
+                {
+                    'name': _(self.troops[t['troop_id']]['name'], lang),
+                    'rarity': self.troops[t['troop_id']]['rarity'],
+                    'count': t['count'],
+                    'id': t['troop_id']
+                }
+                for t in contents
+            ]
+            result[stone_name] = troops
+        return title, result
 
     @staticmethod
     def translate_recipe(recipe, lang):
