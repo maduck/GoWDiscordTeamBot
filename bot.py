@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.71.0'
+    VERSION = '0.72.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -278,12 +278,15 @@ class DiscordBot(BaseBot):
 
     async def soulforge(self, message, lang, **kwargs):
         title, craftable_items = self.expander.get_soulforge(lang)
-        e = discord.Embed(title=title, color=self.WHITE)
+        e = discord.Embed(title=title, description=_('[WEAPON_AVAILABLE_FROM_SOULFORGE]', lang), color=self.WHITE)
         for category, recipes in craftable_items.items():
             recipes = sorted(recipes, key=operator.itemgetter('rarity_number', 'id'))
-            message_lines = '\n'.join([f'{r["name"]} `#{r["id"]}` ({r["rarity"]})' for r in recipes])
-            e.add_field(name=category, value=message_lines, inline=False)
+            message_lines = '\n'.join(
+                [f'{self.my_emojis.get(r["raw_rarity"])} {r["name"]} `#{r["id"]}`' for r in recipes])
+            e.add_field(name=category, value=message_lines, inline=True)
         await self.answer(message, e)
+        if kwargs.get('lengthened'):
+            await self.summoning_stones(message, lang)
 
     async def summoning_stones(self, message, lang, **kwargs):
         title, stones = self.expander.get_summons(lang)

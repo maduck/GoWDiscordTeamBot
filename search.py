@@ -901,6 +901,7 @@ class TeamExpander:
         new_recipe['name'] = _(recipe['name'], lang)
         rarity_number = WEAPON_RARITIES.index(new_recipe['rarity'])
         new_recipe['rarity_number'] = rarity_number
+        new_recipe['raw_rarity'] = new_recipe['rarity']
         new_recipe['rarity'] = _(f'[RARITY_{rarity_number}]', lang)
         return new_recipe
 
