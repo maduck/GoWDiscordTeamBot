@@ -3,6 +3,7 @@ import math
 import operator
 import re
 
+from configurations import CONFIG
 from data_source import Pets
 from game_assets import GameAssets
 from game_constants import COLORS, COST_TYPES, EVENT_TYPES, GEM_TUTORIAL_IDS, RewardTypes, SOULFORGE_ALWAYS_AVAILABLE, \
@@ -290,7 +291,7 @@ class GameData:
         if self.campaign_week:
             return self.campaign_week
         release_dates = self.user_data['pEconomyModel']['ArtifactReleaseDates']
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.utcnow() + datetime.timedelta(hours=CONFIG.get('data_shift_hours'))
         for release in release_dates:
             artifact_release = datetime.datetime.strptime(release['Date'], '%m/%d/%Y %H:%M:%S %p %Z')
             release_age = now - artifact_release
