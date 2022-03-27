@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.72.0'
+    VERSION = '0.73.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -448,14 +448,14 @@ class DiscordBot(BaseBot):
 
     async def handle_search(self, message, search_term, lang, title, shortened=False, formatter='{0[name]} `#{0[id]}`',
                             **kwargs):
-        search_function = getattr(self.expander, 'search_{}'.format(title.lower()))
+        search_function = getattr(self.expander, f'search_{title.lower()}')
         result = search_function(search_term, lang)
         if not result:
             e = discord.Embed(title=f'{title} search for `{search_term}` did not yield any result',
                               description=':(',
                               color=self.BLACK)
         elif len(result) == 1:
-            view = getattr(self.views, 'render_{}'.format(title.lower()))
+            view = getattr(self.views, f'render_{title.lower()}')
             e = view(result[0], shortened)
         else:
             e = discord.Embed(title=f'{title} search for `{search_term}` found {len(result)} matches.',
@@ -688,8 +688,13 @@ class DiscordBot(BaseBot):
                                                            values=values)
 
         if old_values is None and new_values is None:
-            e = self.generate_response('Administrative action', self.RED, 'Tower change rejected',
-                                       f'Invalid data specified.')
+            e = self.generate_response(
+                'Administrative action',
+                self.RED,
+                'Tower change rejected',
+                'Invalid data specified.',
+            )
+
             await self.answer(message, e)
             return
 
@@ -933,12 +938,14 @@ class DiscordBot(BaseBot):
                     message = 'is not writable' if channel else 'does not exist'
                     log.debug(f'Channel {message}.')
                     continue
+                e = None
                 try:
                     for e in embeds:
                         await channel.send(embed=e)
                 except Exception as ex:
                     log.error('Could not send out news, exception follows')
-                    log.error(repr(e.fields))
+                    if e:
+                        log.error(repr(e.fields))
                     log.exception(ex)
         with open(NewsDownloader.NEWS_FILENAME, 'w') as f:
             f.write('[]')

@@ -33,15 +33,19 @@ COLORS = list(
         25: 'cursed',
         26: 'goodgargoyle',
         27: 'badgargoyle',
-        28: 'basegemtypes',
-        29: 'lootbronze',
-        30: 'lootsilver',
-        31: 'lootgold',
-        32: 'lootbag',
-        33: 'lootchest0',
-        34: 'lootchest1',
-        35: 'lootchest2',
-        36: 'lootsafe',
+        28: 'web',
+        29: 'entangle',
+        30: 'barrier',
+        31: 'bomb',
+        32: 'basegemtypes',
+        33: 'lootbronze',
+        34: 'lootsilver',
+        35: 'lootgold',
+        36: 'lootbag',
+        37: 'lootchest0',
+        38: 'lootchest1',
+        39: 'lootchest2',
+        40: 'lootsafe',
     }.values())
 
 # public enum TutorialStep
@@ -65,6 +69,11 @@ GEM_TUTORIAL_IDS = {
     'cursed': 3349,
     'goodgargoyle': 3350,
     'badgargoyle': 3350,
+    'web': 3351,
+    'entangle': 3352,
+    'barrier': 3353,
+    'bomb': 3354,
+    'lootgold': 99999,
 }
 
 TROOP_RARITIES = (

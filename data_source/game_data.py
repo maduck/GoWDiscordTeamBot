@@ -912,7 +912,7 @@ class GameData:
                 'gem_id': gem_event['GemType'],
                 'gem_type': color,
                 'multiplier': gem_event['Multiplier'],
-                'tutorial': GEM_TUTORIAL_IDS[color],
+                'tutorial': GEM_TUTORIAL_IDS.get(color, color),
             }
 
     def populate_store_data(self):
