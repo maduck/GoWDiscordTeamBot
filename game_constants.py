@@ -73,7 +73,7 @@ GEM_TUTORIAL_IDS = {
     'entangle': 3352,
     'barrier': 3353,
     'bomb': 3354,
-    'lootgold': 99999,
+    'lootgold': None,
 }
 
 TROOP_RARITIES = (

@@ -1256,6 +1256,8 @@ class TeamExpander:
     def get_heroic_gems(lang):
         result = {}
         for gem, tutorial_id in GEM_TUTORIAL_IDS.items():
+            if not tutorial_id:
+                continue
             tutorial = _(f'[TUTORIAL_DESCRIPTION_{tutorial_id}]', lang)
             result.setdefault(tutorial, []).append(gem)
         return result
