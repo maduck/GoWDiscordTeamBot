@@ -1017,6 +1017,10 @@ class DiscordBot(BaseBot):
         e = self.views.render_weekly_summary(summary, lang)
         await self.answer(message, e)
 
+    async def streamers(self, message, **kwargs):
+        e = self.views.render_streamers()
+        await self.answer(message, e)
+
     async def register_slash_commands(self):
         guild_id = CONFIG.get('slash_command_guild_id')
         existing_commands = await get_all_commands(self.user.id, TOKEN, guild_id=guild_id)

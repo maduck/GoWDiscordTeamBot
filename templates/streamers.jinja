@@ -1,0 +1,7 @@
+{% set streamers = [
+{'name': 'Gary', 'link': 'https://garyatrics.com', 'punchline': 'Made with 10% more love than other streams.'},
+] %}
+
+{% for streamer in streamers %}
+✪ [{{ streamer.name }}]({{ streamer.link }}) {{ streamer.punchline }}
+{% endfor %}

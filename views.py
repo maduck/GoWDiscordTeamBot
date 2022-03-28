@@ -632,3 +632,7 @@ class Views:
         title = f'{_("[FACTIONS]", lang)} ({_("[NAME_A_Z]", lang)})'
         e = discord.Embed(title=title, color=self.WHITE)
         return self.render_embed(e, 'factions_overview.jinja', factions=factions)
+
+    def render_streamers(self):
+        e = discord.Embed(title='Streamers', colour=self.WHITE)
+        return self.render_embed(e, 'streamers.jinja')

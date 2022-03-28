@@ -504,6 +504,11 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'streamers',
+        'pattern': re.compile(DEFAULT_PATTERN + 'streamers?$', MATCH_OPTIONS),
+        'description': 'Show some Gems of War streamers',
+    },
+    {
         'function': 'levels',
         'pattern': re.compile(DEFAULT_PATTERN + 'levels$', MATCH_OPTIONS),
         'description': 'Show the player\'s level progression bonuses',
