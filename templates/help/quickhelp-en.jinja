@@ -12,7 +12,7 @@ valid language codes are `{{ languages }}`.
 `[lang][-]{{ prefix }}affix <search>`
 `[lang][-]{{ prefix }}pet <search>`
 `[lang][-]{{ prefix }}class <search>`
-`[lang][-]{{ prefix }}kingdom <search>`
+`[lang][-]{{ prefix }}kingdom|faction <search>`
 `[lang][-]{{ prefix }}talent <search>`
 `[lang][-]{{ prefix }}trait <search>`
 `[lang][-]{{ prefix }}traitstone <search>`
@@ -20,19 +20,28 @@ valid language codes are `{{ languages }}`.
 <T>Overviews</T>
 `[lang]{{ prefix }}class summary`
 `[lang]{{ prefix }}kingdom summary`
+`[lang]{{ prefix }}factions`
 `[lang]{{ prefix }}color_kingdoms`
 `[lang]{{ prefix }}troop_type_kingdoms`
 `[lang]{{ prefix }}spoiler[s] [pet[s]|troop[s]|weapon[s]|kingdom[s]|event[s]]`
 `[lang]{{ prefix }}event[s] [filter]`
 `[lang]{{ prefix }}event[s] kingdom[s]`
 `[lang]{{ prefix }}current_event`
+`[lang]{{ prefix }}weekly_summary`
+`[lang]{{ prefix }}active_gems`
+`[lang]{{ prefix }}heroic_gems`
 `[lang]{{ prefix }}campaign [bronze|silver|gold]`
+`[lang]{{ prefix }}reroll_tasks`
 `[lang]{{ prefix }}soulforge`
 `[lang]{{ prefix }}levels`
 `[lang]{{ prefix }}adventure[s]`
 `[lang][-]{{ prefix }}class_level [<lower>-]<upper>`
 `[lang]{{ prefix }}drop_rates`
 `[lang]{{ prefix }}effects`
+`[lang]{{ prefix }}warbands`
+`[lang]{{ prefix }}summoning_stones|summons`
+`[lang]{{ prefix }}storms`
+`[lang]{{ prefix }}server_status`
 
 <T>Pet Rescue</T>
 `{{ prefix }}pet rescue [pet name or id] [time remaining in minutes] [mention]`
@@ -55,6 +64,15 @@ valid language codes are `{{ languages }}`.
 `[lang]{{ prefix }}toplist update <id> <description> <troops>`
 `[lang]{{ prefix }}toplist append <id> <more_troops>`
 
+<T>Bot specific</T>
+`{{ prefix }}about`
+`{{ prefix }}permissions`
+`{{ prefix }}tools`
+`{{ prefix }}streamer[s]`
+`{{ prefix }}waffles`
+`{{ prefix }}burgers`
+`{{ prefix }}memes`
+
 <T>Admin Commands</T>
 `{{ prefix }}towerconfig`
 `{{ prefix }}towerclear`
@@ -62,10 +80,3 @@ valid language codes are `{{ languages }}`.
 `{{ prefix }}news [[un]subscribe [pc|switch]]`
 `{{ prefix }}prefix [new_prefix]`
 `{{ prefix }}lang[uage[s]] [new_language]`
-
-<T>Bot specific</T>
-`{{ prefix }}about`
-`{{ prefix }}permissions`
-`{{ prefix }}tools`
-`{{ prefix }}streamer[s]`
-`{{ prefix }}waffles`
