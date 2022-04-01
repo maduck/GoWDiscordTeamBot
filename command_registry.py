@@ -683,7 +683,7 @@ async def remove_slash_command(bot_id,
     :raises: :class:`.error.RequestFailure` - Requesting to Discord API has failed.
     """
     url = f"https://discord.com/api/v8/applications/{bot_id}"
-    url += "/commands" if not guild_id else f"/guilds/{guild_id}/commands"
+    url += f"/guilds/{guild_id}/commands" if guild_id else "/commands"
     url += f"/{cmd_id}"
     async with aiohttp.ClientSession() as session:
         async with session.delete(url, headers={"Authorization": f"Bot {bot_token}"}) as resp:
@@ -706,7 +706,7 @@ async def get_all_commands(bot_id, bot_token, guild_id):
     :raises: :class:`.error.RequestFailure` - Requesting to Discord API has failed.
     """
     url = f"https://discord.com/api/v8/applications/{bot_id}"
-    url += "/commands" if not guild_id else f"/guilds/{guild_id}/commands"
+    url += f"/guilds/{guild_id}/commands" if guild_id else "/commands"
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers={"Authorization": f"Bot {bot_token}"}) as resp:
             if resp.status == 429:
