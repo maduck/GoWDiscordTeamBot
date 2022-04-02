@@ -56,7 +56,7 @@ class Views:
         e.add_field(name=f'__{_("[SUPPORT]", lang)}__:', value='<https://discord.gg/XWs7x3cFTU>')
         return e
 
-    def render_weapon(self, weapon, shortened):
+    def render_weapon(self, weapon, shortened, lang):
         rarity_color = RARITY_COLORS.get(weapon['raw_rarity'], RARITY_COLORS['Mythic'])
         color = discord.Color.from_rgb(*rarity_color)
         e = discord.Embed(title='Weapon search found one exact match', color=color)
@@ -66,18 +66,18 @@ class Views:
             return self.render_embed(e, 'weapon_shortened.jinja', weapon=weapon)
 
         if 'release_date' in weapon:
-            e.set_footer(text='Release date')
+            e.set_footer(text=_('[RELEASE_DATE]', lang))
             e.timestamp = weapon["release_date"]
         return self.render_embed(e, 'weapon.jinja', weapon=weapon)
 
-    def render_affix(self, affix, shortened):
+    def render_affix(self, affix, shortened, lang):
         e = discord.Embed(title='Affix search found one exact match', color=self.WHITE)
         affix['weapons'] = [f'{w["name"]} `#{w["id"]}`' for w in affix['weapons']]
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Ingots/Ingots_AnvilIcon_full.png'
         e.set_thumbnail(url=thumbnail_url)
         return self.render_embed(e, 'affix.jinja', affix=affix)
 
-    def render_pet(self, pet, shortened=False):
+    def render_pet(self, pet, shortened=False, lang='en'):
         e = discord.Embed(title='Pet search found one exact match', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Pets/Cards_{pet.filename}_full.png'
         e.set_thumbnail(url=thumbnail_url)
@@ -85,11 +85,11 @@ class Views:
             return self.render_embed(e, 'pet_shortened.jinja', pet=pet)
 
         if 'release_date' in pet:
-            e.set_footer(text='Release date')
+            e.set_footer(text=_('[RELEASE_DATE]', lang))
             e.timestamp = pet.release_date
         return self.render_embed(e, 'pet.jinja', pet=pet)
 
-    def render_troop(self, troop, shortened):
+    def render_troop(self, troop, shortened, lang):
         rarity_color = RARITY_COLORS.get(troop['raw_rarity'], RARITY_COLORS['Mythic'])
         if 'Boss' in troop['raw_types']:
             rarity_color = RARITY_COLORS['Doomed']
@@ -100,11 +100,11 @@ class Views:
             return self.render_embed(e, 'troop_shortened.jinja', troop=troop)
 
         if 'release_date' in troop:
-            e.set_footer(text='Release date')
+            e.set_footer(text=_('[RELEASE_DATE]', lang))
             e.timestamp = troop["release_date"]
         return self.render_embed(e, 'troop.jinja', troop=troop)
 
-    def render_traitstone(self, traitstone, shortened):
+    def render_traitstone(self, traitstone, shortened, lang):
         e = discord.Embed(color=self.WHITE)
         e.title = traitstone['name']
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Runes_Rune{traitstone["id"]:02d}_full.png'
@@ -128,7 +128,7 @@ class Views:
                                  classes=classes,
                                  kingdoms=kingdoms)
 
-    def render_talent(self, tree, shortened):
+    def render_talent(self, tree, shortened, lang):
         e = discord.Embed(color=self.WHITE)
         if shortened:
             e.title = tree["name"]
@@ -163,13 +163,13 @@ class Views:
             template_file = 'team_lengthened.jinja'
         return self.render_embed(e, template_file, team=team)
 
-    def render_kingdom(self, kingdom, shortened):
+    def render_kingdom(self, kingdom, shortened, lang):
         e = discord.Embed(title='Kingdom search found one exact match', color=self.WHITE)
         underworld = 'underworld' if kingdom['underworld'] else ''
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations{underworld}_{kingdom["filename"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
         if 'release_date' in kingdom:
-            e.set_footer(text='Release date')
+            e.set_footer(text=_('[RELEASE_DATE]', lang))
             e.timestamp = kingdom['release_date']
 
         if shortened:
@@ -185,7 +185,7 @@ class Views:
         trait['thumbnail'] = thumbnail_url
         return self.render_embed(e, 'trait.jinja', trait=trait)
 
-    def render_class(self, _class, shortened):
+    def render_class(self, _class, shortened, lang):
         e = discord.Embed(title='Class search found one exact match', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Classes_{_class["code"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)

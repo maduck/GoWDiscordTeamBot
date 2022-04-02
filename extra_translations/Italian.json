@@ -35,5 +35,6 @@
   "[BATTLES_NEEDED]": "**{} {}** per giocatore a partire dalla classifica attuale.",
   "[TIER_NEEDED]": "**{} da comprare** per giocatore per l'ultima ricompensa.",
   "[TIER_0_ROMAN]": "Livello 0",
-  "[CREATED_BY_HAWX_AND_GARY]": "Creato da Hawx & Gary per la comunità di Gems of War."
+  "[CREATED_BY_HAWX_AND_GARY]": "Creato da Hawx & Gary per la comunità di Gems of War.",
+  "[RELEASE_DATE]": "Data di rilascio"
 }
