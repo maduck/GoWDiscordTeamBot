@@ -1176,7 +1176,7 @@ class TeamExpander:
             if title == '[FILTER_MANACOLOR]':
                 return emojis.get(COLORS[restriction])
             elif title == '[FILTER_ROLE]':
-                pass
+                return _(restriction, lang)
             elif title == '[FILTER_WEAPONTYPE]':
                 pass
             elif title == '[KINGDOM]':
