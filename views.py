@@ -636,3 +636,10 @@ class Views:
     def render_streamers(self):
         e = discord.Embed(title='Streamers', colour=self.WHITE)
         return self.render_embed(e, 'streamers.jinja')
+
+    def render_hoard_potions(self, potions, lang):
+        e = discord.Embed(title=f'{_("[TREASURE_HOARD]", lang)} {_("[POTIONS_TEXT]", lang)}', colour=self.WHITE)
+        texts = {
+            'hoard_level': _('[HOARD_LEVEL]', lang),
+        }
+        return self.render_embed(e, 'hoard_potions.jinja', potions=potions, texts=texts)

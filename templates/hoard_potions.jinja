@@ -1,0 +1,4 @@
+{% for potion in potions %}
+<T>{{ texts.hoard_level }}: {{ potion.level }}{% if potion.recurring %} ↺ {{ potion.recurring }}{% endif %}</T>
+{{ potion.image | emoji }} **{{ potion.name }}** {{ potion.description }}
+{% endfor %}

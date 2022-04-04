@@ -78,6 +78,7 @@ class TeamExpander:
         self.weekly_event = world.weekly_event
         self.active_gems = world.gem_events
         self.store_data = world.store_data
+        self.hoard_potions = world.hoard_potions
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -250,12 +251,14 @@ class TeamExpander:
         item['traitstones'] = traitstones
 
     @staticmethod
-    def enrich_traits(traits, lang):
+    def enrich_traits(traits, lang, delve_id=None):
         new_traits = []
         for trait in traits:
             new_trait = trait.copy()
             new_trait['name'] = _(trait['name'], lang)
             new_trait['description'] = _(trait['description'], lang)
+            if delve_id is not None:
+                new_trait['description'] = _(f'[TREASURE_HOARD_POTION_DESC_{delve_id}]', lang)
             new_traits.append(new_trait)
         return new_traits
 
@@ -1405,3 +1408,11 @@ class TeamExpander:
         factions = [k.copy() for k in self.kingdoms.values() if k['underworld'] and k['troop_ids']]
         [self.translate_kingdom(f, lang) for f in factions]
         return sorted(factions, key=operator.itemgetter('name'))
+
+    def get_hoard_potions(self, lang):
+        potions = [p.copy() for p in self.hoard_potions.values()]
+        for potion in potions:
+            potion['traits'] = self.enrich_traits(potion['traits'], lang, delve_id=potion['id'])
+            potion['name'] = _(potion['name'], lang)
+            potion['description'] = _(potion['description'], lang)
+        return potions

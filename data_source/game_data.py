@@ -67,6 +67,7 @@ class GameData:
         self.gem_events = {}
         self.store_raw_data = {}
         self.store_data = {}
+        self.hoard_potions = {}
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -106,6 +107,7 @@ class GameData:
         self.populate_store_data()
         self.populate_weekly_event_details()
         self.populate_gem_events()
+        self.populate_hoard_potions()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -940,3 +942,21 @@ class GameData:
                     'tab': entry.get('Tab'),
                     'rewards': rewards,
                 }
+
+    def populate_hoard_potions(self):
+        if 'TreasureHoardPotions' not in self.user_data['pFeatures']:
+            return
+        for potion in self.user_data['pFeatures']['TreasureHoardPotions']:
+            potion_data = self.user_data['pFeatures']['TreasureHoardPotionData'][potion['PotionId']]
+            traits = [self.traits[t] for t in potion_data.get('Traits', [])]
+            self.hoard_potions[potion['PotionId']] = {
+                'id': potion['PotionId'],
+                'image': f'potion_{potion["PotionId"]:02d}',
+                'name': f'[REWARD_HELP_HEADING_LIVEEVENTPOTION_{potion["PotionId"]}]',
+                'description': f'[TREASURE_HOARD_POTION_DESC_{potion["PotionId"]}]',
+                'level': potion['Level'],
+                'recurring': potion['Recurring'],
+                'reference_name': potion_data['Name'],
+                'traits': traits,
+                'skills': potion_data.get('SkillBonuses', []),
+            }

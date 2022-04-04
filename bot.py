@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.73.6'
+    VERSION = '0.74.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -1019,6 +1019,11 @@ class DiscordBot(BaseBot):
 
     async def streamers(self, message, **kwargs):
         e = self.views.render_streamers()
+        await self.answer(message, e)
+
+    async def hoard_potions(self, message, lang, **kwargs):
+        potions = self.expander.get_hoard_potions(lang)
+        e = self.views.render_hoard_potions(potions, lang)
         await self.answer(message, e)
 
     async def register_slash_commands(self):
