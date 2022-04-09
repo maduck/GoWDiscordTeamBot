@@ -726,12 +726,14 @@ COMMAND_REGISTRY = [
         'description': 'Show all available storms',
         'options': [STANDARD_OPTIONS['lang']],
     },
-    {
-        'function': 'hoard_potions',
-        'pattern': re.compile(f'{DEFAULT_PATTERN}hoard_potions$', MATCH_OPTIONS),
-        'description': 'Show potions for faction hoards',
-        'options': [STANDARD_OPTIONS['lang']],
-    },
+
+    # {
+    #    'function': 'hoard_potions',
+    #    'pattern': re.compile(f'{DEFAULT_PATTERN}hoard_potions$', MATCH_OPTIONS),
+    #    'description': 'Show potions for faction hoards',
+    #    'options': [STANDARD_OPTIONS['lang']],
+    # },
+
     {
         'function': 'campaign_preview',
         'pattern': re.compile(
