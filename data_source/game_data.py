@@ -953,7 +953,7 @@ class GameData:
                 'id': potion['PotionId'],
                 'image': f'potion_{potion["PotionId"]:02d}',
                 'name': f'[REWARD_HELP_HEADING_LIVEEVENTPOTION_{potion["PotionId"]}]',
-                'description': f'[TREASURE_HOARD_POTION_DESC_{potion["PotionId"]}]',
+                'description': f'[REWARD_HELP_DESC_LIVEEVENTPOTION_1{potion["PotionId"]}]',
                 'level': potion['Level'],
                 'recurring': potion['Recurring'],
                 'reference_name': potion_data['Name'],
