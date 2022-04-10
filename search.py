@@ -709,8 +709,9 @@ class TeamExpander:
         elif entry['type'] == '[TOWER_OF_DOOM]' and entry['gacha']:
             entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
         elif entry['type'] == '[DELVE_EVENT]':
-            entry['extra_info'] = _(self.kingdoms[entry['kingdom_id']]['name'], lang,
-                                    default=self.kingdoms[entry['kingdom_id']]['reference_name'])
+            entry['kingdom'] = _(self.kingdoms[entry['kingdom_id']]['name'], lang,
+                                 default=self.kingdoms[entry['kingdom_id']]['reference_name'])
+            entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
         elif entry['type'] == '[HIJACK]' and entry['troops']:
             entry['extra_info'] = ', '.join(_(self.troops[t]['name'], lang) for t in entry['troops'])
         elif entry['type'] == '[INVASION]' and entry['gacha'] and entry['gacha'] in self.troops:
