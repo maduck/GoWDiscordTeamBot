@@ -709,8 +709,6 @@ class TeamExpander:
         elif entry['type'] == '[TOWER_OF_DOOM]' and entry['gacha']:
             entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
         elif entry['type'] == '[DELVE_EVENT]':
-            kingdom = self.kingdoms[entry['kingdom_id']]
-            entry['kingdom'] = _(kingdom['name'], lang, default=kingdom['reference_name'])
             troop = self.troops[entry['gacha']]
             entry['extra_info'] = _(troop['name'], lang, default=troop['reference_name'])
         elif entry['type'] == '[HIJACK]' and entry['troops']:
@@ -729,8 +727,8 @@ class TeamExpander:
             entry['kingdom'] = kingdom
 
         if entry['kingdom_id']:
-            kingdom = _(self.kingdoms[entry['kingdom_id']]['name'], lang)
-            entry['kingdom'] = kingdom
+            kingdom = self.kingdoms[entry['kingdom_id']]
+            entry['kingdom'] = _(kingdom['name'], lang, default=kingdom['reference_name'])
 
         locale = translations.LANGUAGE_CODE_MAPPING.get(lang, lang)
         locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
