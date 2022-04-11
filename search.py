@@ -712,7 +712,8 @@ class TeamExpander:
             troop = self.troops[entry['gacha']]
             entry['extra_info'] = _(troop['name'], lang, default=troop['reference_name'])
         elif entry['type'] == '[HIJACK]' and entry['troops']:
-            entry['extra_info'] = ', '.join(_(self.troops[t]['name'], lang) for t in entry['troops'])
+            troops = [self.troops[troop] for troop in entry['troops']]
+            entry['extra_info'] = ', '.join(_(troop['name'], lang, default=troop['reference_name']) for troop in troops)
         elif entry['type'] == '[INVASION]' and entry['gacha'] and entry['gacha'] in self.troops:
             troop = self.troops[entry['gacha']]
             troop_name = _(troop['name'], lang)
@@ -720,7 +721,7 @@ class TeamExpander:
             entry['extra_info'] = f'{troop_name} ({", ".join(troop_types)})'
         elif entry['type'] in ('[WEEKLY_EVENT]', '[RARITY_5]') and entry['gacha'] and entry['gacha'] in self.troops:
             troop = self.troops[entry['gacha']]
-            troop_name = _(troop['name'], lang)
+            troop_name = _(troop['name'], lang, default=troop['reference_name'])
             kingdom = _(self.kingdoms[entry['kingdom_id']]['name'], lang,
                         default=self.kingdoms[entry['kingdom_id']]['reference_name'])
             entry['extra_info'] = f'{troop_name} ({kingdom})'

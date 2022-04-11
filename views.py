@@ -231,11 +231,14 @@ class Views:
             end = f'- {event["formatted_end"]} '
             if event['end'] == event['start'] + datetime.timedelta(days=1):
                 end = ''
+            extra_info = event['extra_info']
+            if event['raw_type'] in ('[DELVE_EVENT]',):
+                extra_info = event.get('kingdom', '')
             this_line = f'{event["formatted_start"]} ' \
                         f'{end}' \
                         f'{event["type"]}' \
-                        f'{":" if event["extra_info"] else ""} ' \
-                        f'{event["extra_info"]}'
+                        f'{":" if extra_info else ""} ' \
+                        f'{extra_info}'
             if not _filter or _filter.lower() in this_line.lower():
                 message_lines.append(this_line)
         message_lines = self.trim_text_lines_to_length(message_lines, 894)
