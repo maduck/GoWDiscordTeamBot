@@ -271,7 +271,7 @@ class BaseBot(discord.Client):
     def embed_check_limits(embed):
         if len(embed.title) > 256:
             raise EmbedLimitsExceed(f'Embed title too long: {len(embed.title)}')
-        if len(embed.description) > 4096:
+        if embed.description and len(embed.description) > 4096:
             raise EmbedLimitsExceed(f'Embed description too long: {len(embed.description)}')
         if embed.fields and len(embed.fields) > 25:
             raise EmbedLimitsExceed(f'Number of embed fields: {len(embed.fields)}')
