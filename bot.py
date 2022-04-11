@@ -1051,12 +1051,12 @@ class DiscordBot(BaseBot):
 
 
 if __name__ == '__main__':
-    client = DiscordBot(intents=None)
+    client = DiscordBot()
+    bot_tasks.task_check_for_news.start(client)
+    bot_tasks.task_check_for_data_updates.start(client)
+    bot_tasks.task_update_pet_rescues.start(client)
+    bot_tasks.task_update_dbl_stats.start(client)
     if TOKEN is not None:
         client.run(TOKEN)
-        bot_tasks.task_check_for_news.start(client)
-        bot_tasks.task_check_for_data_updates.start(client)
-        bot_tasks.task_update_pet_rescues.start(client)
-        bot_tasks.task_update_dbl_stats.start(client)
     else:
         log.error('FATAL ERROR: DISCORD_TOKEN env var was not specified.')
