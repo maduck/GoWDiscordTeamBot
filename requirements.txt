@@ -10,4 +10,4 @@ prettytable~=3.2
 hashids~=1.3
 pillow==9.1
 Wand~=0.6.5
-topggpy~=1.3
+topggpy~=1.4
