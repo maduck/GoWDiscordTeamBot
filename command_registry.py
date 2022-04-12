@@ -155,6 +155,11 @@ COMMAND_REGISTRY = [
         'description': 'Show Gems of War related tools',
     },
     {
+        'function': 'communities',
+        'pattern': re.compile(f'{DEFAULT_PATTERN}communities$', MATCH_OPTIONS),
+        'description': 'Show Gems of War related communities',
+    },
+    {
         'function': 'weekly_summary',
         'pattern': re.compile(
             f'{DEFAULT_PATTERN}(ws|weekly_summary)$', MATCH_OPTIONS

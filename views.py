@@ -646,3 +646,7 @@ class Views:
             'hoard_level': _('[HOARD_LEVEL]', lang),
         }
         return self.render_embed(e, 'hoard_potions.jinja', potions=potions, texts=texts)
+
+    def render_communities(self):
+        e = discord.Embed(title='Communities', colour=self.WHITE)
+        return self.render_embed(e, 'communities.jinja')

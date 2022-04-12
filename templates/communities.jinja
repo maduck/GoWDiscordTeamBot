@@ -1,0 +1,7 @@
+{% set communities = [
+{'name': 'Hawx\'s Flight School', 'link': 'https://discord.gg/35GXXtz3xD', 'punchline': 'Weekly Guides in :flag_gb:, :flag_fr:, :flag_de:, :flag_ru:, :flag_it:, :flag_es:\nData collection, Bug tracking and Off Topic Friendship Channels'},
+] %}
+
+{% for community in communities %}
+✪ [{{ community.name }}]({{ community.link }}) {{ community.punchline }}
+{% endfor %}
