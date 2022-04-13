@@ -1,7 +1,16 @@
-{% set communities = [
-{'name': 'Hawx\'s Flight School', 'link': 'https://discord.gg/35GXXtz3xD', 'punchline': 'Weekly Guides in :flag_gb:, :flag_fr:, :flag_de:, :flag_ru:, :flag_it:, :flag_es:\nData collection, Bug tracking and Off Topic Friendship Channels'},
-] %}
+{% set sections = {
+  'Official Communities': [
+    {'name': 'Gems of War Twitter', 'link': 'https://twitter.com/GemsOfWar', 'punchline': ''},
+    {'name': 'Gems of War Facebook', 'link': 'https://facebook.com/gemsofwar/', 'punchline': ''},
+  ],
+  'Discord Communities': [
+    {'name': 'Hawx\'s Flight School', 'link': 'https://discord.gg/35GXXtz3xD', 'punchline': 'Weekly Guides in :flag_gb:, :flag_fr:, :flag_de:, :flag_ru:, :flag_it:, :flag_es:\nData collection, Bug tracking and Off Topic Friendship Channels'},
+  ],
+}
+%}
 
+{% for section, communities in sections.items() %}
+<T>{{ section }}</T>
 {% for community in communities %}
-✪ [{{ community.name }}]({{ community.link }}) {{ community.punchline }}
+✪ [{{ community.name }}]({{ community.link }}) {{ community.punchline }}{% endfor %}
 {% endfor %}
