@@ -15,7 +15,7 @@
 {% if not summary.faction_assault or summary.today_weekday > summary.faction_assault.start.weekday() %}<T>{{ summary.faction_assault.type }}</T>
 {{ summary.event_ended }}{% else %}
 {% if summary.extra_events %}<T>{{ summary.world_event_title }} ({{ summary.world_event.formatted_start }} - {{ summary.world_event.formatted_end }})</T>{% for event in summary.extra_events %}
-✪ {{ event.type }}: {{ event.extra_info }}{% endfor %}{% endif %}
+✪ {{ event.type }}{% if event.extra_info %}: {{ event.extra_info }}{% endif %}{% endfor %}{% endif %}
 <T>{{ summary.faction_assault.start_day }}: {{ summary.faction_assault.type }} ({{ summary.faction_assault.formatted_start }})</T>
 ✪ {{ summary.faction_assault.kingdom }} `#{{ summary.faction_assault.kingdom_id }}`{% endif %}
 {% if summary.today_weekday > summary.pet_rescue.start.weekday() %}<T>{{ summary.pet_rescue.type }}</T>
@@ -27,7 +27,7 @@
 <T>{{ summary.class_trial.start_day }}: {{ summary.class_trial.type }} ({{ summary.class_trial.formatted_start }})</T>
 ✪ {{ summary.class_trial.extra_info }} `#{{ summary.class_trial.gacha }}`{% endif %}
 {% if summary.weekend %}<T>{{ summary.weekend.start_day }} - {{ summary.weekend.end_day }}: {{ summary.weekend.type }} ({{ summary.weekend.formatted_start }} - {{ summary.weekend.formatted_end }})</T>
-✪ {{ summary.kingdom_title }}: {{ summary.weekend.kingdom }} `#{{ summary.weekend.kingdom_id }}`{% endif %}{% if summary.weekend.extra_info %}
+✪ {{ summary.kingdom_title }}: {% if summary.weekend.kingdom %}{{ summary.weekend.kingdom }} `#{{ summary.weekend.kingdom_id }}`{% else %}-{% endif %}{% endif %}{% if summary.weekend.extra_info %}
 ✪ {{ summary.troop_title }}: {{ summary.weekend.extra_info }} `#{{ summary.weekend.gacha }}`{% endif %}
 {% if summary.saturday_pet %}<T>{{ summary.saturday_pet.start_day }}: {{ summary.saturday_pet.type }} ({{summary.saturday_pet.formatted_start}})</T>
 ✪ {{ summary.saturday_pet.extra_info }} `#{{ summary.saturday_pet.gacha }}`{% endif %}
