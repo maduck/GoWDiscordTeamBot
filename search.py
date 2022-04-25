@@ -726,6 +726,8 @@ class TeamExpander:
                         default=self.kingdoms[entry['kingdom_id']]['reference_name'])
             entry['extra_info'] = f'{troop_name} ({kingdom})'
             entry['kingdom'] = kingdom
+        elif entry['type'] == '[VAULT]':
+            entry['kingdom_id'] = 3038
 
         if entry['kingdom_id']:
             kingdom = self.kingdoms[entry['kingdom_id']]
