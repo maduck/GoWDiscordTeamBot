@@ -799,6 +799,8 @@ class GameData:
             restrictions = raw_data.get('PlayerTeamRestrictions', {})
             if EVENT_TYPES[raw_data['Type']] == '[TOWER_OF_DOOM]':
                 restrictions = {'ManaColors': [raw_data['Color']]}
+            elif EVENT_TYPES[raw_data['Type']] == '[JOURNEY]':
+                restrictions = {'ManaColors': [raw_data['Color']], 'TroopTypes': [raw_data['TroopType']]}
             return {
                 '[FILTER_MANACOLOR]': restrictions.get('ManaColors'),
                 '[KINGDOM]': [self.kingdoms[k]['name'] for k in restrictions.get('KingdomIds', [])],
