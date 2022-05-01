@@ -925,7 +925,7 @@ class DiscordBot(BaseBot):
             log.debug(f'Distributing {len(articles)} news articles to {len(self.subscriptions)} channels.')
         for article in articles:
             embeds = self.views.render_news(article)
-            for subscription in self.subscriptions:
+            for i, subscription in enumerate(self.subscriptions):
                 relevant_news = subscription.get(article['platform'])
                 if not relevant_news:
                     continue
@@ -933,7 +933,8 @@ class DiscordBot(BaseBot):
                 if not channel:
                     log.debug(f'Subscription {subscription} is broken, skipping.')
                     continue
-                log.debug(f'Sending [{article["platform"]}] {article["title"]} to {channel.guild.name}/{channel.name}.')
+                log.debug(f'[{i + 1}/{len(self.subscriptions)}] Sending [{article["platform"]}] {article["title"]} '
+                          f'to {channel.guild.name}/{channel.name}.')
                 if not await self.is_writable(channel):
                     message = 'is not writable' if channel else 'does not exist'
                     log.debug(f'Channel {message}.')
