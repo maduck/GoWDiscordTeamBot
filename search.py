@@ -651,6 +651,7 @@ class TeamExpander:
         start = today + datetime.timedelta(days=-today.weekday(), weeks=1)
         result = self.guess_weekly_kingdom_from_troop_spoilers(lang)
 
+        prediction = ''
         for kingdom_id in self.event_kingdoms:
             end = start + datetime.timedelta(days=7)
             if kingdom_id != 0:
@@ -658,9 +659,11 @@ class TeamExpander:
                     'start': start,
                     'end': end,
                     'kingdom': _(self.kingdoms[kingdom_id]['name'], lang,
-                                 default=self.kingdoms[kingdom_id]['reference_name']),
+                                 default=self.kingdoms[kingdom_id]['reference_name']) + prediction,
                 }
                 result[start] = event_data
+            else:
+                prediction = ' *'
             start = end
         return sorted(result.values(), key=operator.itemgetter('start'))
 
