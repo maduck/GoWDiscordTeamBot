@@ -28,8 +28,8 @@ class Toplist:
                 'author_name': t['author_name'],
                 'description': t['description'],
                 'items': t['items'].split(','),
-                'created': t['created'],
-                'modified': t['modified'],
+                'created': t['created'].replace(tzinfo=datetime.timezone.utc),
+                'modified': t['modified'].replace(tzinfo=datetime.timezone.utc),
             }
             for t in toplists
         }

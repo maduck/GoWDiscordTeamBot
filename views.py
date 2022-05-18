@@ -270,7 +270,7 @@ class Views:
             return e
         e = discord.Embed(title=f'Toplist ID `{toplist["id"]}` by {toplist["author_name"]}', color=self.WHITE)
         e.set_footer(text='Last modified')
-        e.timestamp = toplist['created']
+        e.timestamp = toplist['modified']
         chunk_size = 3
         item_chunks = chunks(toplist['items'], chunk_size)
         character_count = 0
