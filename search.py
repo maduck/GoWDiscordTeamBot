@@ -1,6 +1,7 @@
 import copy
 import datetime
 import importlib
+import json
 import logging
 import operator
 import re
@@ -32,12 +33,12 @@ _ = t.get
 
 def update_translations():
     global _
-    importlib.reload(translations)
     try:
+        importlib.reload(translations)
         del _
-    except NameError:
-        pass
-    _ = translations.Translations().get
+        _ = translations.Translations().get
+    except (NameError, json.decoder.JSONDecodeError) as e:
+        log.error(f'Could not update translations: {e}')
 
 
 class TeamExpander:
