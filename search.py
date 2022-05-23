@@ -10,7 +10,8 @@ from calendar import different_locale
 import translations
 from configurations import CONFIG
 from data_source.game_data import GameData
-from game_constants import COLORS, EVENT_TYPES, GEM_TUTORIAL_IDS, RARITY_COLORS, SOULFORGE_REQUIREMENTS, TROOP_RARITIES, \
+from game_constants import COLORS, EVENT_TYPES, GEM_TUTORIAL_IDS, RARITY_COLORS, SOULFORGE_ALWAYS_AVAILABLE, \
+    SOULFORGE_REQUIREMENTS, TROOP_RARITIES, \
     UNDERWORLD_SOULFORGE_REQUIREMENTS, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
@@ -1378,7 +1379,8 @@ class TeamExpander:
         event_mythics = [t for t in event_kingdom['troops']
                          if t['raw_rarity'] == 'Mythic'
                          and 'release_date' not in t
-                         and 'Boss' not in t['raw_types']]
+                         and 'Boss' not in t['raw_types']
+                         and t['id'] not in SOULFORGE_ALWAYS_AVAILABLE]
 
         event_chest_drops = {
             'troops': event_mythics,
