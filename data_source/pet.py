@@ -12,7 +12,7 @@ EFFECT_TRANSLATIONS = (
     '[PETTYPE_NOEFFECT]',
     '[PETTYPE_BONUSGNOMECHANCE]',
     '[PETTYPE_BONUSMAPTURNS]',
-    '[UNKNOWN]',
+    '[PETTYPE_BUFFSINGLETROOP]',
 )
 
 
@@ -25,10 +25,13 @@ class PetContainer(BaseGameDataContainer):
     DATA_CLASS = Pet
     LOOKUP_KEYS = ['name', 'kingdom_name']
     EFFECT_BONUS = {}
+    user_data = {}
+    world_data = {}
 
-    def __init__(self, data, user_data):
+    def __init__(self, data, user_data, world_data):
         super().__init__()
         self.user_data = user_data
+        self.world_data = world_data
         self.data = {
             'id': data['Id'],
             'name': data['Name'],
@@ -114,6 +117,14 @@ class PetContainer(BaseGameDataContainer):
         elif effect == '[PETTYPE_NOEFFECT]':
             self.data['effect'] = '[PET_NO_BONUS]'
             self.data['effect_data'] = '[PET_BONUS_DESCRIPTION_EVENT]'
+        elif effect == '[PETTYPE_BUFFSINGLETROOP]':
+            troop = self.world_data.get(self.data['effect_data'], {}).get('name')
+            self.data['effect'] = '[PET_SINGLE_TROOP_BONUS_DESC]'
+            self.data['effect_replacement'] = {
+                '%1': '',
+                '%2': troop,
+            }
+            self.data['effect_data'] = ''
 
     def get_effect_bonuses(self):
         for bonus in self.user_data['pEconomyModel']['PetEffects']:
