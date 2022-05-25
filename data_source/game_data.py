@@ -84,10 +84,10 @@ class GameData:
     def populate_world_data(self):
         self.read_json_data()
 
-        self.pets = Pets(self.data['Pets'], self.user_data)
         self.populate_spells()
         self.populate_traits()
         self.populate_troops()
+        self.pets = Pets(self.data['Pets'], self.user_data, self.troops)
         self.populate_kingdoms()
         self.populate_weapons()
         self.populate_talents()
@@ -884,6 +884,17 @@ class GameData:
                     break
             self.weekly_event['minimum_tier'] = minimum_tier
 
+        def get_first_battles():
+            battles = []
+            for battle in self.event_raw_data.get('BattleArray', []):
+                name = battle['Name']['en_US']
+                battles.append({
+                    'name': name,
+                    'rarity': TROOP_RARITIES[battle['Color']],
+                    'icon': battle['Icon'],
+                })
+            return battles
+
         self.weekly_event = {
             'id': self.event_raw_data['Id'],
             'shop_tiers': [self.store_data[gacha] for gacha in self.event_raw_data['GachaItems']
@@ -906,6 +917,7 @@ class GameData:
             'battles': [transform_battle(b) for b in self.event_raw_data.get('BattleArray', [])],
             'start': datetime.datetime.utcfromtimestamp(self.event_raw_data['StartDate']),
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
+            'first_battles': get_first_battles(),
         }
         calculate_minimum_tier()
 
