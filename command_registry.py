@@ -148,6 +148,7 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(
             f'{DEFAULT_PATTERN}(pr|rp|pet rescue) config$', MATCH_OPTIONS
         ),
+        'description': 'Shows the current channel\'s pet rescue configuration',
     },
     {
         'function': 'tools',
@@ -206,6 +207,7 @@ COMMAND_REGISTRY = [
             + '(pr|pet rescue) config (?P<key>[_a-zA-Z]+)([ =]+)(?P<value>.*)',
             MATCH_OPTIONS,
         ),
+        'description': 'Configures a pet rescues for this channel',
     },
     {
         'function': 'pet_rescue',
