@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.75.3'
+    VERSION = '0.75.4'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -1031,12 +1031,43 @@ class DiscordBot(BaseBot):
         e = self.views.render_hoard_potions(potions, lang)
         await self.answer(message, e)
 
+    @staticmethod
+    def options_changed(theirs, mine):
+        if theirs == mine:
+            return False
+        if not theirs or not mine:
+            return True
+        their_options = theirs[0]
+        my_options = mine[0]
+        if 'required' in my_options and not my_options['required']:
+            their_options['required'] = False
+        if 'choices' in my_options and not my_options['choices']:
+            their_options['choices'] = []
+        options_diff = set(their_options) ^ set(my_options)
+        if options_diff:
+            return options_diff
+        return False
+
+    @classmethod
+    def command_changed(cls, command):
+        my_commands = {c['function']: c for c in COMMAND_REGISTRY}
+        if command['name'] not in my_commands:
+            return True
+        my_command = my_commands[command['name']]
+        if command['description'] != my_command['description']:
+            log.debug(f'Command description changed: {command["name"]}: {command["description"]!r} vs '
+                      f'{my_command["description"]!r}')
+            return True
+        if diff := cls.options_changed(command.get('options'), my_command.get('options')):
+            log.debug(f'Command options changed: {command["name"]}: {diff!r}')
+            return True
+        return False
+
     async def register_slash_commands(self):
         guild_id = CONFIG.get('slash_command_guild_id')
         existing_commands = await get_all_commands(self.user.id, TOKEN, guild_id=guild_id)
-        new_command_names = [c['function'] for c in COMMAND_REGISTRY]
         for command in existing_commands:
-            if command['name'] not in new_command_names or CONFIG.get('deregister_slash_commands'):
+            if self.command_changed(command) or CONFIG.get('deregister_slash_commands'):
                 log.debug(f'Deregistering slash command {command["name"]}...')
                 await remove_slash_command(self.user.id, TOKEN, guild_id, command['id'])
         if not CONFIG.get('register_slash_commands'):
