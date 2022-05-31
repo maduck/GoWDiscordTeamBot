@@ -111,6 +111,8 @@ class GameData:
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
+            if _class['KingdomId'] not in self.kingdoms:
+                _class['KingdomId'] = '`?`'
             self.classes[_class['Id']] = {
                 'id': _class['Id'],
                 'name': _class['Name'],
