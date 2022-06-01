@@ -648,7 +648,8 @@ class DiscordBot(BaseBot):
                 await asyncio.sleep(2)
                 status = r.json() if r.status_code == 200 else {'pGameArray': []}
                 self.server_status_cache['status'] = status['pGameArray'][:-1]
-                self.server_status_cache['last_updated'] = datetime.datetime.utcnow()
+                self.server_status_cache['last_updated'] = datetime.datetime.utcnow() \
+                    .replace(tzinfo=datetime.timezone.utc)
         e = self.views.render_server_status(self.server_status_cache)
         await self.answer(message, e)
 
