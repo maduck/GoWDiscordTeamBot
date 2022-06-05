@@ -937,19 +937,35 @@ class GameData:
     def populate_store_data(self):
         for entry in self.store_raw_data['ShopData']:
             if entry['Visible']:
-                rewards = {}
+                rewards = []
 
                 if entry['RewardType'] == RewardTypes.Bundle:
                     for reward in entry.get('BundleData', {}):
                         if reward['RewardType'] == RewardTypes.Troop and reward['RewardData'] in self.troops:
-                            rewards[self.troops[reward['RewardData']]['name']] = reward['Reward']
+                            rewards.append({
+                                'name': self.troops[reward['RewardData']]['name'],
+                                'id': reward['RewardData'],
+                                'amount': reward['Reward'],
+                            })
                         elif reward['RewardType'] == RewardTypes.Weapon and reward['RewardData'] in self.weapons:
-                            rewards[self.weapons[reward['RewardData']]['name']] = reward['Reward']
+                            rewards.append({
+                                'name': self.weapons[reward['RewardData']]['name'],
+                                'id': reward['RewardData'],
+                                'amount': reward['Reward'],
+                            })
                         elif reward['RewardType'] == RewardTypes.LiveEventPoolTroop:
-                            rewards['[N_EVENT_POOL_TROOPS]'] = reward['Reward']
+                            rewards.append({
+                                'id': 0,
+                                'name': '[N_EVENT_POOL_TROOPS]',
+                                'amount': reward['Reward'],
+                            })
                         elif reward['RewardType'] == RewardTypes.TraitStones and reward['RewardData'] >= 18:
                             # rune 18 is the first arcane traitstone, so filtering for that.
-                            rewards[f'[RUNE{reward["RewardData"]:02d}_NAME]'] = reward['Reward']
+                            rewards.append({
+                                'id': 0,
+                                'name': f'[RUNE{reward["RewardData"]:02d}_NAME]',
+                                'amount': reward['Reward'],
+                            })
                 self.store_data[entry['Code']] = {
                     'title': entry['TitleId'],
                     'reference': entry['ReferenceName'],

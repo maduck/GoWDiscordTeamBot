@@ -1169,7 +1169,8 @@ class TeamExpander:
         event['shop_title'] = _('[SHOP]', lang)
         event['shop'] = []
         for shop_tier in event['shop_tiers']:
-            rewards = [_(k, lang).replace('%1', str(v)) for k, v in shop_tier['rewards'].items()]
+            rewards = []
+            # rewards = [_(k, lang).replace('%1', str(v)) for k, v in shop_tier['rewards'].items()]
             if rewards:
                 shop_display = f'**{_(shop_tier["title"], lang)}** ({shop_tier["cost"]} ' \
                                f'{_(shop_tier["currency"], lang)}): ' \
@@ -1373,7 +1374,9 @@ class TeamExpander:
         if glory_shops:
             glory_shop = glory_shops[0]
             glory_costs = glory_shop['cost']
-            glory_rewards = [(_(name, lang), count) for name, count in glory_shop['rewards'].items()]
+            glory_rewards = [gw.copy() for gw in glory_shop['rewards']]
+            for reward in glory_rewards:
+                reward['name'] = _(reward['name'], lang)
 
         event_kingdom = self.search_kingdom(str(self.event_key_drops['kingdom_id']), lang)[0]
         event_mythics = [t for t in event_kingdom['troops']
