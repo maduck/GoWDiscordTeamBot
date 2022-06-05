@@ -67,7 +67,7 @@ CREATE
 
 CREATE TABLE IF NOT EXISTS PetRescueStats
 (
-    pet_id  INTEGER,
+    pet_id  INTEGER PRIMARY KEY,
     rescues INTEGER
 );
 

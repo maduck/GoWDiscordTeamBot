@@ -169,8 +169,12 @@ class PetRescue:
             str(self.mention),
         ]
         lock = asyncio.Lock()
+        stats_query = 'INSERT INTO PetRescueStats (pet_id, rescues) VALUES (?, ?) ' \
+                      'ON CONFLICT(pet_id) DO UPDATE SET rescues = rescues + 1 WHERE pet_id = ?'
+        stats_params = [self.pet.id, 1, self.pet.id]
         async with lock:
             db.cursor.execute(query, params)
+            db.cursor.execute(stats_query, stats_params)
             db.commit()
             pet_rescues.append(self)
 
