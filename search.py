@@ -1169,8 +1169,7 @@ class TeamExpander:
         event['shop_title'] = _('[SHOP]', lang)
         event['shop'] = []
         for shop_tier in event['shop_tiers']:
-            rewards = []
-            # rewards = [_(k, lang).replace('%1', str(v)) for k, v in shop_tier['rewards'].items()]
+            rewards = [_(r['name'], lang).replace('%1', str(r['amount'])) for r in shop_tier['rewards']]
             if rewards:
                 shop_display = f'**{_(shop_tier["title"], lang)}** ({shop_tier["cost"]} ' \
                                f'{_(shop_tier["currency"], lang)}): ' \
