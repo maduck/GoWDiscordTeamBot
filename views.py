@@ -653,5 +653,5 @@ class Views:
 
     def render_pet_rescue_stats(self, stats, rescues, lang):
         e = discord.Embed(title='Pet Rescue Stats', colour=self.WHITE)
-        e.set_footer(text=f'Considered {rescues} pet rescues for this analysis.')
+        e.set_footer(text=f'{rescues} pets were brutally slaughtered by whole guilds in the making of this analysis.')
         return self.render_embed(e, 'pet_rescue_stats.jinja', stats=stats)
