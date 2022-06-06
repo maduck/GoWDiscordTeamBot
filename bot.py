@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.76.1'
+    VERSION = '0.76.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -157,7 +157,8 @@ class DiscordBot(BaseBot):
         async with message.channel.typing():
             if hasattr(message, 'interaction_id') and message.interaction_id:
                 await self.send_slash_command_result(message,
-                                                     response_type=InteractionResponseType.MESSAGE.value,
+                                                     response_type=InteractionResponseType.
+                                                     CHANNEL_MESSAGE_WITH_SOURCE.value,
                                                      content='Please stand by ...',
                                                      embed=None)
             start = time.time()
@@ -180,8 +181,9 @@ class DiscordBot(BaseBot):
             switch = CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
             if hasattr(message, 'interaction_id'):
-                await self.send_slash_command_result(message, content=None, embed=None,
-                                                     response_type=InteractionResponseType.PONG.value)
+                await self.send_slash_command_result(message, content="Image rendering below.", embed=None, file=None,
+                                                     response_type=InteractionResponseType.
+                                                     DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE.value)
             start = time.time()
             weapon_data = self.expander.get_soulforge_weapon_image_data(search_term, release_date, switch, lang)
             if not weapon_data:
@@ -194,6 +196,8 @@ class DiscordBot(BaseBot):
             duration = time.time() - start
             log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
             await message.channel.send(file=result)
+            if hasattr(message, 'interaction_id'):
+                await self.delete_slash_command_interaction(message)
 
     async def campaign(self, message, lang, tier=None, **kwargs):
         campaign_data = self.expander.get_campaign_tasks(lang, tier)

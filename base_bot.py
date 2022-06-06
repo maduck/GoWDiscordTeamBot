@@ -28,8 +28,12 @@ class EmbedLimitsExceed(Exception):
 
 class InteractionResponseType(Enum):
     PONG = 1
-    MESSAGE = 4
-    DEFERRED_MESSAGE = 5
+    CHANNEL_MESSAGE_WITH_SOURCE = 4
+    DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5
+    DEFERRED_UPDATE_MESSAGE = 6
+    UPDATE_MESSAGE = 7
+    APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8
+    MODAL = 9
 
 
 class FakeTyping:
@@ -165,13 +169,14 @@ class BaseBot(discord.Client):
 
     async def answer_or_react(self, message, embed: discord.Embed, content=None, no_interaction=False):
         if hasattr(message, 'interaction_id') and not no_interaction:
-            return await self.send_slash_command_result(message, embed, content)
+            return await self.send_slash_command_result(message, embed, content, file=None)
         elif not embed:
             return await message.channel.send(content=content)
         return await message.channel.send(embed=embed)
 
     @staticmethod
-    async def send_slash_command_result(message, embed, content, response_type=InteractionResponseType.MESSAGE.value):
+    async def send_slash_command_result(message, embed, content, file=None,
+                                        response_type=InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE.value):
         endpoint = f'interactions/{message.interaction_id}/{message.interaction_token}/callback'
         url = f'https://discord.com/api/v8/{endpoint}'
         response = {
@@ -180,18 +185,23 @@ class BaseBot(discord.Client):
                 'embeds': [embed.to_dict()] if embed else [],
                 'content': content,
             },
-            'flags': 64 if response_type == InteractionResponseType.DEFERRED_MESSAGE else 0,
+            'flags': 0,
         }
         async with aiohttp.ClientSession() as session:
             await session.post(url, headers={"Authorization": f"Bot {os.getenv('DISCORD_TOKEN')}"}, json=response)
+
+    async def delete_slash_command_interaction(self, message):
+        endpoint = f'webhooks/{self.application_id}/{message.interaction_token}/messages/@original'
+        url = f'https://discord.com/api/v8/{endpoint}'
+        async with aiohttp.ClientSession() as session:
+            r = await session.delete(url, headers={"Authorization": f"Bot {os.getenv('DISCORD_TOKEN')}"})
+            r.raise_for_status()
 
     async def on_slash_command(self, function, options, message):
         raise NotImplemented('This function has not been implemented.')
 
     async def on_interaction(self, interaction):
         channel = interaction.channel
-        if isinstance(channel, discord.channel.PartialMessageable):
-            channel = 'Private Message'
         guild = interaction.guild
         author = interaction.user
         function = getattr(self, interaction.data['name'])
