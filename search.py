@@ -128,6 +128,8 @@ class TeamExpander:
 
             if 0 <= element <= 3:
                 result['talents'].append(element)
+                if len(result['talents']) > 7:
+                    result['talents'] = result['talents'][-7:]
                 continue
             if i <= 3:
                 result['troops'].append(self.troops['`?`'])
