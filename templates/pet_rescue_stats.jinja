@@ -1,0 +1,2 @@
+{% for pet, amount, percentage in stats %}
+✪ `{{ "%0.2f" | format(percentage) }}%` {{ pet.name }} `#{{ pet.id }}`{% endfor %}

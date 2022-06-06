@@ -1428,3 +1428,13 @@ class TeamExpander:
             potion['name'] = _(potion['name'], lang)
             potion['description'] = _(potion['description'], lang)
         return potions
+
+    def translate_pet_rescue_stats(self, raw_stats, lang):
+        total_rescues = sum([r['rescues'] for r in raw_stats])
+        stats = []
+        for row in raw_stats:
+            pet = self.pets[row['pet_id']].translations[lang]
+            amount = row['rescues']
+            percentage = 100 * amount / total_rescues
+            stats.append([pet, amount, percentage])
+        return sorted(stats, key=operator.itemgetter(2, 1), reverse=True), total_rescues

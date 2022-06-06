@@ -168,15 +168,23 @@ class PetRescue:
             self.lang,
             str(self.mention),
         ]
-        lock = asyncio.Lock()
         stats_query = 'INSERT INTO PetRescueStats (pet_id, rescues) VALUES (?, ?) ' \
                       'ON CONFLICT(pet_id) DO UPDATE SET rescues = rescues + 1 WHERE pet_id = ?'
         stats_params = [self.pet.id, 1, self.pet.id]
+
+        lock = asyncio.Lock()
         async with lock:
             db.cursor.execute(query, params)
             db.cursor.execute(stats_query, stats_params)
             db.commit()
             pet_rescues.append(self)
+
+    @staticmethod
+    def get_stats():
+        db = DB()
+        query = 'SELECT * FROM PetRescueStats'
+        db.cursor.execute(query)
+        return db.cursor.fetchall()
 
     async def remove_from_db(self):
         await self.delete_by_id(message_id=self.message.id)

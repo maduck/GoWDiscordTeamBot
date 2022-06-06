@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.75.5'
+    VERSION = '0.76.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -506,6 +506,12 @@ class DiscordBot(BaseBot):
         config = self.pet_rescue_config.get(message.channel)
 
         e = self.views.render_pet_rescue_config(config, lang)
+        await self.answer(message, e)
+
+    async def pet_rescue_stats(self, message, lang, **kwargs):
+        raw_stats = PetRescue.get_stats()
+        stats, rescues = self.expander.translate_pet_rescue_stats(raw_stats, lang)
+        e = self.views.render_pet_rescue_stats(stats, rescues, lang)
         await self.answer(message, e)
 
     @admin_required
