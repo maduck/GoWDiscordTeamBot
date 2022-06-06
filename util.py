@@ -3,6 +3,9 @@ import platform
 import re
 from calendar import day_name, different_locale
 
+import discord
+
+import base_bot
 from base_bot import log
 from translations import LANGUAGE_CODE_MAPPING, LOCALE_MAPPING
 
@@ -65,7 +68,12 @@ def debug(message):
     guild = '-'
     if message.guild:
         guild = message.guild.name
-    log.debug(f'[{guild}][{message.channel}][{message.author.display_name}] {message.content}')
+    channel = message.channel
+    if type(channel) == base_bot.FakeChannel:
+        channel = channel.channel
+    if type(channel) in (discord.channel.DMChannel, discord.channel.PartialMessageable):
+        channel = 'Private Message'
+    log.debug(f'[{guild}][{channel}][{message.author.display_name}] {message.content}')
 
 
 DAMAGE_DENOMINATOR = re.compile(r'\[.+?]', )
