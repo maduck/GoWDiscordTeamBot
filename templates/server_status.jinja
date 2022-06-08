@@ -3,7 +3,8 @@
 {%- endmacro %}
 {% for platform in status %}
 <T>{{ platform.sFriendlyName }}</T>
-{{ status_type(type=platform.pStatusArray[0].nType) }} {{ platform.pStatusArray[0].pDescription.en_US }}
+{% for status in platform.pStatusArray %}{{ status_type(type=status.nType) }} {{ status.pDescription.en_US }}
+{% endfor %}
 {% else %}
 <T>Error</T>
 Could not download server status. Please try again later.

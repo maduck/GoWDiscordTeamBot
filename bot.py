@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.76.4'
+    VERSION = '0.76.5'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -69,7 +69,7 @@ class DiscordBot(BaseBot):
         self.pet_rescue_config: PetRescueConfig = None
         token = CONFIG.get('dbl_token')
         self.topgg_client = None
-        self.server_status_cache = {'last_updated': datetime.datetime.min}
+        self.server_status_cache = {'last_updated': datetime.datetime.min.replace(tzinfo=datetime.timezone.utc)}
         if token:
             self.topgg_client = topgg.DBLClient(self, token)
 
@@ -652,14 +652,14 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def server_status(self, message, **kwargs):
-        if self.server_status_cache['last_updated'] <= datetime.datetime.utcnow() - datetime.timedelta(seconds=30):
+        now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+        if self.server_status_cache['last_updated'] <= now - datetime.timedelta(seconds=30):
             async with message.channel.typing():
                 r = requests.get('https://status.infinityplustwo.net/status_v2.txt')
                 await asyncio.sleep(2)
                 status = r.json() if r.status_code == 200 else {'pGameArray': []}
                 self.server_status_cache['status'] = status['pGameArray'][:-1]
-                self.server_status_cache['last_updated'] = datetime.datetime.utcnow() \
-                    .replace(tzinfo=datetime.timezone.utc)
+                self.server_status_cache['last_updated'] = now
         e = self.views.render_server_status(self.server_status_cache)
         await self.answer(message, e)
 
