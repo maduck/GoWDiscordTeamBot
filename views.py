@@ -183,7 +183,11 @@ class Views:
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Troopcardall_Traits/{trait["image"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
         trait['thumbnail'] = thumbnail_url
-        return self.render_embed(e, 'trait.jinja', trait=trait)
+        result = self.render_embed(e, 'trait.jinja', trait=trait)
+        for i, field in enumerate(result.fields):
+            if len(field.value) > 1024:
+                result.set_field_at(i, name=field.name, value=f"{field.value[:1020]} ...", inline=field.inline)
+        return result
 
     def render_class(self, _class, shortened, lang):
         e = discord.Embed(title='Class search found one exact match', color=self.WHITE)
