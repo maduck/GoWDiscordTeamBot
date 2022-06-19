@@ -48,6 +48,7 @@ class FakeChannel:
     def __init__(self, channel):
         self.typing = FakeTyping
         self.channel = channel
+        self.recipient = None
 
     def send(self, *args, **kwargs):
         return self.channel.send(*args, **kwargs)
@@ -75,6 +76,7 @@ class FakeMessage:
         self.author = author
         self.guild = guild
         self.channel = FakeChannel(channel)
+        self.channel.recipient = author
         self.content = content
         self.interaction_id = interaction_id
         self.interaction_token = interaction_token

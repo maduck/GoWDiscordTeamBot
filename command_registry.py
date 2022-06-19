@@ -4,6 +4,7 @@ from enum import Enum
 
 import aiohttp
 
+from models.pet_rescue_config import PetRescueConfig
 from translations import LANGUAGES
 
 
@@ -208,6 +209,22 @@ COMMAND_REGISTRY = [
             MATCH_OPTIONS,
         ),
         'description': 'Configures a pet rescues for this channel',
+        'options': [
+            {
+                'name': 'key',
+                'description': 'Setting key to configure',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [{'name': k, 'value': k} for k in PetRescueConfig.DEFAULT_CONFIG.keys()],
+            },
+            {
+                'name': 'value',
+                'description': 'Value to set the key to',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['lang'],
+        ]
     },
     {
         'function': 'pet_rescue',
