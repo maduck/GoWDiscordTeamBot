@@ -141,6 +141,7 @@ SOULFORGE_ALWAYS_AVAILABLE = [
     6919,  # Enraged Kurandara
     6997,  # Leonis Tower
     7033,  # Hatir Ascendent
+    7157,  # Hoard Mimic, not really in SF but also not available.
     7034,  # Scroll Reborn
     1104,  # Eye of Xathenos
     1176,  # Heart of Xathenos
