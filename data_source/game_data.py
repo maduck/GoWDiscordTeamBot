@@ -966,6 +966,13 @@ class GameData:
                                 'name': f'[RUNE{reward["RewardData"]:02d}_NAME]',
                                 'amount': reward['Reward'],
                             })
+                        elif reward['RewardType'] == RewardTypes.LiveEventPotion:
+                            rewards.append({
+                                'id': 0,
+                                'name': f'[LIVEEVENTPOTION{reward["RewardData"]:02d}_NAME]',
+                                'amount': reward['Reward'],
+                            })
+
                 self.store_data[entry['Code']] = {
                     'title': entry['TitleId'],
                     'reference': entry['ReferenceName'],
