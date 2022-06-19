@@ -607,7 +607,7 @@ class Views:
             active_gems = [_('[QUEST9013_ENDCONV_1]', lang).split('&&')[0]]
         return discord.Embed(
             title=_('[GEMS]', lang),
-            description=' '.join(active_gems),
+            description='\n'.join(active_gems),
             color=self.WHITE,
         )
 
