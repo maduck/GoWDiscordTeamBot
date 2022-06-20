@@ -118,11 +118,9 @@ class CampaignPreview(BasePreview):
             draw.fill_color = Color('black')
             x = 50
             y = self.img.height - 60
-            draw.text(x, y - 2, self.data['campaign_name'])
-            draw.text(x, y + 2, self.data['campaign_name'])
             draw.fill_color = Color('white')
-            draw.text(x, y, self.data['campaign_name'])
-
+            draw.text_under_color = Color('#00000066')
+            draw.text(x, y, f'  {self.data["campaign_name"]}  ')
             draw(self.img)
 
     def save_image(self):
