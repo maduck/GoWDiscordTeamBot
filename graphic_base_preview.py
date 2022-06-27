@@ -45,7 +45,7 @@ class BasePreview:
             draw.fill_color = Color('white')
             draw.font_size = 100
             draw.text_antialias = True
-            draw.font = FONTS['raleway']
+            draw.font = FONTS['opensans']
             y_offset = 200
             if '\n' in title:
                 y_offset = 120
