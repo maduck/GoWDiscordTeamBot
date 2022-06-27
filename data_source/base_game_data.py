@@ -78,13 +78,16 @@ class BaseGameDataContainer:
         for lang in translations.LOCALE_MAPPING.keys():
             self.translations[lang].set_release_date(release_date)
 
-    def matches(self, search_term, lang):
+    def matches(self, search_term, lang, name_only=False):
         compacted_search = extract_search_tag(search_term)
         item = self.translations[lang]
         if item.name == '`?`':
             return False
+        lookup_keys = self.LOOKUP_KEYS
+        if name_only:
+            lookup_keys = ['name']
         lookups = {
-            k: extract_search_tag(dig(item, k)) for k in self.LOOKUP_KEYS
+            k: extract_search_tag(dig(item, k)) for k in lookup_keys
         }
         for key, lookup in lookups.items():
             if compacted_search in lookup:

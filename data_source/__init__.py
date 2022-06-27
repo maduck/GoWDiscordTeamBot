@@ -29,7 +29,7 @@ class Collection:
             return default
         return self.items[key]
 
-    def search(self, search_term, lang):
+    def search(self, search_term, lang, name_only=False):
         lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         if search_term.isdigit() and int(search_term) in self.items:
             item = self.items.get(int(search_term))
@@ -41,7 +41,7 @@ class Collection:
         for item in self.items.values():
             if item.matches_precisely(search_term, lang):
                 return [item.translations[lang]]
-            elif item.matches(search_term, lang):
+            elif item.matches(search_term, lang, name_only=name_only):
                 possible_matches.append(item.translations[lang])
         return possible_matches
 
