@@ -57,8 +57,8 @@ class Translations:
         return self.pluralize(result, plural)
 
     @staticmethod
-    def pluralize(text, plural: bool):
-        if not text or '\x19' not in text:
+    def pluralize(text: str, plural: bool):
+        if not plural or not text or '\x19' not in text:
             return text
         fragments = text.split('\x19')
         del fragments[2 - plural]
