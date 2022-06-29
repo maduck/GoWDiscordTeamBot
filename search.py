@@ -1306,13 +1306,14 @@ class TeamExpander:
                     if 'WARBAND' in k['reference_name']
                     and k['colors']
                     ]
-        available_warbands = self.user_data['pShopWarbandsData']
-        for i, warband in enumerate(warbands):
+        warband_teams = self.user_data['pEconomyModel']['WarbandTeams']
+        available_warbands = [warband_teams[str(w)][0]['Data'] for w in self.user_data['pShopWarbandsData']]
+        for warband in warbands:
             self.translate_kingdom(warband, lang)
             if ':' in warband['name']:
                 warband['name'] = warband['name'].split(':')[1].strip()
             warband['available'] = ''
-            if i in available_warbands:
+            if warband['id'] in available_warbands:
                 warband['available'] = _('[AVAILABLE]', lang)
         return warbands
 
