@@ -980,6 +980,7 @@ class GameData:
                     'currency': COST_TYPES[entry['CostType']],
                     'tab': entry.get('Tab'),
                     'rewards': rewards,
+                    'visible': entry.get('Visible') == 'True',
                 }
 
     def populate_hoard_potions(self):
