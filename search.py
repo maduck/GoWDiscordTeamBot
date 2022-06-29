@@ -1301,9 +1301,19 @@ class TeamExpander:
         return storms
 
     def get_warbands(self, lang):
-        warbands = [k.copy() for k in self.kingdoms.values() if 'WARBAND' in k['reference_name']]
+        warbands = [k.copy() for k in self.kingdoms.values()
+                    if 'WARBAND' in k['reference_name']
+                    and k['colors']
+                    ]
+        available_warbands = {_(v['title'], lang) for k, v in self.store_data.items() if
+                              'Warband Team' in v['reference'] and v['visible']}
         for warband in warbands:
             self.translate_kingdom(warband, lang)
+            if ':' in warband['name']:
+                warband['name'] = warband['name'].split(':')[1].strip()
+            warband['available'] = ''
+            if warband['name'] in available_warbands:
+                warband['available'] = _('[AVAILABLE]', lang)
         return warbands
 
     def get_map_data(self, lang, location):

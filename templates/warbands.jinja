@@ -1,4 +1,4 @@
 {% for warband in warbands -%}
-<T>{% if ':' in warband.name %}{{ warband.name.split(':')[1] }}{% else %}{{ warband.name }}{% endif %}</T>
+<T>{{ warband.name }}{% if warband.available %} ({{ warband.available }}){% endif %}</T>
 {{ warband.banner|banner_colors|join(' ') }} **{{ warband.banner.name }}** `#{{ warband.id }}`
 {% endfor %}
