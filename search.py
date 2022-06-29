@@ -1400,7 +1400,7 @@ class TeamExpander:
         event_kingdom = self.search_kingdom(str(self.event_key_drops['kingdom_id']), lang)[0]
         event_mythics = [troop for troop in event_kingdom['troops']
                          if troop['raw_rarity'] == 'Mythic'
-                         and 'release_date' not in t
+                         and 'release_date' not in troop
                          and 'Boss' not in troop['raw_types']
                          and troop['id'] not in SOULFORGE_ALWAYS_AVAILABLE]
 
