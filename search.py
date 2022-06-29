@@ -80,6 +80,7 @@ class TeamExpander:
         self.weekly_event = world.weekly_event
         self.active_gems = world.gem_events
         self.store_data = world.store_data
+        self.user_data = world.user_data
         self.hoard_potions = world.hoard_potions
 
     @classmethod
@@ -1305,14 +1306,13 @@ class TeamExpander:
                     if 'WARBAND' in k['reference_name']
                     and k['colors']
                     ]
-        available_warbands = {_(v['title'], lang) for k, v in self.store_data.items() if
-                              'Warband Team' in v['reference'] and v['visible']}
-        for warband in warbands:
+        available_warbands = self.user_data['pShopWarbandsData']
+        for i, warband in enumerate(warbands):
             self.translate_kingdom(warband, lang)
             if ':' in warband['name']:
                 warband['name'] = warband['name'].split(':')[1].strip()
             warband['available'] = ''
-            if warband['name'] in available_warbands:
+            if i in available_warbands:
                 warband['available'] = _('[AVAILABLE]', lang)
         return warbands
 
