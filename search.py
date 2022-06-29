@@ -1,3 +1,4 @@
+import calendar
 import copy
 import datetime
 import importlib
@@ -5,7 +6,6 @@ import json
 import logging
 import operator
 import re
-from calendar import different_locale
 
 import translations
 from configurations import CONFIG
@@ -266,7 +266,7 @@ class TeamExpander:
             new_traits.append(new_trait)
         return new_traits
 
-    def search_kingdom(self, search_term, lang, include_warband=True):
+    def search_kingdom(self, search_term, lang):
         lookup_keys = ['name']
         return self.search_item(search_term, lang, items=self.kingdoms, lookup_keys=lookup_keys,
                                 translator=self.translate_kingdom)
@@ -369,7 +369,7 @@ class TeamExpander:
         _class['traits'] = self.enrich_traits(_class['traits'], lang)
         _class['weapon_title'] = _('[WEAPON]', lang)
         _class['talents'] = translated_trees
-        _class['trees'] = [_(f'[TALENT_TREE_{t.upper()}]', lang) for t in _class['trees']]
+        _class['trees'] = [_(f'[TALENT_TREE_{tree.upper()}]', lang) for tree in _class['trees']]
         _class['type_short'] = _(f'[TROOPTYPE_{_class["type"].upper()}]', lang)
         _class['type'] = _(f'[PERK_TYPE_{_class["type"].upper()}]', lang)
         _class['weapon_bonus'] = _('[MAGIC_BONUS]', lang) + " " + _(
@@ -379,8 +379,8 @@ class TeamExpander:
         possible_matches = []
         for tree in self.talent_trees.values():
             translated_name = extract_search_tag(_(tree['name'], lang))
-            translated_talents = [_(t['name'], lang) for t in tree['talents']]
-            talents_search_tags = [extract_search_tag(t) for t in translated_talents]
+            translated_talents = [_(talent['name'], lang) for talent in tree['talents']]
+            talents_search_tags = [extract_search_tag(talent) for talent in translated_talents]
             real_search = extract_search_tag(search_term)
             if real_search == translated_name or real_search in talents_search_tags:
                 result = tree.copy()
@@ -391,7 +391,7 @@ class TeamExpander:
                 self.translate_talent_tree(result, lang)
                 possible_matches.append(result)
             else:
-                talent_matches = [t for t in talents_search_tags if real_search in t]
+                talent_matches = [tag for tag in talents_search_tags if real_search in tag]
                 if talent_matches:
                     result = tree.copy()
                     result['talent_matches'] = talent_matches
@@ -427,7 +427,7 @@ class TeamExpander:
     def get_objects_by_trait(trait, objects, translator, lang):
         result = []
         for o in objects.values():
-            trait_codes = [t['code'] for t in o['traits']] if 'traits' in o else []
+            trait_codes = [trait['code'] for trait in o['traits']] if 'traits' in o else []
             if trait['code'] in trait_codes:
                 translated_object = o.copy()
                 translator(translated_object, lang)
@@ -564,13 +564,16 @@ class TeamExpander:
     def translate_traitstone(self, traitstone, lang):
         troops = []
         for troop_id in traitstone['troop_ids']:
-            amount = sum([t['amount'] for t in self.troops[troop_id]['traitstones'] if t['id'] == traitstone['id']])
+            amount = sum(troop['amount']
+                         for troop in self.troops[troop_id]['traitstones']
+                         if troop['id'] == traitstone['id'])
             troops.append([_(self.troops[troop_id]['name'], lang), amount])
         traitstone['troops'] = sorted(troops, key=operator.itemgetter(1), reverse=True)
 
         classes = []
         for class_id in traitstone['class_ids']:
-            amount = sum([t['amount'] for t in self.classes[class_id]['traitstones'] if t['id'] == traitstone['id']])
+            amount = sum(_class['amount'] for _class in self.classes[class_id]['traitstones']
+                         if _class['id'] == traitstone['id'])
             classes.append([_(self.classes[class_id]['name'], lang), amount])
         traitstone['classes'] = classes
 
@@ -605,7 +608,7 @@ class TeamExpander:
                 number = int(round(1 / multiplier))
                 divisor = f' / {number}'
             damage = f'[{multiplier_text}{magic}{divisor}{spell_amount}]'
-            number_of_replacements = len(re.findall(r'\{\d\}', description))
+            number_of_replacements = len(re.findall(r'\{\d}', description))
             has_half_replacement = len(spell['effects']) == number_of_replacements - 1
             if '{2}' in description and has_half_replacement:
                 multiplier *= 0.5
@@ -725,7 +728,7 @@ class TeamExpander:
             troop = self.troops[entry['gacha']]
             troop_name = _(troop['name'], lang)
             entry['kingdom_id'] = troop['kingdom_id']
-            troop_types = [_(f'[TROOPTYPE_{t.upper()}]', lang) for t in troop['types']]
+            troop_types = [_(f'[TROOPTYPE_{tt.upper()}]', lang) for tt in troop['types']]
             entry['extra_info'] = f'{troop_name} ({", ".join(troop_types)})'
         elif entry['type'] in ('[WEEKLY_EVENT]', '[RARITY_5]') and entry['gacha'] and entry['gacha'] in self.troops:
             troop = self.troops[entry['gacha']]
@@ -743,7 +746,7 @@ class TeamExpander:
 
         locale = translations.LANGUAGE_CODE_MAPPING.get(lang, lang)
         locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
-        with different_locale(locale):
+        with calendar.different_locale(locale):
             entry['formatted_start'] = entry['start'].strftime('%b %d')
             entry['start_day'] = entry['start'].strftime('%A')
             entry['formatted_end'] = entry['end'].strftime('%b %d')
@@ -758,7 +761,7 @@ class TeamExpander:
         result = {'heading': f'{_("[CAMPAIGN]", lang)}: {_("[TASKS]", lang)}'}
         tiers = ['bronze', 'silver', 'gold']
         result['campaigns'] = {
-            f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(t, lang) for t in self.campaign_tasks[tier]]
+            f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(task, lang) for task in self.campaign_tasks[tier]]
             for i, tier in reversed(list(enumerate(tiers))) if _filter is None or tier.lower() == _filter.lower()
         }
         formatted_start, start_date = get_next_monday_in_locale(date=None, lang=lang)
@@ -780,7 +783,7 @@ class TeamExpander:
     def get_reroll_tasks(self, lang, _filter=None):
         tiers = ['bronze', 'silver', 'gold']
         tasks = {
-            f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(t, lang) for t in self.reroll_tasks[tier]]
+            f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(task, lang) for task in self.reroll_tasks[tier]]
             for i, tier in reversed(list(enumerate(tiers))) if _filter is None or tier.lower() == _filter.lower()
         }
         return tasks
@@ -899,12 +902,12 @@ class TeamExpander:
             stone_name = _(stone, lang)
             troops = [
                 {
-                    'name': _(self.troops[t['troop_id']]['name'], lang),
-                    'rarity': self.troops[t['troop_id']]['rarity'],
-                    'count': t['count'],
-                    'id': t['troop_id']
+                    'name': _(self.troops[troop['troop_id']]['name'], lang),
+                    'rarity': self.troops[troop['troop_id']]['rarity'],
+                    'count': troop['count'],
+                    'id': troop['troop_id']
                 }
-                for t in contents
+                for troop in contents
             ]
             result[stone_name] = troops
         return title, result
@@ -975,11 +978,11 @@ class TeamExpander:
                     continue
                 if kingdom['id'] in hidden_kingdoms:
                     continue
-                all_troops = [self.troops.get(t) for t in kingdom['troop_ids']]
-                available_troops = [t for t in all_troops if t and t.get('release_date', now) <= now]
+                all_troops = [self.troops.get(troop_id) for troop_id in kingdom['troop_ids']]
+                available_troops = [troop for troop in all_troops if troop and troop.get('release_date', now) <= now]
                 if not available_troops:
                     continue
-                fitting_troops = [t for t in available_troops if filter_ in t[filter_name]]
+                fitting_troops = [troop for troop in available_troops if filter_ in troop[filter_name]]
                 kingdoms.append({
                     'name': _(kingdom['name'], lang),
                     'total': len(available_troops),
@@ -1066,7 +1069,6 @@ class TeamExpander:
             })
         requirements['jewels'] = jewels
         kingdom = self.kingdoms[weapon['kingdom_id']]
-        alternate_kingdom = None
         alternate_kingdom_name = None
         alternate_kingdom_filename = None
         if alternate_kingdom_id:
@@ -1240,7 +1242,7 @@ class TeamExpander:
 
         locale = translations.LANGUAGE_CODE_MAPPING.get(lang, lang)
         locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
-        with different_locale(locale):
+        with calendar.different_locale(locale):
             event['formatted_start'] = event['start'].strftime('%b %d')
             event['formatted_end'] = event['end'].strftime('%b %d')
 
@@ -1386,11 +1388,11 @@ class TeamExpander:
                 reward['name'] = _(reward['name'], lang)
 
         event_kingdom = self.search_kingdom(str(self.event_key_drops['kingdom_id']), lang)[0]
-        event_mythics = [t for t in event_kingdom['troops']
-                         if t['raw_rarity'] == 'Mythic'
+        event_mythics = [troop for troop in event_kingdom['troops']
+                         if troop['raw_rarity'] == 'Mythic'
                          and 'release_date' not in t
-                         and 'Boss' not in t['raw_types']
-                         and t['id'] not in SOULFORGE_ALWAYS_AVAILABLE]
+                         and 'Boss' not in troop['raw_types']
+                         and troop['id'] not in SOULFORGE_ALWAYS_AVAILABLE]
 
         event_chest_drops = {
             'troops': event_mythics,
