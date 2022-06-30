@@ -858,7 +858,7 @@ class TeamExpander:
 
     def get_spoilers(self, lang):
         spoilers = []
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
         near_term_spoilers = [s for s in self.spoilers if now <= s['date'] <= now + datetime.timedelta(days=180)]
         for spoiler in near_term_spoilers:
             translated = self.translate_spoiler(spoiler, lang)
