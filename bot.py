@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.77.1'
+    VERSION = '0.78.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -120,6 +120,7 @@ class DiscordBot(BaseBot):
 
         await self.update_base_emojis()
         self.views.my_emojis = self.my_emojis
+        self.expander.my_emojis = self.my_emojis
         log.info(f'Logged in as {self.user.name}')
         log.info(f'Active in {len(self.guilds)} guilds.')
 
@@ -474,6 +475,7 @@ class DiscordBot(BaseBot):
 
     class_ = partialmethod(handle_search, title='Class')
     kingdom = partialmethod(handle_search, title='Kingdom')
+    faction = partialmethod(handle_search, title='Faction', formatter='{0[color_emojis]} {0[name]}')
     pet = partialmethod(handle_search, title='Pet', formatter='{0.name} `#{0.id}`')
     weapon = partialmethod(handle_search, title='Weapon')
     affix = partialmethod(handle_search, title='Affix',

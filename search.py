@@ -45,6 +45,7 @@ def update_translations():
 class TeamExpander:
 
     def __init__(self):
+        self.my_emojis = None
         world = GameData()
         world.populate_world_data()
         self.troops = world.troops
@@ -272,6 +273,12 @@ class TeamExpander:
         return self.search_item(search_term, lang, items=self.kingdoms, lookup_keys=lookup_keys,
                                 translator=self.translate_kingdom)
 
+    def search_faction(self, search_term, lang):
+        lookup_keys = ['name', 'colors']
+        items = {k: v for k, v in self.kingdoms.items() if v['underworld']}
+        return self.search_item(search_term, lang, items=items, lookup_keys=lookup_keys,
+                                translator=self.translate_kingdom)
+
     def kingdom_summary(self, lang):
         kingdoms = [k.copy() for k in self.kingdoms.values() if k['location'] == 'krystara' and len(k['colors']) > 0]
         for kingdom in kingdoms:
@@ -317,6 +324,8 @@ class TeamExpander:
         if 'primary_color' in kingdom:
             deed_num = COLORS.index(kingdom['primary_color'])
             kingdom['deed'] = _(f'[DEED{deed_num:02d}]', lang)
+        color_emojis = [self.my_emojis.get(c) for c in kingdom['colors']]
+        kingdom['color_emojis'] = "".join(color_emojis)
         kingdom['color_title'] = _('[GEM_MASTERY]', lang)
         kingdom['stat_title'] = _('[STAT_BONUS]', lang)
         if 'class_id' in kingdom:

@@ -139,9 +139,17 @@ COMMAND_REGISTRY = [
     {
         'function': 'kingdom',
         'pattern': re.compile(
-            SEARCH_PATTERN.format('(kingdom|faction)'), MATCH_OPTIONS
+            SEARCH_PATTERN.format('kingdom'), MATCH_OPTIONS
         ),
         'description': 'Search kingdoms',
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
+    },
+    {
+        'function': 'faction',
+        'pattern': re.compile(
+            SEARCH_PATTERN.format('faction'), MATCH_OPTIONS
+        ),
+        'description': 'Search factions',
         'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
