@@ -394,7 +394,7 @@ class GameData:
     @staticmethod
     def get_datetime(val):
         date_format = '%m/%d/%Y %I:%M:%S %p %Z'
-        return datetime.datetime.strptime(val, date_format)
+        return datetime.datetime.strptime(val, date_format).replace(tzinfo=datetime.timezone.utc)
 
     def populate_release_dates(self):
         release: dict
@@ -659,12 +659,14 @@ class GameData:
 
         def has_enough(items):
             items = [i for i in items.values() if i.get('kingdom_id') in valid_ids]
-            items = [i for i in items if 'release_date' not in i or i['release_date'] <= datetime.datetime.now()]
+            now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+            items = [i for i in items if 'release_date' not in i or i['release_date'] <= now]
             return len(items) >= task['XValue']
 
         def has_enough_new_style(items):
             items = [i.data for i in items.items.values() if i.data.get('kingdom_id') in valid_ids]
-            items = [i for i in items if 'release_date' not in i or i['release_date'] <= datetime.datetime.now()]
+            now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+            items = [i for i in items if 'release_date' not in i or i['release_date'] <= now]
             return len(items) >= task['XValue']
 
         if task['Task'] in ('IncreaseKingdomLevel', 'CompleteQuestline', 'Complete{x}ChallengesIn{y}'):
