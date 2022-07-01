@@ -979,7 +979,7 @@ class TeamExpander:
 
     def kingdom_percentage(self, filter_name, filter_values, lang):
         result = {}
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
         hidden_kingdoms = [3032, 3033, 3034, 3038]
 
         for filter_ in filter_values:
