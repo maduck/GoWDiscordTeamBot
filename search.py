@@ -274,7 +274,7 @@ class TeamExpander:
                                 translator=self.translate_kingdom)
 
     def search_faction(self, search_term, lang):
-        lookup_keys = ['name', 'colors']
+        lookup_keys = ['name', 'translated_colors']
         items = {k: v for k, v in self.kingdoms.items() if v['underworld']}
         return self.search_item(search_term, lang, items=items, lookup_keys=lookup_keys,
                                 translator=self.translate_kingdom)
@@ -326,6 +326,7 @@ class TeamExpander:
             kingdom['deed'] = _(f'[DEED{deed_num:02d}]', lang)
         color_emojis = [self.my_emojis.get(c) for c in kingdom['colors']]
         kingdom['color_emojis'] = "".join(color_emojis)
+        kingdom['translated_colors'] = [_(f'[GEM_{c.upper()}]', lang) for c in kingdom['colors']]
         kingdom['color_title'] = _('[GEM_MASTERY]', lang)
         kingdom['stat_title'] = _('[STAT_BONUS]', lang)
         if 'class_id' in kingdom:
