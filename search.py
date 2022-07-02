@@ -687,7 +687,7 @@ class TeamExpander:
 
     def guess_weekly_kingdom_from_troop_spoilers(self, lang):
         result = {}
-        latest_date = datetime.datetime.utcnow()
+        latest_date = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
         for spoiler in self.spoilers:
             if spoiler['type'] == 'troop' \
                     and spoiler['date'].weekday() == 0 \
