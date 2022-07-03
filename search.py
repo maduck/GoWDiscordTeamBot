@@ -43,9 +43,9 @@ def update_translations():
 
 
 class TeamExpander:
+    my_emojis = {}
 
     def __init__(self):
-        self.my_emojis = None
         world = GameData()
         world.populate_world_data()
         self.troops = world.troops
