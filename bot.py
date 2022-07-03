@@ -422,6 +422,9 @@ class DiscordBot(BaseBot):
             return
 
         await self.wait_until_ready()
+        if not self.expander.my_emojis:
+            log.debug('Emojis vanished from Expander, refreshing.')
+            self.expander.my_emojis = self.my_emojis
 
         user_command = message.content.strip()
         my_prefix = self.prefix.get(message.guild)
