@@ -296,6 +296,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'talents',
+        'pattern': re.compile(f'{DEFAULT_PATTERN}talent(tree)?s', MATCH_OPTIONS),
+        'description': 'Show all class talents',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'traitstones',
         'pattern': re.compile(
             SEARCH_PATTERN.format('traitstone'), MATCH_OPTIONS

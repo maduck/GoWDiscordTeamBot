@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.78.3'
+    VERSION = '0.79.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -487,6 +487,11 @@ class DiscordBot(BaseBot):
     trait = partialmethod(handle_search, title='Trait', formatter='{0[name]}')
     talent = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
     traitstones = partialmethod(handle_search, title='Traitstone', formatter='{0[name]}')
+
+    async def talents(self, message, lang, **kwargs):
+        talents = self.expander.get_all_talents(lang)
+        e = self.views.render_all_talents(talents, lang)
+        await self.answer(message, e)
 
     async def pet_rescue(self, message, search_term, lang, time_left=59, mention='', **kwargs):
         pets = self.expander.pets.search(search_term, lang, name_only=True)

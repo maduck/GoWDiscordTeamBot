@@ -386,6 +386,14 @@ class TeamExpander:
         _class['weapon_bonus'] = _('[MAGIC_BONUS]', lang) + " " + _(
             f'[MAGIC_BONUS_{COLORS.index(_class["weapon_color"])}]', lang)
 
+    def get_all_talents(self, lang):
+        result = []
+        for input_tree in self.talent_trees.values():
+            tree = input_tree.copy()
+            self.translate_talent_tree(tree, lang)
+            result.append(tree)
+        return sorted(result, key=operator.itemgetter('name'))
+
     def search_talent(self, search_term, lang):
         possible_matches = []
         for tree in self.talent_trees.values():
