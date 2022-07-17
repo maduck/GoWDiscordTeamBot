@@ -901,7 +901,7 @@ class GameData:
 
         self.weekly_event = {
             'id': self.event_raw_data['Id'],
-            'shop_tiers': [self.store_data[gacha] for gacha in self.event_raw_data['GachaItems']
+            'shop_tiers': [self.store_data[gacha] for gacha in self.event_raw_data.get('GachaItems', [])
                            if gacha in self.store_data],
             'kingdom_id': str(self.event_raw_data.get('Kingdom')),
             'type': self.event_raw_data.get('Type'),
