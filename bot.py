@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.79.2'
+    VERSION = '0.79.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -142,7 +142,7 @@ class DiscordBot(BaseBot):
         return None, None
 
     @owner_required
-    async def world_map(self, message, lang, location, **kwargs):
+    async def world_map(self, message, lang, location='krystara', **kwargs):
         async with message.channel.typing():
             start = time.time()
             map_data = self.expander.get_map_data(lang, location)
