@@ -886,6 +886,8 @@ class GameData:
                 if minimum_battles and minimum_battles <= battles:
                     minimum_tier = tier
                     break
+            if EVENT_TYPES[self.weekly_event['type']] == '[JOURNEY]':
+                minimum_tier = min(minimum_tier, 3)
             self.weekly_event['minimum_tier'] = minimum_tier
 
         def get_first_battles():
