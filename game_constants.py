@@ -134,6 +134,7 @@ EVENT_TYPES = {
     12: '[ARENA]',
     13: '[JOURNEY]',
     14: '[KINGDOM_PASS]',
+    15: '[LEGENDS_REBORN]',
 }
 SOULFORGE_ALWAYS_AVAILABLE = [
     6428,  # Xathenos
