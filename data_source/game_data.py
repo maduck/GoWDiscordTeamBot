@@ -893,9 +893,11 @@ class GameData:
         def get_first_battles():
             battles = []
             for battle in self.event_raw_data.get('BattleArray', []):
-                name = battle['Name']['en_US']
+                if 'Name' not in battle:
+                    continue
+
                 battles.append({
-                    'name': name,
+                    'name': battle['Name']['en_US'],
                     'rarity': TROOP_RARITIES[battle['Color']],
                     'icon': battle['Icon'],
                 })
