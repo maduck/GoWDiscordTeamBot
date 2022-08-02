@@ -3,7 +3,7 @@
 {%- endmacro %}
 {% for platform in status %}
 <T>{{ platform.sFriendlyName }}</T>
-{% for status in platform.pStatusArray %}{{ status_type(type=status.nType) }} {{ status.pDescription.en_US }}
+{% for status in platform.pStatusArray %}{{ status_type(type=status.nType) }} {% if status.sUrl %}[{{ status.pDescription.en_US }}]({{ status.sUrl }}){% else %}{{ status.pDescription.en_US }}{% endif %}
 {% endfor %}
 {% else %}
 <T>Error</T>
