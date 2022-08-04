@@ -879,6 +879,18 @@ class GameData:
                 avg_score = sum(all_scores) / len(all_scores)
                 minimum_battles = math.ceil(avg_battles * score_per_member / avg_score)
 
+            if EVENT_TYPES.get(self.weekly_event['type']) == '[RAIDBOSS]':
+                """
+                formula for damage to score conversion is:
+                score = 0.2 battles^2 + 7 battles - 220
+                
+                inverted:
+                battles = 1/2 (-sqrt(20 score + 5625) - 35)
+                
+                boss starts after 10 fights, with a level 20, and increases by 5 each battle.                
+                """
+                minimum_battles = (minimum_battles - 20) // 5 + 10
+
             self.weekly_event['minimum_battles'] = minimum_battles
             tier_battles = [62, 67, 75, 81, 94]
             minimum_tier = 5
