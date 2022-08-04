@@ -14,8 +14,8 @@
 {% endfor %}**{{ weapon_title }}**: {% if event.weapon_restrictions %}{% for r, v in event.weapon_restrictions.items() -%}
 {{ r }}: {{ v }}{% endfor %}{% else %}-{% endif %}{% endif %}
 {% if event.rewards %}<T>__**{{ rewards }}**__</T>
-{% for stage, rewards in event.rewards.items() -%}
-` {{ "%02s" | format(stage) }} ` {% for reward in rewards.rewards %}{% if reward.amount != 1 %}{{ reward.amount }} {% endif %}{{ reward.type }}{% if not loop.last %}, {% endif %}{% endfor %} | {{ rewards.points }}
+{% for stage in event.rewards.values() -%}
+` {{ stage.name }} ` {% for reward in stage.rewards %}{% if reward.amount != 1 %}{{ reward.amount }} {% endif %}{{ reward.type }}{% if not loop.last %}, {% endif %}{% endfor %} | {{ stage.points }}
 {% endfor %}
 <T>__**{{ calculated_score_title }}**__</T>
 {{ points_needed }}

@@ -1180,8 +1180,15 @@ class TeamExpander:
             'value': _('[N_TIMES_POINTS]', lang).replace('%1', str(currency['value']))
         } for currency in event['currencies']]
 
-        for stage in event['rewards'].keys():
-            for reward in event['rewards'][stage]['rewards']:
+        for stage, stage_reward in event['rewards'].items():
+            stage_reward['name'] = _('[REWARD_N]', lang).replace('%1', str(stage))
+            if EVENT_TYPES[event['type']] == '[RAIDBOSS]':
+                if stage <= 2:
+                    stage_reward['name'] = _('[MINIONS_N]').replace('%1', str(stage))
+                else:
+                    stage_reward['name'] = _('[PORTAL_N]', lang).replace('%1', str(stage - 2))
+
+            for reward in stage_reward['rewards']:
                 reward_type = reward['type']
                 reward['type'] = _(reward_type, lang).replace('%1', '').strip()
                 if reward_type == '[TITLE]':
