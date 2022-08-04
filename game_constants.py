@@ -136,6 +136,7 @@ EVENT_TYPES = {
     14: '[KINGDOM_PASS]',
     15: '[LEGENDS_REBORN]',
 }
+
 SOULFORGE_ALWAYS_AVAILABLE = [
     6428,  # Xathenos
     6529,  # Zuul'Goth
@@ -153,6 +154,7 @@ SOULFORGE_ALWAYS_AVAILABLE = [
     1113,  # Dawnbringer
     1374,  # Duskbringer
 ]
+
 SOULFORGE_REQUIREMENTS = {
     'UltraRare': {
         'jewels': 300,
@@ -179,6 +181,7 @@ SOULFORGE_REQUIREMENTS = {
         'Commonrewards_icon_soul_small_full.png': 60000,
     }
 }
+
 UNDERWORLD_SOULFORGE_REQUIREMENTS = {
     'Epic': {
         'jewels': 400,
