@@ -819,6 +819,16 @@ COMMAND_REGISTRY = [
             MATCH_OPTIONS,
         ),
     },
+    {
+        'function': 'dungeon_traps',
+        'pattern': re.compile(DEFAULT_PATTERN + r'dungeon_traps?', MATCH_OPTIONS),
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
+        'function': 'dungeon_altars',
+        'pattern': re.compile(DEFAULT_PATTERN + r'dungeon_altars?', MATCH_OPTIONS),
+        'options': [STANDARD_OPTIONS['lang']],
+    },
 ]
 
 

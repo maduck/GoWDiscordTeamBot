@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.80.0'
+    VERSION = '0.81.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -780,6 +780,16 @@ class DiscordBot(BaseBot):
     async def warbands(self, message, lang, **kwargs):
         warbands = self.expander.get_warbands(lang)
         e = self.views.render_warbands(warbands, lang)
+        await self.answer(message, e)
+
+    async def dungeon_altars(self, message, lang, **kwargs):
+        boons = self.expander.get_dungeon_altars(lang)
+        e = self.views.render_dungeon_features(boons, lang)
+        await self.answer(message, e)
+
+    async def dungeon_traps(self, message, lang, **kwargs):
+        boons = self.expander.get_dungeon_traps(lang)
+        e = self.views.render_dungeon_features(boons, lang)
         await self.answer(message, e)
 
     @guild_required

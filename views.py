@@ -668,3 +668,7 @@ class Views:
         talent_list = [t['name'] for t in talents]
         e = discord.Embed(title=_('[TALENTS]'), description='\n'.join(talent_list), colour=self.WHITE)
         return e
+
+    def render_dungeon_features(self, items, lang):
+        e = discord.Embed(title=_('[DUNGEON]', lang), colour=self.WHITE)
+        return self.render_embed(e, "dungeon.jinja", items=items)

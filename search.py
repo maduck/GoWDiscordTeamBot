@@ -1484,3 +1484,23 @@ class TeamExpander:
             percentage = 100 * amount / total_rescues
             stats.append([pet, amount, percentage])
         return sorted(stats, key=operator.itemgetter(2, 1), reverse=True), total_rescues
+
+    @staticmethod
+    def get_dungeon_altars(lang):
+        altars = []
+        for i in range(7):
+            altars.append({
+                'name': _(f'[DUNGEON_TITLE_ALTAR_{i}]', lang),
+                'description': _(f'[DUNGEON_DESCRIPTION_ALTAR_{i}]', lang),
+            })
+        return altars
+
+    @staticmethod
+    def get_dungeon_traps(lang):
+        traps = []
+        for i in range(10):
+            traps.append({
+                'name': _(f'[DUNGEON_TITLE_TRAP_{i}]', lang),
+                'description': _(f'[DUNGEON_DESCRIPTION_TRAP_{i}]', lang),
+            })
+        return traps
