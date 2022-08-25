@@ -362,6 +362,8 @@ class Views:
         content = self.transform_news_article(article['content'], article['url'])
         self.enrich_author(e, article['author'])
         for title, text in content.items():
+            if len(title) > 256:
+                title = f'{title[:250]} ...'
             if not text:
                 text = '-'
             e.add_field(name=title, value=text, inline=False)
