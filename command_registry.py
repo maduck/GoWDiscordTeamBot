@@ -823,11 +823,13 @@ COMMAND_REGISTRY = [
         'function': 'dungeon_traps',
         'pattern': re.compile(DEFAULT_PATTERN + r'dungeon_traps?', MATCH_OPTIONS),
         'options': [STANDARD_OPTIONS['lang']],
+        'description': 'Show traps that occur in the daily Dungeon',
     },
     {
         'function': 'dungeon_altars',
         'pattern': re.compile(DEFAULT_PATTERN + r'dungeon_altars?', MATCH_OPTIONS),
         'options': [STANDARD_OPTIONS['lang']],
+        'description': 'Show altars that occur in the daily Dungeon',
     },
 ]
 
