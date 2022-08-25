@@ -17,5 +17,6 @@
   "register_slash_commands": true,
   "slash_command_guild_id": null,
   "special_users": [],
-  "data_shift_hours": 0
+  "data_shift_hours": 0,
+  "taran_token": ""
 }

@@ -321,9 +321,9 @@ class TowerOfDoomData:
             unlock_room = unlock_rooms[0]
         return f'{floor}:{unlock_room}'
 
-    def download_from_taran(self, message, map_name, version):
+    def download_from_taran(self, message, map_name, version, token=''):
         headers = {'user-agent': f'garyatrics.com-discord-bot-{version}'}
-        download_url = f'https://www.taransworld.com/DoomMap/main.pl?mapName={map_name.upper()}&txt=1'
+        download_url = f'https://www.taransworld.com/DoomMap/main.pl?mapName={map_name.upper()}&txt=1&token={token}'
         r = requests.get(download_url, headers=headers)
         try:
             r.raise_for_status()
