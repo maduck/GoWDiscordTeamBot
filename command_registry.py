@@ -312,7 +312,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'event_kingdoms',
         'pattern': re.compile(
-            f'{DEFAULT_PATTERN}events? kingdoms?$', MATCH_OPTIONS
+            f'{DEFAULT_PATTERN}events?[_ ]kingdoms?$', MATCH_OPTIONS
         ),
         'description': 'Show upcoming weekly event kingdoms',
         'options': [STANDARD_OPTIONS['lang']],
