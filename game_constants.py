@@ -107,6 +107,7 @@ WEAPON_RARITIES = (
     'Mythic',
     'Doomed'
 )
+
 RARITY_COLORS = {
     'Common': (255, 254, 255),
     'Uncommon': (84, 168, 31),
@@ -118,11 +119,13 @@ RARITY_COLORS = {
     'Mythic': (19, 227, 246),
 
 }
+
 CAMPAIGN_COLORS = {
     '[MEDAL_LEVEL_0]': discord.Color.from_rgb(164, 73, 32),
     '[MEDAL_LEVEL_1]': discord.Color.from_rgb(159, 159, 159),
     '[MEDAL_LEVEL_2]': discord.Color.from_rgb(238, 191, 15),
 }
+
 TASK_SKIP_COSTS = {
     '[MEDAL_LEVEL_0]': 50,
     '[MEDAL_LEVEL_1]': 100,
@@ -211,6 +214,7 @@ COST_TYPES = (
 )
 
 
+# public enum RewardTypes
 class RewardTypes(enum.IntEnum):
     Gems = 0
     Gold = 1
@@ -271,10 +275,26 @@ class RewardTypes(enum.IntEnum):
     ArtifactLevel = 60
     DeedBook = 61
     EpicVaultKeys = 62
-    RandomTroop = 63
-    ChampionLevelUp = 64
-    ChampionTraitsUnlocked = 65
-    DelveChestUpgrade = 66
-    DelveAttempts = 67
-    FactionRenown = 68
-    LiveEventPoints = 69
+    ShrineOffering = 63
+    WarCoins = 64
+    WarbandTeam = 65
+    WarbandBooster = 66
+    Verse = 67
+    GnomeAPalooza = 68
+    RoyalKingdomPass = 69
+    RoyalKingdomBoost = 70
+    KingdomPassLevel = 72
+    CursedRune = 73
+    NewHeroPass = 74
+    FeatureUnlock = 75
+    AdventureKeys = 76
+    Dragonite = 79
+    RandomTroop = 80
+    ChampionLevelUp = 81
+    ChampionTraitsUnlocked = 82
+    DelveChestUpgrade = 83
+    DelveAttempts = 84
+    FactionRenown = 85
+    LiveEventPoints = 86
+    TeamSlot = 87
+    Banner = 88
