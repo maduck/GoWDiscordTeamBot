@@ -1498,7 +1498,7 @@ class TeamExpander:
     @staticmethod
     def get_dungeon_traps(lang):
         traps = []
-        for i in range(10):
+        for i in range(11):
             traps.append({
                 'name': _(f'[DUNGEON_TITLE_TRAP_{i}]', lang),
                 'description': _(f'[DUNGEON_DESCRIPTION_TRAP_{i}]', lang),
