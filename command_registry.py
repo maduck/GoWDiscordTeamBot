@@ -114,7 +114,7 @@ COMMAND_REGISTRY = [
             SEARCH_PATTERN.format('tr(oop)?'), MATCH_OPTIONS
         ),
         'description': 'Search troops',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
     },
     {
         'function': 'trait',
