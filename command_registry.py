@@ -416,7 +416,10 @@ COMMAND_REGISTRY = [
                 'description': 'Category',
                 'type': OptionType.STRING.value,
                 'required': True,
-                'choices': ['rooms', 'scrolls'],
+                'choices': [
+                    {'name': 'Rooms', 'value': 'rooms'},
+                    {'name': 'Scrolls', 'value': 'scrolls'},
+                ],
             },
             {
                 'name': 'field',
@@ -448,7 +451,10 @@ COMMAND_REGISTRY = [
                 'description': 'Option',
                 'type': OptionType.STRING.value,
                 'required': True,
-                'choices': ['short', 'hide'],
+                'choices': [
+                    {'name': 'Short', 'value': 'short'},
+                    {'name': 'Hide', 'value': 'hide'}
+                ],
             },
             {
                 'name': 'value',
