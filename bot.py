@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.82.2'
+    VERSION = '0.82.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -610,6 +610,8 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
         if team_code:
             await message.channel.send(content=f'[{team_code}]')
+
+    tc = team_code
 
     async def foodies(self, message, lang, foodie_no, max_foodies, base_url, title, subtitle):
         random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)

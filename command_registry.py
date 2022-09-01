@@ -494,6 +494,27 @@ COMMAND_REGISTRY = [
         ],
     },
     {
+        'function': 'tc',
+        # TODO adapt to something more strict, maybe this?
+        # \[(?P<weapon_troops>([167]\d{3},?)+){1,4}(?P<banner>3\d{3},?)?(?P<talents>([0-3]{1},?){7})?(?P<class>\d{5})?\]
+        'pattern': re.compile(
+            NO_QUOTE
+            + LANG_PATTERN
+            + r'((?P<shortened>-)|(?P<lengthened>\+))?\[(?P<team_code>(\d+,?){1,13})].*',
+            MATCH_OPTIONS | re.DOTALL,
+        ),
+        'description': 'shortheand for team_code',
+        'options': [
+            {
+                'name': 'team_code',
+                'description': 'team code',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['lang'],
+        ],
+    },
+    {
         'function': 'news_subscribe',
         'pattern': re.compile(
             r'^(?P<prefix>.)news subscribe( (?P<platform>pc|switch))?$',
