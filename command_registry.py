@@ -154,7 +154,7 @@ COMMAND_REGISTRY = [
             SEARCH_PATTERN.format('kingdom'), MATCH_OPTIONS
         ),
         'description': 'Search kingdoms',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
     },
     {
         'function': 'faction',
