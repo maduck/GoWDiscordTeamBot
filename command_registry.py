@@ -162,7 +162,7 @@ COMMAND_REGISTRY = [
             SEARCH_PATTERN.format('faction'), MATCH_OPTIONS
         ),
         'description': 'Search factions',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
     },
     {
         'function': 'show_pet_rescue_config',
