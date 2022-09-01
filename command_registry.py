@@ -383,6 +383,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'show_prefix',
         'pattern': re.compile(f'{DEFAULT_PATTERN}prefix$', MATCH_OPTIONS),
+        'description': 'Shows the current server\'s command prefix',
     },
     {
         'function': 'change_prefix',
@@ -393,10 +394,12 @@ COMMAND_REGISTRY = [
     {
         'function': 'show_tower_help',
         'pattern': re.compile(f'{DEFAULT_PATTERN}towerhelp$', MATCH_OPTIONS),
+        'description': 'Shows the tower specific help',
     },
     {
         'function': 'show_tower_config',
         'pattern': re.compile(f'{DEFAULT_PATTERN}towerconfig$', MATCH_OPTIONS),
+        'description': 'Shows the current server\'s tower config',
     },
     {
         'function': 'set_tower_config_alias',
@@ -427,6 +430,16 @@ COMMAND_REGISTRY = [
             DEFAULT_PATTERN + 'tower taran (?P<map_name>[a-zA-Z0-9]{1,20})$',
             MATCH_OPTIONS,
         ),
+        'options': [
+            {
+                'name': 'map_name',
+                'description': 'map name as entered in taransworld.com',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+        ],
+        'description': 'Imports a tower map from Taran\'s World',
     },
     {
         'function': 'show_tower_data',
@@ -434,13 +447,20 @@ COMMAND_REGISTRY = [
             DEFAULT_PATTERN + r'tower( (?P<range>\d+-\d+))?$', MATCH_OPTIONS
         ),
         'options': [
-            # TODO add range option
+            {
+                'name': 'range',
+                'description': 'Provide range, format: x-y',
+                'type': OptionType.STRING.value,
+                'required': False,
+                'choices': [],
+            },
             STANDARD_OPTIONS['shortened'],
         ]
     },
     {
         'function': 'clear_tower_data',
         'pattern': re.compile(f'{DEFAULT_PATTERN}towerclear$', MATCH_OPTIONS),
+        'description': 'Clears the tower data for the current server',
     },
     {
         'function': 'edit_tower_single',
@@ -449,6 +469,29 @@ COMMAND_REGISTRY = [
             + r'(?P<prefix>.)tower (?P<floor>[^ ]+) (?P<room>[^ ]+) (?P<scroll>[^ ]+)$',
             MATCH_OPTIONS,
         ),
+        'options': [
+            {
+                'name': 'floor',
+                'description': 'Tower floor',
+                'type': OptionType.INTEGER.value,
+                'required': True,
+                'choices': [],
+            },
+            {
+                'name': 'room',
+                'description': 'Tower room',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+            {
+                'name': 'scroll',
+                'description': 'Scroll',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+        ]
     },
     {
         'function': 'edit_tower_floor',
@@ -460,6 +503,51 @@ COMMAND_REGISTRY = [
             ),
             MATCH_OPTIONS,
         ),
+        'description': 'Edit a whole floor for Tower of Doom',
+        'options': [
+            {
+                'name': 'floor',
+                'description': 'Tower floor',
+                'type': OptionType.INTEGER.value,
+                'required': True,
+                'choices': [],
+            },
+            {
+                'name': 'scroll_ii',
+                'description': 'Scroll for room II',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+            {
+                'name': 'scroll_iii',
+                'description': 'Scroll for room III',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+            {
+                'name': 'scroll_iv',
+                'description': 'Scroll for room IV',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+            {
+                'name': 'scroll_v',
+                'description': 'Scroll for room V',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+            {
+                'name': 'scroll_vi',
+                'description': 'Scroll for room VI',
+                'type': OptionType.STRING.value,
+                'required': False,
+                'choices': [],
+            },
+        ]
     },
     {
         'function': 'delete_bookmark',
@@ -468,6 +556,15 @@ COMMAND_REGISTRY = [
             + r'bookmark delete (?P<bookmark_id>[a-zA-Z0-9]+)$',
             MATCH_OPTIONS,
         ),
+        'description': 'Deletes an existing bookmark',
+        'options': [
+            {
+                'name': 'bookmark_id',
+                'description': 'Bookmark ID',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+        ],
     },
     {
         'function': 'create_bookmark',
