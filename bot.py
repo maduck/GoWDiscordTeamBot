@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.82.5'
+    VERSION = '0.82.6'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -291,15 +291,13 @@ class DiscordBot(BaseBot):
             e.add_field(name=category, value=message_lines, inline=True)
         await self.answer(message, e)
         if kwargs.get('lengthened'):
-            await self.summoning_stones(message, lang)
+            title, stones = self.expander.get_summons(lang)
+            e = self.views.render_summoning_stones(title, stones, lang)
+            await message.channel.send(embed=e)
 
     async def summoning_stones(self, message, lang, **kwargs):
         title, stones = self.expander.get_summons(lang)
-        e = discord.Embed(title=title, description=_('[SUMMONING_STONE_DESC]', lang), color=self.WHITE)
-        for category, troops in stones.items():
-            message_lines = '\n'.join([f'{t["count"]}x {self.my_emojis.get(t["rarity"])} {t["name"]}' for t in troops])
-            e.add_field(name=category, value=message_lines, inline=True)
-        e.set_footer(text=_('[SUMMONING_STONE_MENU_TIP]', lang))
+        e = self.views.render_summoning_stones(title, stones, lang)
         await self.answer(message, e)
 
     async def about(self, message, lang, **kwargs):
@@ -864,6 +862,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def show_toplist(self, message, toplist_id, lang, **kwargs):
+        print(repr(toplist_id))
         toplist = self.expander.translate_toplist(toplist_id, lang)
         e = self.views.render_toplist(toplist)
         await self.answer(message, e)

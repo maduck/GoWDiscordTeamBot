@@ -672,3 +672,11 @@ class Views:
     def render_dungeon_features(self, items, lang):
         e = discord.Embed(title=_('[DUNGEON]', lang), colour=self.WHITE)
         return self.render_embed(e, "dungeon.jinja", items=items)
+
+    def render_summoning_stones(self, title, stones, lang):
+        e = discord.Embed(title=title, description=_('[SUMMONING_STONE_DESC]', lang), color=self.WHITE)
+        for category, troops in stones.items():
+            message_lines = '\n'.join([f'{t["count"]}x {self.my_emojis.get(t["rarity"])} {t["name"]}' for t in troops])
+            e.add_field(name=category, value=message_lines, inline=True)
+        e.set_footer(text=_('[SUMMONING_STONE_MENU_TIP]', lang))
+        return e
