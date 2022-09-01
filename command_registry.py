@@ -409,6 +409,30 @@ COMMAND_REGISTRY = [
               r' (?P<values>.+)$',
             MATCH_OPTIONS,
         ),
+        'description': 'Sets a tower configuration alias',
+        'options': [
+            {
+                'name': 'category',
+                'description': 'Category',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': ['rooms', 'scrolls'],
+            },
+            {
+                'name': 'field',
+                'description': 'Field',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+            {
+                'name': 'values',
+                'description': 'Values',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+        ],
     },
     {
         'function': 'set_tower_config_option',
@@ -417,6 +441,23 @@ COMMAND_REGISTRY = [
                               r' (?P<value>.+)$',
             MATCH_OPTIONS,
         ),
+        'description': 'Sets a tower configuration option',
+        'options': [
+            {
+                'name': 'option',
+                'description': 'Option',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': ['short', 'hide'],
+            },
+            {
+                'name': 'value',
+                'description': 'Value',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [],
+            },
+        ],
     },
     {
         'function': 'reset_tower_config',
