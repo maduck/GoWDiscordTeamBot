@@ -305,7 +305,7 @@ COMMAND_REGISTRY = [
             SEARCH_PATTERN.format('talent(tree)?'), MATCH_OPTIONS
         ),
         'description': 'Search class talents',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
     },
     {
         'function': 'talents',
