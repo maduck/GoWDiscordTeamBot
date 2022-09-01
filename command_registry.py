@@ -33,7 +33,13 @@ STANDARD_OPTIONS = {
         'type': OptionType.STRING.value,
         'required': False,
         'choices': [{'name': v, 'value': k} for k, v in LANGUAGES.items() if k not in ('ru', 'cn')],
-    }
+    },
+    'shortened': {
+        'name': 'shortened',
+        'description': 'less data on output',
+        'type': OptionType.BOOLEAN.value,
+        'required': False,
+    },
 }
 
 NO_QUOTE = r'^([^>].*?)??'
