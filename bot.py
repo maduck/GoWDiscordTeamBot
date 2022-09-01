@@ -1072,6 +1072,8 @@ class DiscordBot(BaseBot):
             return False
         if not theirs or not mine:
             return True
+        if len(theirs) != len(mine):
+            return True
         their_options = theirs[0]
         my_options = mine[0]
         if 'required' in my_options and not my_options['required']:
@@ -1101,16 +1103,19 @@ class DiscordBot(BaseBot):
     async def register_slash_commands(self):
         guild_id = CONFIG.get('slash_command_guild_id')
         existing_commands = await get_all_commands(self.user.id, TOKEN, guild_id=guild_id)
+        re_register_commands = []
         for command in existing_commands:
             if self.command_changed(command) or CONFIG.get('deregister_slash_commands'):
                 log.debug(f'Deregistering slash command {command["name"]}...')
+                re_register_commands.append(command['name'])
                 await remove_slash_command(self.user.id, TOKEN, guild_id, command['id'])
         if not CONFIG.get('register_slash_commands'):
             return
         for command in COMMAND_REGISTRY:
             if 'description' not in command:
                 continue
-            if command['function'] in [c['name'] for c in existing_commands]:
+            if command['function'] in [c['name'] for c in existing_commands] \
+                    and command['function'] not in re_register_commands:
                 continue
             log.debug(f'Registering slash command {command["function"]}...')
             await add_slash_command(self.user.id,
