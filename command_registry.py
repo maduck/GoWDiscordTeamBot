@@ -62,7 +62,7 @@ COMMAND_REGISTRY = [
             f'{LENGTHENED_PATTERN}(ce|current_event)$', MATCH_OPTIONS
         ),
         'description': 'Shows current event details',
-        'options': [STANDARD_OPTIONS['lang']],
+        'options': [STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
     },
     {
         'function': 'active_gems',
@@ -427,6 +427,10 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(
             DEFAULT_PATTERN + r'tower( (?P<range>\d+-\d+))?$', MATCH_OPTIONS
         ),
+        'options': [
+            # TODO add range option
+            STANDARD_OPTIONS['shortened'],
+        ]
     },
     {
         'function': 'clear_tower_data',
@@ -466,6 +470,7 @@ COMMAND_REGISTRY = [
             + r'bookmark (?P<description>[^,]+)? (\[(?P<team_code>(\d+,?){1,13})])$',
             MATCH_OPTIONS,
         ),
+        'options': [STANDARD_OPTIONS['shortened']]
     },
     {
         'function': 'show_bookmark',
@@ -473,6 +478,7 @@ COMMAND_REGISTRY = [
             f'{DEFAULT_PATTERN}bookmark (?P<bookmark_id>[a-zA-Z0-9]+)$',
             MATCH_OPTIONS,
         ),
+        'options': [STANDARD_OPTIONS['shortened']]
     },
     {
         'function': 'show_my_bookmarks',
@@ -497,6 +503,7 @@ COMMAND_REGISTRY = [
                 'required': True,
             },
             STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
         ],
     },
     {
@@ -518,6 +525,7 @@ COMMAND_REGISTRY = [
                 'required': True,
             },
             STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
         ],
     },
     {
