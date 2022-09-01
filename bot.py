@@ -594,6 +594,12 @@ class DiscordBot(BaseBot):
         return e
 
     async def team_code(self, message, lang, team_code, shortened='', lengthened='', **kwargs):
+        if team_code.startswith('+'):
+            team_code = team_code[1:]
+            lengthened = True
+        if team_code.startswith('-'):
+            team_code = team_code[1:]
+            shortened = True
         if team_code.startswith('['):
             team_code = team_code[1:-1]
         team = self.expander.get_team_from_message(team_code, lang)
