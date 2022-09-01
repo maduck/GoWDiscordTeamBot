@@ -718,6 +718,28 @@ COMMAND_REGISTRY = [
             + r'toplist update (?P<toplist_id>[a-zA-Z0-9]+) (?P<description>[^,]+)? (?P<items>(.+,?)+)$',
             MATCH_OPTIONS,
         ),
+        'description': 'Overwrite an existing toplist',
+        'options': [
+            {
+                'name': 'toplist_id',
+                'description': 'Toplist ID',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            {
+                'name': 'description',
+                'description': 'Description',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            {
+                'name': 'items',
+                'description': 'Items (Weapons & Troops, comma separated)',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['lang'],
+        ],
     },
     {
         'function': 'append_toplist',
@@ -726,6 +748,22 @@ COMMAND_REGISTRY = [
             + r'toplist append (?P<toplist_id>[a-zA-Z0-9]+) (?P<items>(.+,?)+)$',
             MATCH_OPTIONS,
         ),
+        'description': 'Add item(s) to an existing toplist',
+        'options': [
+            {
+                'name': 'toplist_id',
+                'description': 'Toplist ID',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            {
+                'name': 'items',
+                'description': 'Items (Weapons & Troops, comma separated)',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['lang'],
+        ],
     },
     {
         'function': 'delete_toplist',
@@ -733,6 +771,16 @@ COMMAND_REGISTRY = [
             f'{DEFAULT_PATTERN}toplist delete (?P<toplist_id>[a-zA-Z0-9]+)$',
             MATCH_OPTIONS,
         ),
+        'description': 'Deletes an existing toplist',
+        'options': [
+            {
+                'name': 'toplist_id',
+                'description': 'Toplist ID',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['lang'],
+        ]
     },
     {
         'function': 'create_toplist',
@@ -741,6 +789,22 @@ COMMAND_REGISTRY = [
             + r'toplist (?P<description>[^,]+)? (?P<items>(.+,?)+)$',
             MATCH_OPTIONS,
         ),
+        'description': 'Creates a new toplist',
+        'options': [
+            {
+                'name': 'description',
+                'description': 'Description',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            {
+                'name': 'items',
+                'description': 'Items (Weapons & Troops, comma separated)',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['lang'],
+        ],
     },
     {
         'function': 'show_toplist',
@@ -748,10 +812,22 @@ COMMAND_REGISTRY = [
             f'{DEFAULT_PATTERN}toplist (?P<toplist_id>[a-zA-Z0-9]+)$',
             MATCH_OPTIONS,
         ),
+        'description': 'Show an existing toplist',
+        'options': [
+            {
+                'name': 'toplist_id',
+                'description': 'Toplist ID',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['lang'],
+        ],
     },
     {
         'function': 'show_my_toplists',
         'pattern': re.compile(f'{DEFAULT_PATTERN}toplists$', MATCH_OPTIONS),
+        'description': 'Show toplists created by you',
+        'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'show_permissions',
