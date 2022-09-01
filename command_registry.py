@@ -120,7 +120,7 @@ COMMAND_REGISTRY = [
         'function': 'trait',
         'pattern': re.compile(SEARCH_PATTERN.format('trait'), MATCH_OPTIONS),
         'description': 'Search traits',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
     },
     {
         'function': 'weapon',
