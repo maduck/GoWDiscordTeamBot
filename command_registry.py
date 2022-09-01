@@ -132,7 +132,7 @@ COMMAND_REGISTRY = [
         'function': 'affix',
         'pattern': re.compile(SEARCH_PATTERN.format('affix'), MATCH_OPTIONS),
         'description': 'Search weapon affixes',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang']],
+        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
     },
     {
         'function': 'kingdom_summary',
