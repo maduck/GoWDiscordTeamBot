@@ -40,6 +40,12 @@ STANDARD_OPTIONS = {
         'type': OptionType.BOOLEAN.value,
         'required': False,
     },
+    'lengthened': {
+        'name': 'lengthened',
+        'description': 'more data on output',
+        'type': OptionType.BOOLEAN.value,
+        'required': False,
+    },
 }
 
 NO_QUOTE = r'^([^>].*?)??'
@@ -62,7 +68,7 @@ COMMAND_REGISTRY = [
             f'{LENGTHENED_PATTERN}(ce|current_event)$', MATCH_OPTIONS
         ),
         'description': 'Shows current event details',
-        'options': [STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened'], STANDARD_OPTIONS['lengthened']],
     },
     {
         'function': 'active_gems',
@@ -504,6 +510,7 @@ COMMAND_REGISTRY = [
             },
             STANDARD_OPTIONS['lang'],
             STANDARD_OPTIONS['shortened'],
+            STANDARD_OPTIONS['lengthened'],
         ],
     },
     {
@@ -526,6 +533,7 @@ COMMAND_REGISTRY = [
             },
             STANDARD_OPTIONS['lang'],
             STANDARD_OPTIONS['shortened'],
+            STANDARD_OPTIONS['lengthened'],
         ],
     },
     {
@@ -682,7 +690,7 @@ COMMAND_REGISTRY = [
             f'{LENGTHENED_PATTERN}soulforge$', MATCH_OPTIONS
         ),
         'description': 'Show this week\'s craftable items in Soulforge',
-        'options': [STANDARD_OPTIONS['lang']],
+        'options': [STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['lengthened']],
     },
     {
         'function': 'summoning_stones',
