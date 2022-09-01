@@ -37,7 +37,7 @@ class PetContainer(BaseGameDataContainer):
             'name': data['Name'],
             'colors': convert_color_array(data),
             'color_code': ''.join(convert_color_array(data)),
-            'effect': EFFECT_TRANSLATIONS[data['Effect']],
+            'effect': EFFECT_TRANSLATIONS[data['Effect']] if 'Effect' in data else '[N/A]',
             'effect_data': data.get('EffectData'),
             'effect_title': '[BONUS]',
             'troop_type': data.get('EffectTroopType'),

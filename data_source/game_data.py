@@ -269,7 +269,7 @@ class GameData:
                 'id': spell['Id'],
                 'name': spell['Name'],
                 'description': spell['Description'],
-                'cost': spell['Cost'],
+                'cost': spell.get('Cost', '[N/A]'),
                 'effects': spell_effects,
                 'boost': boost,
             }
