@@ -476,7 +476,23 @@ COMMAND_REGISTRY = [
             + r'bookmark (?P<description>[^,]+)? (\[(?P<team_code>(\d+,?){1,13})])$',
             MATCH_OPTIONS,
         ),
-        'options': [STANDARD_OPTIONS['shortened']]
+        'description': 'Create a new bookmark',
+        'options': [
+            {
+                'name': 'description',
+                'description': 'Description',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            {
+                'name': 'team_code',
+                'description': 'Team Code',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['shortened'],
+            STANDARD_OPTIONS['lang'],
+        ]
     },
     {
         'function': 'show_bookmark',
@@ -484,11 +500,22 @@ COMMAND_REGISTRY = [
             f'{DEFAULT_PATTERN}bookmark (?P<bookmark_id>[a-zA-Z0-9]+)$',
             MATCH_OPTIONS,
         ),
-        'options': [STANDARD_OPTIONS['shortened']]
+        'description': 'Show an existing bookmark',
+        'options': [
+            {
+                'name': 'bookmark_id',
+                'description': 'Bookmark ID',
+                'type': OptionType.STRING.value,
+                'required': True,
+            },
+            STANDARD_OPTIONS['shortened'],
+            STANDARD_OPTIONS['lang'],
+        ],
     },
     {
         'function': 'show_my_bookmarks',
         'pattern': re.compile(f'{DEFAULT_PATTERN}bookmarks$', MATCH_OPTIONS),
+        'description': 'Show my own bookmarks',
     },
     {
         'function': 'team_code',
