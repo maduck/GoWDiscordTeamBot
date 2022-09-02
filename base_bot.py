@@ -186,6 +186,9 @@ class BaseBot(discord.Client):
             'data': {
                 'embeds': [embed.to_dict()] if embed else [],
                 'content': content,
+                'allowed_mentions': {
+                    'parse': ['roles', 'users', 'everyone']
+                }
             },
             'flags': 0,
         }
