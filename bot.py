@@ -1096,9 +1096,9 @@ class DiscordBot(BaseBot):
         if command['name'] not in my_commands:
             return True
         my_command = my_commands[command['name']]
-        if command['description'] != my_command['description']:
-            log.debug(f'Command description changed: {command["name"]}: {command["description"]!r} vs '
-                      f'{my_command["description"]!r}')
+        if command.get('description') != my_command.get('description'):
+            log.debug(f'Command description changed: {command["name"]}: {command.get("description")!r} vs '
+                      f'{my_command.get("description")!r}')
             return True
         if diff := cls.options_changed(command.get('options'), my_command.get('options')):
             log.debug(f'Command options changed: {command["name"]}: {diff!r}')
