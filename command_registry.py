@@ -694,7 +694,7 @@ COMMAND_REGISTRY = [
             + r'((?P<shortened>-)|(?P<lengthened>\+))?\[(?P<team_code>(\d+,?){1,13})].*',
             MATCH_OPTIONS | re.DOTALL,
         ),
-        'description': 'shortheand for team_code',
+        'description': 'shorthand for team_code',
         'options': [
             {
                 'name': 'team_code',
