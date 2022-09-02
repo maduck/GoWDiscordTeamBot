@@ -274,6 +274,33 @@ COMMAND_REGISTRY = [
         ],
     },
     {
+        'function': 'pr',
+        'pattern': re.compile(
+            DEFAULT_PATTERN
+            + '(pr|pet rescue) (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?m(ins?)?)?)?( (?P<mention><?@.+))?$',
+            MATCH_OPTIONS,
+        ),
+        'description': 'Shorthand for /pet_rescue',
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            {
+                'name': 'time_left',
+                'description': 'time left for rescue, max 59 minutes',
+                'type': OptionType.INTEGER.value,
+                'required': False,
+                'min_value': 0,
+                'max_value': 59,
+            },
+            {
+                'name': 'mention',
+                'description': 'person or role to mention, defaults to `@everyone`',
+                'type': OptionType.STRING.value,
+                'required': False,
+            },
+            STANDARD_OPTIONS['lang'],
+        ],
+    },
+    {
         'function': 'pet_rescue_stats',
         'pattern': re.compile(f'{DEFAULT_PATTERN}pet_rescue_stats', MATCH_OPTIONS),
         'description': 'Show pets available in pet rescues',

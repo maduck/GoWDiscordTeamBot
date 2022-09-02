@@ -515,6 +515,8 @@ class DiscordBot(BaseBot):
         await rescue.create_or_edit_posts(e)
         await rescue.add(self.pet_rescues)
 
+    pr = pet_rescue
+
     async def show_pet_rescue_config(self, message, lang, **kwargs):
         config = self.pet_rescue_config.get(message.channel)
 
