@@ -519,6 +519,7 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(
             DEFAULT_PATTERN + r'tower( (?P<range>\d+-\d+))?$', MATCH_OPTIONS
         ),
+        'description': 'Shows the current Tower of Doom floors.',
         'options': [
             {
                 'name': 'range',
