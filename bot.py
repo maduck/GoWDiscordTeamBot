@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.82.7'
+    VERSION = '0.82.8'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -97,6 +97,7 @@ class DiscordBot(BaseBot):
             if 'lang' not in options:
                 options['lang'] = self.language.get(message.guild)
             options['lang'] = LANGUAGE_CODE_MAPPING.get(options['lang'], options['lang'])
+            options['prefix'] = self.prefix.get(message.guild)
             debug(message)
             await function(message=message, **options)
         except discord.HTTPException as e:
