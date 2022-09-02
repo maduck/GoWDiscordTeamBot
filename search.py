@@ -86,7 +86,7 @@ class TeamExpander:
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
-        numbers = [int(n.strip()) for n in raw_code.split(',') if n]
+        numbers = [int(n.strip()) for n in raw_code.split(',') if n and n.isdigit()]
         return numbers
 
     def get_team_from_code(self, code, lang):
