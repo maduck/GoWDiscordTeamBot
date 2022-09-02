@@ -157,7 +157,7 @@ class TowerOfDoomData:
         if not my_data:
             return True, ''
         channel = str(message.channel.id)
-        if not floor.isdigit():
+        if type(floor) != int and not floor.isdigit():
             return False, 'Invalid floor number'
         floor = int(floor)
         try:
