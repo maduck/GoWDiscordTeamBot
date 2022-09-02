@@ -383,7 +383,6 @@ COMMAND_REGISTRY = [
     {
         'function': 'show_prefix',
         'pattern': re.compile(f'{DEFAULT_PATTERN}prefix$', MATCH_OPTIONS),
-        'description': 'Shows the current server\'s command prefix',
     },
     {
         'function': 'change_prefix',
