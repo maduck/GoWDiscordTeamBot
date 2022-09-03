@@ -1032,6 +1032,7 @@ COMMAND_REGISTRY = [
         'pattern': re.compile(
             f'{DEFAULT_PATTERN}permissions?$', MATCH_OPTIONS
         ),
+        'description': 'Check and show missing permissions',
     },
     {
         'function': 'world_map',
