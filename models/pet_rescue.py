@@ -41,7 +41,7 @@ class PetRescue:
 
     @property
     def reminder(self):
-        return f'{self.mention} {self.pet.name}'
+        return f'{self.message.author.name}: {self.mention} {self.pet.name}'
 
     @staticmethod
     def get_amount():
@@ -115,7 +115,8 @@ class PetRescue:
                 message = FakeMessage('author', guild, channel, 'content')
                 if entry['message_id']:
                     message = await channel.fetch_message(entry['message_id'])
-            except discord.errors.DiscordException:
+            except discord.errors.DiscordException as e:
+                log.warning(f'Pet rescue is broken: {e}')
                 broken_rescues.append(entry['id'])
                 continue
             rescue = PetRescue(
