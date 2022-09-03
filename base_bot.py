@@ -155,7 +155,7 @@ class BaseBot(discord.Client):
     async def answer(self, message, embed: discord.Embed, content='', no_interaction=False):
         try:
             if not embed:
-                return await self.answer_or_react(message, embed, content)
+                return await self.answer_or_react(message, embed, content, no_interaction)
             self.embed_check_limits(embed)
             if message.author and message.author.avatar:
                 embed.set_author(name=message.author.display_name, icon_url=message.author.avatar.url)
@@ -178,11 +178,11 @@ class BaseBot(discord.Client):
 
     @staticmethod
     async def send_slash_command_result(message, embed, content, file=None,
-                                        response_type=InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE.value):
+                                        response_type=InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE):
         endpoint = f'interactions/{message.interaction_id}/{message.interaction_token}/callback'
-        url = f'https://discord.com/api/v8/{endpoint}'
+        url = f'https://discord.com/api/v10/{endpoint}'
         response = {
-            'type': response_type,
+            'type': response_type.value,
             'data': {
                 'embeds': [embed.to_dict()] if embed else [],
                 'content': content,
@@ -193,7 +193,9 @@ class BaseBot(discord.Client):
             'flags': 0,
         }
         async with aiohttp.ClientSession() as session:
-            await session.post(url, headers={"Authorization": f"Bot {os.getenv('DISCORD_TOKEN')}"}, json=response)
+            r = await session.post(url, headers={"Authorization": f"Bot {os.getenv('DISCORD_TOKEN')}"}, json=response)
+            r.raise_for_status()
+            return message.id
 
     async def delete_slash_command_interaction(self, message):
         endpoint = f'webhooks/{self.application_id}/{message.interaction_token}/messages/@original'
