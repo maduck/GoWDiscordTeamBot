@@ -178,6 +178,7 @@ class PetRescue:
             db.cursor.execute(query, params)
             db.cursor.execute(stats_query, stats_params)
             db.commit()
+            db.close()
             pet_rescues.append(self)
 
     @staticmethod
