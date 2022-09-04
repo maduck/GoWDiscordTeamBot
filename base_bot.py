@@ -48,7 +48,9 @@ class FakeChannel:
     def __init__(self, channel):
         self.typing = FakeTyping
         self.channel = channel
-        self.permissions_for = channel.permissions_for
+        self.permissions_for = None
+        if hasattr(channel, 'permissions_for'):
+            self.permissions_for = channel.permissions_for
         self.recipient = None
 
     def send(self, *args, **kwargs):
