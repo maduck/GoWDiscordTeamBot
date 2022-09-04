@@ -197,7 +197,8 @@ class BaseBot(discord.Client):
         }
         async with aiohttp.ClientSession() as session:
             r = await session.post(url, headers={"Authorization": f"Bot {os.getenv('DISCORD_TOKEN')}"}, json=response)
-            r.raise_for_status()
+            if r.status != 404:
+                r.raise_for_status()
             return message.id
 
     async def delete_slash_command_interaction(self, message):
