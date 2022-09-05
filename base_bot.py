@@ -206,7 +206,8 @@ class BaseBot(discord.Client):
         url = f'https://discord.com/api/v8/{endpoint}'
         async with aiohttp.ClientSession() as session:
             r = await session.delete(url, headers={"Authorization": f"Bot {os.getenv('DISCORD_TOKEN')}"})
-            r.raise_for_status()
+            if r.status != 404:
+                r.raise_for_status()
 
     async def on_slash_command(self, function, options, message):
         raise NotImplemented('This function has not been implemented.')
