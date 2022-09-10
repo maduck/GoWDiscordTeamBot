@@ -189,14 +189,23 @@ class PetRescue:
         return db.cursor.fetchall()
 
     async def remove_from_db(self):
-        await self.delete_by_id(alert_message_id=self.alert_message.id)
+        deletion_id = 0
+        if self.pet_message:
+            deletion_id = self.pet_message.id
+        await self.delete_by_id(pet_message_id=deletion_id)
 
     @staticmethod
-    async def delete_by_id(rescue_id=0, alert_message_id=0):
+    async def delete_by_id(rescue_id=0, pet_message_id=0):
         lock = asyncio.Lock()
         async with lock:
             db = DB()
-            query = 'DELETE FROM PetRescue WHERE id = ? OR alert_message_id = ?'
-            db.cursor.execute(query, [rescue_id, alert_message_id])
+            query = 'DELETE FROM PetRescue WHERE id = ? OR pet_message_id = ?'
+            db.cursor.execute(query, [rescue_id, pet_message_id])
             db.commit()
             db.close()
+
+    def __str__(self):
+        return f"<PetRescue {self.pet.name}" \
+               f"alert_message={self.alert_message} " \
+               f"pet_rescue={self.pet_message} " \
+               f">"

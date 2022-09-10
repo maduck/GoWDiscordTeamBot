@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.82.13'
+    VERSION = '0.82.14'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -508,8 +508,8 @@ class DiscordBot(BaseBot):
             if event['start_time'] <= now <= event['end_time'] and event['gacha'] == pet.id:
                 override_time_left = (event['end_time'] - now) / datetime.timedelta(minutes=1)
 
-        await self.answer(message, embed=None, content=_('[PETRESCUE]', lang))
         if hasattr(message, 'interaction_token'):
+            await self.answer(message, embed=None, content=_('[PETRESCUE]', lang))
             await self.delete_slash_command_interaction(message)
         answer_method = partial(self.answer, no_interaction=True)
         rescue = PetRescue(pet, time_left, message, mention, lang, answer_method, self.pet_rescue_config,
