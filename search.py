@@ -173,7 +173,9 @@ class TeamExpander:
 
     @staticmethod
     def search_item(search_term, lang, items, lookup_keys, translator, sort_by='name'):
-        if search_term.isdigit() and int(search_term) in items:
+        if search_term.isdigit():
+            if int(search_term) not in items:
+                return []
             item = items.get(int(search_term))
             if item:
                 result = item.copy()
