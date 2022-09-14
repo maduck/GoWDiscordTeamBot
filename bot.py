@@ -874,7 +874,6 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def show_toplist(self, message, toplist_id, lang, **kwargs):
-        print(repr(toplist_id))
         toplist = self.expander.translate_toplist(toplist_id, lang)
         e = self.views.render_toplist(toplist)
         await self.answer(message, e)
