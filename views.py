@@ -18,7 +18,7 @@ class Views:
 
     def __init__(self, emojis):
         self.my_emojis = emojis
-        self.jinja_env = Environment(loader=FileSystemLoader('templates'))
+        self.jinja_env = Environment(loader=FileSystemLoader('templates'), autoescape=True)
 
     def banner_colors(self, banner):
         return [f'{self.my_emojis.get(d[0], f":{d[0]}:")}{abs(d[1]) * f"{d[1]:+d}"[0]}' for d in banner['colors']]
