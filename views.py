@@ -158,9 +158,7 @@ class Views:
         e.title = f"{author} team"
         if title:
             e.title = title
-        template_file = 'team.jinja'
-        if lengthened:
-            template_file = 'team_lengthened.jinja'
+        template_file = 'team_lengthened.jinja' if lengthened else 'team.jinja'
         return self.render_embed(e, template_file, team=team)
 
     def render_kingdom(self, kingdom, shortened, lang):
