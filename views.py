@@ -664,8 +664,7 @@ class Views:
 
     def render_all_talents(self, talents, lang):
         talent_list = [t['name'] for t in talents]
-        e = discord.Embed(title=_('[TALENTS]'), description='\n'.join(talent_list), colour=self.WHITE)
-        return e
+        return discord.Embed(title=_('[TALENTS]'), description='\n'.join(talent_list), colour=self.WHITE)
 
     def render_dungeon_features(self, items, lang):
         e = discord.Embed(title=_('[DUNGEON]', lang), colour=self.WHITE)

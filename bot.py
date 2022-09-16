@@ -943,10 +943,7 @@ class DiscordBot(BaseBot):
         def xp_for(level):
             return int(1 / 2 * (level ** 2 + level))
 
-        low, high = sorted([
-            int(kwargs.get('from') if kwargs.get('from') else 0),
-            int(kwargs.get('to'))
-        ])
+        low, high = sorted([int(kwargs.get('from') or 0), int(kwargs.get('to'))])
         low = max(0, low)
         high = min(100, high)
 
@@ -969,32 +966,35 @@ class DiscordBot(BaseBot):
         if articles:
             log.debug(f'Distributing {len(articles)} news articles to {len(self.subscriptions)} channels.')
         for article in articles:
-            embeds = self.views.render_news(article)
-            for i, subscription in enumerate(self.subscriptions):
-                relevant_news = subscription.get(article['platform'])
-                if not relevant_news:
-                    continue
-                channel = self.get_channel(subscription['channel_id'])
-                if not channel:
-                    log.debug(f'Subscription {subscription} is broken, skipping.')
-                    continue
-                log.debug(f'[{i + 1}/{len(self.subscriptions)}] Sending [{article["platform"]}] {article["title"]} '
-                          f'to {channel.guild.name}/{channel.name}.')
-                if not await self.is_writable(channel):
-                    message = 'is not writable' if channel else 'does not exist'
-                    log.debug(f'Channel {message}.')
-                    continue
-                e = None
-                try:
-                    for e in embeds:
-                        await channel.send(embed=e)
-                except Exception as ex:
-                    log.error('Could not send out news, exception follows')
-                    if e:
-                        log.error(repr(e.fields))
-                    log.exception(ex)
+            await self.send_out_news(article)
         with open(NewsDownloader.NEWS_FILENAME, 'w') as f:
             f.write('[]')
+
+    async def send_out_news(self, article):
+        embeds = self.views.render_news(article)
+        for i, subscription in enumerate(self.subscriptions):
+            relevant_news = subscription.get(article['platform'])
+            if not relevant_news:
+                continue
+            channel = self.get_channel(subscription['channel_id'])
+            if not channel:
+                log.debug(f'Subscription {subscription} is broken, skipping.')
+                continue
+            log.debug(f'[{i + 1}/{len(self.subscriptions)}] Sending [{article["platform"]}] {article["title"]} '
+                      f'to {channel.guild.name}/{channel.name}.')
+            if not await self.is_writable(channel):
+                message = 'is not writable' if channel else 'does not exist'
+                log.debug(f'Channel {message}.')
+                continue
+            e = None
+            try:
+                for e in embeds:
+                    await channel.send(embed=e)
+            except Exception as ex:
+                log.error('Could not send out news, exception follows')
+                if e:
+                    log.error(repr(e.fields))
+                log.exception(ex)
 
     @guild_required
     @admin_required
@@ -1090,8 +1090,7 @@ class DiscordBot(BaseBot):
             their_options['required'] = False
         if 'choices' in my_options and not my_options['choices']:
             their_options['choices'] = []
-        options_diff = set(their_options) ^ set(my_options)
-        if options_diff:
+        if options_diff := set(their_options) ^ set(my_options):
             return options_diff
         return False
 
