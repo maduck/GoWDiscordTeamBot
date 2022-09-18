@@ -740,16 +740,31 @@ COMMAND_REGISTRY = [
             r'^(?P<prefix>.)news subscribe( (?P<platform>pc|switch))?$',
             MATCH_OPTIONS,
         ),
+        'description': 'Subscribe this channel to news',
+        'options': [
+            {
+                'name': 'platform',
+                'description': 'Platform to display news for',
+                'type': OptionType.STRING.value,
+                'required': False,
+                'choices': [
+                    {'name': 'PC / Mobile', 'value': 'pc'},
+                    {'name': 'Nintendo Switch', 'value': 'switch'},
+                ]
+            }
+        ]
     },
     {
         'function': 'news_unsubscribe',
         'pattern': re.compile(
             r'^(?P<prefix>.)news unsubscribe$', MATCH_OPTIONS
         ),
+        'description': 'Unsubscribe this channel from all news postings.',
     },
     {
         'function': 'news_status',
         'pattern': re.compile(r'^(?P<prefix>.)news( status)?$', MATCH_OPTIONS),
+        'description': 'Check whether this channel is subscribed to any news postings.',
     },
     {
         'function': 'waffles',
