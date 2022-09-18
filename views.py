@@ -443,7 +443,7 @@ class Views:
             name = f'{"".join(reward_emojis)} __{adventure["name"]}__ ({adventure["rarity"]})'
             rewards = ', '.join([f'{v} {k}' for k, v in adventure['rewards'].items()])
             e.add_field(name=name, value=rewards, inline=False)
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.utcnow()
         reset_time = now.replace(hour=7, minute=0, second=0, microsecond=0)
         time_left = reset_time + datetime.timedelta(hours=24) - now
         hours = time_left.seconds // 3600

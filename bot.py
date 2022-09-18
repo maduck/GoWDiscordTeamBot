@@ -501,7 +501,7 @@ class DiscordBot(BaseBot):
             return await self.answer(message, e)
         pet = pets[0]
         events = self.expander.get_events(lang)
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.utcnow()
         pet_events = [e for e in events if e['raw_type'] == '[PETRESCUE]']
         override_time_left = None
         for event in pet_events:
@@ -674,7 +674,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def server_status(self, message, **kwargs):
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
         if self.server_status_cache['last_updated'] <= now - datetime.timedelta(seconds=30):
             async with message.channel.typing():
                 r = requests.get('https://status.infinityplustwo.net/status_v2.txt')
