@@ -746,7 +746,7 @@ COMMAND_REGISTRY = [
                 'name': 'platform',
                 'description': 'Platform to display news for',
                 'type': OptionType.STRING.value,
-                'required': False,
+                'required': True,
                 'choices': [
                     {'name': 'PC / Mobile', 'value': 'pc'},
                     {'name': 'Nintendo Switch', 'value': 'switch'},
