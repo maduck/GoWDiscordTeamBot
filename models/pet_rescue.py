@@ -64,7 +64,10 @@ class PetRescue:
     async def create_or_edit_posts(self, embed):
         if self.pet_message and datetime.datetime.utcnow() - self.start_time <= self.DISPLAY_TIME:
             try:
-                embed.set_author(name=self.author, icon_url=self.author_url)
+                if self.author and self.author_url:
+                    embed.set_author(name=self.author)
+                elif self.author:
+                    embed.set_author(name=self.author, icon_url=self.author_url)
                 await self.pet_message.edit(embed=embed)
             except discord.errors.DiscordException as e:
                 log.warn(f'Error while editing pet rescue: {str(e)}')
@@ -75,7 +78,8 @@ class PetRescue:
                 self.update_mention()
                 if self.message.author:
                     self.author = self.message.author.display_name
-                    self.author_url = self.message.author.avatar.url
+                    if self.message.author.avatar:
+                        self.author_url = self.message.author.avatar.url
                 self.alert_message = await self.answer_method(self.message, embed=None, content=self.reminder)
             self.pet_message = await self.answer_method(self.message, embed)
         else:
