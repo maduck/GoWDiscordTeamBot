@@ -65,9 +65,9 @@ class PetRescue:
         if self.pet_message and datetime.datetime.utcnow() - self.start_time <= self.DISPLAY_TIME:
             try:
                 if self.author and self.author_url:
-                    embed.set_author(name=self.author)
-                elif self.author:
                     embed.set_author(name=self.author, icon_url=self.author_url)
+                elif self.author:
+                    embed.set_author(name=self.author)
                 await self.pet_message.edit(embed=embed)
             except discord.errors.DiscordException as e:
                 log.warn(f'Error while editing pet rescue: {str(e)}')
