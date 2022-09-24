@@ -23,6 +23,8 @@ class PetRescue:
         self.start_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=60 - time_left)
         self.active = True
         self.message = message
+        self.author = None
+        self.author_url = None
         self.mention = mention
         self.show_mention = True
         if self.mention and message.id:
@@ -62,6 +64,7 @@ class PetRescue:
     async def create_or_edit_posts(self, embed):
         if self.pet_message and datetime.datetime.utcnow() - self.start_time <= self.DISPLAY_TIME:
             try:
+                embed.set_author(name=self.author, icon_url=self.author_url)
                 await self.pet_message.edit(embed=embed)
             except discord.errors.DiscordException as e:
                 log.warn(f'Error while editing pet rescue: {str(e)}')
@@ -70,6 +73,9 @@ class PetRescue:
         elif not self.pet_message:
             if self.show_mention:
                 self.update_mention()
+                if self.message.author:
+                    self.author = self.message.author.display_name
+                    self.author_url = self.message.author.avatar.url
                 self.alert_message = await self.answer_method(self.message, embed=None, content=self.reminder)
             self.pet_message = await self.answer_method(self.message, embed)
         else:
@@ -130,6 +136,9 @@ class PetRescue:
                 if entry['alert_message_id']:
                     rescue.alert_message = await channel.fetch_message(entry['alert_message_id'])
                 rescue.pet_message = await channel.fetch_message(entry['pet_message_id'])
+                author = rescue.pet_message.embeds[0].author
+                rescue.author = author.name
+                rescue.author_url = author.icon_url
             except discord.errors.DiscordException:
                 broken_rescues.append(entry['id'])
                 continue
