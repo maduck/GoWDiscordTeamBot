@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import datetime
 import math
 
@@ -34,23 +35,22 @@ class PetRescue:
         self.pet_message = None
 
     def update_mention(self):
-        if not self.mention and self.message.guild:
-            self.mention = self.config.get('mention', self.message.guild.default_role)
-        elif not self.mention:
-            self.mention = self.config.get('mention', self.message.author.mention)
+        if not self.mention:
+            if self.message.guild:
+                self.mention = self.config.get('mention', self.message.guild.default_role)
+            else:
+                self.mention = self.config.get('mention', self.message.author.mention)
 
     @property
     def reminder(self):
-        return f'{self.message.author.name}: {self.mention} {self.pet.name}'
+        return f'{self.message.author.display_name}: {self.mention} {self.pet.name}'
 
     @staticmethod
     def get_amount():
         query = "SELECT seq FROM SQLITE_SEQUENCE WHERE name='PetRescue';"
         db = DB()
         db_result = db.cursor.execute(query).fetchone()
-        if not db_result:
-            return 0
-        return db_result[0]
+        return db_result[0] if db_result else 0
 
     @property
     def time_left(self):
@@ -92,10 +92,8 @@ class PetRescue:
         try:
             await message.delete()
         except (discord.errors.Forbidden, discord.errors.NotFound, discord.errors.HTTPException):
-            try:
+            with contextlib.suppress(discord.errors.DiscordException):
                 await message.add_reaction('⛔')
-            except discord.errors.DiscordException:
-                pass
 
     @classmethod
     async def load_rescues(cls, client):
