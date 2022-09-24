@@ -37,15 +37,15 @@ class Views:
         template = self.jinja_env.get_template(template_name)
         content = template.render(**kwargs)
 
-        for i, splitted in enumerate(content.split('<T>')):
+        for i, split in enumerate(content.split('<T>')):
             if i == 0:
-                embed.description = splitted
+                embed.description = split
             else:
-                title_end = splitted.index('</T>')
-                inline = splitted.startswith('inline')
+                title_end = split.index('</T>')
+                inline = split.startswith('inline')
                 embed.add_field(
-                    name=splitted[inline * len('inline'):title_end],
-                    value=splitted[title_end + 4:],
+                    name=split[inline * len('inline'):title_end],
+                    value=split[title_end + 4:],
                     inline=inline)
         return embed
 
