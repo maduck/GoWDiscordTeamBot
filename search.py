@@ -1478,7 +1478,7 @@ class TeamExpander:
         return potions
 
     def translate_pet_rescue_stats(self, raw_stats, lang):
-        total_rescues = sum([r['rescues'] for r in raw_stats])
+        total_rescues = sum(r['rescues'] for r in raw_stats)
         stats = []
         for row in raw_stats:
             pet = self.pets[row['pet_id']].translations[lang]
