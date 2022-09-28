@@ -677,3 +677,13 @@ class Views:
             e.add_field(name=category, value=message_lines, inline=True)
         e.set_footer(text=_('[SUMMONING_STONE_MENU_TIP]', lang))
         return e
+
+    def render_banners(self, banners, lang):
+        result = []
+        half_length = len(banners) // 2
+        for i, split_banners in enumerate((banners[:half_length], banners[half_length:])):
+            e = discord.Embed(title=f'{_("[BANNERS]", lang)} ({i + 1}/2)',
+                              description=_('[REWARD_HELP_DESC_BANNER]', lang),
+                              color=self.WHITE)
+            result.append(self.render_embed(e, "banners.jinja", banners=split_banners, offset=i * half_length))
+        return result

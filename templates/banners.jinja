@@ -1,0 +1,4 @@
+{%- set chunk = 5 -%}{% for banner in banners -%}
+{% if loop.index0 % chunk == 0 %}<T>{{ loop.index + offset }} - {{ loop.index + offset + chunk - 1 }}</T>{% endif -%}
+{{ banner.banner.name }} {{ banner['banner']|banner_colors|join(' ') }}
+{% endfor %}

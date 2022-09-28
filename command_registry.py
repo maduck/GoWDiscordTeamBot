@@ -892,6 +892,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
+        'function': 'banners',
+        'pattern': re.compile(f'{DEFAULT_PATTERN}banners$', MATCH_OPTIONS),
+        'description': 'Display all banners',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'warbands',
         'pattern': re.compile(f'{DEFAULT_PATTERN}warbands?$', MATCH_OPTIONS),
         'description': 'Shows all available Warband banners',

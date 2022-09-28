@@ -1344,6 +1344,12 @@ class TeamExpander:
                 warband['available'] = _('[AVAILABLE]', lang)
         return warbands
 
+    def get_banners(self, lang):
+        banners = [k.copy() for k in self.kingdoms.values() if k.get('colors')]
+        for banner in banners:
+            self.translate_kingdom(banner, lang)
+        return sorted(banners, key=lambda x: x['banner']['name'])
+
     def get_map_data(self, lang, location):
         if not location:
             location = 'krystara'
