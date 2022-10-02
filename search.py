@@ -862,6 +862,9 @@ class TeamExpander:
             troop_type = _(f'[TROOPTYPE_{task["value1"].upper()}]', lang)
             target_kingdom = troop_type_kingdoms[troop_type]['name']
             where = f' --> {target_kingdom}'
+        elif task['name'] == '[TASK_KILL_TREASURE_GNOMES]':
+            vault = _(self.kingdoms[3038]['name'], lang)
+            where = f' --> {vault}'
 
         new_task['name'] += where
 

@@ -17,7 +17,7 @@
   "[TASK_CRAFT_RECIPE_RED_SUMMON]": "Stelle {0} rote Beschwörungsstein\u0019\u0019e\u0019 her.",
   "[TASK_CRAFT_RECIPE_YELLOW_SUMMON]": "Stelle {0} gelbe Beschwörungsstein\u0019\u0019e\u0019 her.",
   "[TASK_ALL_ADVENTURE_BATTLES]": "Schließe {0} Mal die Abenteuer-Pinnwand ab.",
-  "[TASK_KILL_TREASURE_GNOMES]": "Benutze Kammerschlüssel, um {0} Schatzgnom\u0019\u0019e\u0019 zu töten.",
+  "[TASK_KILL_TREASURE_GNOMES]": "Töte {0} Schatzgnom\u0019\u0019e\u0019.",
   "[TASK_TREASURE_HUNT_MIN_TURNS]": "Beende {0} Schatzsuchen mit {1}+ Spiel\u0019zug\u0019zügen\u0019.",
   "[TASK_MATCH_GEM_SINGLE]": "Kombiniere {0} Edelstein\u0019\u0019e\u0019 der Farbe {Color}.",
   "[TASK_DELVE_AT_LEVEL]": "Schließe {0} Infiltration\u0019\u0019en\u0019 auf Level {Value1}+.",

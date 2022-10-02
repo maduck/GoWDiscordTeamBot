@@ -17,7 +17,7 @@
   "[TASK_CRAFT_RECIPE_RED_SUMMON]": "Craft {0} Red Summoning Stone\u0019\u0019s\u0019",
   "[TASK_CRAFT_RECIPE_YELLOW_SUMMON]": "Craft {0} Yellow Summoning Stone\u0019\u0019s\u0019",
   "[TASK_ALL_ADVENTURE_BATTLES]": "Complete {0} Adventure Board\u0019\u0019s\u0019",
-  "[TASK_KILL_TREASURE_GNOMES]": "Use a Vault Key to kill {0} Treasure Gnome\u0019\u0019s\u0019",
+  "[TASK_KILL_TREASURE_GNOMES]": "Kill {0} Treasure Gnome\u0019\u0019s\u0019",
   "[TASK_TREASURE_HUNT_MIN_TURNS]": "Complete {0} Treasure Hunt\u0019\u0019s\u0019 with {1}+ turns",
   "[TASK_MATCH_GEM_SINGLE]": "Match {0} {Color} Gem\u0019\u0019s\u0019 in battle",
   "[TASK_DELVE_AT_LEVEL]": "Complete {0} Delve\u0019\u0019s\u0019 at Level {Value1}+",
