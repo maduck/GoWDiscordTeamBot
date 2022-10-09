@@ -854,7 +854,7 @@ class GameData:
 
         def transform_battle(battle):
             return {
-                'names': {lang[0:2]: translation for lang, translation in
+                'names': {lang[:2]: translation for lang, translation in
                           battle['Name'].items()} if 'Name' in battle else {},
                 'icon': f'Liveevents/Liveeventslocationicons_{battle["Icon"]}_full.png' if 'Icon' in battle else '',
                 'rarity': TROOP_RARITIES[battle['Color']] if 'Color' in battle else '',
@@ -862,7 +862,7 @@ class GameData:
 
         def calculate_minimum_tier():
             score_per_member = math.ceil(
-                sum([r['points'] for r in self.weekly_event['rewards'].values()]) / 30)
+                sum(r['points'] for r in self.weekly_event['rewards'].values()) / 30)
             self.weekly_event['score_per_member'] = score_per_member
             minimum_battles = 0
             entry_no = 0
