@@ -775,6 +775,8 @@ class TeamExpander:
 
         entry['raw_type'] = entry['type']
         entry['type'] = _(entry['type'], lang)
+        if self.is_untranslated(entry['type']) and entry['names']:
+            entry['type'] = entry['names'][translations.LOCALE_MAPPING[lang].replace('en_GB', 'en_US')]
 
         return entry
 

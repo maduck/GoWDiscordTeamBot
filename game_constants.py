@@ -91,6 +91,7 @@ GEM_TUTORIAL_IDS = {
     'giantyellow': 3355,
     'giantpurple': 3355,
     'giantbrown': 3355,
+    'dragongem': 3356,
     'lootgold': None,
 }
 
@@ -156,6 +157,7 @@ EVENT_TYPES = {
     13: '[JOURNEY]',
     14: '[KINGDOM_PASS]',
     15: '[LEGENDS_REBORN]',
+    16: '[UNKNOWN]',
 }
 
 SOULFORGE_ALWAYS_AVAILABLE = [
