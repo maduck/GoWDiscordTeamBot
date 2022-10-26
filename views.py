@@ -489,7 +489,7 @@ class Views:
             'Nimhain': {
                 'url': 'https://community.gemsofwar.com/u/Nimhain',
                 'icon_url': 'https://sjc3.discourse-cdn.com/business5/'
-                            'user_avatar/community.gemsofwar.com/nimhain/360/47049.png'},
+                            'user_avatar/community.gemsofwar.com/nimhain/360/47049_2.png'},
             'Saltypatra': {
                 'url': 'https://community.gemsofwar.com/u/saltypatra/',
                 'icon_url': 'https://sjc3.discourse-cdn.com/business5/'
