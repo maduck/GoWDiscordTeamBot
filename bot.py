@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.85.1'
+    VERSION = '0.85.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -185,7 +185,7 @@ class DiscordBot(BaseBot):
             if hasattr(message, 'interaction_id'):
                 await self.send_slash_command_result(message, content="Image rendering below.", embed=None, file=None,
                                                      response_type=InteractionResponseType.
-                                                     DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE.value)
+                                                     DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE)
             start = time.time()
             weapon_data = self.expander.get_soulforge_weapon_image_data(search_term, release_date, switch, lang)
             if not weapon_data:
