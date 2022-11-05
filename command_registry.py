@@ -830,6 +830,8 @@ COMMAND_REGISTRY = [
             f'{DEFAULT_PATTERN}lang(uages?)? (?P<new_language>.+)$',
             MATCH_OPTIONS,
         ),
+        'description': 'Change the standard language for this server.',
+        'options': [STANDARD_OPTIONS['lang']]
     },
     {
         'function': 'campaign',
