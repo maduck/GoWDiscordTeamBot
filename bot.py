@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.85.2'
+    VERSION = '0.85.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -157,7 +157,7 @@ class DiscordBot(BaseBot):
     async def campaign_preview(self, message, lang, switch=None, team_code=None, **kwargs):
         switch = switch or CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
-            if hasattr(message, 'interaction_id') and message.interaction_id:
+            if self.is_interaction(message):
                 await self.send_slash_command_result(message,
                                                      response_type=InteractionResponseType.
                                                      CHANNEL_MESSAGE_WITH_SOURCE.value,
@@ -182,7 +182,7 @@ class DiscordBot(BaseBot):
         if switch is None:
             switch = CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
-            if hasattr(message, 'interaction_id'):
+            if self.is_interaction(message):
                 await self.send_slash_command_result(message, content="Image rendering below.", embed=None, file=None,
                                                      response_type=InteractionResponseType.
                                                      DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE)
@@ -198,7 +198,7 @@ class DiscordBot(BaseBot):
             duration = time.time() - start
             log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
             await message.channel.send(file=result)
-            if hasattr(message, 'interaction_id'):
+            if self.is_interaction(message):
                 await self.delete_slash_command_interaction(message)
 
     async def campaign(self, message, lang, tier=None, **kwargs):
@@ -600,6 +600,7 @@ class DiscordBot(BaseBot):
         return e
 
     async def team_code(self, message, lang, team_code, shortened='', lengthened='', **kwargs):
+        raw_team_code = team_code
         if team_code.startswith('+'):
             team_code = team_code[1:]
             lengthened = True
@@ -611,6 +612,8 @@ class DiscordBot(BaseBot):
         team = self.expander.get_team_from_message(team_code, lang)
         if not team or not team['troops']:
             log.debug(f'nothing found in message {team_code}.')
+            if self.is_interaction(message):
+                await self.answer(message, embed=None, content=f'Invalid Team Code: `{raw_team_code}`.')
             return
         author = message.author.display_name
         author = await pluralize_author(author)

@@ -314,3 +314,7 @@ class BaseBot(discord.Client):
         for channel in guild.text_channels:
             if channel.permissions_for(guild.me).send_messages:
                 return channel
+
+    @staticmethod
+    def is_interaction(message):
+        return hasattr(message, 'interaction_id') and message.interaction_id
