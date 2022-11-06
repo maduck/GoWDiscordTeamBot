@@ -831,7 +831,15 @@ COMMAND_REGISTRY = [
             MATCH_OPTIONS,
         ),
         'description': 'Change the standard language for this server.',
-        'options': [STANDARD_OPTIONS['lang']]
+        'options': [
+            {
+                'name': 'new_language',
+                'description': 'new language for this server',
+                'type': OptionType.STRING.value,
+                'required': True,
+                'choices': [{'name': v, 'value': k} for k, v in LANGUAGES.items() if k not in ('ru', 'cn')],
+            }
+        ]
     },
     {
         'function': 'campaign',
