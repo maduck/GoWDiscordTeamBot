@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.85.3'
+    VERSION = '0.85.4'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -741,10 +741,15 @@ class DiscordBot(BaseBot):
     @guild_required
     @admin_required
     async def import_tower_from_taran(self, message, map_name, **kwargs):
+        if self.is_interaction(message):
+            await self.answer(message, embed=None, content="Importing, please wait.")
+
         e = self.tower_data.download_from_taran(message, map_name,
                                                 version=self.VERSION,
                                                 token=CONFIG.get('taran_token'))
-        await self.answer(message, e)
+        await self.answer(message, e, no_interaction=True)
+        if self.is_interaction(message):
+            await self.delete_slash_command_interaction(message)
 
     @guild_required
     async def show_tower_data(self, message, **kwargs):
