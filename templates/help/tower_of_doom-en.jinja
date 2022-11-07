@@ -1,27 +1,20 @@
 <T>__Basics__</T>
-Users can use the `{{ prefix }}tower` command to enter Scroll data for the Tower of Doom, 
+Users can use the tower commands to enter Scroll data for the Tower of Doom,
 then display it for easy viewing. **Each Tower is specific to the channel it is in**.
 <T>__Entering Data__</T>
-To enter data, use the `{{ prefix }}tower` command. Shortened names or aliases can be used.
-`{{ prefix }}tower 4 ii unlock`
-`{{ prefix }}tower 5 rare fi`
-You can set a whole floor in one line:
-`{{ prefix }}tower 6 armor fireball unlock haste`
+To enter data, use the `/edit_tower_floor` command. Shortened names or aliases can be used.
 
 <T>__Displaying Data__</T>
-To display all the data, simply use the `{{ prefix }}tower` command with no arguments.
-For a selection of floors, ranging from _lower_ to _upper_, use `{{ prefix }}tower <lower>-<upper>`, e.g. `{{ prefix }}tower 20-30`.
+To display all the data, simply use the `/show_tower_data` command.
+For a selection of floors, ranging from _lower_ to _upper_, use `/show_tower_data range=<lower>-<upper>`, e.g. `/show_tower_data range=20-30`.
 
 <T>__Clearing Data__</T>
-To clear the tower data, simply use the `{{ prefix }}towerclear` command with no arguments.
+To clear the tower data, simply use the `/clear_tower_data` command with no arguments.
 
 <T>__Importing from Taran's DoomMap__</T>
-`{{ prefix }}tower taran <map name>`
+`/import_tower_from_taran <map name>`
 
 <T>__Configuration__</T>
-To configure the tower utility, use `{{ prefix }}towerconfig`.
-`{{ prefix }}towerconfig short true` for short responses to edits.
-`{{ prefix }}towerconfig rooms iii iii,rare,green` to set the room aliases.
-Comma separated values.
-`{{ prefix }}towerconfig scrolls armor :shield:,Armor` to set scroll aliases. 
-First value will be used for display.
+To show the current configuration, use `/show_tower_config`.
+`/set_tower_config_option` to edit the options, and `/set_tower_config_alias` to set room and scroll aliases.
+
