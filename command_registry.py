@@ -916,7 +916,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'soulforge',
         'pattern': re.compile(
-            f'{LENGTHENED_PATTERN}soulforge$', MATCH_OPTIONS
+            f'{LENGTHENED_PATTERN}(sf|soulforge)$', MATCH_OPTIONS
         ),
         'description': 'Show this week\'s craftable items in Soulforge',
         'options': [STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['lengthened']],
