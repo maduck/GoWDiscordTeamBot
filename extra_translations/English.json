@@ -34,7 +34,7 @@
   "[CALCULATED_SCORE_TITLE]": "Calculated score per Member",
   "[POINTS_NEEDED]": "**{:,} {}** needed to get last reward.",
   "[BATTLES_NEEDED]": "**{} {}** per player as of current leaderboard.",
-  "[TIER_NEEDED]": "**{} to buy** per player for last reward.",
+  "[TIER_NEEDED]": "**At least {} to buy** per player for last reward.",
   "[TIER_0_ROMAN]": "Tier 0",
   "[CREATED_BY_HAWX_AND_GARY]": "Created by Hawx & Gary for the Gems of War Community.",
   "[RELEASE_DATE]": "Release Date"
