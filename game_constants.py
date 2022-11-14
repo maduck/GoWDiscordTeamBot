@@ -91,7 +91,12 @@ GEM_TUTORIAL_IDS = {
     'giantyellow': 3355,
     'giantpurple': 3355,
     'giantbrown': 3355,
-    'dragongem': 3356,
+    'dragonblue': 3356,
+    'dragongreen': 3356,
+    'dragonred': 3356,
+    'dragonyellow': 3356,
+    'dragonpurple': 3356,
+    'dragonbrown': 3356,
     'lootgold': None,
 }
 
