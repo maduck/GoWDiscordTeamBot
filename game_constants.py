@@ -173,6 +173,7 @@ SOULFORGE_ALWAYS_AVAILABLE = [
     7033,  # Hatir Ascendent
     7157,  # Hoard Mimic, not really in SF but also not available.
     7034,  # Scroll Reborn
+    7134,  # Dark Smith Drenza
     1104,  # Eye of Xathenos
     1176,  # Heart of Xathenos
     1177,  # Soul of Xathenos
