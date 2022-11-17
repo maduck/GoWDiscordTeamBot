@@ -5,7 +5,7 @@ from hashids import Hashids
 
 from models import DB
 
-MAX_TOPLISTS = 30
+MAX_TOPLISTS = 50
 
 
 class ToplistError(Exception):
@@ -19,7 +19,7 @@ class Toplist:
 
     def load(self):
         db = DB()
-        result = db.cursor.execute(f'SELECT * FROM Toplist;')
+        result = db.cursor.execute('SELECT * FROM Toplist;')
         toplists = result.fetchall()
         self.toplists = {
             t['id']: {
