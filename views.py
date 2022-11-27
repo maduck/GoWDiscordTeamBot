@@ -539,6 +539,7 @@ class Views:
     def render_current_event(self, current_event, shortened, lengthened, lang):
         title = f'{_("[WEEKLY_EVENT]", lang)}: {current_event["name"]}'
         e = discord.Embed(title=title, color=self.WHITE)
+        e.add_field(name=f'__{_("[LORE]", lang)}__', value=current_event['lore'])
         if 'kingdom' in current_event:
             thumbnail_url = f'{CONFIG.get("graphics_url")}/Maplocations_{current_event["kingdom"]["filename"]}_full.png'
             e.set_thumbnail(url=thumbnail_url)
