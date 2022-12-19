@@ -5,6 +5,7 @@ from hashids import Hashids
 
 from models import DB
 
+MAX_TOPLIST_LENGTH = 30
 MAX_TOPLISTS = 50
 
 
@@ -18,8 +19,8 @@ class Toplist:
         self.load()
 
     def load(self):
-        db = DB()
-        result = db.cursor.execute('SELECT * FROM Toplist;')
+        database = DB()
+        result = database.cursor.execute('SELECT * FROM Toplist;')
         toplists = result.fetchall()
         self.toplists = {
             t['id']: {
@@ -33,63 +34,64 @@ class Toplist:
             }
             for t in toplists
         }
-        db.close()
+        database.close()
 
     def get(self, toplist_id):
         return self.toplists.get(toplist_id)
 
     async def add(self, author_id, author_name, description, items, update_id):
-        _id = update_id
         if not update_id:
             if len(self.get_my_toplists(author_id)) >= MAX_TOPLISTS:
-                raise ToplistError(f'You have reached the maximum amount of {MAX_TOPLISTS} toplists.'
-                                   f' Please consider deleting some using `!toplist delete <id>`.')
-            _id = self.generate_new_id(author_name)
+                raise ToplistError(f'You have reached the maximum amount of '
+                                   f'{MAX_TOPLISTS} toplists.'
+                                   f' Please consider deleting some using '
+                                   f'`!toplist delete <id>`.')
+            update_id = self.generate_new_id(author_name)
         elif update_id not in self.toplists:
             raise ToplistError('The toplist you are trying to update does not exist.')
         elif str(author_id) != self.toplists[update_id]['author_id']:
             raise ToplistError('The toplist you are trying to update belongs to someone else.')
 
-        chopped_items = [i.strip() for i in items.split(',')][:30]
+        chopped_items = [i.strip() for i in items.split(',')][:MAX_TOPLIST_LENGTH]
         toplist = {
-            'id': _id,
+            'id': update_id,
             'author_id': str(author_id),
             'author_name': author_name,
             'description': description,
             'items': chopped_items,
-            'created': datetime.datetime.utcnow(),
-            'modified': datetime.datetime.utcnow(),
+            'created': datetime.datetime.now(datetime.timezone.utc),
+            'modified': datetime.datetime.now(datetime.timezone.utc),
         }
         lock = asyncio.Lock()
         async with lock:
-            self.toplists[_id] = toplist
-            db = DB()
-            db.cursor.execute(
+            self.toplists[update_id] = toplist
+            database = DB()
+            database.cursor.execute(
                 'REPLACE INTO Toplist (id, author_id, author_name, description, items, modified) '
                 'VALUES (?, ?, ?, ?, ?, ?)',
-                (_id,
+                (update_id,
                  author_id,
                  author_name,
                  description,
                  ','.join(chopped_items),
                  toplist['modified'],
                  ))
-            db.commit()
-            db.close()
-        return _id
+            database.commit()
+            database.close()
+        return update_id
 
     async def remove(self, author_id, _id):
         if _id not in self.toplists:
             raise ToplistError('The toplist you are trying to delete does not exist.')
-        elif str(author_id) != self.toplists[_id]['author_id']:
+        if str(author_id) != self.toplists[_id]['author_id']:
             raise ToplistError('The toplist you are trying to delete belongs to someone else.')
         lock = asyncio.Lock()
         async with lock:
-            db = DB()
-            db.cursor.execute('DELETE FROM Toplist WHERE id = ?', (_id,))
-            db.commit()
-            db.close()
-            del (self.toplists[_id])
+            database = DB()
+            database.cursor.execute('DELETE FROM Toplist WHERE id = ?', (_id,))
+            database.commit()
+            database.close()
+            del self.toplists[_id]
 
     async def append(self, _id, author_id, author_name, new_items):
         if _id not in self.toplists:
