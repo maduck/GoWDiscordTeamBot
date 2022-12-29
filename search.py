@@ -36,10 +36,9 @@ def update_translations():
     global _
     try:
         importlib.reload(translations)
-        del _
         _ = translations.Translations().get
-    except (NameError, json.decoder.JSONDecodeError) as e:
-        log.error(f'Could not update translations: {e}')
+    except (NameError, json.decoder.JSONDecodeError):
+        log.exception('Could not update translations, stacktrace follows.')
 
 
 class TeamExpander:
