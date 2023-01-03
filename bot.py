@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.85.8'
+    VERSION = '0.85.9'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -143,7 +143,7 @@ class DiscordBot(BaseBot):
         return None, None
 
     @owner_required
-    async def world_map(self, message, lang, location='krystara', **kwargs):
+    async def world_map(self, message, lang, location='krystara', **__):
         async with message.channel.typing():
             start = time.time()
             map_data = self.expander.get_map_data(lang, location)
@@ -154,7 +154,7 @@ class DiscordBot(BaseBot):
             await message.channel.send(file=result)
 
     @owner_required
-    async def campaign_preview(self, message, lang, switch=None, team_code=None, **kwargs):
+    async def campaign_preview(self, message, lang, switch=None, team_code=None, **__):
         switch = switch or CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
             if self.is_interaction(message):
@@ -178,7 +178,7 @@ class DiscordBot(BaseBot):
             await message.channel.send(file=result)
 
     @owner_required
-    async def soulforge_preview(self, message, lang, search_term, release_date=None, switch=None, **kwargs):
+    async def soulforge_preview(self, message, lang, search_term, release_date=None, switch=None, **__):
         if switch is None:
             switch = CONFIG.get('default_news_platform') == 'switch'
         async with message.channel.typing():
@@ -201,7 +201,18 @@ class DiscordBot(BaseBot):
             if self.is_interaction(message):
                 await self.delete_slash_command_interaction(message)
 
-    async def campaign(self, message, lang, tier=None, **kwargs):
+    async def render_campaign_lines(self, message, campaign_data, lang):
+        for category, tasks in campaign_data.items():
+            category_lines = [f'**{task["title"]}**: {task["name"].replace("-->", "→")}' for task in tasks]
+            color = CAMPAIGN_COLORS.get(category, self.WHITE)
+            skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
+            e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
+                              description='\n'.join(category_lines), color=color)
+            if any('`?`' in line for line in category_lines):
+                e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
+            await self.answer(message, e, no_interaction=True)
+
+    async def campaign(self, message, lang, tier=None, **__):
         campaign_data = self.expander.get_campaign_tasks(lang, tier)
 
         if not campaign_data['has_content']:
@@ -209,35 +220,18 @@ class DiscordBot(BaseBot):
             description = _('[CAMPAIGN_COMING_SOON]', lang)
             e = discord.Embed(title=title, description=description, color=self.WHITE)
             return await self.answer(message, e)
+        await self.render_campaign_lines(message, campaign_data['campaigns'], lang)
 
-        for category, tasks in campaign_data['campaigns'].items():
-            category_lines = [f'**{task["title"]}**: {task["name"].replace("-->", "→")}' for task in tasks]
-            color = CAMPAIGN_COLORS.get(category, self.WHITE)
-            skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
-            e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
-                              description='\n'.join(category_lines), color=color)
-            if any('`?`' in line for line in category_lines):
-                e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
-            await self.answer(message, e, no_interaction=True)
-
-    async def reroll_tasks(self, message, lang, tier=None, **kwargs):
+    async def reroll_tasks(self, message, lang, tier=None, **__):
         rerolls = self.expander.get_reroll_tasks(lang, tier)
-        for category, tasks in rerolls.items():
-            category_lines = [f'**{task["title"]}**: {task["name"].replace("-->", "→")}' for task in tasks]
-            color = CAMPAIGN_COLORS.get(category, self.WHITE)
-            skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
-            e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
-                              description='\n'.join(category_lines), color=color)
-            if any('`?`' in line for line in category_lines):
-                e.set_footer(text=f'[?]: {_("[IN_PROGRESS]", lang)}')
-            await self.answer(message, e, no_interaction=True)
+        await self.render_campaign_lines(message, rerolls, lang)
 
-    async def adventures(self, message, lang, **kwargs):
+    async def adventures(self, message, lang, **__):
         adventures = self.expander.get_adventure_board(lang)
         e = self.views.render_adventure_board(adventures, lang)
         return await self.answer(message, e)
 
-    async def effects(self, message, lang, **kwargs):
+    async def effects(self, message, lang, **__):
         effects = self.expander.get_effects(lang)
         e = self.views.render_effects(effects, lang)
         return await self.answer(message, e)
@@ -296,12 +290,12 @@ class DiscordBot(BaseBot):
             e = self.views.render_summoning_stones(title, stones, lang)
             await message.channel.send(embed=e)
 
-    async def summoning_stones(self, message, lang, **kwargs):
+    async def summoning_stones(self, message, lang, **__):
         title, stones = self.expander.get_summons(lang)
         e = self.views.render_summoning_stones(title, stones, lang)
         await self.answer(message, e)
 
-    async def about(self, message, lang, **kwargs):
+    async def about(self, message, lang, **__):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(title=_('[INFO]', lang), description='<https://garyatrics.com/>', color=color)
         e.set_thumbnail(url=self.user.avatar.url)
@@ -339,7 +333,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     @owner_required
-    async def stats(self, message, lang, **kwargs):
+    async def stats(self, message, lang, **__):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(title=_('[PVPSTATS]', lang), description='<https://garyatrics.com/>', color=color)
         members = sum(g.member_count for g in self.guilds)
@@ -347,8 +341,10 @@ class DiscordBot(BaseBot):
         collections = [
             f'**{_("[GUILD]", lang)} {_("[AMOUNT]", lang)}**: {len(self.guilds)}',
             f'**{_("[PLAYER]", lang)} {_("[AMOUNT]", lang)}**: {members}',
-            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (PC)**: {sum(s.get("pc", True) for s in self.subscriptions)}',
-            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (Switch)**: {sum(s.get("switch", True) for s in self.subscriptions)}',
+            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (PC)**: '
+            f'{sum(s.get("pc", True) for s in self.subscriptions)}',
+            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (Switch)**: '
+            f'{sum(s.get("switch", True) for s in self.subscriptions)}',
             f'**{_("[PETRESCUE]", lang)} ({_("[JUST_NOW]", lang)})**: {len(self.pet_rescues)}',
             f'**{_("[PETRESCUE]", lang)} ({_("[TRAIT_ALL]", lang)})**: {PetRescue.get_amount()}',
         ]
@@ -361,7 +357,7 @@ class DiscordBot(BaseBot):
         e = self.views.render_events(events, kwargs.get('filter'), lang)
         await self.answer(message, e)
 
-    async def current_event(self, message, lang, shortened=False, lengthened=False, **kwargs):
+    async def current_event(self, message, lang, shortened=False, lengthened=False, **__):
         lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         current_event = self.expander.get_current_event(lang, self.my_emojis)
         e = self.views.render_current_event(current_event, shortened, lengthened, lang)
@@ -371,47 +367,47 @@ class DiscordBot(BaseBot):
                 e.set_field_at(i, name=field.name, value=new_value)
         await self.answer(message, e)
 
-    async def active_gems(self, message, lang, **kwargs):
+    async def active_gems(self, message, lang, **__):
         gems = self.expander.get_active_gems(lang)
         e = self.views.render_active_gems(gems, lang)
         await self.answer(message, e)
 
-    async def heroic_gems(self, message, lang, **kwargs):
+    async def heroic_gems(self, message, lang, **__):
         gems = self.expander.get_heroic_gems(lang)
         e = self.views.render_heroic_gems(gems, lang)
         await self.answer(message, e)
 
-    async def color_kingdoms(self, message, lang, **kwargs):
+    async def color_kingdoms(self, message, lang, **__):
         kingdoms = self.expander.get_color_kingdoms(lang)
         e = self.views.render_color_kingdoms(kingdoms, lang)
         await self.answer(message, e)
 
-    async def troop_type_kingdoms(self, message, lang, **kwargs):
+    async def troop_type_kingdoms(self, message, lang, **__):
         kingdoms = self.expander.get_type_kingdoms(lang)
         e = self.views.render_type_kingdoms(kingdoms, lang)
         await self.answer(message, e)
 
-    async def event_kingdoms(self, message, lang, **kwargs):
+    async def event_kingdoms(self, message, lang, **__):
         events = self.expander.get_event_kingdoms(lang)
         e = self.views.render_event_kingdoms(events)
         await self.answer(message, e)
 
-    async def levels(self, message, lang, **kwargs):
+    async def levels(self, message, lang, **__):
         levels = self.expander.get_levels(lang)
         e = self.views.render_levels(levels)
         await self.answer(message, e)
 
-    async def help(self, message, lang, **kwargs):
+    async def help(self, message, lang, **__):
         prefix = self.prefix.get(message.guild)
         lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         e = self.views.render_help(prefix, lang)
         await self.answer(message, e)
 
-    async def show_tower_help(self, message, prefix, lang, **kwargs):
+    async def show_tower_help(self, message, prefix, lang, **__):
         e = self.views.render_tower_help(prefix, lang)
         await self.answer(message, e)
 
-    async def quickhelp(self, message, lang, **kwargs):
+    async def quickhelp(self, message, lang, **__):
         prefix = self.prefix.get(message.guild)
         e = self.views.render_quickhelp(prefix, lang, LANGUAGES)
         await self.answer(message, e)
@@ -439,7 +435,7 @@ class DiscordBot(BaseBot):
 
     @guild_required
     @admin_required
-    async def change_prefix(self, message, new_prefix, **kwargs):
+    async def change_prefix(self, message, new_prefix, **__):
         my_prefix = self.prefix.get(message.guild)
         if len(new_prefix) != 1:
             e = self.generate_response('Prefix change', self.RED, 'Error',
@@ -454,7 +450,7 @@ class DiscordBot(BaseBot):
         log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
 
     async def handle_search(self, message, search_term, lang, title, shortened=False, formatter='{0[name]} `#{0[id]}`',
-                            **kwargs):
+                            **__):
         search_function = getattr(self.expander, f'search_{title.lower()}')
         result = search_function(search_term, lang)
         if not result:
@@ -487,12 +483,13 @@ class DiscordBot(BaseBot):
     talent = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
     traitstones = partialmethod(handle_search, title='Traitstone', formatter='{0[name]}')
 
-    async def talents(self, message, lang, **kwargs):
+    async def talents(self, message, lang, **__):
         talents = self.expander.get_all_talents(lang)
         e = self.views.render_all_talents(talents, lang)
         await self.answer(message, e)
 
-    async def pet_rescue(self, message, search_term, lang, time_left=59, mention='', **kwargs):
+    async def pet_rescue(self, message, search_term, lang, time_left=59, mention='', **__):
+        # sourcery skip: aware-datetime-for-utc
         pets = self.expander.pets.search(search_term, lang, name_only=True)
         if len(pets) != 1:
             e = discord.Embed(title=f'Pet search for `{search_term}` yielded {len(pets)} results.',
@@ -520,20 +517,20 @@ class DiscordBot(BaseBot):
 
     pr = pet_rescue
 
-    async def show_pet_rescue_config(self, message, lang, **kwargs):
+    async def show_pet_rescue_config(self, message, lang, **__):
         config = self.pet_rescue_config.get(message.channel)
 
         e = self.views.render_pet_rescue_config(config, lang)
         await self.answer(message, e)
 
-    async def pet_rescue_stats(self, message, lang, **kwargs):
+    async def pet_rescue_stats(self, message, lang, **__):
         raw_stats = PetRescue.get_stats()
         stats, rescues = self.expander.translate_pet_rescue_stats(raw_stats, lang)
         e = self.views.render_pet_rescue_stats(stats, rescues, lang)
         await self.answer(message, e)
 
     @admin_required
-    async def set_pet_rescue_config(self, message, key, value, lang, **kwargs):
+    async def set_pet_rescue_config(self, message, key, value, lang, **__):
         key = key.lower()
         valid_keys = self.pet_rescue_config.get(message.channel).keys()
         if key not in valid_keys:
@@ -549,7 +546,7 @@ class DiscordBot(BaseBot):
         await self.pet_rescue_config.update(guild, channel, key, value, translated_trues)
         await self.show_pet_rescue_config(message, lang)
 
-    async def class_summary(self, message, lang, **kwargs):
+    async def class_summary(self, message, lang, **__):
         result = self.expander.class_summary(lang)
 
         table = prettytable.PrettyTable()
@@ -568,7 +565,7 @@ class DiscordBot(BaseBot):
                                                 _('[OVERVIEW]', lang))
         await self.answer(message, e)
 
-    async def kingdom_summary(self, message, lang, **kwargs):
+    async def kingdom_summary(self, message, lang, **__):
         result = self.expander.kingdom_summary(lang)
 
         table = prettytable.PrettyTable()
@@ -588,7 +585,7 @@ class DiscordBot(BaseBot):
                                                 _('[OVERVIEW]', lang))
         await self.answer(message, e)
 
-    async def faction_summary(self, message, lang, **kwargs):
+    async def faction_summary(self, message, lang, **__):
         factions = self.expander.faction_summary(lang)
         e = self.views.render_faction_summary(factions, lang)
         await self.answer(message, e)
@@ -619,7 +616,7 @@ class DiscordBot(BaseBot):
         author = await pluralize_author(author)
         if kwargs.get('title') is None and message.id != 0:
             team_code = None
-        e = self.views.render_team(team, author, shortened, lengthened, team_code=team_code, title=kwargs.get('title'))
+        e = self.views.render_team(team, author, shortened, lengthened, title=kwargs.get('title'))
         await self.answer(message, e)
         if team_code:
             await message.channel.send(content=f'[{team_code}]')
@@ -640,21 +637,21 @@ class DiscordBot(BaseBot):
         e.set_image(url=url)
         await self.answer(message, e)
 
-    async def waffles(self, message, lang, waffle_no=None, **kwargs):
+    async def waffles(self, message, lang, waffle_no=None, **__):
         max_waffles = 71
         title = _('[QUEST9480_OBJ0_MSG]', lang)
         subtitle = _('[HAND_FEED]', lang)
         base_url = 'https://garyatrics.com/images/waffles/{0:03d}.jpg'
         return await self.foodies(message, lang, waffle_no, max_waffles, base_url, title, subtitle)
 
-    async def burgers(self, message, lang, burger_no=None, **kwargs):
+    async def burgers(self, message, lang, burger_no=None, **__):
         max_burgers = 24
         title = _('[QUEST9007_OBJ1_MSG]', lang)
         subtitle = _('[3000_BATTLE15_NAME]', lang)
         base_url = 'https://garyatrics.com/images/burgers/{0:03d}.jpg'
         return await self.foodies(message, lang, burger_no, max_burgers, base_url, title, subtitle)
 
-    async def memes(self, message, lang, meme_no=None, **kwargs):
+    async def memes(self, message, lang, meme_no=None, **__):
         base_url = 'https://garyatrics.com/images/memes'
         r = requests.get(f'{base_url}/index.txt')
         available_memes = [m for m in r.text.split('\n') if m]
@@ -676,8 +673,8 @@ class DiscordBot(BaseBot):
         e.set_image(url=url)
         await self.answer(message, e)
 
-    async def server_status(self, message, **kwargs):
-        now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+    async def server_status(self, message, **__):
+        now = datetime.datetime.now(datetime.timezone.utc)
         if self.server_status_cache['last_updated'] <= now - datetime.timedelta(seconds=30):
             async with message.channel.typing():
                 r = requests.get('https://status.infinityplustwo.net/status_v2.txt')
@@ -688,23 +685,23 @@ class DiscordBot(BaseBot):
         e = self.views.render_server_status(self.server_status_cache)
         await self.answer(message, e)
 
-    async def storms(self, message, lang, **kwargs):
+    async def storms(self, message, lang, **__):
         storms = self.expander.get_storms(lang)
         e = self.views.render_storms(storms, lang)
         await self.answer(message, e)
 
-    async def show_prefix(self, message, prefix, **kwargs):
+    async def show_prefix(self, message, prefix, **__):
         e = self.generate_response('Prefix', self.WHITE, 'The current prefix is', f'`{prefix}`')
         await self.answer(message, e)
 
     @guild_required
-    async def show_tower_config(self, message, prefix, **kwargs):
+    async def show_tower_config(self, message, prefix, **__):
         e = self.tower_data.format_output_config(prefix=prefix, guild=message.guild, color=self.WHITE)
         await self.answer(message, e)
 
     @guild_required
     @admin_required
-    async def set_tower_config_option(self, message, option, value, **kwargs):
+    async def set_tower_config_option(self, message, option, value, **__):
         old_value, new_value = self.tower_data.set_option(guild=message.guild, option=option, value=value)
 
         if old_value is None and new_value is None:
@@ -719,7 +716,7 @@ class DiscordBot(BaseBot):
 
     @guild_required
     @admin_required
-    async def set_tower_config_alias(self, message, category, field, values, **kwargs):
+    async def set_tower_config_alias(self, message, category, field, values, **__):
         old_values, new_values = self.tower_data.set_alias(guild=message.guild, category=category, field=field,
                                                            values=values)
 
@@ -740,7 +737,7 @@ class DiscordBot(BaseBot):
 
     @guild_required
     @admin_required
-    async def import_tower_from_taran(self, message, map_name, **kwargs):
+    async def import_tower_from_taran(self, message, map_name, **__):
         if self.is_interaction(message):
             await self.answer(message, embed=None, content="Importing, please wait.")
 
@@ -760,7 +757,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     @guild_required
-    async def edit_tower_single(self, message, floor, room, scroll, **kwargs):
+    async def edit_tower_single(self, message, floor, room, scroll, **__):
         success, response = self.tower_data.edit_floor(message=message, floor=floor, room=room, scroll=scroll)
         if self.tower_data.get(message.guild)['short']:
             return await self.react(message, bool_to_emoticon(success))
@@ -770,7 +767,7 @@ class DiscordBot(BaseBot):
 
     @guild_required
     async def edit_tower_floor(self, message, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi=None,
-                               **kwargs):
+                               **__):
 
         rooms = ('ii', 'iii', 'iv', 'v', 'vi')
         scrolls = (scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi)
@@ -792,35 +789,35 @@ class DiscordBot(BaseBot):
         e.add_field(name='Edit Tower (Floor)', value=edit_text)
         await self.answer(message, e)
 
-    async def drop_rates(self, message, lang, **kwargs):
+    async def drop_rates(self, message, lang, **__):
         drop_chances = self.expander.get_drop_chances(lang)
         e = self.views.render_drop_chances(drop_chances, lang)
         await self.answer(message, e)
 
-    async def warbands(self, message, lang, **kwargs):
+    async def warbands(self, message, lang, **__):
         warbands = self.expander.get_warbands(lang)
         e = self.views.render_warbands(warbands, lang)
         await self.answer(message, e)
 
-    async def banners(self, message, lang, **kwargs):
+    async def banners(self, message, lang, **__):
         banners = self.expander.get_banners(lang)
         e1, e2 = self.views.render_banners(banners, lang)
         await self.answer(message, e1)
         await self.answer(message, e2, no_interaction=True)
 
-    async def dungeon_altars(self, message, lang, **kwargs):
+    async def dungeon_altars(self, message, lang, **__):
         boons = self.expander.get_dungeon_altars(lang)
         e = self.views.render_dungeon_features(boons, lang)
         await self.answer(message, e)
 
-    async def dungeon_traps(self, message, lang, **kwargs):
+    async def dungeon_traps(self, message, lang, **__):
         boons = self.expander.get_dungeon_traps(lang)
         e = self.views.render_dungeon_features(boons, lang)
         await self.answer(message, e)
 
     @guild_required
     @admin_required
-    async def reset_tower_config(self, message, **kwargs):
+    async def reset_tower_config(self, message, **__):
         self.tower_data.reset_config(message.guild)
 
         e = self.generate_response('Administrative action', self.RED, 'Success', 'Cleared tower config')
@@ -828,14 +825,14 @@ class DiscordBot(BaseBot):
 
     @guild_required
     @admin_required
-    async def clear_tower_data(self, message, prefix, **kwargs):
+    async def clear_tower_data(self, message, **__):
         self.tower_data.clear_data(message)
         e = self.generate_response('Tower of Doom', self.WHITE, 'Success',
                                    f'Cleared tower data for #{message.channel.name}')
         await self.answer(message, e)
 
     @guild_required
-    async def show_permissions(self, message, **kwargs):
+    async def show_permissions(self, message, **__):
         channel_permissions = message.channel.permissions_for(message.guild.me)
         permissions = {}
         for permission in self.NEEDED_PERMISSIONS:
@@ -846,7 +843,7 @@ class DiscordBot(BaseBot):
 
     @guild_required
     @admin_required
-    async def news_subscribe(self, message, platform, **kwargs):
+    async def news_subscribe(self, message, platform, **__):
         if not platform:
             platform = CONFIG.get('default_news_platform')
         await self.subscriptions.add(message.guild, message.channel, platform)
@@ -856,7 +853,7 @@ class DiscordBot(BaseBot):
                                    f'Channel {message.channel.name} is now subscribed and will receive future news.')
         await self.answer(message, e)
 
-    async def show_bookmark(self, message, bookmark_id, lang, shortened='', **kwargs):
+    async def show_bookmark(self, message, bookmark_id, lang, shortened='', **__):
         bookmark = self.expander.bookmarks.get(bookmark_id)
         if not bookmark:
             e = self.generate_response('Bookmark', self.BLACK, 'Error', f'Bookmark id `{bookmark_id}` does not exist.')
@@ -864,12 +861,12 @@ class DiscordBot(BaseBot):
         title = f'Bookmark `{bookmark_id}` by {bookmark["author_name"]}\n{bookmark["description"]}'
         return await self.team_code(message, lang, bookmark['team_code'], title=title, shortened=shortened)
 
-    async def show_my_bookmarks(self, message, **kwargs):
+    async def show_my_bookmarks(self, message, **__):
         bookmarks = self.expander.bookmarks.get_my_bookmarks(message.author.id)
         e = self.views.render_my_bookmarks(bookmarks, message.author.display_name)
         await self.answer(message, e)
 
-    async def create_bookmark(self, message, description, team_code, lang, shortened='', **kwargs):
+    async def create_bookmark(self, message, description, team_code, lang, shortened='', **__):
         try:
             bookmark_id = await self.expander.bookmarks.add(message.author.id, message.author.display_name, description,
                                                             team_code)
@@ -878,7 +875,7 @@ class DiscordBot(BaseBot):
             e = self.generate_response('Bookmark', self.BLACK, 'There was a problem', str(te))
             await self.answer(message, e)
 
-    async def delete_bookmark(self, message, bookmark_id, lang, **kwargs):
+    async def delete_bookmark(self, message, bookmark_id, **__):
         try:
             await self.expander.bookmarks.remove(message.author.id, bookmark_id)
             e = self.generate_response('Bookmark', self.WHITE, 'Deletion',
@@ -887,7 +884,7 @@ class DiscordBot(BaseBot):
             e = self.generate_response('Bookmark', self.BLACK, 'There was a problem', str(te))
         await self.answer(message, e)
 
-    async def show_toplist(self, message, toplist_id, lang, **kwargs):
+    async def show_toplist(self, message, toplist_id, lang, **__):
         toplist = self.expander.translate_toplist(toplist_id, lang)
         e = self.views.render_toplist(toplist)
         await self.answer(message, e)
@@ -905,7 +902,7 @@ class DiscordBot(BaseBot):
 
     update_toplist = create_toplist
 
-    async def append_toplist(self, message, toplist_id, items, lang, **kwargs):
+    async def append_toplist(self, message, toplist_id, items, lang, **__):
         try:
             toplist_ids = self.expander.get_toplist_troop_ids(items, lang)
             items = ','.join(toplist_ids)
@@ -916,7 +913,7 @@ class DiscordBot(BaseBot):
             e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))
         await self.answer(message, e)
 
-    async def delete_toplist(self, message, toplist_id, **kwargs):
+    async def delete_toplist(self, message, toplist_id, **__):
         try:
             await self.expander.toplists.remove(message.author.id, toplist_id)
             e = self.generate_response('Toplist', self.WHITE, 'Deletion',
@@ -925,14 +922,14 @@ class DiscordBot(BaseBot):
             e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))
         await self.answer(message, e)
 
-    async def show_my_toplists(self, message, **kwargs):
+    async def show_my_toplists(self, message, **__):
         toplists = self.expander.toplists.get_my_toplists(message.author.id)
         e = self.views.render_my_toplists(toplists, message.author.display_name)
         await self.answer(message, e)
 
     @guild_required
     @admin_required
-    async def news_unsubscribe(self, message, **kwargs):
+    async def news_unsubscribe(self, message, **__):
         await self.subscriptions.remove(message.guild, message.channel)
 
         e = self.generate_response('News management', self.WHITE, 'News for all platforms',
@@ -1012,7 +1009,7 @@ class DiscordBot(BaseBot):
 
     @guild_required
     @admin_required
-    async def change_language(self, message, new_language, **kwargs):
+    async def change_language(self, message, new_language, **__):
         my_language = self.language.get(message.guild)
         if new_language not in LANGUAGES:
             e = discord.Embed(title='Default Language', color=self.BLACK)
@@ -1029,7 +1026,7 @@ class DiscordBot(BaseBot):
         log.debug(f'[{message.guild.name}] Changed language from {my_language} to {new_language}.')
 
     @guild_required
-    async def show_languages(self, message, **kwargs):
+    async def show_languages(self, message, **__):
         e = discord.Embed(title='Default Language', color=self.WHITE)
         e.add_field(name=f'Default language for {message.guild}',
                     value=f'`{self.language.get(message.guild)}`', inline=False)
@@ -1037,7 +1034,7 @@ class DiscordBot(BaseBot):
         self.add_available_languages(e)
         await self.answer(message, e)
 
-    async def tools(self, message, **kwargs):
+    async def tools(self, message, **__):
         e = self.views.render_tools()
         await self.answer(message, e)
 
@@ -1051,7 +1048,7 @@ class DiscordBot(BaseBot):
         e.add_field(name='Available languages', value=available_langs, inline=False)
 
     @owner_required
-    async def search_guild(self, message, search_term, **kwargs):
+    async def search_guild(self, message, search_term, **__):
         matching_guilds = [
             guild
             for guild in self.guilds
@@ -1062,7 +1059,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     @owner_required
-    async def kick_guild(self, message, guild_id, **kwargs):
+    async def kick_guild(self, message, guild_id, **__):
         guild_id = int(guild_id)
         guild = discord.utils.find(lambda g: g.id == guild_id, self.guilds)
         e = self.generate_response('Guild management', self.RED, 'Kick', 'Could not find a guild with that id.')
@@ -1072,20 +1069,20 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     @owner_required
-    async def ban_guild(self, message, guild_id, reason, **kwargs):
+    async def ban_guild(self, message, guild_id, reason, **__):
         Ban.add(int(guild_id), reason, message.author.display_name)
         await self.kick_guild(message=message, guild_id=guild_id)
 
-    async def weekly_summary(self, message, lang, **kwargs):
+    async def weekly_summary(self, message, lang, **__):
         summary = self.expander.get_weekly_summary(lang, self.my_emojis)
         e = self.views.render_weekly_summary(summary, lang)
         await self.answer(message, e)
 
-    async def streamers(self, message, **kwargs):
+    async def streamers(self, message, **__):
         e = self.views.render_streamers()
         await self.answer(message, e)
 
-    async def hoard_potions(self, message, lang, **kwargs):
+    async def hoard_potions(self, message, lang, **__):
         potions = self.expander.get_hoard_potions(lang)
         e = self.views.render_hoard_potions(potions, lang)
         await self.answer(message, e)

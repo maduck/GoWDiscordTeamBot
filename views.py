@@ -70,7 +70,7 @@ class Views:
             e.timestamp = weapon["release_date"]
         return self.render_embed(e, 'weapon.jinja', weapon=weapon)
 
-    def render_affix(self, affix, shortened, lang):
+    def render_affix(self, affix, *__):
         e = discord.Embed(title='Affix search found one exact match', color=self.WHITE)
         affix['weapons'] = [f'{w["name"]} `#{w["id"]}`' for w in affix['weapons']]
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Ingots/Ingots_AnvilIcon_full.png'
@@ -104,7 +104,7 @@ class Views:
             e.timestamp = troop["release_date"]
         return self.render_embed(e, 'troop.jinja', troop=troop)
 
-    def render_traitstone(self, traitstone, shortened, lang):
+    def render_traitstone(self, traitstone, shortened, __):
         e = discord.Embed(color=self.WHITE)
         e.title = traitstone['name']
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Runes_Rune{traitstone["id"]:02d}_full.png'
@@ -128,7 +128,7 @@ class Views:
                                  classes=classes,
                                  kingdoms=kingdoms)
 
-    def render_talent(self, tree, shortened, lang):
+    def render_talent(self, tree, shortened, __):
         e = discord.Embed(color=self.WHITE)
         if shortened:
             e.title = tree["name"]
@@ -137,7 +137,7 @@ class Views:
         e.title = 'Talent search found one exact match'
         return self.render_embed(e, 'talent.jinja', tree=tree)
 
-    def render_team(self, team, author, shortened, lengthened, team_code=None, title=None):
+    def render_team(self, team, author, shortened, lengthened, title=None):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(color=color)
         if team['banner']:
@@ -178,7 +178,7 @@ class Views:
 
     render_faction = render_kingdom
 
-    def render_trait(self, trait, shortened, lang):
+    def render_trait(self, trait, *__):
         e = discord.Embed(title='Trait search found one exact match', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Troopcardall_Traits/{trait["image"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
@@ -189,7 +189,7 @@ class Views:
                 result.set_field_at(i, name=field.name, value=f"{field.value[:1020]} ...", inline=field.inline)
         return result
 
-    def render_class(self, _class, shortened, lang):
+    def render_class(self, _class, shortened, __):
         e = discord.Embed(title='Class search found one exact match', color=self.WHITE)
         thumbnail_url = f'{CONFIG.get("graphics_url")}/Classes_{_class["code"]}_full.png'
         e.set_thumbnail(url=thumbnail_url)
@@ -270,8 +270,7 @@ class Views:
 
     def render_toplist(self, toplist):
         if not toplist:
-            e = discord.Embed(title='Toplist not found.', color=self.BLACK)
-            return e
+            return discord.Embed(title='Toplist not found.', color=self.BLACK)
         e = discord.Embed(title=f'Toplist ID `{toplist["id"]}` by {toplist["author_name"]}', color=self.WHITE)
         e.set_footer(text='Last modified')
         e.timestamp = toplist['modified']
@@ -605,7 +604,7 @@ class Views:
     def render_active_gems(self, gems, lang):
         emojis = [self.my_emojis.get(gem['gem_type'], gem['gem_type']) for gem in gems]
         helps = [gem['tutorial'] for gem in gems]
-        active_gems = [f'{emoji} {help}' for emoji, help in zip(emojis, helps)]
+        active_gems = [f'{emoji} {description}' for emoji, description in zip(emojis, helps)]
         if not active_gems:
             active_gems = [_('[QUEST9013_ENDCONV_1]', lang).split('&&')[0]]
         return discord.Embed(
@@ -658,12 +657,12 @@ class Views:
         e = discord.Embed(title='Communities', colour=self.WHITE)
         return self.render_embed(e, 'communities.jinja')
 
-    def render_pet_rescue_stats(self, stats, rescues, lang):
+    def render_pet_rescue_stats(self, stats, rescues, _):
         e = discord.Embed(title='Pet Rescue Stats', colour=self.WHITE)
         e.set_footer(text=f'{rescues} pets were brutally slaughtered by whole guilds in the making of this analysis.')
         return self.render_embed(e, 'pet_rescue_stats.jinja', stats=stats)
 
-    def render_all_talents(self, talents, lang):
+    def render_all_talents(self, talents, _):
         talent_list = [t['name'] for t in talents]
         return discord.Embed(title=_('[TALENTS]'), description='\n'.join(talent_list), colour=self.WHITE)
 

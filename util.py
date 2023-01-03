@@ -15,13 +15,14 @@ def atoi(text):
 
 
 def bool_to_emoticon(value):
-    return value and "✅" or "❌"
+    return "✅" if value else "❌"
 
 
 # https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries
 # merges b into a
 def merge(a, b, path=None):
-    if path is None: path = []
+    if path is None:
+        path = []
     for key in b:
         if key in a:
             if isinstance(a[key], dict) and isinstance(b[key], dict):
@@ -42,10 +43,7 @@ def flatten(*args):
 
 
 async def pluralize_author(author):
-    if author[-1] == 's':
-        author += "'"
-    else:
-        author += "'s"
+    author += "'" if author[-1] == 's' else "'s"
     return author
 
 
@@ -65,9 +63,7 @@ def dig(item, lookup):
 
 
 def debug(message):
-    guild = '-'
-    if message.guild:
-        guild = message.guild.name
+    guild = message.guild.name if message.guild else '-'
     channel = message.channel
     if type(channel) == base_bot.FakeChannel:
         channel = channel.channel
