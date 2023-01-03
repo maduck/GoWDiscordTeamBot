@@ -123,14 +123,12 @@ def convert_color_array(data_object):
 
 class U(str):
     def __format__(self, fmt):
-        if not fmt:
+        if not fmt or fmt[0] not in ['u', 'l']:
             s = str(self)
         elif fmt[0] == 'u':
             s = self.upper()
             fmt = fmt[1:]
-        elif fmt[0] == 'l':
+        else:
             s = self.lower()
             fmt = fmt[1:]
-        else:
-            s = str(self)
         return s.__format__(fmt)
