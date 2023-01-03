@@ -368,7 +368,7 @@ class GameData:
         elif task['TaskTitle'] == '[TASK_FORGOTTEN_EXPLORER]' and 'Reroll' in task['Id']:
             extra_data['Value1'] = '`Current Campaign Week`'
 
-        translated_task = {
+        return {
             'reward': task['Rewards'][0]['Amount'],
             'condition': task.get('Condition'),
             'order': task_order,
@@ -385,8 +385,6 @@ class GameData:
             'kingdom_id': kingdom_id,
             'orig': task,
         }
-
-        return translated_task
 
     @staticmethod
     def get_datetime(val):

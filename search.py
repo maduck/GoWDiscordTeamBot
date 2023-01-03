@@ -85,8 +85,7 @@ class TeamExpander:
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
-        numbers = [int(n.strip()) for n in raw_code.split(',') if n and n.isdigit()]
-        return numbers
+        return [int(n.strip()) for n in raw_code.split(',') if n and n.isdigit()]
 
     def get_team_from_code(self, code, lang):
         result = {
@@ -249,9 +248,10 @@ class TeamExpander:
         item['traitstones_title'] = _('[SOULFORGE_TAB_TRAITSTONES]', lang)
         if 'traitstones' not in item:
             item['traitstones'] = []
-        traitstones = []
-        for rune in item['traitstones']:
-            traitstones.append(f'{_(rune["name"], lang)} ({rune["amount"]})')
+        traitstones = [
+            f'{_(rune["name"], lang)} ({rune["amount"]})'
+            for rune in item['traitstones']
+        ]
         item['traitstones'] = traitstones
 
     @staticmethod
@@ -364,12 +364,13 @@ class TeamExpander:
         _class['name'] = _(_class['name'], lang)
         translated_trees = []
         for tree in _class['talents']:
-            translated_talents = []
-            for talent in tree:
-                translated_talents.append({
+            translated_talents = [
+                {
                     'name': _(talent['name'], lang),
-                    'description': _(talent['description'], lang)
-                })
+                    'description': _(talent['description'], lang),
+                }
+                for talent in tree
+            ]
             translated_trees.append(translated_talents)
         self.translate_traitstones(_class, lang)
         _class['talents_title'] = _('[TALENT_TREES]', lang)
@@ -420,12 +421,13 @@ class TeamExpander:
     def translate_talent_tree(tree, lang):
         tree['talents_title'] = _('[TALENT_TREES]', lang)
         tree['name'] = _(tree['name'], lang)
-        translated_talents = []
-        for talent in tree['talents']:
-            translated_talents.append({
+        translated_talents = [
+            {
                 'name': _(talent['name'], lang),
-                'description': _(talent['description'], lang)
-            })
+                'description': _(talent['description'], lang),
+            }
+            for talent in tree['talents']
+        ]
         tree['talents'] = translated_talents
         tree['classes'] = [
             {'id': c['id'],
@@ -514,12 +516,14 @@ class TeamExpander:
         )
         upgrades = []
         for upgrade in upgrade_numbers:
-            for i, amount in enumerate(upgrade):
-                if amount:
-                    upgrades.append(
-                        {'name': f'{upgrade_titles[i]} {bonus_title}',
-                         'description': f'+{amount} {upgrade_titles[i]}'})
-
+            upgrades.extend(
+                {
+                    'name': f'{upgrade_titles[i]} {bonus_title}',
+                    'description': f'+{amount} {upgrade_titles[i]}',
+                }
+                for i, amount in enumerate(upgrade)
+                if amount
+            )
         weapon['upgrades'] = upgrades + [self.translate_spell(spell['id'], lang) for spell in weapon['affixes']]
         weapon['kingdom_title'] = _('[KINGDOM]', lang)
         weapon['kingdom_id'] = weapon['kingdom']['id']
@@ -594,9 +598,10 @@ class TeamExpander:
             classes.append([_(self.classes[class_id]['name'], lang), amount])
         traitstone['classes'] = classes
 
-        kingdoms = []
-        for kingdom_id in traitstone['kingdom_ids']:
-            kingdoms.append(_(self.kingdoms[int(kingdom_id)]['name'], lang))
+        kingdoms = [
+            _(self.kingdoms[int(kingdom_id)]['name'], lang)
+            for kingdom_id in traitstone['kingdom_ids']
+        ]
         if not traitstone['kingdom_ids']:
             kingdoms.append(_('[ALL_KINGDOMS]', lang))
         traitstone['kingdoms'] = kingdoms
@@ -785,7 +790,7 @@ class TeamExpander:
             for i, tier in reversed(list(enumerate(tiers))) if _filter is None or tier.lower() == _filter.lower()
         }
         formatted_start, start_date = get_next_monday_in_locale(date=None, lang=lang)
-        result['has_content'] = any([len(c) > 0 for c in result['campaigns'].values()])
+        result['has_content'] = any(len(c) > 0 for c in result['campaigns'].values())
         result['background'] = f'Background/{self.campaign_tasks["kingdom"]["filename"]}_full.png'
         result['gow_logo'] = 'Atlas/gow_logo.png'
         kingdom_filebase = self.campaign_tasks['kingdom']['filename']
@@ -802,11 +807,14 @@ class TeamExpander:
 
     def get_reroll_tasks(self, lang, _filter=None):
         tiers = ['bronze', 'silver', 'gold']
-        tasks = {
-            f'[MEDAL_LEVEL_{i}]': [self.translate_campaign_task(task, lang) for task in self.reroll_tasks[tier]]
-            for i, tier in reversed(list(enumerate(tiers))) if _filter is None or tier.lower() == _filter.lower()
+        return {
+            f'[MEDAL_LEVEL_{i}]': [
+                self.translate_campaign_task(task, lang)
+                for task in self.reroll_tasks[tier]
+            ]
+            for i, tier in reversed(list(enumerate(tiers)))
+            if _filter is None or tier.lower() == _filter.lower()
         }
-        return tasks
 
     def translate_campaign_task(self, task, lang):
         new_task = task.copy()
