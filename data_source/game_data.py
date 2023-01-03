@@ -520,8 +520,11 @@ class GameData:
             match = pattern.match(troop['filename'])
             if not match:
                 continue
-            kingdom_filename = match.group("filebase")
-            # Skip Apocalypse (3034) and HoG (3042), because they share filename with Sin of Maraj and Guardians resp. and are unlikely to get new troops
+            kingdom_filename = match["filebase"]
+            # Skip Apocalypse (3034) and HoG (3042),
+            # because they share filename with
+            # Sin of Maraj and Guardians resp. and are
+            # unlikely to get new troops
             skip_kingdoms = [3034, 3042]
             if troop_kingdom := next(
                     (
