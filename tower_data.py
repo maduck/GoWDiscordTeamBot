@@ -215,7 +215,7 @@ class TowerOfDoomData:
 
         if not tower_data:
             e = discord.Embed(title=title, color=color)
-            e.add_field(name=f'Failure',
+            e.add_field(name='Failure',
                         value=f'Couldn\'t find any data for #{channel.name}.\n'
                               f'Please use `{prefix}towerhelp` for more info.')
             return e
