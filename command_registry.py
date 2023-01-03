@@ -48,13 +48,13 @@ STANDARD_OPTIONS = {
     },
 }
 
-NO_QUOTE = r'^([^>].*?)??'
 LANG_PATTERN = r'(?P<lang>' + '|'.join(LANGUAGES) + ')?'
 DEFAULT_PATTERN = f'^{LANG_PATTERN}(?P<shortened>-)?(?P<prefix>.)'
 LENGTHENED_PATTERN = f'^{LANG_PATTERN}' + r'((?P<shortened>-)|(?P<lengthened>\+))?(?P<prefix>.)'
 
 SEARCH_PATTERN = DEFAULT_PATTERN + '{0} #?(?P<search_term>.*)$'
 MATCH_OPTIONS = re.IGNORECASE | re.MULTILINE
+NO_QUOTE = r'^([^>].*?)??'
 COMMAND_REGISTRY = [
     {
         'function': 'about',
@@ -68,7 +68,11 @@ COMMAND_REGISTRY = [
             f'{LENGTHENED_PATTERN}(ce|current_event)$', MATCH_OPTIONS
         ),
         'description': 'Shows current event details',
-        'options': [STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened'], STANDARD_OPTIONS['lengthened']],
+        'options': [
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+            STANDARD_OPTIONS['lengthened'],
+        ],
     },
     {
         'function': 'active_gems',
@@ -114,25 +118,41 @@ COMMAND_REGISTRY = [
             SEARCH_PATTERN.format('tr(oop)?'), MATCH_OPTIONS
         ),
         'description': 'Search troops',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'trait',
         'pattern': re.compile(SEARCH_PATTERN.format('trait'), MATCH_OPTIONS),
         'description': 'Search traits',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'weapon',
         'pattern': re.compile(SEARCH_PATTERN.format('weapon'), MATCH_OPTIONS),
         'description': 'Search weapons',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'affix',
         'pattern': re.compile(SEARCH_PATTERN.format('affix'), MATCH_OPTIONS),
         'description': 'Search weapon affixes',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'kingdom_summary',
@@ -150,19 +170,23 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'kingdom',
-        'pattern': re.compile(
-            SEARCH_PATTERN.format('kingdom'), MATCH_OPTIONS
-        ),
+        'pattern': re.compile(SEARCH_PATTERN.format('kingdom'), MATCH_OPTIONS),
         'description': 'Search kingdoms',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'faction',
-        'pattern': re.compile(
-            SEARCH_PATTERN.format('faction'), MATCH_OPTIONS
-        ),
+        'pattern': re.compile(SEARCH_PATTERN.format('faction'), MATCH_OPTIONS),
         'description': 'Search factions',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'show_pet_rescue_config',
@@ -224,8 +248,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'set_pet_rescue_config',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + '(pr|pet rescue) config (?P<key>[_a-zA-Z]+)([ =]+)(?P<value>.*)',
+            f'{DEFAULT_PATTERN}(pr|pet rescue) config (?P<key>[_a-zA-Z]+)([ =]+)(?P<value>.*)',
             MATCH_OPTIONS,
         ),
         'description': 'Configures a pet rescues for this channel',
@@ -235,7 +258,10 @@ COMMAND_REGISTRY = [
                 'description': 'Setting key to configure',
                 'type': OptionType.STRING.value,
                 'required': True,
-                'choices': [{'name': k, 'value': k} for k in PetRescueConfig.DEFAULT_CONFIG.keys()],
+                'choices': [
+                    {'name': k, 'value': k}
+                    for k in PetRescueConfig.DEFAULT_CONFIG.keys()
+                ],
             },
             {
                 'name': 'value',
@@ -244,13 +270,12 @@ COMMAND_REGISTRY = [
                 'required': True,
             },
             STANDARD_OPTIONS['lang'],
-        ]
+        ],
     },
     {
         'function': 'pet_rescue',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + '(pr|pet rescue) (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?m(ins?)?)?)?( (?P<mention><?@.+))?$',
+            f'{DEFAULT_PATTERN}(pr|pet rescue) (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?m(ins?)?)?)?( (?P<mention><?@.+))?$',
             MATCH_OPTIONS,
         ),
         'description': 'Starts a pet rescue countdown and notifies everyone.',
@@ -274,43 +299,14 @@ COMMAND_REGISTRY = [
         ],
     },
     {
-        'function': 'pr',
-        'pattern': re.compile(
-            DEFAULT_PATTERN
-            + '(pr|pet rescue) (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?m(ins?)?)?)?( (?P<mention><?@.+))?$',
-            MATCH_OPTIONS,
-        ),
-        'description': 'Shorthand for /pet_rescue',
-        'options': [
-            STANDARD_OPTIONS['search_term'],
-            {
-                'name': 'time_left',
-                'description': 'time left for rescue, max 59 minutes',
-                'type': OptionType.INTEGER.value,
-                'required': False,
-                'min_value': 0,
-                'max_value': 59,
-            },
-            {
-                'name': 'mention',
-                'description': 'person or role to mention, defaults to `@everyone`',
-                'type': OptionType.STRING.value,
-                'required': False,
-            },
-            STANDARD_OPTIONS['lang'],
-        ],
-    },
-    {
-        'function': 'pet_rescue_stats',
-        'pattern': re.compile(f'{DEFAULT_PATTERN}pet_rescue_stats', MATCH_OPTIONS),
-        'description': 'Show pets available in pet rescues',
-        'options': [STANDARD_OPTIONS['lang']],
-    },
-    {
         'function': 'pet',
         'pattern': re.compile(SEARCH_PATTERN.format('pet'), MATCH_OPTIONS),
         'description': 'Search pets',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'class_summary',
@@ -324,7 +320,11 @@ COMMAND_REGISTRY = [
         'function': 'class_',
         'pattern': re.compile(SEARCH_PATTERN.format('class'), MATCH_OPTIONS),
         'description': 'Search classes',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'talent',
@@ -332,11 +332,17 @@ COMMAND_REGISTRY = [
             SEARCH_PATTERN.format('talent(tree)?'), MATCH_OPTIONS
         ),
         'description': 'Search class talents',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'talents',
-        'pattern': re.compile(f'{DEFAULT_PATTERN}talent(tree)?s', MATCH_OPTIONS),
+        'pattern': re.compile(
+            f'{DEFAULT_PATTERN}talent(tree)?s', MATCH_OPTIONS
+        ),
         'description': 'Show all class talents',
         'options': [STANDARD_OPTIONS['lang']],
     },
@@ -346,7 +352,11 @@ COMMAND_REGISTRY = [
             SEARCH_PATTERN.format('traitstone'), MATCH_OPTIONS
         ),
         'description': 'Search traitstones',
-        'options': [STANDARD_OPTIONS['search_term'], STANDARD_OPTIONS['lang'], STANDARD_OPTIONS['shortened']],
+        'options': [
+            STANDARD_OPTIONS['search_term'],
+            STANDARD_OPTIONS['lang'],
+            STANDARD_OPTIONS['shortened'],
+        ],
     },
     {
         'function': 'event_kingdoms',
@@ -358,7 +368,10 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'events',
-        'pattern': re.compile(f'{DEFAULT_PATTERN}(spoilers? )?events?( (?P<filter>.*))?$', MATCH_OPTIONS),
+        'pattern': re.compile(
+            f'{DEFAULT_PATTERN}(spoilers? )?events?( (?P<filter>.*))?$',
+            MATCH_OPTIONS,
+        ),
         'description': 'Show upcoming events',
         'options': [
             {
@@ -374,8 +387,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'spoilers',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + 'spoilers?( (?P<filter>(weapon|pet|kingdom|troop))s?)?$',
+            f'{DEFAULT_PATTERN}spoilers?( (?P<filter>(weapon|pet|kingdom|troop))s?)?$',
             MATCH_OPTIONS,
         ),
         'description': 'Show upcoming releases',
@@ -430,9 +442,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'set_tower_config_alias',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + 'towerconfig (?P<category>(rooms|scrolls)) (?P<field>[^ ]+)'
-              r' (?P<values>.+)$',
+            f'{DEFAULT_PATTERN}towerconfig (?P<category>(rooms|scrolls)) (?P<field>[^ ]+) (?P<values>.+)$',
             MATCH_OPTIONS,
         ),
         'description': 'Sets a tower configuration alias',
@@ -466,8 +476,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'set_tower_config_option',
         'pattern': re.compile(
-            DEFAULT_PATTERN + 'towerconfig (?P<option>(short|hide))'
-                              r' (?P<value>.+)$',
+            f'{DEFAULT_PATTERN}towerconfig (?P<option>(short|hide)) (?P<value>.+)$',
             MATCH_OPTIONS,
         ),
         'description': 'Sets a tower configuration option',
@@ -479,7 +488,7 @@ COMMAND_REGISTRY = [
                 'required': True,
                 'choices': [
                     {'name': 'Short', 'value': 'short'},
-                    {'name': 'Hide', 'value': 'hide'}
+                    {'name': 'Hide', 'value': 'hide'},
                 ],
             },
             {
@@ -529,7 +538,7 @@ COMMAND_REGISTRY = [
                 'choices': [],
             },
             STANDARD_OPTIONS['shortened'],
-        ]
+        ],
     },
     {
         'function': 'clear_tower_data',
@@ -539,8 +548,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'edit_tower_single',
         'pattern': re.compile(
-            f'^{LANG_PATTERN}'
-            + r'(?P<prefix>.)tower (?P<floor>[^ ]+) (?P<room>[^ ]+) (?P<scroll>[^ ]+)$',
+            f'^{LANG_PATTERN}(?P<prefix>.)tower (?P<floor>[^ ]+) (?P<room>[^ ]+) (?P<scroll>[^ ]+)$',
             MATCH_OPTIONS,
         ),
         'options': [
@@ -565,7 +573,7 @@ COMMAND_REGISTRY = [
                 'required': True,
                 'choices': [],
             },
-        ]
+        ],
     },
     {
         'function': 'edit_tower_floor',
@@ -621,13 +629,12 @@ COMMAND_REGISTRY = [
                 'required': False,
                 'choices': [],
             },
-        ]
+        ],
     },
     {
         'function': 'delete_bookmark',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + r'bookmark delete (?P<bookmark_id>[a-zA-Z0-9]+)$',
+            f'{DEFAULT_PATTERN}bookmark delete (?P<bookmark_id>[a-zA-Z0-9]+)$',
             MATCH_OPTIONS,
         ),
         'description': 'Deletes an existing bookmark',
@@ -663,7 +670,7 @@ COMMAND_REGISTRY = [
             },
             STANDARD_OPTIONS['shortened'],
             STANDARD_OPTIONS['lang'],
-        ]
+        ],
     },
     {
         'function': 'show_bookmark',
@@ -750,9 +757,9 @@ COMMAND_REGISTRY = [
                 'choices': [
                     {'name': 'PC / Mobile', 'value': 'pc'},
                     {'name': 'Nintendo Switch', 'value': 'switch'},
-                ]
+                ],
             }
-        ]
+        ],
     },
     {
         'function': 'news_unsubscribe',
@@ -837,9 +844,13 @@ COMMAND_REGISTRY = [
                 'description': 'new language for this server',
                 'type': OptionType.STRING.value,
                 'required': True,
-                'choices': [{'name': v, 'value': k} for k, v in LANGUAGES.items() if k not in ('ru', 'cn')],
+                'choices': [
+                    {'name': v, 'value': k}
+                    for k, v in LANGUAGES.items()
+                    if k not in ('ru', 'cn')
+                ],
             }
-        ]
+        ],
     },
     {
         'function': 'campaign',
@@ -866,7 +877,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'reroll_tasks',
         'pattern': re.compile(
-            DEFAULT_PATTERN + 'reroll_tasks( (?P<tier>bronze|silver|gold))?$',
+            f'{DEFAULT_PATTERN}reroll_tasks( (?P<tier>bronze|silver|gold))?$',
             MATCH_OPTIONS,
         ),
         'description': "Show campaign re-roll tasks",
@@ -943,8 +954,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'update_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + r'toplist update (?P<toplist_id>[a-zA-Z0-9]+) (?P<description>[^,]+)? (?P<items>(.+,?)+)$',
+            f'{DEFAULT_PATTERN}toplist update (?P<toplist_id>[a-zA-Z0-9]+) (?P<description>[^,]+)? (?P<items>(.+,?)+)$',
             MATCH_OPTIONS,
         ),
         'description': 'Overwrite an existing toplist',
@@ -973,8 +983,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'append_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + r'toplist append (?P<toplist_id>[a-zA-Z0-9]+) (?P<items>(.+,?)+)$',
+            f'{DEFAULT_PATTERN}toplist append (?P<toplist_id>[a-zA-Z0-9]+) (?P<items>(.+,?)+)$',
             MATCH_OPTIONS,
         ),
         'description': 'Add item(s) to an existing toplist',
@@ -1009,13 +1018,12 @@ COMMAND_REGISTRY = [
                 'required': True,
             },
             STANDARD_OPTIONS['lang'],
-        ]
+        ],
     },
     {
         'function': 'create_toplist',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + r'toplist (?P<description>[^,]+)? (?P<items>(.+,?)+)$',
+            f'{DEFAULT_PATTERN}toplist (?P<description>[^,]+)? (?P<items>(.+,?)+)$',
             MATCH_OPTIONS,
         ),
         'description': 'Creates a new toplist',
@@ -1068,8 +1076,7 @@ COMMAND_REGISTRY = [
     {
         'function': 'world_map',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + r'world_map( (?P<location>krystara|underworld))?',
+            f'{DEFAULT_PATTERN}world_map( (?P<location>krystara|underworld))?',
             MATCH_OPTIONS,
         ),
         'description': 'Renders a world map',
@@ -1121,15 +1128,16 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'hoard_potions',
-        'pattern': re.compile(f'{DEFAULT_PATTERN}hoard_potions$', MATCH_OPTIONS),
+        'pattern': re.compile(
+            f'{DEFAULT_PATTERN}hoard_potions$', MATCH_OPTIONS
+        ),
         'description': 'Show potions for faction hoards',
         'options': [STANDARD_OPTIONS['lang']],
     },
     {
         'function': 'campaign_preview',
         'pattern': re.compile(
-            DEFAULT_PATTERN
-            + r'campaign_preview(?P<switch> Switch)?( (?P<team_code>.*))?$',
+            f'{DEFAULT_PATTERN}campaign_preview(?P<switch> Switch)?( (?P<team_code>.*))?$',
             MATCH_OPTIONS,
         ),
         'description': 'Generate a Campaign Preview image',
@@ -1170,17 +1178,32 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'dungeon_traps',
-        'pattern': re.compile(DEFAULT_PATTERN + r'dungeon_traps?', MATCH_OPTIONS),
+        'pattern': re.compile(
+            f'{DEFAULT_PATTERN}dungeon_traps?', MATCH_OPTIONS
+        ),
         'options': [STANDARD_OPTIONS['lang']],
         'description': 'Show traps that occur in the daily Dungeon',
     },
     {
         'function': 'dungeon_altars',
-        'pattern': re.compile(DEFAULT_PATTERN + r'dungeon_altars?', MATCH_OPTIONS),
+        'pattern': re.compile(
+            f'{DEFAULT_PATTERN}dungeon_altars?', MATCH_OPTIONS
+        ),
         'options': [STANDARD_OPTIONS['lang']],
         'description': 'Show altars that occur in the daily Dungeon',
     },
 ]
+
+aliases = {
+    'pet_rescue': 'pr',
+}
+
+for command in COMMAND_REGISTRY.copy():
+    if command['function'] in aliases:
+        new_command = command.copy()
+        new_command['function'] = aliases[command['function']]
+        new_command['description'] = f'Shorthand for /{command["function"]}'
+        COMMAND_REGISTRY.append(new_command)
 
 
 # taken from https://github.com/eunwoo1104/discord-py-slash-command
