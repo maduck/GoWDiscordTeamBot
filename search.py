@@ -115,15 +115,13 @@ class TeamExpander:
                 has_weapon = True
                 continue
 
-            _class = self.classes.get(element)
-            if _class:
+            if _class := self.classes.get(element):
                 result['class'] = _(_class['name'], lang)
                 result['class_talents'] = _class['talents']
                 has_class = True
                 continue
 
-            banner = self.banners.get(element)
-            if banner:
+            if banner := self.banners.get(element):
                 result['banner'] = self.translate_banner(banner, lang)
                 continue
 
@@ -165,18 +163,17 @@ class TeamExpander:
         return result
 
     def get_team_from_message(self, user_code, lang):
-        code = self.extract_code_from_message(user_code)
-        if not code:
+        if code := self.extract_code_from_message(user_code):
+            return self.get_team_from_code(code, lang)
+        else:
             return
-        return self.get_team_from_code(code, lang)
 
     @staticmethod
     def search_item(search_term, lang, items, lookup_keys, translator, sort_by='name'):
         if search_term.isdigit():
             if int(search_term) not in items:
                 return []
-            item = items.get(int(search_term))
-            if item:
+            if item := items.get(int(search_term)):
                 result = item.copy()
                 translator(result, lang)
                 return [result]
@@ -410,13 +407,13 @@ class TeamExpander:
                 result = tree.copy()
                 self.translate_talent_tree(result, lang)
                 possible_matches.append(result)
-            else:
-                talent_matches = [tag for tag in talents_search_tags if real_search in tag]
-                if talent_matches:
-                    result = tree.copy()
-                    result['talent_matches'] = talent_matches
-                    self.translate_talent_tree(result, lang)
-                    possible_matches.append(result)
+            elif talent_matches := [
+                tag for tag in talents_search_tags if real_search in tag
+            ]:
+                result = tree.copy()
+                result['talent_matches'] = talent_matches
+                self.translate_talent_tree(result, lang)
+                possible_matches.append(result)
         return sorted(possible_matches, key=operator.itemgetter('name'))
 
     @staticmethod
@@ -642,10 +639,11 @@ class TeamExpander:
                 description = description.replace(f'{{{i}}}', damage)
 
         boost = ''
-        if spell['boost'] and spell['boost'] > 100:
-            boost = f' [x{int(round(spell["boost"] / 100))}]'
-        elif spell['boost'] and spell['boost'] != 1 and spell['boost'] <= 100:
-            boost = f' [{100 / spell["boost"]:0.0f}:1]'
+        if spell['boost']:
+            if spell['boost'] > 100:
+                boost = f' [x{int(round(spell["boost"] / 100))}]'
+            elif spell['boost'] != 1:
+                boost = f' [{100 / spell["boost"]:0.0f}:1]'
 
         description = f'{description}{boost}'
 
@@ -876,18 +874,17 @@ class TeamExpander:
         now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
         near_term_spoilers = [s for s in self.spoilers if now <= s['date'] <= now + datetime.timedelta(days=180)]
         for spoiler in near_term_spoilers:
-            translated = self.translate_spoiler(spoiler, lang)
-            if translated:
+            if translated := self.translate_spoiler(spoiler, lang):
                 spoilers.append(translated)
         return spoilers
 
     def translate_spoiler(self, spoiler, lang):
         # FIXME this is transitional until all new models are in place.
         if spoiler['type'] in ['pet']:
-            item = getattr(self, spoiler['type'] + 's').get(spoiler['id'])
-            if not item:
+            if item := getattr(self, spoiler['type'] + 's').get(spoiler['id']):
+                entry = item[translations.LANGUAGE_CODE_MAPPING.get(lang, lang)].data.copy()
+            else:
                 return
-            entry = item[translations.LANGUAGE_CODE_MAPPING.get(lang, lang)].data.copy()
         else:
             entry = getattr(self, spoiler['type'] + 's').get(spoiler['id'], {}).copy()
         if not entry:
@@ -904,8 +901,7 @@ class TeamExpander:
                 rarity_number = TROOP_RARITIES.index(entry['rarity'])
                 entry['rarity'] = _(f'[RARITY_{rarity_number}]', lang)
 
-        kingdom_id = entry.get('kingdom_id')
-        if kingdom_id:
+        if kingdom_id := entry.get('kingdom_id'):
             kingdom = self.kingdoms[kingdom_id]
             entry['kingdom'] = _(kingdom['name'], lang)
             if self.is_untranslated(entry['kingdom']):
@@ -963,11 +959,13 @@ class TeamExpander:
         return dict(zip(categories, translated))
 
     def get_levels(self, lang):
-        levels = [{
-            'level': level['level'],
-            'bonus': _(level['bonus'], lang),
-        } for level in self.levels]
-        return levels
+        return [
+            {
+                'level': level['level'],
+                'bonus': _(level['bonus'], lang),
+            }
+            for level in self.levels
+        ]
 
     def translate_toplist(self, toplist_id, lang):
         toplist = self.toplists.get(toplist_id)
@@ -987,9 +985,7 @@ class TeamExpander:
     async def create_toplist(self, message, description, items, lang, update_id):
         toplist_id = await self.toplists.add(message.author.id, message.author.display_name, description, items,
                                              update_id)
-        toplist = self.translate_toplist(toplist_id, lang)
-
-        return toplist
+        return self.translate_toplist(toplist_id, lang)
 
     def kingdom_percentage(self, filter_name, filter_values, lang):
         result = {}
@@ -1033,10 +1029,10 @@ class TeamExpander:
         return sorted(translated_result.items(), key=operator.itemgetter(0))
 
     def get_adventure_board(self, lang):
-        result = []
-        for adventure in self.adventure_board:
-            result.append(self.translate_adventure(adventure, lang))
-        return result
+        return [
+            self.translate_adventure(adventure, lang)
+            for adventure in self.adventure_board
+        ]
 
     @staticmethod
     def translate_adventure(adventure, lang):
@@ -1054,9 +1050,7 @@ class TeamExpander:
 
     @staticmethod
     def is_untranslated(param):
-        if not param:
-            return True
-        return param[0] + param[-1] == '[]'
+        return param[0] + param[-1] == '[]' if param else True
 
     def get_toplist_troop_ids(self, items, lang):
         result = []
@@ -1113,7 +1107,7 @@ class TeamExpander:
             in_soulforge_text += ' (' + _(f'[{weapon["event_faction"]}_NAME]', lang) + ' ' + _(
                 '[FACTION_WEAPON]', lang) + ')'
         date = get_next_monday_in_locale(date, lang)[0]
-        result = {
+        return {
             'switch': switch,
             'name': weapon['name'],
             'rarity_color': RARITY_COLORS[weapon['raw_rarity']],
@@ -1133,19 +1127,25 @@ class TeamExpander:
             'gold_medal': 'Atlas/medal_gold.png',
             'mana_color': f'Troopcardall_{mana_colors}_full.png',
             'mana_cost': weapon['spell']['cost'],
-            'stat_increases': {'attack': sum(weapon['attack_increase']),
-                               'health': sum(weapon['health_increase']),
-                               'armor': sum(weapon['armor_increase']),
-                               'magic': sum(weapon['magic_increase'])},
+            'stat_increases': {
+                'attack': sum(weapon['attack_increase']),
+                'health': sum(weapon['health_increase']),
+                'armor': sum(weapon['armor_increase']),
+                'magic': sum(weapon['magic_increase']),
+            },
             'stat_icon': 'Atlas/{stat}.png',
             'texts': {
-                'from_battles': _('[PET_LOOT_BONUS]', lang).replace('+%1% %2 ', '').replace('+%1 %2 ', ''),
+                'from_battles': _('[PET_LOOT_BONUS]', lang)
+                .replace('+%1% %2 ', '')
+                .replace('+%1 %2 ', ''),
                 'gem_bounty': _('[DUNGEON_OFFER_NAME]', lang),
                 'kingdom_challenges': f'{_("[KINGDOM]", lang)} {_("[CHALLENGES]", lang)}',
                 'soulforge': _('[SOULFORGE]', lang),
                 'resources': _('[RESOURCES]', lang),
                 'dungeon': _('[DUNGEON]', lang),
-                'dungeon_battles': _('[TASK_WIN_DUNGEON_BATTLES]', lang).replace('{0}', '3').replace('\x19', 's'),
+                'dungeon_battles': _('[TASK_WIN_DUNGEON_BATTLES]', lang)
+                .replace('{0}', '3')
+                .replace('\x19', 's'),
                 'tier_8': _('[CHALLENGE_TIER_8_ROMAN]', lang),
                 'available': _('[AVAILABLE]', lang),
                 'in_soulforge': in_soulforge_text,
@@ -1153,7 +1153,6 @@ class TeamExpander:
             },
             'date': date,
         }
-        return result
 
     def translate_drop_chances(self, data: dict, lang):
         for key, item in data.copy().items():
@@ -1499,20 +1498,20 @@ class TeamExpander:
 
     @staticmethod
     def get_dungeon_altars(lang):
-        altars = []
-        for i in range(7):
-            altars.append({
+        return [
+            {
                 'name': _(f'[DUNGEON_TITLE_ALTAR_{i}]', lang),
                 'description': _(f'[DUNGEON_DESCRIPTION_ALTAR_{i}]', lang),
-            })
-        return altars
+            }
+            for i in range(7)
+        ]
 
     @staticmethod
     def get_dungeon_traps(lang):
-        traps = []
-        for i in range(11):
-            traps.append({
+        return [
+            {
                 'name': _(f'[DUNGEON_TITLE_TRAP_{i}]', lang),
                 'description': _(f'[DUNGEON_DESCRIPTION_TRAP_{i}]', lang),
-            })
-        return traps
+            }
+            for i in range(11)
+        ]

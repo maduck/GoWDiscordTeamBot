@@ -286,10 +286,7 @@ class GameData:
                          and e['start'].weekday() == 0
                          and e['kingdom_id']
                          and e['type'] == '[WEEKLY_EVENT]']
-        if not weekly_events:
-            return 3000
-        event_kingdom_id = weekly_events[0]['kingdom_id']
-        return int(event_kingdom_id)
+        return int(weekly_events[0]['kingdom_id']) if weekly_events else 3000
 
     def get_current_campaign_week(self):
         if self.campaign_week:
@@ -501,13 +498,14 @@ class GameData:
         }
         for faction_id, faction_data in factions:
             kingdom_id = faction_data['linked_kingdom_id']
-            faction_weapons = [w['id'] for w in self.weapons.values()
-                               if w['kingdom']['id'] == kingdom_id
-                               and w['requirement'] == 1000
-                               and sorted(w['colors']) == sorted(faction_data['colors'])
-                               and w['rarity'] == 'Epic'
-                               ]
-            if faction_weapons:
+            if faction_weapons := [
+                w['id']
+                for w in self.weapons.values()
+                if w['kingdom']['id'] == kingdom_id
+                   and w['requirement'] == 1000
+                   and sorted(w['colors']) == sorted(faction_data['colors'])
+                   and w['rarity'] == 'Epic'
+            ]:
                 weapon_id = faction_weapons[-1]
                 weapon_id = faction_weapon_overrides.get(faction_id, weapon_id)
                 self.kingdoms[faction_id]['event_weapon'] = self.weapons[weapon_id]
@@ -527,9 +525,15 @@ class GameData:
             kingdom_filename = match.group("filebase")
             # Skip Apocalypse (3034) and HoG (3042), because they share filename with Sin of Maraj and Guardians resp. and are unlikely to get new troops
             skip_kingdoms = [3034, 3042]
-            troop_kingdom = next((k for k in self.kingdoms.values() if
-                                  k['filename'] == kingdom_filename and k['id'] not in skip_kingdoms), None)
-            if troop_kingdom:
+            if troop_kingdom := next(
+                    (
+                            k
+                            for k in self.kingdoms.values()
+                            if k['filename'] == kingdom_filename
+                               and k['id'] not in skip_kingdoms
+                    ),
+                    None,
+            ):
                 troop['kingdom'] = troop_kingdom
                 troop_kingdom['troop_ids'].append(troop_id)
 
