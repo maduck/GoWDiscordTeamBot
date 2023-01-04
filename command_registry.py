@@ -299,6 +299,12 @@ COMMAND_REGISTRY = [
         ],
     },
     {
+        'function': 'pet_rescue_stats',
+        'pattern': re.compile(f'{DEFAULT_PATTERN}pet_rescue_stats', MATCH_OPTIONS),
+        'description': 'Show pets available in pet rescues',
+        'options': [STANDARD_OPTIONS['lang']],
+    },
+    {
         'function': 'pet',
         'pattern': re.compile(SEARCH_PATTERN.format('pet'), MATCH_OPTIONS),
         'description': 'Search pets',
