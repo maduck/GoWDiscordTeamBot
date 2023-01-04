@@ -275,7 +275,8 @@ COMMAND_REGISTRY = [
     {
         'function': 'pet_rescue',
         'pattern': re.compile(
-            f'{DEFAULT_PATTERN}(pr|pet rescue) (?P<search_term>.+?)( (?P<time_left>[0-9]+)( ?m(ins?)?)?)?( (?P<mention><?@.+))?$',
+            f'{DEFAULT_PATTERN}(pr|pet rescue) (?P<search_term>.+?)'
+            f'( (?P<time_left>[0-9]+)( ?m(ins?)?)?)?( (?P<mention><?@.+))?$',
             MATCH_OPTIONS,
         ),
         'description': 'Starts a pet rescue countdown and notifies everyone.',
