@@ -662,7 +662,7 @@ class Views:
         e.set_footer(text=f'{rescues} pets were brutally slaughtered by whole guilds in the making of this analysis.')
         return self.render_embed(e, 'pet_rescue_stats.jinja', stats=stats)
 
-    def render_all_talents(self, talents, _):
+    def render_all_talents(self, talents, __):
         talent_list = [t['name'] for t in talents]
         return discord.Embed(title=_('[TALENTS]'), description='\n'.join(talent_list), colour=self.WHITE)
 
