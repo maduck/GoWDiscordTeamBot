@@ -162,7 +162,7 @@ class BaseBot(discord.Client):
             self.embed_check_limits(embed)
             if message.author and message.author.avatar:
                 embed.set_author(name=message.author.display_name, icon_url=message.author.avatar.url)
-            elif message.author and not message.author.avatar:
+            elif message.author:
                 embed.set_author(name=message.author.display_name)
             return await self.answer_or_react(message, embed, content, no_interaction)
         except discord.errors.Forbidden:
@@ -284,8 +284,8 @@ class BaseBot(discord.Client):
     def is_guild_admin(message):
         if message.channel.type == discord.ChannelType.private:
             return True
-        has_admin_role = any(['admin' in r.name.lower() for r in message.author.roles])
-        is_administrator = any([r.permissions.administrator for r in message.author.roles])
+        has_admin_role = any('admin' in r.name.lower() for r in message.author.roles)
+        is_administrator = any(r.permissions.administrator for r in message.author.roles)
         is_owner = message.author.id == message.guild.owner_id
         return is_owner or is_administrator or has_admin_role
 
