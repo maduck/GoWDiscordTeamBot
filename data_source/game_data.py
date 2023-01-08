@@ -915,8 +915,8 @@ class GameData:
 
                 battles.append({
                     'name': battle['Name']['en_US'],
-                    'rarity': TROOP_RARITIES[battle['Color']],
-                    'icon': battle['Icon'],
+                    'rarity': TROOP_RARITIES[battle.get('Color', 0)],
+                    'icon': battle.get('Icon', ''),
                 })
             return battles
 
