@@ -42,7 +42,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.85.10'
+    VERSION = '0.85.11'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -616,7 +616,7 @@ class DiscordBot(BaseBot):
         author = await pluralize_author(author)
         if kwargs.get('title') is None and message.id != 0:
             team_code = None
-        e = self.views.render_team(team, author, shortened, lengthened, title=kwargs.get('title'))
+        e = self.views.render_team(team, author, shortened, lengthened, title=kwargs.get('title', '')[:256])
         await self.answer(message, e)
         if team_code:
             await message.channel.send(content=f'[{team_code}]')
