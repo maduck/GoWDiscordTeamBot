@@ -1535,7 +1535,7 @@ class TeamExpander:
                     'name': _(orb['name'], lang),
                     'help': _(orb['help'], lang).replace('%1', f'`{orb["data"]}`'),
                     'chance': f'{orb["chance"]:0.0%}',
-                    'code': orb['code']
+                    'emoji': orb['emoji']
                 }
             )
         return result

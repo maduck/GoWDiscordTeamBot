@@ -1041,6 +1041,7 @@ class GameData:
         for i, orb in enumerate(OrbType):
             self.orbs[orb] = {
                 'code': orb.name,
+                'emoji': f'Orbs_Orb_{orb.name}_full',
                 'name': f'[ORB_{i:02d}_NAME]',
                 'data': self.user_data['pEconomyModel']['OrbPowerIncrements'][i],
                 'help': f'[ORB_{i:02d}_HELP]',
