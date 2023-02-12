@@ -6,6 +6,7 @@ import json
 import logging
 import operator
 import re
+from collections import defaultdict
 
 import translations
 from configurations import CONFIG
@@ -82,6 +83,7 @@ class TeamExpander:
         self.store_data = world.store_data
         self.user_data = world.user_data
         self.hoard_potions = world.hoard_potions
+        self.orbs = world.orbs
 
     @classmethod
     def extract_code_from_message(cls, raw_code):
@@ -1523,3 +1525,17 @@ class TeamExpander:
             }
             for i in range(11)
         ]
+
+    def get_orbs(self, lang):
+        result = defaultdict(list)
+        for orb in self.orbs.values():
+            group_name = _(orb["group"], lang)
+            result[group_name].append(
+                {
+                    'name': _(orb['name'], lang),
+                    'help': _(orb['help'], lang).replace('%1', f'`{orb["data"]}`'),
+                    'chance': orb['chance'],
+                    'code': orb['code']
+                }
+            )
+        return result

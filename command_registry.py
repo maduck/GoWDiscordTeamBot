@@ -1182,6 +1182,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
         'description': 'Show altars that occur in the daily Dungeon',
     },
+    {
+        'function': 'orbs',
+        'pattern': re.compile(f'{DEFAULT_PATTERN}orbs', MATCH_OPTIONS),
+        'options': [STANDARD_OPTIONS['lang']],
+        'description': 'Shows Orbs in the game',
+    },
 ]
 
 aliases = {

@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.85.11'
+    VERSION = '0.86.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -220,6 +220,11 @@ class DiscordBot(BaseBot):
     async def reroll_tasks(self, message, lang, tier=None, **__):
         rerolls = self.expander.get_reroll_tasks(lang, tier)
         await self.render_campaign_lines(message, rerolls, lang)
+
+    async def orbs(self, message, lang, **__):
+        orbs = self.expander.get_orbs(lang)
+        e = self.views.render_orbs(orbs, lang)
+        return await self.answer(message, e)
 
     async def adventures(self, message, lang, **__):
         adventures = self.expander.get_adventure_board(lang)

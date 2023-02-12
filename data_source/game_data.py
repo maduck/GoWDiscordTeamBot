@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import math
 import operator
 import re
@@ -6,7 +7,8 @@ import re
 from configurations import CONFIG
 from data_source import Pets
 from game_assets import GameAssets
-from game_constants import COLORS, COST_TYPES, EVENT_TYPES, GEM_TUTORIAL_IDS, RewardTypes, SOULFORGE_ALWAYS_AVAILABLE, \
+from game_constants import COLORS, COST_TYPES, EVENT_TYPES, GEM_TUTORIAL_IDS, OrbType, RewardTypes, \
+    SOULFORGE_ALWAYS_AVAILABLE, \
     TROOP_RARITIES
 from util import U, convert_color_array
 
@@ -68,6 +70,7 @@ class GameData:
         self.store_raw_data = {}
         self.store_data = {}
         self.hoard_potions = {}
+        self.orbs = {}
 
     def read_json_data(self):
         self.data = GameAssets.load('World.json')
@@ -108,6 +111,7 @@ class GameData:
         self.populate_weekly_event_details()
         self.populate_gem_events()
         self.populate_hoard_potions()
+        self.populate_orbs()
 
     def populate_classes(self):
         for _class in self.data['HeroClasses']:
@@ -1022,4 +1026,24 @@ class GameData:
                 'reference_name': potion_data['Name'],
                 'traits': traits,
                 'skills': potion_data.get('SkillBonuses', []),
+            }
+
+    def populate_orbs(self):
+        chances = list(itertools.chain(*zip(
+            self.user_data['pEconomyModel']['ChaosOrbChances'],
+            self.user_data['pEconomyModel']['MajorChaosOrbChances']
+        )))
+        orb_groups = [
+            f'[ORB_{i:02d}_NAME]' for i in
+            (0, 0, 2, 2, 4, 4, 6, 6, 8, 8, 10, 11, 11, 13, 13, 15, 15, 17, 17, 17)
+        ]
+
+        for i, orb in enumerate(OrbType):
+            self.orbs[orb] = {
+                'code': orb.name,
+                'name': f'[ORB_{i:02d}_NAME]',
+                'data': self.user_data['pEconomyModel']['OrbPowerIncrements'][i],
+                'help': f'[ORB_{i:02d}_HELP]',
+                'chance': chances[i],
+                'group': orb_groups[i],
             }

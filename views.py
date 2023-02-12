@@ -688,3 +688,7 @@ class Views:
                               color=self.WHITE)
             result.append(self.render_embed(e, "banners.jinja", banners=split_banners, offset=i * half_length))
         return result
+
+    def render_orbs(self, orbs, lang):
+        e = discord.Embed(title=_('[ORBS]', lang), colour=self.WHITE)
+        return self.render_embed(e, "orbs.jinja", orbs=orbs)
