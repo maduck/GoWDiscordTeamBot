@@ -13,7 +13,6 @@ import discord
 import humanize
 import prettytable
 import requests
-import topgg
 
 import bot_tasks
 import graphic_campaign_preview
@@ -67,11 +66,7 @@ class DiscordBot(BaseBot):
         self.views = Views(emojis={})
         self.pet_rescues = []
         self.pet_rescue_config: PetRescueConfig = None
-        token = CONFIG.get('dbl_token')
-        self.topgg_client = None
         self.server_status_cache = {'last_updated': datetime.datetime.min.replace(tzinfo=datetime.timezone.utc)}
-        if token:
-            self.topgg_client = topgg.DBLClient(self, token)
 
     async def on_guild_join(self, guild):
         await super().on_guild_join(guild)
@@ -1151,7 +1146,6 @@ if __name__ == '__main__':
     bot_tasks.task_check_for_news.start(client)
     bot_tasks.task_check_for_data_updates.start(client)
     bot_tasks.task_update_pet_rescues.start(client)
-    bot_tasks.task_update_dbl_stats.start(client)
     if TOKEN is not None:
         client.run(TOKEN)
     else:

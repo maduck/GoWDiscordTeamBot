@@ -63,14 +63,3 @@ async def task_check_for_data_updates(discord_client):
                 log.error('Could not update game file. Stacktrace follows.')
                 log.exception(e)
                 discord_client.expander = old_expander
-
-
-@tasks.loop(minutes=30.0)
-async def task_update_dbl_stats(client):
-    if client.topgg_client is None:
-        return
-    try:
-        await client.topgg_client.post_guild_count()
-        log.debug('Posted server count ({})'.format(client.topgg_client.guild_count))
-    except Exception as e:
-        log.exception('Failed to post server count\n{}: {}'.format(type(e).__name__, e))
