@@ -1044,7 +1044,7 @@ class GameData:
                 'emoji': f'Orbs_Orb_{orb.name}_full',
                 'name': f'[ORB_{i:02d}_NAME]',
                 'data': self.user_data['pEconomyModel']['OrbPowerIncrements'][i],
-                'help': f'[ORB_{i:02d}_HELP]',
+                'help': f'[REWARD_HELP_DESC_ORB_{i}]',
                 'chance': chances[i],
                 'group': orb_groups[i],
             }
