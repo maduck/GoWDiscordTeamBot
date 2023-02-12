@@ -1,5 +1,4 @@
 import datetime
-import itertools
 import math
 import operator
 import re
@@ -1029,10 +1028,11 @@ class GameData:
             }
 
     def populate_orbs(self):
-        chances = list(itertools.chain(*zip(
+        chances = [c[0] if c[0] else c[1] for c in zip(
             self.user_data['pEconomyModel']['ChaosOrbChances'],
             self.user_data['pEconomyModel']['MajorChaosOrbChances']
-        )))
+        )]
+
         orb_groups = [
             f'[ORB_{i:02d}_NAME]' for i in
             (0, 0, 2, 2, 4, 4, 6, 6, 8, 8, 10, 11, 11, 13, 13, 15, 15, 17, 17, 17)

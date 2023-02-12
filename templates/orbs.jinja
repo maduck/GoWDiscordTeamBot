@@ -1,5 +1,5 @@
 {% for group_name, orb_group in orbs.items() %}
-<T>{{ group_name }}</T>
-{% for orb in orb_group %}{{ orb.name }} ({{ orb.chance }} %): {{ orb.help }}
+<T>__{{ group_name }}__</T>
+{% for orb in orb_group %}**{{ orb.name }}** ({{ orb.chance }}): {{ orb.help }}
 {% endfor %}
 {% endfor %}
