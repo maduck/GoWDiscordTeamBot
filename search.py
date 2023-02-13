@@ -739,7 +739,7 @@ class TeamExpander:
             entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
         elif entry['type'] == '[PETRESCUE]' and entry['gacha'] and entry['gacha'] in self.pets:
             entry['extra_info'] = self.pets[entry['gacha']][lang].name
-        elif entry['type'] == '[CLASS_EVENT]' and entry['gacha']:
+        elif entry['type'] == '[CLASS_EVENT]' and entry['gacha'] and entry['gacha'] in self.classes:
             entry['extra_info'] = _(self.classes[entry['gacha']]['name'], lang)
         elif entry['type'] == '[TOWER_OF_DOOM]' and entry['gacha']:
             entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
