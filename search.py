@@ -618,6 +618,10 @@ class TeamExpander:
         magic = _('[MAGIC]', lang)
 
         description = _(spell['description'], lang)
+        if description.startswith('&&'):
+            description = description \
+                .replace('&&', _('[CHOICE_CHOOSE_ONE_DESC]', lang), 1) \
+                .replace('&&', _('[OR]').upper())
 
         for i, (multiplier, amount) in enumerate(spell['effects'], start=1):
             spell_amount = f' + {amount}' if amount else ''
