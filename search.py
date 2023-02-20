@@ -967,6 +967,8 @@ class TeamExpander:
                 result = _(lookup, lang)[:-1]
             if result == lookup[:-1]:
                 result = _(f'[{cat.upper()}]', lang)
+            if result == '[CLASSE]':
+                result = _('[CLASS]', lang)
             return result
 
         translated = [try_different_translated_versions_because_devs_are_stupid(c) for c in categories]
