@@ -1016,15 +1016,20 @@ class TeamExpander:
                 if kingdom['id'] in hidden_kingdoms:
                     continue
                 all_troops = [self.troops.get(troop_id) for troop_id in kingdom['troop_ids']]
-                available_troops = [troop for troop in all_troops if troop and troop.get('release_date', now) <= now]
-                if not available_troops:
+                explore_troops = [
+                    troop for troop in all_troops
+                    if troop
+                       and troop.get('release_date', now) <= now
+                       and troop.get('rarity') not in [None, 'Legendary', 'Mythic']
+                ]
+                if not explore_troops:
                     continue
-                fitting_troops = [troop for troop in available_troops if filter_ in troop[filter_name]]
+                fitting_troops = [troop for troop in explore_troops if filter_ in troop[filter_name]]
                 kingdoms.append({
                     'name': _(kingdom['name'], lang),
-                    'total': len(available_troops),
+                    'total': len(explore_troops),
                     'fitting_troops': len(fitting_troops),
-                    'percentage': len(fitting_troops) / len(available_troops),
+                    'percentage': len(fitting_troops) / len(explore_troops),
                 })
             top_kingdom = sorted(kingdoms, key=operator.itemgetter('percentage'), reverse=True)[0]
             result[filter_] = top_kingdom
