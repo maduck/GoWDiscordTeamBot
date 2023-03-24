@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.87.4'
+    VERSION = '0.87.5'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -490,7 +490,7 @@ class DiscordBot(BaseBot):
 
     async def pet_rescue(self, message, search_term, lang, time_left=59, mention='', **__):
         # sourcery skip: aware-datetime-for-utc
-        pets = self.expander.pets.search(search_term, lang, name_only=True)
+        pets = self.expander.pets.search(search_term, lang, name_only=True, released_only=True)
         if len(pets) != 1:
             e = discord.Embed(title=f'Pet search for `{search_term}` yielded {len(pets)} results.',
                               description='Try again with a different search.',

@@ -1,4 +1,5 @@
 import copy
+import datetime
 
 import translations
 from util import dig, extract_search_tag
@@ -78,7 +79,7 @@ class BaseGameDataContainer:
         for lang in translations.LOCALE_MAPPING.keys():
             self.translations[lang].set_release_date(release_date)
 
-    def matches(self, search_term, lang, name_only=False):
+    def matches(self, search_term, lang, name_only=False, released_only=False):
         compacted_search = extract_search_tag(search_term)
         item = self.translations[lang]
         if item.name == '`?`':
@@ -89,7 +90,10 @@ class BaseGameDataContainer:
         lookups = {
             k: extract_search_tag(dig(item, k)) for k in lookup_keys
         }
+        now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
         for key, lookup in lookups.items():
+            if released_only and self.data.get('release_date') and self.data['release_date'] > now:
+                continue
             if compacted_search in lookup:
                 return True
         return False
