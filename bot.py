@@ -87,19 +87,25 @@ class DiscordBot(BaseBot):
         if first_writable_channel:
             await first_writable_channel.send(embed=welcome_message)
 
+    async def special_needed(self, message):
+        debug(message)
+        is_special = message.author.id in CONFIG.get('special_users')
+        is_owner = await self.is_owner(message)
+        if CONFIG.get('special_users_only'):
+            if not is_owner and not is_special:
+                log.debug('Interaction forbidden by configuration.')
+                return True
+        return False
+
     async def on_slash_command(self, function, options, message):
         try:
             if 'lang' not in options:
                 options['lang'] = self.language.get(message.guild)
             options['lang'] = LANGUAGE_CODE_MAPPING.get(options['lang'], options['lang'])
             options['prefix'] = self.prefix.get(message.guild)
-            debug(message)
-            is_special = message.author.id in CONFIG.get('special_users')
-            is_owner = await self.is_owner(message)
-            if CONFIG.get('special_users_only'):
-                if not is_owner and not is_special:
-                    log.debug('Interaction forbidden by configuration.')
-                    return
+            if await self.special_needed(message):
+                return
+
             await function(message=message, **options)
         except discord.HTTPException as e:
             log.debug(f'Could not answer to slash command: {e}')
@@ -437,13 +443,8 @@ class DiscordBot(BaseBot):
         params['lang'] = params.get('lang') or self.language.get(message.guild)
         params['lang'] = params['lang'].lower()
         params['lang'] = LANGUAGE_CODE_MAPPING.get(params['lang'], params['lang'])
-        debug(message)
-        is_special = message.author.id in CONFIG.get('special_users')
-        is_owner = await self.is_owner(message)
-        if CONFIG.get('special_users_only'):
-            if not is_owner and not is_special:
-                log.debug('Interaction forbidden by configuration.')
-                return
+        if await self.special_needed(message):
+            return
 
         await function(message=message, **params)
 
