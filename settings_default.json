@@ -19,5 +19,6 @@
   "slash_command_guild_id": null,
   "special_users": [],
   "data_shift_hours": 0,
-  "taran_token": ""
+  "taran_token": "",
+  "special_users_only": false
 }

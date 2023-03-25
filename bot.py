@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.87.5'
+    VERSION = '0.87.6'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -94,6 +94,12 @@ class DiscordBot(BaseBot):
             options['lang'] = LANGUAGE_CODE_MAPPING.get(options['lang'], options['lang'])
             options['prefix'] = self.prefix.get(message.guild)
             debug(message)
+            is_special = message.author.id in CONFIG.get('special_users')
+            is_owner = await self.is_owner(message)
+            if CONFIG.get('special_users_only'):
+                if not is_owner and not is_special:
+                    log.debug('Interaction forbidden by configuration.')
+                    return
             await function(message=message, **options)
         except discord.HTTPException as e:
             log.debug(f'Could not answer to slash command: {e}')
@@ -417,9 +423,6 @@ class DiscordBot(BaseBot):
             return
 
         await self.wait_until_ready()
-        if not self.expander.my_emojis:
-            log.debug('Emojis vanished from Expander, refreshing.')
-            self.expander.my_emojis = self.my_emojis
 
         user_command = message.content.strip()
         my_prefix = self.prefix.get(message.guild)
@@ -427,10 +430,21 @@ class DiscordBot(BaseBot):
         if not function:
             return
 
+        if not self.expander.my_emojis:
+            log.debug('Emojis vanished from Expander, refreshing.')
+            self.expander.my_emojis = self.my_emojis
+
         params['lang'] = params.get('lang') or self.language.get(message.guild)
         params['lang'] = params['lang'].lower()
         params['lang'] = LANGUAGE_CODE_MAPPING.get(params['lang'], params['lang'])
         debug(message)
+        is_special = message.author.id in CONFIG.get('special_users')
+        is_owner = await self.is_owner(message)
+        if CONFIG.get('special_users_only'):
+            if not is_owner and not is_special:
+                log.debug('Interaction forbidden by configuration.')
+                return
+
         await function(message=message, **params)
 
     @guild_required

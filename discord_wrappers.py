@@ -36,7 +36,8 @@ def owner_required(function):
         self = args[0]
         message = kwargs['message']
         is_special = message.author.id in CONFIG.get('special_users')
-        if not await self.is_owner(message) and not is_special:
+        is_owner = await self.is_owner(message)
+        if not is_owner and not is_special:
             e = discord.Embed(title='Owner command', color=self.RED)
             e.add_field(name='Error', value='Only the bot owner has permission to use this command.')
             await self.answer(message, e)

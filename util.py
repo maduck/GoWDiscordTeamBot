@@ -5,7 +5,7 @@ from calendar import day_name, different_locale
 
 import discord
 
-import base_bot
+import discord_fake_classes
 from base_bot import log
 from translations import LANGUAGE_CODE_MAPPING, LOCALE_MAPPING
 
@@ -65,7 +65,7 @@ def dig(item, lookup):
 def debug(message):
     guild = message.guild.name if message.guild else '-'
     channel = message.channel
-    if type(channel) == base_bot.FakeChannel:
+    if type(channel) == discord_fake_classes.FakeChannel:
         channel = channel.channel
     if type(channel) in (discord.channel.DMChannel, discord.channel.PartialMessageable):
         channel = 'Private Message'

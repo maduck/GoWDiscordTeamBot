@@ -5,7 +5,8 @@ import math
 
 import discord
 
-from base_bot import FakeMessage, log
+from base_bot import log
+from discord_fake_classes import FakeMessage
 from models import DB
 
 
