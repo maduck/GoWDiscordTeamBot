@@ -100,7 +100,7 @@ class BasePreview:
             draw.font = FONTS['raleway']
             draw.text_alignment = 'right'
             draw.text_antialias = True
-            legal_notice = 'Produced by Hawx & Gary.\nNo redistribution without this notice.'
+            legal_notice = 'Produced by Gary.\nNo redistribution without this notice.'
             draw.fill_color = Color('black')
             draw.text(self.img.width - width - 18, self.img.height - 2 - 2 * int(draw.font_size), legal_notice)
             draw.text(self.img.width - width - 18, self.img.height + 2 - 2 * int(draw.font_size), legal_notice)
