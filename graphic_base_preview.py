@@ -88,7 +88,7 @@ class BasePreview:
 
     def draw_watermark(self):
         with Drawing() as draw:
-            avatar = Image(filename='hawx_transparent.png')
+            avatar = Image(filename='gary.png')
             max_size = 100
             width, height = scale_down(*avatar.size, max_size)
             draw.composite(operator='atop',
