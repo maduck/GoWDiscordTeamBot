@@ -38,22 +38,22 @@ class Translations:
     BASE_LANG = 'en'
 
     def __init__(self):
-        self.translations = {}
+        self.all_translations = {}
         for lang_code, language in LANGUAGES.items():
-            self.translations[lang_code] = GameAssets.load(
+            self.all_translations[lang_code] = GameAssets.load(
                 f'GemsOfWar_{language}.json')
             addon_filename = f'extra_translations/{language}.json'
             if os.path.exists(addon_filename):
                 with open(addon_filename, encoding='utf8') as f:
                     addon_translations = json.load(f)
-                self.translations[lang_code].update(addon_translations)
+                self.all_translations[lang_code].update(addon_translations)
 
     def get(self, key, lang='', default=None, plural=False):
-        if lang not in self.translations:
+        if lang not in self.all_translations:
             lang = self.BASE_LANG
         if not default:
             default = key
-        result = self.translations[lang].get(key, default)
+        result = self.all_translations[lang].get(key, default)
         return self.pluralize(result, plural)
 
     @staticmethod
