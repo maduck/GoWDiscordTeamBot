@@ -241,11 +241,9 @@ class TowerOfDoomData:
         starting_floor = tower_data[0][0]
         field_header = channel.name
         for floor, floor_data in tower_data:
-            line = ''
+            line = f'Floor {floor}: {self.format_floor(my_data, int(floor), floor_data)}'
             if shortened:
                 line = f'{self.format_short_floor(int(floor), floor_data)}'
-            else:
-                line = f'Floor {floor}: {self.format_floor(my_data, int(floor), floor_data)}'
             if len(field_header) + len(line) + sum([len(fl) + 1 for fl in field_lines]) < 1024:
                 field_lines.append(line)
             else:
