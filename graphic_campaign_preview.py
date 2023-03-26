@@ -85,8 +85,6 @@ class CampaignPreview(BasePreview):
                                left=x + 20, top=y + 80 + i * (mana.height + 15),
                                width=mana.width, height=mana.height,
                                image=mana)
-                if 'affix' in item:
-                    pass
 
                 draw.text(x + 55, int(y + 80 + (i + 0.5) * (mana.height + 15)), item['name'])
             banner_filename = f'Banners/Banners_{self.data["team"]["banner"]["filename"]}_full.png'
