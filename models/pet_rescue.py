@@ -64,27 +64,33 @@ class PetRescue:
 
     async def create_or_edit_posts(self, embed):
         if self.pet_message and datetime.datetime.utcnow() - self.start_time <= self.DISPLAY_TIME:
-            try:
-                if self.author and self.author_url:
-                    embed.set_author(name=self.author, icon_url=self.author_url)
-                elif self.author:
-                    embed.set_author(name=self.author)
-                await self.pet_message.edit(embed=embed)
-            except discord.errors.DiscordException as e:
-                log.warn(f'Error while editing pet rescue: {str(e)}')
-                await self.remove_from_db()
-                self.active = False
+            await self.update_posts(embed)
         elif not self.pet_message:
-            if self.show_mention:
-                self.update_mention()
-                if self.message.author:
-                    self.author = self.message.author.display_name
-                    if self.message.author.avatar:
-                        self.author_url = self.message.author.avatar.url
-                self.alert_message = await self.answer_method(self.message, embed=None, content=self.reminder)
-            self.pet_message = await self.answer_method(self.message, embed)
+            await self.create_posts(embed)
         else:
             await self.delete_messages()
+            await self.remove_from_db()
+            self.active = False
+
+    async def create_posts(self, embed):
+        if self.show_mention:
+            self.update_mention()
+            if self.message.author:
+                self.author = self.message.author.display_name
+                if self.message.author.avatar:
+                    self.author_url = self.message.author.avatar.url
+            self.alert_message = await self.answer_method(self.message, embed=None, content=self.reminder)
+        self.pet_message = await self.answer_method(self.message, embed)
+
+    async def update_posts(self, embed):
+        try:
+            if self.author and self.author_url:
+                embed.set_author(name=self.author, icon_url=self.author_url)
+            elif self.author:
+                embed.set_author(name=self.author)
+            await self.pet_message.edit(embed=embed)
+        except discord.errors.DiscordException as e:
+            log.warn(f'Error while editing pet rescue: {str(e)}')
             await self.remove_from_db()
             self.active = False
 
