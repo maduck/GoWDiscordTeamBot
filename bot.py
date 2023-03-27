@@ -41,7 +41,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.87.7'
+    VERSION = '0.87.8'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -98,6 +98,7 @@ class DiscordBot(BaseBot):
         return False
 
     async def on_slash_command(self, function, options, message):
+        await self.refresh_emojis()
         try:
             if 'lang' not in options:
                 options['lang'] = self.language.get(message.guild)
@@ -436,9 +437,7 @@ class DiscordBot(BaseBot):
         if not function:
             return
 
-        if not self.expander.my_emojis:
-            log.debug('Emojis vanished from Expander, refreshing.')
-            self.expander.my_emojis = self.my_emojis
+        await self.refresh_emojis()
 
         params['lang'] = params.get('lang') or self.language.get(message.guild)
         params['lang'] = params['lang'].lower()
@@ -447,6 +446,11 @@ class DiscordBot(BaseBot):
             return
 
         await function(message=message, **params)
+
+    async def refresh_emojis(self):
+        if not self.expander.my_emojis:
+            log.debug('Emojis vanished from Expander, refreshing.')
+            self.expander.my_emojis = self.my_emojis
 
     @guild_required
     @admin_required
