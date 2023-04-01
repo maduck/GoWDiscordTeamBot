@@ -37,9 +37,13 @@ from translations import HumanizeTranslator, LANGUAGES, LANGUAGE_CODE_MAPPING
 from util import bool_to_emoticon, chunks, debug, pluralize_author
 from views import Views
 
-ADMIN_ACTION = 'Administrative action'
-
 TOKEN = os.getenv('DISCORD_TOKEN')
+
+TOWER_OF_DOOM = 'Tower of Doom'
+ADMIN_ACTION = 'Administrative action'
+THERE_WAS_A_PROBLEM = 'There was a problem'
+NEWS_MANAGEMENT = 'News management'
+DEFAULT_LANGUAGE = 'Default Language'
 
 
 class DiscordBot(BaseBot):
@@ -784,7 +788,7 @@ class DiscordBot(BaseBot):
         if self.tower_data.get(message.guild)['short']:
             return await self.react(message, bool_to_emoticon(success))
 
-        e = self.generate_response('Tower of Doom', self.WHITE, 'Success' if success else 'Failure', response)
+        e = self.generate_response(TOWER_OF_DOOM, self.WHITE, 'Success' if success else 'Failure', response)
         await self.answer(message, e)
 
     @guild_required
@@ -803,7 +807,7 @@ class DiscordBot(BaseBot):
         if self.tower_data.get(message.guild)['short']:
             return await self.react(message, bool_to_emoticon(success))
 
-        e = discord.Embed(title='Tower of Doom', color=self.WHITE)
+        e = discord.Embed(title=TOWER_OF_DOOM, color=self.WHITE)
         edit_text = '\n'.join([
             f"{'Success' if room[0] else 'Failure'}: {room[1]}"
             for room in rooms])
@@ -849,7 +853,7 @@ class DiscordBot(BaseBot):
     @admin_required
     async def clear_tower_data(self, message, **__):
         self.tower_data.clear_data(message)
-        e = self.generate_response('Tower of Doom', self.WHITE, 'Success',
+        e = self.generate_response(TOWER_OF_DOOM, self.WHITE, 'Success',
                                    f'Cleared tower data for #{message.channel.name}')
         await self.answer(message, e)
 
@@ -870,7 +874,7 @@ class DiscordBot(BaseBot):
             platform = CONFIG.get('default_news_platform')
         await self.subscriptions.add(message.guild, message.channel, platform)
 
-        e = self.generate_response('News management', self.WHITE,
+        e = self.generate_response(NEWS_MANAGEMENT, self.WHITE,
                                    f'News for {platform.title()}',
                                    f'Channel {message.channel.name} is now subscribed and will receive future news.')
         await self.answer(message, e)
@@ -894,7 +898,7 @@ class DiscordBot(BaseBot):
                                                             team_code)
             return await self.show_bookmark(message, bookmark_id, lang, shortened)
         except BookmarkError as te:
-            e = self.generate_response('Bookmark', self.BLACK, 'There was a problem', str(te))
+            e = self.generate_response('Bookmark', self.BLACK, THERE_WAS_A_PROBLEM, str(te))
             await self.answer(message, e)
 
     async def delete_bookmark(self, message, bookmark_id, **__):
@@ -903,7 +907,7 @@ class DiscordBot(BaseBot):
             e = self.generate_response('Bookmark', self.WHITE, 'Deletion',
                                        f'Bookmark `{bookmark_id}` was successfully deleted.')
         except BookmarkError as te:
-            e = self.generate_response('Bookmark', self.BLACK, 'There was a problem', str(te))
+            e = self.generate_response('Bookmark', self.BLACK, THERE_WAS_A_PROBLEM, str(te))
         await self.answer(message, e)
 
     async def show_toplist(self, message, toplist_id, lang, **__):
@@ -919,7 +923,7 @@ class DiscordBot(BaseBot):
                                                          update_id=kwargs.get('toplist_id'))
             e = self.views.render_toplist(toplist)
         except ToplistError as te:
-            e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))
+            e = self.generate_response('Toplist', self.BLACK, THERE_WAS_A_PROBLEM, str(te))
         await self.answer(message, e)
 
     update_toplist = create_toplist
@@ -932,7 +936,7 @@ class DiscordBot(BaseBot):
             toplist = self.expander.translate_toplist(toplist_id, lang)
             e = self.views.render_toplist(toplist)
         except ToplistError as te:
-            e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))
+            e = self.generate_response('Toplist', self.BLACK, THERE_WAS_A_PROBLEM, str(te))
         await self.answer(message, e)
 
     async def delete_toplist(self, message, toplist_id, **__):
@@ -941,7 +945,7 @@ class DiscordBot(BaseBot):
             e = self.generate_response('Toplist', self.WHITE, 'Deletion',
                                        f'Toplist `{toplist_id}` was successfully deleted.')
         except ToplistError as te:
-            e = self.generate_response('Toplist', self.BLACK, 'There was a problem', str(te))
+            e = self.generate_response('Toplist', self.BLACK, THERE_WAS_A_PROBLEM, str(te))
         await self.answer(message, e)
 
     async def show_my_toplists(self, message, **__):
@@ -954,7 +958,7 @@ class DiscordBot(BaseBot):
     async def news_unsubscribe(self, message, **__):
         await self.subscriptions.remove(message.guild, message.channel)
 
-        e = self.generate_response('News management', self.WHITE, 'News for all platforms',
+        e = self.generate_response(NEWS_MANAGEMENT, self.WHITE, 'News for all platforms',
                                    f'News will *not* be posted into channel {message.channel.name} anymore.')
         await self.answer(message, e)
 
@@ -969,7 +973,7 @@ class DiscordBot(BaseBot):
             platforms_text = ' and '.join(subscribed_platforms)
             answer_text = f'{platforms_text} news for will be posted into channel {message.channel.name}.'
 
-        e = self.generate_response('News management', self.WHITE, 'Status', answer_text)
+        e = self.generate_response(NEWS_MANAGEMENT, self.WHITE, 'Status', answer_text)
         await self.answer(message, e)
 
     async def class_level(self, message, **kwargs):
@@ -1028,7 +1032,7 @@ class DiscordBot(BaseBot):
     async def change_language(self, message, new_language, **__):
         my_language = self.language.get(message.guild)
         if new_language not in LANGUAGES:
-            e = discord.Embed(title='Default Language', color=self.BLACK)
+            e = discord.Embed(title=DEFAULT_LANGUAGE, color=self.BLACK)
             e.add_field(name='Error',
                         value=f'`{new_language}` is not a valid language code.')
             self.add_available_languages(e)
@@ -1036,14 +1040,14 @@ class DiscordBot(BaseBot):
             return
 
         await self.language.set(message.guild, new_language)
-        e = self.generate_response('Default Language', self.WHITE, f'Default language for {message.guild}',
+        e = self.generate_response(DEFAULT_LANGUAGE, self.WHITE, f'Default language for {message.guild}',
                                    f'Default language was changed from `{my_language}` to `{new_language}`.')
         await self.answer(message, e)
         log.debug(f'[{message.guild.name}] Changed language from {my_language} to {new_language}.')
 
     @guild_required
     async def show_languages(self, message, **__):
-        e = discord.Embed(title='Default Language', color=self.WHITE)
+        e = discord.Embed(title=DEFAULT_LANGUAGE, color=self.WHITE)
         e.add_field(name=f'Default language for {message.guild}',
                     value=f'`{self.language.get(message.guild)}`', inline=False)
 
