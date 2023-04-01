@@ -1165,12 +1165,24 @@ class DiscordBot(BaseBot):
                                     description=command['description'],
                                     options=command.get('options', []))
 
+    task_check_for_news = bot_tasks.task_check_for_news
+    task_check_for_data_updates = bot_tasks.task_check_for_data_updates
+    task_update_pet_rescues = bot_tasks.task_update_pet_rescues
+
+    async def setup_hook(self):
+        self.task_check_for_news.start()
+        self.task_check_for_data_updates.start()
+        self.task_update_pet_rescues.start()
+
 
 if __name__ == '__main__':
-    client = DiscordBot()
-    bot_tasks.task_check_for_news.start(client)
-    bot_tasks.task_check_for_data_updates.start(client)
-    bot_tasks.task_update_pet_rescues.start(client)
+    intents = discord.Intents.default()
+    intents.guilds = True
+    intents.emojis = True
+    intents.messages = True
+    intents.reactions = True
+    client = DiscordBot(intents=intents)
+
     if TOKEN is not None:
         client.run(TOKEN)
     else:

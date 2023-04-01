@@ -1,5 +1,5 @@
 beautifulsoup4~=4.11
--e git+https://github.com/Rapptz/discord.py#egg=discord.py
+discord.py~=2.2
 feedparser~=6.0
 html2markdown~=0.1.7
 html5lib~=1.1
