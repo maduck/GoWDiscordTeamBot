@@ -1184,7 +1184,7 @@ COMMAND_REGISTRY = [
     },
     {
         'function': 'orbs',
-        'pattern': re.compile(f'{DEFAULT_PATTERN}orbs', MATCH_OPTIONS),
+        'pattern': re.compile(f'{DEFAULT_PATTERN}orbs$', MATCH_OPTIONS),
         'options': [STANDARD_OPTIONS['lang']],
         'description': 'Shows Orbs in the game',
     },
