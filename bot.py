@@ -92,10 +92,9 @@ class DiscordBot(BaseBot):
         debug(message)
         is_special = message.author.id in CONFIG.get('special_users')
         is_owner = await self.is_owner(message)
-        if CONFIG.get('special_users_only'):
-            if not is_owner and not is_special:
-                log.debug('Interaction forbidden by configuration.')
-                return True
+        if CONFIG.get('special_users_only') and not is_owner and not is_special:
+            log.debug('Interaction forbidden by configuration.')
+            return True
         return False
 
     async def on_slash_command(self, function, options, message):
