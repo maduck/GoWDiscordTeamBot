@@ -37,6 +37,8 @@ from translations import HumanizeTranslator, LANGUAGES, LANGUAGE_CODE_MAPPING
 from util import bool_to_emoticon, chunks, debug, pluralize_author
 from views import Views
 
+ADMIN_ACTION = 'Administrative action'
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 
@@ -463,7 +465,7 @@ class DiscordBot(BaseBot):
             await self.answer(message, e)
             return
         await self.prefix.set(message.guild, new_prefix)
-        e = self.generate_response('Administrative action', self.RED, 'Prefix change',
+        e = self.generate_response(ADMIN_ACTION, self.RED, 'Prefix change',
                                    f'Prefix was changed from `{my_prefix}` to `{new_prefix}`')
         await self.answer(message, e)
         log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
@@ -498,9 +500,10 @@ class DiscordBot(BaseBot):
     affix = partialmethod(handle_search, title='Affix',
                           formatter='{0[name]} ({0[num_weapons]} {0[weapons_title]})')
     troop = partialmethod(handle_search, title='Troop')
-    trait = partialmethod(handle_search, title='Trait', formatter='{0[name]}')
-    talent = partialmethod(handle_search, title='Talent', formatter='{0[name]}')
-    traitstones = partialmethod(handle_search, title='Traitstone', formatter='{0[name]}')
+    name = '{0[name]}'
+    trait = partialmethod(handle_search, title='Trait', formatter=name)
+    talent = partialmethod(handle_search, title='Talent', formatter=name)
+    traitstones = partialmethod(handle_search, title='Traitstone', formatter=name)
 
     async def talents(self, message, lang, **__):
         talents = self.expander.get_all_talents(lang)
@@ -724,12 +727,12 @@ class DiscordBot(BaseBot):
         old_value, new_value = self.tower_data.set_option(guild=message.guild, option=option, value=value)
 
         if old_value is None and new_value is None:
-            e = self.generate_response('Administrative action', self.RED,
+            e = self.generate_response(ADMIN_ACTION, self.RED,
                                        'Tower change rejected', f'Invalid option `{option}` specified.')
             await self.answer(message, e)
             return
 
-        e = self.generate_response('Administrative action', self.RED, 'Tower change accepted',
+        e = self.generate_response(ADMIN_ACTION, self.RED, 'Tower change accepted',
                                    f'Option {option} changed from `{old_value}` to `{new_value}`')
         await self.answer(message, e)
 
@@ -741,7 +744,7 @@ class DiscordBot(BaseBot):
 
         if old_values is None and new_values is None:
             e = self.generate_response(
-                'Administrative action',
+                ADMIN_ACTION,
                 self.RED,
                 'Tower change rejected',
                 'Invalid data specified.',
@@ -750,7 +753,7 @@ class DiscordBot(BaseBot):
             await self.answer(message, e)
             return
 
-        e = self.generate_response('Administrative action', self.RED, 'Tower change accepted',
+        e = self.generate_response(ADMIN_ACTION, self.RED, 'Tower change accepted',
                                    f'Alias {category}: `{field}` was changed from `{old_values}` to `{new_values}`.')
         await self.answer(message, e)
 
@@ -839,7 +842,7 @@ class DiscordBot(BaseBot):
     async def reset_tower_config(self, message, **__):
         self.tower_data.reset_config(message.guild)
 
-        e = self.generate_response('Administrative action', self.RED, 'Success', 'Cleared tower config')
+        e = self.generate_response(ADMIN_ACTION, self.RED, 'Success', 'Cleared tower config')
         await self.answer(message, e)
 
     @guild_required
