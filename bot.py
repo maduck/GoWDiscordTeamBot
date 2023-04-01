@@ -434,8 +434,8 @@ class DiscordBot(BaseBot):
 
         user_command = message.content.strip()
         my_prefix = self.prefix.get(message.guild)
-        function, params = await self.get_function_for_command(user_command, my_prefix)
-        if not function:
+        func, params = await self.get_function_for_command(user_command, my_prefix)
+        if not func:
             return
 
         await self.refresh_emojis()
@@ -446,7 +446,7 @@ class DiscordBot(BaseBot):
         if await self.special_needed(message):
             return
 
-        await function(message=message, **params)
+        await func(message=message, **params)
 
     async def refresh_emojis(self):
         if not self.expander.my_emojis:
