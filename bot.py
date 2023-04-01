@@ -44,7 +44,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.87.8'
+    VERSION = '0.87.9'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -1005,29 +1005,23 @@ class DiscordBot(BaseBot):
 
     async def send_out_news(self, article):
         embeds = self.views.render_news(article)
-        for i, subscription in enumerate(self.subscriptions):
-            relevant_news = subscription.get(article['platform'])
-            if not relevant_news:
-                continue
+        relevant_subscriptions = [s for s in self.subscriptions if s.get(article['platform'])]
+        for i, subscription in enumerate(relevant_subscriptions):
             channel = self.get_channel(subscription['channel_id'])
             if not channel:
                 log.debug(f'Subscription {subscription} is broken, skipping.')
                 continue
+            if not await self.is_writable(channel):
+                log.debug(f'Channel "{channel}" is not writable.')
+                continue
             log.debug(f'[{i + 1}/{len(self.subscriptions)}] Sending [{article["platform"]}] {article["title"]} '
                       f'to {channel.guild.name}/{channel.name}.')
-            if not await self.is_writable(channel):
-                message = 'is not writable' if channel else 'does not exist'
-                log.debug(f'Channel {message}.')
-                continue
-            e = None
-            try:
-                for e in embeds:
+            for e in embeds:
+                try:
                     await channel.send(embed=e)
-            except Exception as ex:
-                log.error('Could not send out news, exception follows')
-                if e:
-                    log.error(repr(e.fields))
-                log.exception(ex)
+                except discord.DiscordException as ex:
+                    log.error(f'Could not send out news {e.fields:r}, exception follows')
+                    log.exception(ex)
 
     @guild_required
     @admin_required
