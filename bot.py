@@ -79,8 +79,8 @@ class DiscordBot(BaseBot):
                 try:
                     ban_message = self.views.render_ban_message(ban)
                     await first_writable_channel.send(embed=ban_message)
-                finally:
-                    pass
+                except discord.DiscordException:
+                    log.debug(f'Could not send ban message to {first_writable_channel}')
             await guild.leave()
             return
 
