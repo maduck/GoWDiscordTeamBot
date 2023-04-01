@@ -1,6 +1,7 @@
-import json
 import os
 from collections import ChainMap
+
+import hjson as json
 
 
 class Configurations:
