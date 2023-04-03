@@ -109,7 +109,7 @@ class DiscordBot(BaseBot):
             if 'lang' not in options:
                 options['lang'] = self.language.get(message.guild)
             options['lang'] = LANGUAGE_CODE_MAPPING.get(options['lang'], options['lang'])
-            options['prefix'] = self.prefix.get(message.guild)
+            options['prefix'] = '/'
             if await self.special_needed(message):
                 return
 
@@ -416,8 +416,8 @@ class DiscordBot(BaseBot):
         e = self.views.render_levels(levels)
         await self.answer(message, e)
 
-    async def help(self, message, lang, **__):
-        prefix = self.prefix.get(message.guild)
+    async def help(self, message, lang, prefix, **__):
+        # prefix = self.prefix.get(message.guild)
         lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         e = self.views.render_help(prefix, lang)
         await self.answer(message, e)
@@ -1181,6 +1181,7 @@ if __name__ == '__main__':
     intents.emojis = True
     intents.messages = True
     intents.reactions = True
+    intents.message_content = True
     client = DiscordBot(intents=intents)
 
     if TOKEN is not None:
