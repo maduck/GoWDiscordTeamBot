@@ -417,7 +417,6 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     async def help(self, message, lang, prefix, **__):
-        # prefix = self.prefix.get(message.guild)
         lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         e = self.views.render_help(prefix, lang)
         await self.answer(message, e)
