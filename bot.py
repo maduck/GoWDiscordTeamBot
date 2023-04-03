@@ -167,6 +167,7 @@ class DiscordBot(BaseBot):
             log.debug(f'Soulforge generation took {duration:0.2f} seconds.')
             await message.channel.send(file=result)
 
+    # noinspection StrFormat
     @owner_required
     async def campaign_preview(self, message, lang, switch=None, team_code=None, **__):
         switch = switch or CONFIG.get('default_news_platform') == 'switch'
@@ -473,6 +474,7 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
         log.debug(f'[{message.guild.name}] Changed prefix from {my_prefix} to {new_prefix}')
 
+    # noinspection StrFormat
     async def handle_search(self, message, search_term, lang, title, shortened=False, formatter='{0[name]} `#{0[id]}`',
                             **__):
         search_function = getattr(self.expander, f'search_{title.lower()}')
@@ -648,6 +650,7 @@ class DiscordBot(BaseBot):
 
     tc = team_code
 
+    # noinspection StrFormat
     async def foodies(self, message, lang, foodie_no, max_foodies, base_url, title, subtitle):
         random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
         if foodie_no and str(foodie_no).isdigit() and 0 <= int(foodie_no) <= max_foodies:
