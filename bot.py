@@ -72,7 +72,7 @@ class DiscordBot(BaseBot):
         self.subscriptions = models.Subscriptions()
         self.views = Views(emojis={})
         self.pet_rescues = []
-        self.pet_rescue_config: Optional[PetRescueConfig]
+        self.pet_rescue_config: Optional[PetRescueConfig] = None
         self.server_status_cache = {'last_updated': datetime.datetime.min.replace(tzinfo=datetime.timezone.utc)}
 
     async def on_guild_join(self, guild):
