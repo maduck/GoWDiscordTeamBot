@@ -315,7 +315,7 @@ class DiscordBot(BaseBot):
         e = self.views.render_summoning_stones(title, stones, lang)
         await self.answer(message, e)
 
-    async def about(self, message, lang, **__):
+    async def about(self, message, lang, prefix, **__):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
         e = discord.Embed(title=_('[INFO]', lang), description='<https://garyatrics.com/>', color=color)
         e.set_thumbnail(url=self.user.avatar.url)
@@ -341,8 +341,7 @@ class DiscordBot(BaseBot):
         e.add_field(name=f'__{_("[INVITE]", lang)} ({_("[ADMIN]", lang)})__:',
                     value=f'[Bot]({admin_invite}>) / [Slash Commands]({admin_slash_invite})', inline=False)
 
-        my_prefix = self.prefix.get(message.guild)
-        e.add_field(name=f'__{_("[HELP]", lang)}__:', value=f'`{my_prefix}help` / `{my_prefix}quickhelp`', inline=False)
+        e.add_field(name=f'__{_("[HELP]", lang)}__:', value=f'`{prefix}help` / `{prefix}quickhelp`', inline=False)
 
         e.add_field(name=f'__{_("[SUPPORT]", lang)}__:', value='<https://discord.gg/XWs7x3cFTU>', inline=False)
         github = self.my_emojis.get('github')
