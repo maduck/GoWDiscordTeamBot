@@ -48,7 +48,7 @@ DEFAULT_LANGUAGE = 'Default Language'
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.87.9'
+    VERSION = '0.87.10'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -1182,7 +1182,7 @@ if __name__ == '__main__':
     intents.emojis = True
     intents.messages = True
     intents.reactions = True
-    intents.message_content = True
+    intents.message_content = CONFIG.get('request_messages_content_intent', False)
     client = DiscordBot(intents=intents)
 
     if TOKEN is not None:

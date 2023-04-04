@@ -20,5 +20,6 @@
   "special_users": [],
   "data_shift_hours": 0,
   "taran_token": "",
-  "special_users_only": false
+  "special_users_only": false,
+  "request_messages_content_intent": false
 }
