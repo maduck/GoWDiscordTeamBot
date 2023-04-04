@@ -523,9 +523,9 @@ class Views:
         e.set_footer(text='*' + _('[KEYTYPE_5_SHORT_DESCRIPTION]', lang).replace('%1', '0'))
         return e
 
-    def render_welcome_message(self, prefix):
+    def render_welcome_message(self):
         e = discord.Embed(title='Thank you for inviting me!', color=self.WHITE)
-        return self.render_embed(e, 'welcome.jinja', prefix=prefix)
+        return self.render_embed(e, 'welcome.jinja')
 
     def render_ban_message(self, ban):
         e = discord.Embed(title='Invalid Server', color=self.RED)

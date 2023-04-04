@@ -90,7 +90,7 @@ class DiscordBot(BaseBot):
             await guild.leave()
             return
 
-        welcome_message = self.views.render_welcome_message(self.prefix.get(guild))
+        welcome_message = self.views.render_welcome_message()
         if first_writable_channel:
             await first_writable_channel.send(embed=welcome_message)
 
