@@ -300,7 +300,7 @@ class DiscordBot(BaseBot):
         title, craftable_items = self.expander.get_soulforge(lang)
         e = discord.Embed(title=title, description=_('[WEAPON_AVAILABLE_FROM_SOULFORGE]', lang), color=self.WHITE)
         for category, recipes in craftable_items.items():
-            recipes = sorted(recipes, key=operator.itemgetter('rarity_number', 'id'))
+            recipes = sorted(recipes, key=operator.itemgetter('rarity_number', 'id'), reverse=True)
             message_lines = '\n'.join(
                 [f'{self.my_emojis.get(r["raw_rarity"])} {r["name"]} `#{r["id"]}`' for r in recipes])
             e.add_field(name=category, value=message_lines, inline=True)
