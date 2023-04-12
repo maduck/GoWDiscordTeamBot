@@ -306,9 +306,7 @@ class DiscordBot(BaseBot):
             e.add_field(name=category, value=message_lines, inline=True)
         await self.answer(message, e)
         if kwargs.get('lengthened'):
-            title, stones = self.expander.get_summons(lang)
-            e = self.views.render_summoning_stones(title, stones, lang)
-            await message.channel.send(embed=e)
+            await self.summoning_stones(message, lang)
 
     async def summoning_stones(self, message, lang, **__):
         title, stones = self.expander.get_summons(lang)
