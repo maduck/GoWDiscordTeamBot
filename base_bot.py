@@ -168,12 +168,12 @@ class BaseBot(discord.Client):
         channel = interaction.channel
         guild = interaction.guild
         author = interaction.user
-        function = getattr(self, interaction.data['name'])
+        func = getattr(self, interaction.data['name'])
         options = {o['name']: o['value'] for o in interaction.data.get('options', [])}
         options_text = ' '.join([f'{k}={v}' for k, v in options.items()])
         content = f'/{interaction.data["name"]} {options_text}'
         message = FakeMessage(author, guild, channel, content, interaction.id, interaction.token)
-        await self.on_slash_command(function, options, message)
+        await self.on_slash_command(func, options, message)
 
     async def on_raw_reaction_add(self, payload):
         if not payload.member or payload.member.bot:
