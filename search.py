@@ -890,7 +890,7 @@ class TeamExpander:
         return spoilers
 
     def translate_spoiler(self, spoiler, lang):
-        # FIXME this is transitional until all new models are in place.
+        # this is transitional until all new models are in place.
         if spoiler['type'] in ['pet']:
             if item := getattr(self, spoiler['type'] + 's').get(spoiler['id']):
                 entry = item[translations.LANGUAGE_CODE_MAPPING.get(lang, lang)].data.copy()
@@ -1248,16 +1248,16 @@ class TeamExpander:
                 return emojis.get(COLORS[restriction])
             elif title == '[FILTER_ROLE]':
                 return _(restriction, lang)
-            elif title == '[FILTER_WEAPONTYPE]':
-                pass
             elif title == '[KINGDOM]':
                 return _(restriction, lang)
-            elif title == '[RARITY]':
-                pass
-            elif title == '[ROSTER]':
-                pass
             elif title == '[TROOP_TYPES]':
                 return _(f'[TROOPTYPE_{restriction.upper()}]', lang)
+            """
+            unknown, but possible restrictions:
+                [FILTER_WEAPONTYPE]
+                [RARITY]
+                [ROSTER]
+            """
 
         def translate_restrictions(title, restrictions):
             return [translated
