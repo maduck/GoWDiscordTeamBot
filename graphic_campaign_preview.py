@@ -63,7 +63,7 @@ class CampaignPreview(BasePreview):
         x = self.img.width - width - 25
         y = 500
         with Drawing() as draw:
-            draw.fill_color = Color(f'rgba(0, 0, 0, 0.8)')
+            draw.fill_color = Color('rgba(0, 0, 0, 0.8)')
             draw.rectangle(x, y, x + width, y + 400, radius=15)
             draw.fill_color = Color('white')
             draw.font_size = 50
