@@ -72,7 +72,7 @@ def debug(message):
     log.debug(f'[{guild}][{channel}][{message.author.display_name}] {message.content}')
 
 
-DAMAGE_DENOMINATOR = re.compile(r'\[.+?]', )
+DAMAGE_DENOMINATOR = re.compile(r'\[[^]]+]', )
 
 
 def extract_search_tag(search_term):
