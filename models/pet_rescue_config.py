@@ -1,4 +1,5 @@
 import asyncio
+
 import discord
 
 from models import DB
@@ -63,7 +64,7 @@ class PetRescueConfig:
         async with lock:
             self.__data[channel.id] = config
             db = DB()
-            query = f"""
+            query = """
             INSERT INTO PetRescueConfig (guild_name, guild_id, channel_name, channel_id, mention, delete_mention,
              delete_message, delete_pet)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?)

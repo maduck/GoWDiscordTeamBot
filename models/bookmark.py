@@ -19,7 +19,7 @@ class Bookmark:
 
     def load(self):
         db = DB()
-        result = db.cursor.execute(f'SELECT * FROM Bookmark;')
+        result = db.cursor.execute('SELECT * FROM Bookmark;')
         bookmarks = result.fetchall()
         self.bookmarks = {
             b['id']: {
