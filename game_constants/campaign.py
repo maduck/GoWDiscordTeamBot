@@ -1,0 +1,5 @@
+TASK_SKIP_COSTS = {
+    '[MEDAL_LEVEL_0]': 50,
+    '[MEDAL_LEVEL_1]': 100,
+    '[MEDAL_LEVEL_2]': 150,
+}
