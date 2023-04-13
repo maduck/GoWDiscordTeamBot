@@ -16,38 +16,42 @@ SOULFORGE_ALWAYS_AVAILABLE = [
     1113,  # Dawnbringer
     1374,  # Duskbringer
 ]
+_SOUL_ICON = 'Commonrewards_icon_soul_small_full.png'
+_DIAMOND_ICON = 'Runes_JewelDiamond_full.png'
+_CELESTIAL_TRAITSTONE_ICON = 'Runes_Rune39_full.png'
+
 SOULFORGE_REQUIREMENTS = {
     'UltraRare': {
         'jewels': 300,
-        'Runes_JewelDiamond_full.png': 75,
-        'Runes_Rune39_full.png': 3,
-        'Commonrewards_icon_soul_small_full.png': 3000,
+        _DIAMOND_ICON: 75,
+        _CELESTIAL_TRAITSTONE_ICON: 3,
+        _SOUL_ICON: 3000,
     },
     'Epic': {
         'jewels': 600,
-        'Runes_JewelDiamond_full.png': 300,
-        'Runes_Rune39_full.png': 3,
-        'Commonrewards_icon_soul_small_full.png': 15000,
+        _DIAMOND_ICON: 300,
+        _CELESTIAL_TRAITSTONE_ICON: 3,
+        _SOUL_ICON: 15000,
     },
     'Mythic': {
         'jewels': 0,
-        'Runes_JewelDiamond_full.png': 200,
-        'Runes_Rune39_full.png': 3,
-        'Commonrewards_icon_soul_small_full.png': 1000000,
+        _DIAMOND_ICON: 200,
+        _CELESTIAL_TRAITSTONE_ICON: 3,
+        _SOUL_ICON: 1000000,
     },
     'Doomed': {
         'jewels': 2200,
-        'Runes_JewelDiamond_full.png': 900,
-        'Runes_Rune39_full.png': 10,
-        'Commonrewards_icon_soul_small_full.png': 60000,
+        _DIAMOND_ICON: 900,
+        _CELESTIAL_TRAITSTONE_ICON: 10,
+        _SOUL_ICON: 60000,
     }
 }
 UNDERWORLD_SOULFORGE_REQUIREMENTS = {
     'Epic': {
         'jewels': 400,
-        'Runes_JewelDiamond_full.png': 200,
-        'Runes_Rune39_full.png': 2,
-        'Commonrewards_icon_soul_small_full.png': 10000,
+        _DIAMOND_ICON: 200,
+        _CELESTIAL_TRAITSTONE_ICON: 2,
+        _SOUL_ICON: 10000,
     },
 }
 NON_CRAFTABLE_WEAPON_IDS = [
