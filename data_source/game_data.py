@@ -534,7 +534,7 @@ class GameData:
                 self.weapons[weapon_id]['event_faction'] = faction_id
 
     def add_troops_to_kingdoms_by_filename(self):
-        pattern = re.compile(r'.+_(?P<filebase>K[0-9]+).*')
+        pattern = re.compile(r'.+_(?P<filebase>K\d+).*')
         for troop_id, troop in self.troops.items():
             if troop_id == '`?`':
                 continue
@@ -668,7 +668,7 @@ class GameData:
             self.levels.append(level_bonus)
 
     def populate_max_power_levels(self):
-        pattern = re.compile(r'KingdomTask(?P<level>[0-9]+)-.+')
+        pattern = re.compile(r'KingdomTask(?P<level>\d+)-.+')
         for kingdom in self.kingdoms.values():
             max_kingdom_level = 0
             for task in self.user_data['pTasksData']['Kingdom']:
