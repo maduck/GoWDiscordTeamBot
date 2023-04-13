@@ -770,8 +770,6 @@ class GameData:
 
                 drop_type = f'[{drop["Type"].upper()}]'
                 title = drop.get('Title', drop_type)
-                if title == '[RUNE]':
-                    title = '[SOULFORGE_TAB_TRAITSTONES]'
                 self.drop_chances.setdefault(chest_type, {})
                 if title in ('[TROOPS]', '[CHESTS_6_HELP_1]'):
                     self.drop_chances[chest_type].setdefault(title, {})
