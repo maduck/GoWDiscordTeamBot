@@ -12,7 +12,7 @@ class Subscriptions:
 
     def load_subscriptions(self):
         db = DB()
-        result = db.cursor.execute(f'SELECT * FROM Subscription;')
+        result = db.cursor.execute('SELECT * FROM Subscription;')
         subscriptions = result.fetchall()
         self._subscriptions = {f'{s["guild_id"]}-{s["channel_id"]}': {
             'guild_id': s['guild_id'],
