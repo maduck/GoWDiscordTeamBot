@@ -7,6 +7,3 @@ class Spell:
         self.amount = None
         self.multiplier = None
         self.boost = None
-
-    def from_json(self, data):
-        pass
