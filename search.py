@@ -1344,7 +1344,7 @@ class TeamExpander:
             '2': 'description',
         }
         p = re.compile(r'\[TROOPHELP_STORM(\d+_?)+')
-        for key, value in t.translations[lang].items():
+        for key, value in t.all_translations[lang].items():
             if not p.match(key):
                 continue
             field = fields[key[-2]]
