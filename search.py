@@ -732,25 +732,28 @@ class TeamExpander:
             if today <= e['start']
         ]
 
+    def _extend_event_extra_info(self, entry, lang):
+        event_type = entry['type']
+        gacha = entry['gacha']
+        if event_type in ('[BOUNTY]', '[HIJACK]', '[DELVE_EVENT]') and gacha and gacha in self.troops:
+            troop = self.troops[gacha]
+            return _(troop['name'], lang, default=troop['reference_name'])
+        elif event_type == '[PETRESCUE]' and gacha and gacha in self.pets:
+            return self.pets[gacha][lang].name
+        elif event_type == '[CLASS_EVENT]' and gacha and gacha in self.classes:
+            return _(self.classes[gacha]['name'], lang)
+        elif event_type == '[TOWER_OF_DOOM]' and gacha and gacha in self.troops:
+            return _(self.troops[gacha]['name'], lang)
+        elif event_type == '[HIJACK]' and entry['troops']:
+            troops = [self.troops[troop] for troop in entry['troops']]
+            return ', '.join(_(troop['name'], lang, default=troop['reference_name']) for troop in troops)
+        return ''
+
     def translate_event(self, event, lang):
         entry = event.copy()
 
-        entry['extra_info'] = ''
-        if entry['type'] in ('[BOUNTY]', '[HIJACK]') and entry['gacha'] and entry['gacha'] in self.troops:
-            entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
-        elif entry['type'] == '[PETRESCUE]' and entry['gacha'] and entry['gacha'] in self.pets:
-            entry['extra_info'] = self.pets[entry['gacha']][lang].name
-        elif entry['type'] == '[CLASS_EVENT]' and entry['gacha'] and entry['gacha'] in self.classes:
-            entry['extra_info'] = _(self.classes[entry['gacha']]['name'], lang)
-        elif entry['type'] == '[TOWER_OF_DOOM]' and entry['gacha']:
-            entry['extra_info'] = _(self.troops[entry['gacha']]['name'], lang)
-        elif entry['type'] == '[DELVE_EVENT]':
-            troop = self.troops[entry['gacha']]
-            entry['extra_info'] = _(troop['name'], lang, default=troop['reference_name'])
-        elif entry['type'] == '[HIJACK]' and entry['troops']:
-            troops = [self.troops[troop] for troop in entry['troops']]
-            entry['extra_info'] = ', '.join(_(troop['name'], lang, default=troop['reference_name']) for troop in troops)
-        elif entry['type'] == '[INVASION]' and entry['gacha'] and entry['gacha'] in self.troops:
+        entry['extra_info'] = self._extend_event_extra_info(entry, lang)
+        if entry['type'] == '[INVASION]' and entry['gacha'] and entry['gacha'] in self.troops:
             troop = self.troops[entry['gacha']]
             troop_name = _(troop['name'], lang)
             entry['kingdom_id'] = troop['kingdom_id']
