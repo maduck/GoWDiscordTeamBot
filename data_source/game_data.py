@@ -576,28 +576,28 @@ class GameData:
             '[SOULFORGE_TAB_OTHER]',
         ]
 
-        for recipe in self.soulforge_raw_data.get('pRecipeArray', []):
-            if recipe['Tab'] in (3, 4):
-                recipe_id = recipe['Target']['Data']
-                if recipe_id < 1000 or recipe_id in SOULFORGE_ALWAYS_AVAILABLE:
-                    continue
-                if not recipe['Name']:
-                    recipe['Name'] = self.troops[recipe_id]['name']
+        recipes = [r for r in self.soulforge_raw_data.get('pRecipeArray', []) if r['Tab'] in (3, 4)]
+        for recipe in recipes:
+            recipe_id = recipe['Target']['Data']
+            if recipe_id < 1000 or recipe_id in SOULFORGE_ALWAYS_AVAILABLE:
+                continue
+            if not recipe['Name']:
+                recipe['Name'] = self.troops[recipe_id]['name']
+                recipe['rarity'] = self.troops[recipe_id]['rarity']
+            if 'rarity' not in recipe:
+                if recipe_id in self.weapons:
+                    recipe['rarity'] = self.weapons[recipe_id]['rarity']
+                elif recipe_id in self.troops:
                     recipe['rarity'] = self.troops[recipe_id]['rarity']
-                if 'rarity' not in recipe:
-                    if recipe_id in self.weapons:
-                        recipe['rarity'] = self.weapons[recipe_id]['rarity']
-                    elif recipe_id in self.troops:
-                        recipe['rarity'] = self.troops[recipe_id]['rarity']
-                category = tabs[recipe['Tab']]
-                self.soulforge.setdefault(category, []).append({
-                    'name': recipe['Name'],
-                    'id': recipe_id,
-                    'costs': recipe['Source'],
-                    'start': recipe['StartDate'],
-                    'end': recipe['EndDate'],
-                    'rarity': recipe['rarity'],
-                })
+            category = tabs[recipe['Tab']]
+            self.soulforge.setdefault(category, []).append({
+                'name': recipe['Name'],
+                'id': recipe_id,
+                'costs': recipe['Source'],
+                'start': recipe['StartDate'],
+                'end': recipe['EndDate'],
+                'rarity': recipe['rarity'],
+            })
         for colour, troops in enumerate(self.soulforge_raw_data.get('pSummonTroopArray', [])):
             stone_name = f'[RECIPE_SUMMONS_{colour}]'
             self.summons[stone_name] = [{'troop_id': troop['nTroopId'], 'count': troop['nQuantity']}
