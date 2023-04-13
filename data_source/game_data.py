@@ -395,72 +395,19 @@ class GameData:
         return datetime.datetime.strptime(val, date_format).replace(tzinfo=datetime.timezone.utc)
 
     def populate_release_dates(self):
-        release: dict
-        for release in self.user_data['pEconomyModel']['TroopReleaseDates']:
-            troop_id = release['TroopId']
-            release_date = self.get_datetime(release['Date'])
-            if troop_id in self.troops:
-                self.troops[troop_id]['release_date'] = release_date
-                self.spoilers.append({'type': 'troop', 'date': release_date, 'id': troop_id})
-                if self.troops[troop_id]['rarity'] == 'Mythic' and 'Id' in self.troops[troop_id]['kingdom']:
-                    self.events.append(
-                        {'id': 0,
-                         'start': release_date.date(),
-                         'end': release_date.date() + datetime.timedelta(days=7),
-                         'type': '[RARITY_5]',
-                         'names': self.troops[troop_id]['name'],
-                         'gacha': troop_id,
-                         'kingdom_id': self.troops[troop_id]['kingdom']['Id']}
-                    )
-        for release in self.user_data['pEconomyModel']['PetReleaseDates']:
-            pet_id = release['PetId']
-            release_date = self.get_datetime(release['Date'])
-            if pet_id in self.pets:
-                self.pets[pet_id].set_release_date(release_date)
-                self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
-        for release in self.user_data['pEconomyModel']['KingdomReleaseDates']:
-            kingdom_id = release['KingdomId']
-            release_date = self.get_datetime(release['Date'])
-            if kingdom_id in self.kingdoms:
-                self.kingdoms[kingdom_id]['release_date'] = release_date
-                self.spoilers.append({'type': 'kingdom', 'date': release_date, 'id': kingdom_id})
-        for release in self.user_data['pEconomyModel']['HeroClassReleaseDates']:
-            class_code = release['ClassCode']
-            release_date = self.get_datetime(release['Date'])
-            classes = [c['id'] for c in self.classes.values() if c['code'] == class_code]
-            if classes:
-                class_id = classes[0]
-                self.classes[class_id]['release_date'] = release_date
-                self.spoilers.append({'type': 'classe', 'date': release_date, 'id': class_id})
-        for release in self.user_data['pEconomyModel']['RoomReleaseDates']:
-            room_id = release['RoomId']
-            release_date = self.get_datetime(release['Date'])
-            self.spoilers.append({'type': 'room', 'date': release_date, 'id': room_id})
-        for release in self.user_data['pEconomyModel']['WeaponReleaseDates']:
-            weapon_id = release['WeaponId']
-            release_date = self.get_datetime(release['Date'])
-            if weapon_id in self.weapons:
-                self.weapons[weapon_id]['release_date'] = release_date
-                self.spoilers.append({'type': 'weapon', 'date': release_date, 'id': weapon_id})
-        for release in self.user_data['BasicLiveEventArray']:
-            gacha_troop = release['GachaTroop']
-            gacha_troops = release.get('GachaTroops', [])
-            result = {'id': release['Id'],
-                      'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
-                      'start_time': datetime.datetime.utcfromtimestamp(release['StartDate']),
-                      'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
-                      'end_time': datetime.datetime.utcfromtimestamp(release['EndDate']),
-                      'type': EVENT_TYPES.get(release['Type'], release['Type']),
-                      'names': release.get('Name'),
-                      'gacha': gacha_troop,
-                      'troops': gacha_troops,
-                      'kingdom_id': release.get('Kingdom'),
-                      'artifact_id': release.get('ArtifactId'),
-                      }
-            if gacha_troop and gacha_troop in self.troops:
-                self.troops[gacha_troop]['event'] = True
-            self.events.append(result)
+        self.populate_troop_release_dates()
+        self.populate_pet_release_dates()
+        self.populate_kingdom_release_dates()
+        self.populate_class_release_dates()
+        self.populate_room_release_dates()
+        self.populate_weapon_release_dates()
+        self.populate_event_release_dates()
+        self.populate_weekly_event_dates()
 
+        self.events.sort(key=operator.itemgetter('start'))
+        self.spoilers.sort(key=operator.itemgetter('date'))
+
+    def populate_weekly_event_dates(self):
         week_long_events = [e for e in self.events
                             if e['end'] - e['start'] == datetime.timedelta(days=7)
                             and e['kingdom_id']]
@@ -480,8 +427,84 @@ class GameData:
                 'weapon_ids': kingdom_weapons,
             })
 
-        self.events.sort(key=operator.itemgetter('start'))
-        self.spoilers.sort(key=operator.itemgetter('date'))
+    def populate_event_release_dates(self):
+        for release in self.user_data['BasicLiveEventArray']:
+            gacha_troop = release['GachaTroop']
+            gacha_troops = release.get('GachaTroops', [])
+            result = {'id': release['Id'],
+                      'start': datetime.datetime.utcfromtimestamp(release['StartDate']).date(),
+                      'start_time': datetime.datetime.utcfromtimestamp(release['StartDate']),
+                      'end': datetime.datetime.utcfromtimestamp(release['EndDate']).date(),
+                      'end_time': datetime.datetime.utcfromtimestamp(release['EndDate']),
+                      'type': EVENT_TYPES.get(release['Type'], release['Type']),
+                      'names': release.get('Name'),
+                      'gacha': gacha_troop,
+                      'troops': gacha_troops,
+                      'kingdom_id': release.get('Kingdom'),
+                      'artifact_id': release.get('ArtifactId'),
+                      }
+            if gacha_troop and gacha_troop in self.troops:
+                self.troops[gacha_troop]['event'] = True
+            self.events.append(result)
+
+    def populate_weapon_release_dates(self):
+        for release in self.user_data['pEconomyModel']['WeaponReleaseDates']:
+            weapon_id = release['WeaponId']
+            release_date = self.get_datetime(release['Date'])
+            if weapon_id in self.weapons:
+                self.weapons[weapon_id]['release_date'] = release_date
+                self.spoilers.append({'type': 'weapon', 'date': release_date, 'id': weapon_id})
+
+    def populate_room_release_dates(self):
+        for release in self.user_data['pEconomyModel']['RoomReleaseDates']:
+            room_id = release['RoomId']
+            release_date = self.get_datetime(release['Date'])
+            self.spoilers.append({'type': 'room', 'date': release_date, 'id': room_id})
+
+    def populate_class_release_dates(self):
+        for release in self.user_data['pEconomyModel']['HeroClassReleaseDates']:
+            class_code = release['ClassCode']
+            release_date = self.get_datetime(release['Date'])
+            classes = [c['id'] for c in self.classes.values() if c['code'] == class_code]
+            if classes:
+                class_id = classes[0]
+                self.classes[class_id]['release_date'] = release_date
+                self.spoilers.append({'type': 'classe', 'date': release_date, 'id': class_id})
+
+    def populate_kingdom_release_dates(self):
+        for release in self.user_data['pEconomyModel']['KingdomReleaseDates']:
+            kingdom_id = release['KingdomId']
+            release_date = self.get_datetime(release['Date'])
+            if kingdom_id in self.kingdoms:
+                self.kingdoms[kingdom_id]['release_date'] = release_date
+                self.spoilers.append({'type': 'kingdom', 'date': release_date, 'id': kingdom_id})
+
+    def populate_pet_release_dates(self):
+        for release in self.user_data['pEconomyModel']['PetReleaseDates']:
+            pet_id = release['PetId']
+            release_date = self.get_datetime(release['Date'])
+            if pet_id in self.pets:
+                self.pets[pet_id].set_release_date(release_date)
+                self.spoilers.append({'type': 'pet', 'date': release_date, 'id': pet_id})
+
+    def populate_troop_release_dates(self):
+        release: dict
+        for release in self.user_data['pEconomyModel']['TroopReleaseDates']:
+            troop_id = release['TroopId']
+            release_date = self.get_datetime(release['Date'])
+            if troop_id in self.troops:
+                self.troops[troop_id]['release_date'] = release_date
+                self.spoilers.append({'type': 'troop', 'date': release_date, 'id': troop_id})
+                if self.troops[troop_id]['rarity'] == 'Mythic' and 'Id' in self.troops[troop_id]['kingdom']:
+                    self.events.append(
+                        {'id': 0,
+                         'start': release_date.date(),
+                         'end': release_date.date() + datetime.timedelta(days=7),
+                         'type': '[RARITY_5]',
+                         'names': self.troops[troop_id]['name'],
+                         'gacha': troop_id,
+                         'kingdom_id': self.troops[troop_id]['kingdom']['Id']}
+                    )
 
     def enrich_kingdoms(self):
         for kingdom_id, kingdom_data in self.user_data['pEconomyModel']['KingdomLevelData'].items():
