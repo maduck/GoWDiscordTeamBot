@@ -133,7 +133,6 @@ class TeamExpander:
                 continue
             if i <= 3:
                 result['troops'].append(self.troops['`?`'])
-                continue
             elif i == 4:
                 banner = {
                     'colors': [('questionmark', 1)],
@@ -142,12 +141,10 @@ class TeamExpander:
                     'id': '`?`'
                 }
                 result['banner'] = self.translate_banner(banner, lang)
-                continue
             elif i == 12:
                 result['class'] = _('[REQUIREMENTS_NOT_MET]', lang)
                 result['talents'] = []
                 has_class = True
-                continue
 
         if has_weapon and has_class:
             new_talents = []
