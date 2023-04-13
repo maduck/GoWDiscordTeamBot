@@ -18,6 +18,8 @@ from models.bookmark import Bookmark
 from models.toplist import Toplist
 from util import dig, extract_search_tag, get_next_monday_in_locale, translate_day
 
+WEEK_DAY_FORMAT = '%b %d'
+
 LOGLEVEL = logging.DEBUG
 
 formatter = logging.Formatter('%(asctime)-15s [%(levelname)s] %(message)s')
@@ -771,9 +773,9 @@ class TeamExpander:
         locale = translations.LANGUAGE_CODE_MAPPING.get(lang, lang)
         locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
         with calendar.different_locale(locale):
-            entry['formatted_start'] = entry['start'].strftime('%b %d')
+            entry['formatted_start'] = entry['start'].strftime(WEEK_DAY_FORMAT)
             entry['start_day'] = entry['start'].strftime('%A')
-            entry['formatted_end'] = entry['end'].strftime('%b %d')
+            entry['formatted_end'] = entry['end'].strftime(WEEK_DAY_FORMAT)
             entry['end_day'] = entry['end'].strftime('%A')
 
         entry['raw_type'] = entry['type']
@@ -1290,8 +1292,8 @@ class TeamExpander:
         locale = translations.LANGUAGE_CODE_MAPPING.get(lang, lang)
         locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'
         with calendar.different_locale(locale):
-            event['formatted_start'] = event['start'].strftime('%b %d')
-            event['formatted_end'] = event['end'].strftime('%b %d')
+            event['formatted_start'] = event['start'].strftime(WEEK_DAY_FORMAT)
+            event['formatted_end'] = event['end'].strftime(WEEK_DAY_FORMAT)
 
         return event
 
