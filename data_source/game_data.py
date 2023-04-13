@@ -9,6 +9,7 @@ from game_assets import GameAssets
 from game_constants import COLORS, COST_TYPES, EVENT_TYPES, GEM_TUTORIAL_IDS, OrbType, RewardTypes, \
     SOULFORGE_ALWAYS_AVAILABLE, \
     TROOP_RARITIES
+from game_constants.soulforge import NON_CRAFTABLE_WEAPON_IDS
 from util import U, convert_color_array
 
 NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
@@ -411,15 +412,10 @@ class GameData:
         week_long_events = [e for e in self.events
                             if e['end'] - e['start'] == datetime.timedelta(days=7)
                             and e['kingdom_id']]
-        non_craftable_weapon_ids = [
-            1102, 1114, 1070, 1073, 1119, 1118, 1108, 1109, 1203, 1092, 1067, 1094, 1179, 1178, 1069, 1127, 1096, 1134,
-            1097, 1103, 1115, 1123, 1120, 1071, 1095, 1072, 1107, 1100, 1106, 1213, 1121, 1093, 1122, 1295, 1250, 1317,
-            1294, 1239, 1223, 1222, 1272, 1252, 1287, 1275, 1251, 1238, 1224, 1296, 1273, 1274, 1286, 1225
-        ]
         for event in week_long_events:
             kingdom_weapons = [w['id'] for w in self.weapons.values()
                                if 'kingdom' in w and w['kingdom']['id'] == event['kingdom_id']
-                               and w['id'] not in non_craftable_weapon_ids
+                               and w['id'] not in NON_CRAFTABLE_WEAPON_IDS
                                and w.get('release_date', datetime.datetime.min).date() < event['end']]
             self.soulforge_weapons.append({
                 'start': event['start'],
