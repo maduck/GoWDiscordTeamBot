@@ -822,14 +822,7 @@ class TeamExpander:
             if _filter is None or tier.lower() == _filter.lower()
         }
 
-    def translate_campaign_task(self, task, lang):
-        new_task = task.copy()
-        color_code = int(new_task['value1']) if new_task['value1'].isdigit() else 666
-        color = COLORS[color_code].upper() if color_code < len(COLORS) else '`?`'
-        if isinstance(new_task.get('y'), str):
-            new_task['y'] = _(f'[{new_task["y"].upper()}]', lang)
-        new_task['plural'] = int(new_task.get('x', 1)) != 1
-
+    def __task_name_replacements(self, task, color, lang):
         replacements = {
             '{WeaponType}': '[WEAPONTYPE_{c:u}]',
             '{Kingdom}': '[{d:u}_NAME]',
@@ -844,20 +837,32 @@ class TeamExpander:
             '{1}': task['c'],
             '{2}': '{x} {y}',
         }
+        for before, after in replacements.items():
+            if before in task['title'] or before in task['name']:
+                translated = _(after.format(**task).format(self.troops), lang, plural=task['plural'])
+                if '`?`' in translated:
+                    translated = '`?`'
+                task['title'] = task['title'].replace(before, translated)
+                task['name'] = task['name'].replace(before, translated)
+
+    def translate_campaign_task(self, task, lang):
+        new_task = task.copy()
+        color_code = int(new_task['value1']) if new_task['value1'].isdigit() else 666
+        color = COLORS[color_code].upper() if color_code < len(COLORS) else '`?`'
+        if isinstance(new_task.get('y'), str):
+            new_task['y'] = _(f'[{new_task["y"].upper()}]', lang)
+        new_task['plural'] = int(new_task.get('x', 1)) != 1
         new_task['title'] = _(new_task['title'], lang, plural=new_task['plural'])
         new_task['name'] = _(new_task["name"], lang, plural=new_task['plural'])
-
         if '{0}' not in new_task['name'] and '{2}' not in new_task['name']:
             new_task['name'] = f'{task["x"]}x ' + new_task['name']
 
-        for before, after in replacements.items():
-            if before in new_task['title'] or before in new_task['name']:
-                translated = _(after.format(**new_task).format(self.troops), lang, plural=new_task['plural'])
-                if '`?`' in translated:
-                    translated = '`?`'
-                new_task['title'] = new_task['title'].replace(before, translated)
-                new_task['name'] = new_task['name'].replace(before, translated)
+        self.__task_name_replacements(new_task, color, lang)
+        new_task['name'] += self.__task_solution_location(new_task, task, color, lang)
 
+        return new_task
+
+    def __task_solution_location(self, new_task, task, color, lang):
         where = ''
         if new_task['value1'] == '`?`':
             pass
@@ -878,10 +883,7 @@ class TeamExpander:
         elif task['name'] == '[TASK_KILL_TREASURE_GNOMES]':
             vault = _(self.kingdoms[3038]['name'], lang)
             where = f' --> {vault}'
-
-        new_task['name'] += where
-
-        return new_task
+        return where
 
     def get_spoilers(self, lang):
         spoilers = []
