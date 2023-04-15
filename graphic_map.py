@@ -8,11 +8,7 @@ from graphic_base_preview import BasePreview, FONTS, download_image
 
 
 def clamp01(value):
-    if value < 0:
-        return 0
-    if value > 1:
-        return 1
-    return value
+    return 0 if value < 0 else min(value, 1)
 
 
 def lerp(a, b, t):

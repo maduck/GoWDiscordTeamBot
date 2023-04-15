@@ -65,8 +65,9 @@ class TowerOfDoomData:
         for guild in self.__data.keys():
             for channel in self.__data[guild].keys():
                 # FIXME split up config and tower data, so those checks can be removed
-                if isinstance(self.__data[guild][channel], dict) \
-                        and all([k.isdigit() for k in self.__data[guild][channel].keys()]):
+                if isinstance(self.__data[guild][channel], dict) and all(
+                    k.isdigit() for k in self.__data[guild][channel].keys()
+                ):
                     self.__data[guild][channel] = {int(k): v for k, v in self.__data[guild][channel].items()
                                                    if k.isdigit()}
 
@@ -209,8 +210,8 @@ class TowerOfDoomData:
 
     def format_whole_floor(self, floor: int, guild_data, floor_data, shortened: bool):
         if shortened:
-            return f'{self.format_short_floor(int(floor), floor_data)}'
-        return f'Floor {floor}: {self.format_floor(guild_data, int(floor), floor_data)}'
+            return f'{self.format_short_floor(floor, floor_data)}'
+        return f'Floor {floor}: {self.format_floor(guild_data, floor, floor_data)}'
 
     def format_output(self, guild, color, channel, prefix='!', _range=None, shortened=False):
         guild_data = self.get(guild)
@@ -241,7 +242,12 @@ class TowerOfDoomData:
         field_header = channel.name
         for floor, floor_data in channel_data:
             line = self.format_whole_floor(int(floor), guild_data, floor_data, shortened)
-            if len(field_header) + len(line) + sum([len(fl) + 1 for fl in field_lines]) < 1024:
+            if (
+                len(field_header)
+                + len(line)
+                + sum(len(fl) + 1 for fl in field_lines)
+                < 1024
+            ):
                 field_lines.append(line)
             else:
                 tower_text = ('/' if shortened else '\n').join(field_lines)
@@ -306,10 +312,12 @@ class TowerOfDoomData:
 
     @staticmethod
     def format_short_floor(floor, floor_data):
-        unlock_rooms = [room for room, contents in floor_data.items() if contents == 'unlock']
-        unlock_room = '?'
-        if unlock_rooms:
+        if unlock_rooms := [
+            room for room, contents in floor_data.items() if contents == 'unlock'
+        ]:
             unlock_room = unlock_rooms[0]
+        else:
+            unlock_room = '?'
         return f'{floor}:{unlock_room}'
 
     def download_from_taran(self, message, map_name, version, token=''):

@@ -13,7 +13,7 @@ class BaseGuildStorage:
     def load(self):
         db = DB()
         result = db.cursor.execute(f'SELECT * FROM `{self.table}`;')
-        self.__data = {guild_id: value for guild_id, value in result.fetchall()}
+        self.__data = dict(result.fetchall())
         db.close()
 
     async def set(self, guild, value):

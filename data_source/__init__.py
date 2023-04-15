@@ -10,7 +10,7 @@ from translations import LANGUAGE_CODE_MAPPING
 
 class Collection:
     def __init__(self, data, user_data=None, world_data=None):
-        data_class_name = self.__class__.__name__[:-1] + 'Container'
+        data_class_name = f'{self.__class__.__name__[:-1]}Container'
         data_class = globals()[data_class_name]
 
         self.items = {}
@@ -25,15 +25,12 @@ class Collection:
         return self.items[item]
 
     def get(self, key, default=None):
-        if key not in self.items:
-            return default
-        return self.items[key]
+        return default if key not in self.items else self.items[key]
 
     def search(self, search_term, lang, name_only=False, released_only=False):
         lang = LANGUAGE_CODE_MAPPING.get(lang, lang)
         if search_term.isdigit() and int(search_term) in self.items:
-            item = self.items.get(int(search_term))
-            if item:
+            if item := self.items.get(int(search_term)):
                 return [item.translations[lang]]
             return []
 

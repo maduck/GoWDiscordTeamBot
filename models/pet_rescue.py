@@ -84,10 +84,11 @@ class PetRescue:
 
     async def update_posts(self, embed):
         try:
-            if self.author and self.author_url:
-                embed.set_author(name=self.author, icon_url=self.author_url)
-            elif self.author:
-                embed.set_author(name=self.author)
+            if self.author:
+                if self.author_url:
+                    embed.set_author(name=self.author, icon_url=self.author_url)
+                else:
+                    embed.set_author(name=self.author)
             await self.pet_message.edit(embed=embed)
         except discord.errors.DiscordException as e:
             log.warn(f'Error while editing pet rescue: {str(e)}')
@@ -207,9 +208,7 @@ class PetRescue:
         return db.cursor.fetchall()
 
     async def remove_from_db(self):
-        deletion_id = 0
-        if self.pet_message:
-            deletion_id = self.pet_message.id
+        deletion_id = self.pet_message.id if self.pet_message else 0
         await self.delete_by_id(pet_message_id=deletion_id)
 
     @staticmethod
