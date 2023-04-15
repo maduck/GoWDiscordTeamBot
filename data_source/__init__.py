@@ -46,9 +46,9 @@ class Collection:
         return possible_matches
 
     @classmethod
-    def from_json(cls, json_string):
+    def from_json(cls, json_string, user_data=None):
         data = json.loads(json_string)
-        return cls(data)
+        return cls(data, user_data=user_data)
 
     def fill_untranslated_kingdom_name(self, kingdom_id, kingdom_reference_name):
         for item in self.items.values():

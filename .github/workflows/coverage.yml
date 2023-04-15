@@ -15,10 +15,9 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
       - run: pip install -r requirements.txt
-      - name: Get Coverage
-        uses: orgoro/coverage@v3
-        with:
-          coverageFile: coverage.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate Report
+        run: |
+          pip install coverage
+          coverage run -m unittests
       - name: Report Coverage
         uses: paambaati/codeclimate-action@v3.2.0

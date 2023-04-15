@@ -5,12 +5,13 @@ from data_source import PetContainer, Pets
 
 class PetTests(unittest.TestCase):
     def setUp(self):
+        user_data = {'pEconomyModel': {'PetEffects': []}}
         pet_data = '[{"Effect": 0, "FileBase": "Pet_000", "Id": 13000, "KingdomId": 3036, ' \
                    '"ManaColors": {"ColorBlue": true}, "Name": "[Pet_000_NAME]", "ReferenceName": "Crabbie"},' \
                    '{"Effect": 2, "EffectData": 3067, "FileBase": "Pet_111", "Id": 13111, "KingdomId": 3023,' \
                    ' "LockedHelpText": "FACTION", "ManaColors": {"ColorYellow": true}, "Name": "",' \
                    ' "ReferenceName": "BinChicken"}]'
-        self.pets = Pets.from_json(pet_data)
+        self.pets = Pets.from_json(pet_data, user_data=user_data)
 
     def test_class(self):
         self.assertIsInstance(self.pets[13000], PetContainer)
