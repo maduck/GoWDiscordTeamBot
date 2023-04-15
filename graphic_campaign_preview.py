@@ -15,9 +15,7 @@ class CampaignPreview(BasePreview):
     def render_tasks(self):
         y = 350
         padding = 230
-        x = padding
-        if self.data['team']:
-            x = 50
+        x = 50 if self.data['team'] else padding
         box_width = self.img.width - 2 * padding
         base_font_size = 30
         with Drawing() as draw:
@@ -52,7 +50,7 @@ class CampaignPreview(BasePreview):
                 draw.font_size = 2 * base_font_size
                 draw.text_antialias = True
                 draw.font = FONTS['raleway']
-                draw.text(x + 10, y + int(draw.font_size), title)
+                draw.text(x + 10, y + draw.font_size, title)
                 y += box_height
             draw(self.img)
 
@@ -70,7 +68,7 @@ class CampaignPreview(BasePreview):
             draw.text_antialias = True
             draw.font = FONTS['raleway']
             draw.text_alignment = 'center'
-            draw.text(x + width // 2, y + int(draw.font_size) + 5, self.data['texts']['team'])
+            draw.text(x + width // 2, y + draw.font_size + 5, self.data['texts']['team'])
 
             draw.font = FONTS['opensans']
             draw.text_alignment = 'left'
@@ -103,7 +101,7 @@ class CampaignPreview(BasePreview):
             if self.data['team']['class']:
                 class_text = self.data['team']['class']
                 class_text = word_wrap(self.img, draw, class_text, width - 90, banner_height)
-                draw.text(x + 120, banner_y + 4 * int(draw.font_size), class_text)
+                draw.text(x + 120, banner_y + 4 * draw.font_size, class_text)
 
             draw(self.img)
 

@@ -46,9 +46,7 @@ class BasePreview:
             draw.font_size = 100
             draw.text_antialias = True
             draw.font = FONTS['opensans']
-            y_offset = 200
-            if '\n' in title:
-                y_offset = 120
+            y_offset = 120 if '\n' in title else 200
             draw.text(450, y_offset, title.format(self.data))
 
             kingdom_logo = download_image(self.data['kingdom_logo'])
@@ -102,12 +100,32 @@ class BasePreview:
             draw.text_antialias = True
             legal_notice = 'Produced by Gary.\nNo redistribution without this notice.'
             draw.fill_color = Color('black')
-            draw.text(self.img.width - width - 18, self.img.height - 2 - 2 * int(draw.font_size), legal_notice)
-            draw.text(self.img.width - width - 18, self.img.height + 2 - 2 * int(draw.font_size), legal_notice)
-            draw.text(self.img.width - width - 18, self.img.height - 2 + 2 * int(draw.font_size), legal_notice)
-            draw.text(self.img.width - width - 18, self.img.height + 2 + 2 * int(draw.font_size), legal_notice)
+            draw.text(
+                self.img.width - width - 18,
+                self.img.height - 2 - 2 * draw.font_size,
+                legal_notice,
+            )
+            draw.text(
+                self.img.width - width - 18,
+                self.img.height + 2 - 2 * draw.font_size,
+                legal_notice,
+            )
+            draw.text(
+                self.img.width - width - 18,
+                self.img.height - 2 + 2 * draw.font_size,
+                legal_notice,
+            )
+            draw.text(
+                self.img.width - width - 18,
+                self.img.height + 2 + 2 * draw.font_size,
+                legal_notice,
+            )
             draw.fill_color = Color('white')
-            draw.text(self.img.width - width - 20, self.img.height - 2 * int(draw.font_size), legal_notice)
+            draw.text(
+                self.img.width - width - 20,
+                self.img.height - 2 * draw.font_size,
+                legal_notice,
+            )
             draw(self.img)
 
 
@@ -172,5 +190,5 @@ def word_wrap(image, draw, text, roi_width, roi_height):
         else:
             break
     if iteration_attempts < 1:
-        raise RuntimeError("Unable to calculate word_wrap for " + text)
+        raise RuntimeError(f"Unable to calculate word_wrap for {text}")
     return mutable_message

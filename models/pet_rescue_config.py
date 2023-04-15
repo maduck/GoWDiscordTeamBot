@@ -39,10 +39,7 @@ class PetRescueConfig:
     def atobool(input_value, translated_trues):
         true_values = ['on', '1', 'true', 'yes']
         true_values.extend(translated_trues)
-        for item in true_values:
-            if item in input_value.lower():
-                return True
-        return False
+        return any(item in input_value.lower() for item in true_values)
 
     async def update(self, guild, channel, key, value, translated_trues):
         translations = {

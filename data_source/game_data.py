@@ -463,8 +463,9 @@ class GameData:
         for release in self.user_data['pEconomyModel']['HeroClassReleaseDates']:
             class_code = release['ClassCode']
             release_date = self.get_datetime(release['Date'])
-            classes = [c['id'] for c in self.classes.values() if c['code'] == class_code]
-            if classes:
+            if classes := [
+                c['id'] for c in self.classes.values() if c['code'] == class_code
+            ]:
                 class_id = classes[0]
                 self.classes[class_id]['release_date'] = release_date
                 self.spoilers.append({'type': 'classe', 'date': release_date, 'id': class_id})

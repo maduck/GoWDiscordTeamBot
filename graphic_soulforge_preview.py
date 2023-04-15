@@ -65,10 +65,10 @@ class WeeklyPreview(BasePreview):
 
             requirement_objects = self.extract_requirements()
 
+            hypotenuse = 210
             for i, angle in enumerate(slot_angles):
                 draw.fill_color = Color('rgb(35, 39, 38)')
                 draw.stroke_color = draw.fill_color
-                hypotenuse = 210
                 rad_angle = 2 * math.pi * (90 + angle) / 360
                 center = left + 300 - hypotenuse * math.sin(rad_angle), top + 350 - hypotenuse * math.cos(rad_angle)
                 perimeter = (center[0], center[1] + 115 // 2)
@@ -256,7 +256,7 @@ class WeeklyPreview(BasePreview):
                      message_lines])
 
                 draw.text(left + 25 + 55, top + 30 + offset, message)
-                offset += round(2.5 * base_size + int(draw.font_size) * len(message.split('\n')))
+                offset += round(2.5 * base_size + draw.font_size * len(message.split('\n')))
             draw(self.img)
 
     def save_image(self):

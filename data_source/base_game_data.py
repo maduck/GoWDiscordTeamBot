@@ -52,9 +52,7 @@ class BaseGameDataContainer:
 
     @staticmethod
     def is_untranslated(param):
-        if not param:
-            return True
-        return param[0] + param[-1] == '[]'
+        return param[0] + param[-1] == '[]' if param else True
 
     def __getattr__(self, item):
         return self.data[item]
@@ -84,9 +82,7 @@ class BaseGameDataContainer:
         item = self.translations[lang]
         if item.name == '`?`':
             return False
-        lookup_keys = self.LOOKUP_KEYS
-        if name_only:
-            lookup_keys = ['name']
+        lookup_keys = ['name'] if name_only else self.LOOKUP_KEYS
         lookups = {
             k: extract_search_tag(dig(item, k)) for k in lookup_keys
         }

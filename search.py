@@ -1202,15 +1202,17 @@ class TeamExpander:
         total_cost = 0
         total = _('[TOTAL]', lang)
         for shop_tier in event['shop_tiers']:
-            rewards = [_(r['name'], lang).replace('%1', str(r['amount'])) for r in shop_tier['rewards']]
-            if rewards:
+            if rewards := [
+                _(r['name'], lang).replace('%1', str(r['amount']))
+                for r in shop_tier['rewards']
+            ]:
                 total_cost += shop_tier['cost']
                 currency = _(shop_tier['currency'], lang)
                 if shop_tier['currency'] == '[GEMS]':
                     currency = emojis.get('gems')
                 shop_display = f'**{_(shop_tier["title"], lang)}** ({shop_tier["cost"]} ' \
-                               f'{currency}, {total} {total_cost}): ' \
-                               f'{", ".join(rewards)}'
+                                   f'{currency}, {total} {total_cost}): ' \
+                                   f'{", ".join(rewards)}'
                 event['shop'].append(shop_display)
 
     def get_event_rewards(self, event, lang):

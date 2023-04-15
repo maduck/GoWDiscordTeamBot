@@ -77,8 +77,7 @@ class Subscriptions:
     def is_subscribed(self, guild, channel):
         subscription_id = self.get_subscription_id(guild, channel)
         if subscription_id in self._subscriptions:
-            subscription = self._subscriptions[subscription_id]
-            return subscription
+            return self._subscriptions[subscription_id]
         return False
 
     def __len__(self):
