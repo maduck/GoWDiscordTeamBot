@@ -58,7 +58,6 @@ class Translations:
 
     @staticmethod
     def pluralize(text: str, plural: bool):
-        text = text
         if not text or '\x19' not in text:
             return text
         fragments = text.split('\x19')
