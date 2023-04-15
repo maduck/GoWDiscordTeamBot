@@ -41,7 +41,9 @@ class FakeChannel:
 
 class FakeTyping:
     async def __aenter__(self):
+        """ mimics the async enter for Typing """
         pass
 
     async def __aexit__(self, type, value, traceback):
+        """ mimics the async exit for Typing """
         pass
