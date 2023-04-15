@@ -1195,35 +1195,8 @@ class TeamExpander:
         self.translate_drop_chances(drop_chances, lang)
         return drop_chances
 
-    def get_current_event(self, lang, emojis):
-        event = copy.deepcopy(self.weekly_event)
-        kingdoms = self.search_kingdom(event['kingdom_id'], lang)
-        if kingdoms:
-            event['kingdom'] = kingdoms[0]
-        event['name'] = event['name'].get(lang, _(EVENT_TYPES[event['type']], lang))
-        event['lore'] = event['lore'].get(lang, '')
-        event['currencies'] = [{
-            'name': currency['name'].get(lang, ''),
-            'icon': currency['icon'],
-            'value': _('[N_TIMES_POINTS]', lang).replace('%1', str(currency['value']))
-        } for currency in event['currencies']]
-
-        for stage, stage_reward in event['rewards'].items():
-            stage_reward['name'] = _('[REWARD_N]', lang).replace('%1', str(stage))
-            if EVENT_TYPES[event['type']] == '[RAIDBOSS]':
-                if stage <= 2:
-                    stage_reward['name'] = _('[MINIONS_N]').replace('%1', str(stage))
-                else:
-                    stage_reward['name'] = _('[PORTAL_N]', lang).replace('%1', str(stage - 2))
-
-            for reward in stage_reward['rewards']:
-                reward_type = reward['type']
-                reward['type'] = _(reward_type, lang).replace('%1', '').strip()
-                if reward_type == '[TITLE]':
-                    reward['type'] += ' (' + _(f'[TITLE_{reward["data"]}]', lang) + ')'
-                if reward_type == '[TROOP]':
-                    reward['type'] = _(self.troops.get(reward['data'])['name'], lang)
-
+    @staticmethod
+    def get_shop_rewards(event, lang, emojis):
         event['shop_title'] = _('[SHOP]', lang)
         event['shop'] = []
         total_cost = 0
@@ -1240,6 +1213,25 @@ class TeamExpander:
                                f'{", ".join(rewards)}'
                 event['shop'].append(shop_display)
 
+    def get_event_rewards(self, event, lang):
+        for stage, stage_reward in event['rewards'].items():
+            stage_reward['name'] = _('[REWARD_N]', lang).replace('%1', str(stage))
+            if EVENT_TYPES[event['type']] == '[RAIDBOSS]':
+                if stage <= 2:
+                    stage_reward['name'] = _('[MINIONS_N]').replace('%1', str(stage))
+                else:
+                    stage_reward['name'] = _('[PORTAL_N]', lang).replace('%1', str(stage - 2))
+
+            for reward in stage_reward['rewards']:
+                reward_type = reward['type']
+                reward['type'] = _(reward_type, lang).replace('%1', '').strip()
+                if reward_type == '[TITLE]':
+                    reward['type'] += ' (' + _(f'[TITLE_{reward["data"]}]', lang) + ')'
+                if reward_type == '[TROOP]':
+                    reward['type'] = _(self.troops.get(reward['data'])['name'], lang)
+
+    @staticmethod
+    def get_event_medals(event, lang):
         for item in ('token', 'badge', 'medal'):
             if not event[item]:
                 continue
@@ -1247,6 +1239,23 @@ class TeamExpander:
                 'name': _(f'[WONDER_{event[item]}_NAME]', lang),
                 'description': _(f'[WONDER_{event[item]}_DESC]', lang),
             }
+
+    def get_current_event(self, lang, emojis):
+        event = copy.deepcopy(self.weekly_event)
+        kingdoms = self.search_kingdom(event['kingdom_id'], lang)
+        if kingdoms:
+            event['kingdom'] = kingdoms[0]
+        event['name'] = event['name'].get(lang, _(EVENT_TYPES[event['type']], lang))
+        event['lore'] = event['lore'].get(lang, '')
+        event['currencies'] = [{
+            'name': currency['name'].get(lang, ''),
+            'icon': currency['icon'],
+            'value': _('[N_TIMES_POINTS]', lang).replace('%1', str(currency['value']))
+        } for currency in event['currencies']]
+
+        self.get_shop_rewards(event, lang, emojis)
+        self.get_event_rewards(event, lang)
+        self.get_event_medals(event, lang)
 
         def translate_restriction(title, restriction):
             if title == '[FILTER_MANACOLOR]':
