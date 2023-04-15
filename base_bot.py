@@ -162,7 +162,7 @@ class BaseBot(discord.Client):
                 r.raise_for_status()
 
     async def on_slash_command(self, function, options, message):
-        raise NotImplemented('This function has not been implemented.')
+        return NotImplemented
 
     async def on_interaction(self, interaction):
         channel = interaction.channel
