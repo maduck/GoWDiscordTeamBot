@@ -7,6 +7,9 @@ from wand.drawing import Drawing
 
 from graphic_base_preview import BasePreview, FONTS, download_image, scale_down, word_wrap
 
+LESSER_DARK_GRAY = Color('rgb(35, 39, 38)')
+DARK_GRAY = Color('rgba(0, 0, 0, 0.7)')
+
 
 class WeeklyPreview(BasePreview):
     def __init__(self, data):
@@ -51,13 +54,13 @@ class WeeklyPreview(BasePreview):
             draw(self.weapon)
 
         with Drawing() as draw:
-            draw.fill_color = Color('rgba(0, 0, 0, 0.7)')
+            draw.fill_color = DARK_GRAY
             rarity_color = ','.join([str(c) for c in self.data['rarity_color']])
             draw.stroke_color = Color(f'rgb({rarity_color})')
             draw.stroke_width = 8
             draw.rectangle(left, top, left + width, top + height, radius=40)
 
-            draw.fill_color = Color('rgb(35, 39, 38)')
+            draw.fill_color = LESSER_DARK_GRAY
             draw.stroke_color = draw.fill_color
             draw.stroke_width = 0
             draw.circle((left + 300, top + 350), (left + 300, top + 235))
@@ -67,7 +70,7 @@ class WeeklyPreview(BasePreview):
 
             hypotenuse = 210
             for i, angle in enumerate(slot_angles):
-                draw.fill_color = Color('rgb(35, 39, 38)')
+                draw.fill_color = LESSER_DARK_GRAY
                 draw.stroke_color = draw.fill_color
                 rad_angle = 2 * math.pi * (90 + angle) / 360
                 center = left + 300 - hypotenuse * math.sin(rad_angle), top + 350 - hypotenuse * math.cos(rad_angle)
@@ -99,7 +102,7 @@ class WeeklyPreview(BasePreview):
                            width=self.weapon.width, height=self.weapon.height,
                            image=self.weapon)
             draw.fill_color = Color('none')
-            draw.stroke_color = Color('rgb(35, 39, 38)')
+            draw.stroke_color = LESSER_DARK_GRAY
             draw.stroke_width = 20
             draw.circle((left + 300, top + 350), (left + 300, top + 250))
 
@@ -132,7 +135,7 @@ class WeeklyPreview(BasePreview):
         gold_medal = download_image(self.data['gold_medal'])
         mana = download_image(self.data['mana_color'])
         with Drawing() as draw:
-            draw.fill_color = Color('rgba(0, 0, 0, 0.7)')
+            draw.fill_color = DARK_GRAY
             draw.stroke_width = 0
             left, top, width, height = self.get_box_coordinates(0)
             draw.rectangle(left, top, left + width, top + height, radius=40)
@@ -216,7 +219,7 @@ class WeeklyPreview(BasePreview):
         with Drawing() as draw:
             left, top, width, height = self.get_box_coordinates(2)
 
-            draw.fill_color = Color('rgba(0, 0, 0, 0.7)')
+            draw.fill_color = DARK_GRAY
             draw.stroke_width = 0
             draw.rectangle(left, top, left + width, top + height, radius=40)
 
