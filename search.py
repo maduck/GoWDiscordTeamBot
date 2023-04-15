@@ -104,14 +104,13 @@ class TeamExpander:
         has_class = False
 
         for i, element in enumerate(code):
-            troop = self.troops.get(element)
-            weapon = self.weapons.get(element)
-            if troop:
+            if troop := self.troops.get(element):
                 troop = troop.copy()
                 self.translate_troop(troop, lang)
                 result['troops'].append(troop)
                 continue
-            elif weapon:
+
+            if weapon := self.weapons.get(element):
                 weapon = weapon.copy()
                 self.translate_weapon(weapon, lang)
                 result['troops'].append(weapon)
@@ -130,37 +129,49 @@ class TeamExpander:
 
             if 0 <= element <= 3:
                 result['talents'].append(element)
-                if len(result['talents']) > 7:
-                    result['talents'] = result['talents'][-7:]
+                self.trim_talents(result)
                 continue
-            if i <= 3:
-                result['troops'].append(self.troops['`?`'])
-            elif i == 4:
-                banner = {
-                    'colors': [('questionmark', 1)],
-                    'name': '[REQUIREMENTS_NOT_MET]',
-                    'filename': 'Locked',
-                    'id': '`?`'
-                }
-                result['banner'] = self.translate_banner(banner, lang)
-            elif i == 12:
-                result['class'] = _('[REQUIREMENTS_NOT_MET]', lang)
-                result['talents'] = []
-                has_class = True
+            has_class = self.fill_up_troops_banner_and_class(i, result, has_class, lang)
 
-        if has_weapon and has_class:
-            new_talents = []
-            for talent_no, talent_code in enumerate(result['talents']):
-                talent = '-'
-                if talent_code > 0:
-                    talent = _(result['class_talents'][talent_code - 1][talent_no]['name'], lang)
-                new_talents.append(talent)
-            result['talents'] = new_talents
+        hero_present = has_weapon and has_class
+        if hero_present:
+            result['talents'] = self.populate_talents(result, lang)
         else:
             result['class'] = None
             result['talents'] = None
 
         return result
+
+    def fill_up_troops_banner_and_class(self, i, result, has_class, lang):
+        if i <= 3:
+            result['troops'].append(self.troops['`?`'])
+        elif i == 4:
+            banner = {
+                'colors': [('questionmark', 1)],
+                'name': '[REQUIREMENTS_NOT_MET]',
+                'filename': 'Locked',
+                'id': '`?`'
+            }
+            result['banner'] = self.translate_banner(banner, lang)
+        elif i == 12:
+            result['class'] = _('[REQUIREMENTS_NOT_MET]', lang)
+            result['talents'] = []
+            return True
+        return has_class
+
+    @staticmethod
+    def populate_talents(result, lang):
+        new_talents = []
+        for talent_no, talent_code in enumerate(result['talents']):
+            talent = '-'
+            if talent_code > 0:
+                talent = _(result['class_talents'][talent_code - 1][talent_no]['name'], lang)
+            new_talents.append(talent)
+        return new_talents
+
+    def trim_talents(self, result):
+        if len(result['talents']) > 7:
+            result['talents'] = result['talents'][-7:]
 
     def get_team_from_message(self, user_code, lang):
         if code := self.extract_code_from_message(user_code):
