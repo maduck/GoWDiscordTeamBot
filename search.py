@@ -614,24 +614,11 @@ class TeamExpander:
         spell = self.spells[spell_id]
         magic = _('[MAGIC]', lang)
 
-        description = _(spell['description'], lang)
-        if description.startswith('&&'):
-            description = description \
-                .replace('&&', _('[CHOICE_CHOOSE_ONE_DESC]', lang), 1) \
-                .replace('&&', _('[OR_CAPITALISED]', lang))
+        description = self.translate_spell_description(spell['description'], lang)
 
         for i, (multiplier, amount) in enumerate(spell['effects'], start=1):
             spell_amount = f' + {amount}' if amount else ''
-            multiplier_text = ''
-            if multiplier > 1:
-                if multiplier == int(multiplier):
-                    multiplier_text = f'{multiplier:.0f} ⨯ '
-                else:
-                    multiplier_text = f'{multiplier} ⨯ '
-            divisor = ''
-            if multiplier < 1:
-                number = int(round(1 / multiplier))
-                divisor = f' / {number}'
+            divisor, multiplier_text = self.translate_spell_multiplier(multiplier)
             damage = f'[{multiplier_text}{magic}{divisor}{spell_amount}]'
             number_of_replacements = len(re.findall(r'\{\d}', description))
             has_half_replacement = len(spell['effects']) == number_of_replacements - 1
@@ -646,12 +633,7 @@ class TeamExpander:
             else:
                 description = description.replace(f'{{{i}}}', damage)
 
-        boost = ''
-        if spell['boost']:
-            if spell['boost'] > 100:
-                boost = f' [x{int(round(spell["boost"] / 100))}]'
-            elif spell['boost'] != 1:
-                boost = f' [{100 / spell["boost"]:0.0f}:1]'
+        boost = self.calculate_boost(spell)
 
         description = f'{description}{boost}'
 
@@ -660,6 +642,37 @@ class TeamExpander:
             'cost': spell['cost'],
             'description': description,
         }
+
+    def translate_spell_multiplier(self, multiplier):
+        multiplier_text = ''
+        if multiplier > 1:
+            if multiplier == int(multiplier):
+                multiplier_text = f'{multiplier:.0f} ⨯ '
+            else:
+                multiplier_text = f'{multiplier} ⨯ '
+        divisor = ''
+        if multiplier < 1:
+            number = int(round(1 / multiplier))
+            divisor = f' / {number}'
+        return divisor, multiplier_text
+
+    @staticmethod
+    def calculate_boost(spell):
+        boost = ''
+        if spell['boost']:
+            if spell['boost'] > 100:
+                boost = f' [x{int(round(spell["boost"] / 100))}]'
+            elif spell['boost'] != 1:
+                boost = f' [{100 / spell["boost"]:0.0f}:1]'
+        return boost
+
+    def translate_spell_description(self, description, lang):
+        description = _(description, lang)
+        if description.startswith('&&'):
+            description = description \
+                .replace('&&', _('[CHOICE_CHOOSE_ONE_DESC]', lang), 1) \
+                .replace('&&', _('[OR_CAPITALISED]', lang))
+        return description
 
     def translate_banner(self, banner, lang):
         result = {
@@ -1211,8 +1224,8 @@ class TeamExpander:
                 if shop_tier['currency'] == '[GEMS]':
                     currency = emojis.get('gems')
                 shop_display = f'**{_(shop_tier["title"], lang)}** ({shop_tier["cost"]} ' \
-                                   f'{currency}, {total} {total_cost}): ' \
-                                   f'{", ".join(rewards)}'
+                               f'{currency}, {total} {total_cost}): ' \
+                               f'{", ".join(rewards)}'
                 event['shop'].append(shop_display)
 
     def get_event_rewards(self, event, lang):
