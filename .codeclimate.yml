@@ -1,0 +1,9 @@
+plugins:
+  pylint:
+    enabled: true
+  sonar-python:
+    enabled: true
+    config:
+      tests_patterns:
+        - unittests.py
+      minimum_severity: major
