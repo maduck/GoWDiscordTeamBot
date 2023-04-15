@@ -102,28 +102,28 @@ class BasePreview:
             draw.fill_color = Color('black')
             draw.text(
                 self.img.width - width - 18,
-                self.img.height - 2 - 2 * draw.font_size,
+                int(self.img.height - 2 - 2 * draw.font_size),
                 legal_notice,
             )
             draw.text(
                 self.img.width - width - 18,
-                self.img.height + 2 - 2 * draw.font_size,
+                int(self.img.height + 2 - 2 * draw.font_size),
                 legal_notice,
             )
             draw.text(
                 self.img.width - width - 18,
-                self.img.height - 2 + 2 * draw.font_size,
+                int(self.img.height - 2 + 2 * draw.font_size),
                 legal_notice,
             )
             draw.text(
                 self.img.width - width - 18,
-                self.img.height + 2 + 2 * draw.font_size,
+                int(self.img.height + 2 + 2 * draw.font_size),
                 legal_notice,
             )
             draw.fill_color = Color('white')
             draw.text(
                 self.img.width - width - 20,
-                self.img.height - 2 * draw.font_size,
+                int(self.img.height - 2 * draw.font_size),
                 legal_notice,
             )
             draw(self.img)
