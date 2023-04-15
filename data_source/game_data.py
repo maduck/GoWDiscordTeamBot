@@ -12,6 +12,8 @@ from game_constants import COLORS, COST_TYPES, EVENT_TYPES, GEM_TUTORIAL_IDS, Or
 from game_constants.soulforge import NON_CRAFTABLE_WEAPON_IDS
 from util import U, convert_color_array
 
+FIRST_ARCANE_TRAITSTONE_INDEX = 18
+
 NO_TRAIT = {'code': '', 'name': '[TRAIT_NONE]', 'description': '[TRAIT_NONE_DESC]'}
 
 
@@ -983,52 +985,58 @@ class GameData:
 
     def populate_store_data(self):
         for entry in self.store_raw_data['ShopData']:
-            if entry['Visible']:
-                rewards = []
+            if not entry['Visible']:
+                continue
 
-                if entry['RewardType'] == RewardTypes.Bundle:
-                    for reward in entry.get('BundleData', {}):
-                        if reward['RewardType'] == RewardTypes.Troop and reward['RewardData'] in self.troops:
-                            rewards.append({
-                                'name': self.troops[reward['RewardData']]['name'],
-                                'id': reward['RewardData'],
-                                'amount': reward['Reward'],
-                            })
-                        elif reward['RewardType'] == RewardTypes.Weapon and reward['RewardData'] in self.weapons:
-                            rewards.append({
-                                'name': self.weapons[reward['RewardData']]['name'],
-                                'id': reward['RewardData'],
-                                'amount': reward['Reward'],
-                            })
-                        elif reward['RewardType'] == RewardTypes.LiveEventPoolTroop:
-                            rewards.append({
-                                'id': 0,
-                                'name': '[N_EVENT_POOL_TROOPS]',
-                                'amount': reward['Reward'],
-                            })
-                        elif reward['RewardType'] == RewardTypes.TraitStones and reward['RewardData'] >= 18:
-                            # rune 18 is the first arcane traitstone, so filtering for that.
-                            rewards.append({
-                                'id': 0,
-                                'name': f'[RUNE{reward["RewardData"]:02d}_NAME]',
-                                'amount': reward['Reward'],
-                            })
-                        elif reward['RewardType'] == RewardTypes.LiveEventPotion:
-                            rewards.append({
-                                'id': 0,
-                                'name': f'[LIVEEVENTPOTION{reward["RewardData"]:02d}_NAME]',
-                                'amount': reward['Reward'],
-                            })
+            rewards = []
+            if entry['RewardType'] == RewardTypes.Bundle:
+                rewards.extend(self.extract_reward_bundles(entry))
 
-                self.store_data[entry['Code']] = {
-                    'title': entry['TitleId'],
-                    'reference': entry['ReferenceName'],
-                    'cost': entry['Cost'],
-                    'currency': COST_TYPES[entry['CostType']],
-                    'tab': entry.get('Tab'),
-                    'rewards': rewards,
-                    'visible': entry.get('Visible') == 'True',
-                }
+            self.store_data[entry['Code']] = {
+                'title': entry['TitleId'],
+                'reference': entry['ReferenceName'],
+                'cost': entry['Cost'],
+                'currency': COST_TYPES[entry['CostType']],
+                'tab': entry.get('Tab'),
+                'rewards': rewards,
+                'visible': entry.get('Visible') == 'True',
+            }
+
+    def extract_reward_bundles(self, entry):
+        rewards = []
+        for reward in entry.get('BundleData', {}):
+            if reward['RewardType'] == RewardTypes.Troop and reward['RewardData'] in self.troops:
+                rewards.append({
+                    'name': self.troops[reward['RewardData']]['name'],
+                    'id': reward['RewardData'],
+                    'amount': reward['Reward'],
+                })
+            elif reward['RewardType'] == RewardTypes.Weapon and reward['RewardData'] in self.weapons:
+                rewards.append({
+                    'name': self.weapons[reward['RewardData']]['name'],
+                    'id': reward['RewardData'],
+                    'amount': reward['Reward'],
+                })
+            elif reward['RewardType'] == RewardTypes.LiveEventPoolTroop:
+                rewards.append({
+                    'id': 0,
+                    'name': '[N_EVENT_POOL_TROOPS]',
+                    'amount': reward['Reward'],
+                })
+            elif reward['RewardType'] == RewardTypes.TraitStones \
+                    and reward['RewardData'] >= FIRST_ARCANE_TRAITSTONE_INDEX:
+                rewards.append({
+                    'id': 0,
+                    'name': f'[RUNE{reward["RewardData"]:02d}_NAME]',
+                    'amount': reward['Reward'],
+                })
+            elif reward['RewardType'] == RewardTypes.LiveEventPotion:
+                rewards.append({
+                    'id': 0,
+                    'name': f'[LIVEEVENTPOTION{reward["RewardData"]:02d}_NAME]',
+                    'amount': reward['Reward'],
+                })
+        return rewards
 
     def populate_hoard_potions(self):
         if 'TreasureHoardPotions' not in self.user_data['pFeatures']:
