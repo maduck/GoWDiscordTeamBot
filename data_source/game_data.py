@@ -5,10 +5,11 @@ import re
 
 from configurations import CONFIG
 from data_source import Pets
+from event_helpers import extract_currencies, extract_lore, extract_name, get_first_battles, roles_translation, \
+    transform_battle
 from game_assets import GameAssets
 from game_constants import COLORS, COST_TYPES, EVENT_TYPES, GEM_TUTORIAL_IDS, OrbType, RewardTypes, \
-    SOULFORGE_ALWAYS_AVAILABLE, \
-    TROOP_RARITIES
+    SOULFORGE_ALWAYS_AVAILABLE
 from game_constants.soulforge import NON_CRAFTABLE_WEAPON_IDS
 from util import U, convert_color_array
 
@@ -818,19 +819,8 @@ class GameData:
             self.event_kingdoms = event_kingdoms[index + 1:]
 
     def populate_weekly_event_details(self):
-        def extract_name(raw_data):
-            if 'Name' in raw_data:
-                return {lang[:2]: name for lang, name in self.event_raw_data['Name'].items()}
-            return {}
-
-        def extract_lore(raw_data):
-            if 'Lore' in raw_data:
-                return {lang[:2]: lore for lang, lore in self.event_raw_data['Lore'].items()}
-            return {}
 
         def extract_restrictions(raw_data):
-            def roles_translation(roles):
-                return [f'[TROOP_ROLE_{role.upper()}]' for role in roles]
 
             restrictions = raw_data.get('PlayerTeamRestrictions', {})
             if EVENT_TYPES[raw_data['Type']] == '[TOWER_OF_DOOM]':
@@ -846,21 +836,6 @@ class GameData:
                 '[FILTER_ROLE]': roles_translation(restrictions.get('Roles', [])),
                 '[ROSTER]': restrictions.get('RosterIds'),
             }
-
-        def extract_currencies(raw_data):
-            if 'CurrencyData' not in raw_data:
-                return []
-            return [
-                {
-                    'icon': f'Liveeventscurrencies_{currency["Icon"]}_full',
-                    'value': currency['Value'],
-                    'name': {
-                        lang[:2]: translation
-                        for lang, translation in currency['Name'].items()
-                    },
-                }
-                for currency in self.event_raw_data['CurrencyData']
-            ]
 
         def extract_rewards(raw_data):
             rewards = {}
@@ -882,14 +857,6 @@ class GameData:
                 'type': reward_type,
                 'data': reward['Data'],
                 'amount': reward['Amount'],
-            }
-
-        def transform_battle(battle):
-            return {
-                'names': {lang[:2]: translation for lang, translation in
-                          battle['Name'].items()} if 'Name' in battle else {},
-                'icon': f'Liveevents/Liveeventslocationicons_{battle["Icon"]}_full.png' if 'Icon' in battle else '',
-                'rarity': TROOP_RARITIES[battle['Color']] if 'Color' in battle else '',
             }
 
         def calculate_minimum_tier():
@@ -934,19 +901,6 @@ class GameData:
                 minimum_tier = max(minimum_tier, 3)
             self.weekly_event['minimum_tier'] = minimum_tier
 
-        def get_first_battles():
-            battles = []
-            for battle in self.event_raw_data.get('BattleArray', []):
-                if 'Name' not in battle:
-                    continue
-
-                battles.append({
-                    'name': battle['Name']['en_US'],
-                    'rarity': TROOP_RARITIES[battle.get('Color', 0)],
-                    'icon': battle.get('Icon', ''),
-                })
-            return battles
-
         self.weekly_event = {
             'id': self.event_raw_data['Id'],
             'shop_tiers': [self.store_data[gacha] for gacha in self.event_raw_data.get('GachaItems', [])
@@ -969,7 +923,7 @@ class GameData:
             'battles': [transform_battle(b) for b in self.event_raw_data.get('BattleArray', [])],
             'start': datetime.datetime.utcfromtimestamp(self.event_raw_data['StartDate']),
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
-            'first_battles': get_first_battles(),
+            'first_battles': get_first_battles(self.event_raw_data),
         }
         calculate_minimum_tier()
 
