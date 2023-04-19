@@ -188,6 +188,9 @@ class TeamExpander:
                 return [result]
             return []
         possible_matches = []
+        real_search = extract_search_tag(search_term)
+        if not real_search:
+            return []
         for base_item in items.values():
             if base_item['name'] == '`?`' or base_item['id'] == '`?`':
                 continue
@@ -196,7 +199,6 @@ class TeamExpander:
             lookups = {
                 k: extract_search_tag(dig(item, k)) for k in lookup_keys
             }
-            real_search = extract_search_tag(search_term)
 
             if real_search == extract_search_tag(item['name']):
                 return [item]
