@@ -97,8 +97,9 @@ class NewsDownloader:
         :return: None
         """
         url = f'{self.GOW_FEED_URL}?{int(time.time())}'
+        headers = {'user-agent': 'garyatrics.com news reader'}
         try:
-            response = requests.get(url, timeout=5)
+            response = requests.get(url, timeout=5, headers=headers)
             content = BytesIO(response.content)
         except requests.RequestException as e:
             log.warn(f'Could not fetch {url}: {e}')
