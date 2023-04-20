@@ -39,7 +39,7 @@ from views import Views
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-TOWER_OF_DOOM = 'Tower of Doom'
+TOWER_OF_DOOM = '[TOWEROFDOOM]'
 ADMIN_ACTION = 'Administrative action'
 THERE_WAS_A_PROBLEM = 'There was a problem'
 NEWS_MANAGEMENT = 'News management'
@@ -782,16 +782,16 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     @guild_required
-    async def edit_tower_single(self, message, floor, room, scroll, **__):
+    async def edit_tower_single(self, message, floor, room, scroll, lang, **__):
         success, response = self.tower_data.edit_floor(message=message, floor=floor, room=room, scroll=scroll)
         if self.tower_data.get(message.guild)['short']:
             return await self.react(message, bool_to_emoticon(success))
 
-        e = self.generate_response(TOWER_OF_DOOM, self.WHITE, 'Success' if success else 'Failure', response)
+        e = self.generate_response(_(TOWER_OF_DOOM, lang), self.WHITE, 'Success' if success else 'Failure', response)
         await self.answer(message, e)
 
     @guild_required
-    async def edit_tower_floor(self, message, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi=None,
+    async def edit_tower_floor(self, message, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi, lang,
                                **__):
 
         rooms = ('ii', 'iii', 'iv', 'v', 'vi')
@@ -806,7 +806,7 @@ class DiscordBot(BaseBot):
         if self.tower_data.get(message.guild)['short']:
             return await self.react(message, bool_to_emoticon(success))
 
-        e = discord.Embed(title=TOWER_OF_DOOM, color=self.WHITE)
+        e = discord.Embed(title=_(TOWER_OF_DOOM, lang), color=self.WHITE)
         edit_text = '\n'.join([
             f"{'Success' if room[0] else 'Failure'}: {room[1]}"
             for room in rooms])
@@ -850,9 +850,9 @@ class DiscordBot(BaseBot):
 
     @guild_required
     @admin_required
-    async def clear_tower_data(self, message, **__):
+    async def clear_tower_data(self, message, lang, **__):
         self.tower_data.clear_data(message)
-        e = self.generate_response(TOWER_OF_DOOM, self.WHITE, 'Success',
+        e = self.generate_response(_(TOWER_OF_DOOM, lang), self.WHITE, 'Success',
                                    f'Cleared tower data for #{message.channel.name}')
         await self.answer(message, e)
 
