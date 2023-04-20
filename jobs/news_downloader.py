@@ -30,7 +30,7 @@ class NewsDownloader:
     POSTS_CONTENTS_FILENAME = 'jobs/posts.json'
     NEWS_FILENAME = 'jobs/posts.json'
     GOW_FEED_URL = 'https://gemsofwar.com/feed/'
-    USER_AGENT = 'garyatrics.com Discord Bot'
+    HEADERS = {'user-agent': 'garyatrics.com Discord Bot'}
     REQUEST_TIMEOUT = 10
 
     def __init__(self):
@@ -44,7 +44,7 @@ class NewsDownloader:
         :param source:
         :return:
         """
-        request = requests.get(source, timeout=cls.REQUEST_TIMEOUT)
+        request = requests.get(source, timeout=cls.REQUEST_TIMEOUT, headers=cls.HEADERS)
         image = Image.open(BytesIO(request.content))
         size = image.size
         ratio = size[0] / size[1]
@@ -97,9 +97,8 @@ class NewsDownloader:
         :return: None
         """
         url = f'{self.GOW_FEED_URL}?{int(time.time())}'
-        headers = {'user-agent': 'garyatrics.com news reader'}
         try:
-            response = requests.get(url, timeout=5, headers=headers)
+            response = requests.get(url, timeout=5, headers=self.HEADERS)
             content = BytesIO(response.content)
         except requests.RequestException as e:
             log.warn(f'Could not fetch {url}: {e}')
