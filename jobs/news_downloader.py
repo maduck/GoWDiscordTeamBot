@@ -97,7 +97,14 @@ class NewsDownloader:
         :return: None
         """
         url = f'{self.GOW_FEED_URL}?{int(time.time())}'
-        feed = feedparser.parse(url)
+        try:
+            response = requests.get(url, timeout=5)
+            content = BytesIO(response.content)
+        except requests.RequestException as e:
+            log.warn(f'Could not fetch {url}: {e}')
+            return
+
+        feed = feedparser.parse(content)
         new_last_post_date = self.last_post_date
 
         posts = []
