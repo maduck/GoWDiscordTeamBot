@@ -761,15 +761,19 @@ class TeamExpander:
     def _extend_event_extra_info(self, entry, lang):
         event_type = entry['type']
         gacha = entry['gacha']
-        if event_type in ('[BOUNTY]', '[HIJACK]', '[DELVE_EVENT]') and gacha and gacha in self.troops:
-            troop = self.troops[gacha]
-            return _(troop['name'], lang, default=troop['reference_name'])
+        gacha_pools = {
+            '[BOUNTY]': self.troops,
+            '[HIJACK]': self.troops,
+            '[DELVE_EVENT]': self.troops,
+            '[RAIDBOSS]': self.troops,
+            '[TOWER_OF_DOOM]': self.troops,
+            '[CLASS_EVENT]': self.classes,
+        }
+        if gacha_pool := gacha_pools.get(event_type) and gacha and gacha in gacha_pools:
+            item = gacha_pool[gacha]
+            return _(item['name'], lang, default=item.get('reference_name', item['name']))
         elif event_type == '[PETRESCUE]' and gacha and gacha in self.pets:
             return self.pets[gacha][lang].name
-        elif event_type == '[CLASS_EVENT]' and gacha and gacha in self.classes:
-            return _(self.classes[gacha]['name'], lang)
-        elif event_type == '[TOWER_OF_DOOM]' and gacha and gacha in self.troops:
-            return _(self.troops[gacha]['name'], lang)
         elif event_type == '[HIJACK]' and entry['troops']:
             troops = [self.troops[troop] for troop in entry['troops']]
             return ', '.join(_(troop['name'], lang, default=troop['reference_name']) for troop in troops)
