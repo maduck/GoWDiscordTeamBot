@@ -306,12 +306,12 @@ class DiscordBot(BaseBot):
             e.add_field(name=category, value=message_lines, inline=True)
         await self.answer(message, e)
         if kwargs.get('lengthened'):
-            await self.summoning_stones(message, lang)
+            await self.summoning_stones(message, lang, no_interaction=True)
 
-    async def summoning_stones(self, message, lang, **__):
+    async def summoning_stones(self, message, lang, no_interaction=False, **__):
         title, stones = self.expander.get_summons(lang)
         e = self.views.render_summoning_stones(title, stones, lang)
-        await self.answer(message, e)
+        await self.answer(message, e, no_interaction=no_interaction)
 
     async def about(self, message, lang, prefix, **__):
         color = discord.Color.from_rgb(*RARITY_COLORS['Mythic'])
