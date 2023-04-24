@@ -769,7 +769,8 @@ class TeamExpander:
             '[TOWER_OF_DOOM]': self.troops,
             '[CLASS_EVENT]': self.classes,
         }
-        if gacha_pool := gacha_pools.get(event_type) and gacha and gacha in gacha_pools:
+        gacha_pool = gacha_pools.get(event_type)
+        if gacha_pool and gacha and gacha in gacha_pool:
             item = gacha_pool[gacha]
             return _(item['name'], lang, default=item.get('reference_name', item['name']))
         elif event_type == '[PETRESCUE]' and gacha and gacha in self.pets:
