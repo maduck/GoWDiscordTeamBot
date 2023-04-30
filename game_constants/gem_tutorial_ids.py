@@ -1,4 +1,4 @@
-# public enum TutorialStep
+# public enum TutorialMenu.TutorialStep
 GEM_TUTORIAL_IDS = {
     'uberdoomskull': 3340,
     'lycanthropy': 3341,
@@ -36,5 +36,9 @@ GEM_TUTORIAL_IDS = {
     'dragonpurple': 3356,
     'dragonbrown': 3356,
     'spirit': 3357,
+    'stun': 3358,
+    'faeriefire': 3359,
+    'deathmark': 3600,
+    'booty': 3601,
     'lootgold': None,
 }
