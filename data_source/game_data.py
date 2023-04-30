@@ -54,6 +54,7 @@ class GameData:
         self.soulforge_weapons = []
         self.campaign_tasks = {}
         self.campaign_data = {}
+        self.campaign_skip_costs = {}
         self.campaign_rerolls = {}
         self.campaign_week = None
         self.artifact_id = None
@@ -345,6 +346,17 @@ class GameData:
             reroll_list = [self.transform_campaign_task(task, week) for task in rerolls[f'Campaign{level}']]
             self.campaign_rerolls[level.lower()] = reroll_list
         self.campaign_tasks['kingdom'] = self.kingdoms[event_kingdom_id]
+        self.populate_campaign_skip_costs()
+
+    def populate_campaign_skip_costs(self):
+        level_names = {
+            'CampaignBronze': '[MEDAL_LEVEL_0]',
+            'CampaignSilver': '[MEDAL_LEVEL_1]',
+            'CampaignGold': '[MEDAL_LEVEL_2]',
+        }
+        for level, cost in self.user_data['pEconomyModel']['CampaignTaskSkipCost'].items():
+            level_name = level_names[level]
+            self.campaign_skip_costs[level_name] = cost
 
     def transform_campaign_task(self, task, week):
         extra_data = {}

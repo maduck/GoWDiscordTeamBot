@@ -1,4 +1,3 @@
-from game_constants.campaign import TASK_SKIP_COSTS
 from game_constants.colors import CAMPAIGN_COLORS, COLORS, RARITY_COLORS
 from game_constants.cost_types import COST_TYPES
 from game_constants.event_types import EVENT_TYPES

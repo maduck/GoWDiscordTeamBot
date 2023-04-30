@@ -24,7 +24,7 @@ from base_bot import BaseBot, InteractionResponseType, log
 from command_registry import COMMAND_REGISTRY, add_slash_command, get_all_commands, remove_slash_command
 from configurations import CONFIG
 from discord_wrappers import admin_required, guild_required, owner_required
-from game_constants import CAMPAIGN_COLORS, RARITY_COLORS, TASK_SKIP_COSTS
+from game_constants import CAMPAIGN_COLORS, RARITY_COLORS
 from jobs.news_downloader import NewsDownloader
 from models.ban import Ban
 from models.bookmark import BookmarkError
@@ -48,7 +48,7 @@ DEFAULT_LANGUAGE = 'Default Language'
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.87.14'
+    VERSION = '0.88.0'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -181,6 +181,7 @@ class DiscordBot(BaseBot):
             start = time.time()
             campaign_data = self.expander.get_campaign_tasks(lang)
             campaign_data['switch'] = switch
+            campaign_data['task_skip_costs'] = self.expander.task_skip_costs
             campaign_data['team'] = None
             campaign_data['week'] = _('[WEEK]', lang).format(self.expander.campaign_week)
             campaign_data['campaign_name'] = _(self.expander.campaign_name, lang)
@@ -216,11 +217,11 @@ class DiscordBot(BaseBot):
             if self.is_interaction(message):
                 await self.delete_slash_command_interaction(message)
 
-    async def render_campaign_lines(self, message, campaign_data, lang):
+    async def render_campaign_lines(self, message, campaign_data, task_skip_costs, lang):
         for category, tasks in campaign_data.items():
             category_lines = [f'**{task["title"]}**: {task["name"].replace("-->", "→")}' for task in tasks]
             color = CAMPAIGN_COLORS.get(category, self.WHITE)
-            skip_costs = f'{_("[SKIP_TASK]", lang)}: {TASK_SKIP_COSTS.get(category)} {_("[GEMS]", lang)}'
+            skip_costs = f'{_("[SKIP_TASK]", lang)}: {task_skip_costs.get(category)} {_("[GEMS]", lang)}'
             e = discord.Embed(title=f'__**{_(category, lang)}**__ ({skip_costs})',
                               description='\n'.join(category_lines), color=color)
             if any('`?`' in line for line in category_lines):
@@ -229,17 +230,19 @@ class DiscordBot(BaseBot):
 
     async def campaign(self, message, lang, tier=None, **__):
         campaign_data = self.expander.get_campaign_tasks(lang, tier)
+        task_skip_costs = self.expander.task_skip_costs
 
         if not campaign_data['has_content']:
             title = _('[NO_CURRENT_TASK]', lang)
             description = _('[CAMPAIGN_COMING_SOON]', lang)
             e = discord.Embed(title=title, description=description, color=self.WHITE)
             return await self.answer(message, e)
-        await self.render_campaign_lines(message, campaign_data['campaigns'], lang)
+        await self.render_campaign_lines(message, campaign_data['campaigns'], task_skip_costs, lang)
 
     async def reroll_tasks(self, message, lang, tier=None, **__):
         rerolls = self.expander.get_reroll_tasks(lang, tier)
-        await self.render_campaign_lines(message, rerolls, lang)
+        task_skip_costs = self.expander.task_skip_costs
+        await self.render_campaign_lines(message, rerolls, task_skip_costs, lang)
 
     async def orbs(self, message, lang, **__):
         orbs = self.expander.get_orbs(lang)

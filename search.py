@@ -68,6 +68,7 @@ class TeamExpander:
         self.campaign_week = world.campaign_week
         self.campaign_name = world.campaign_name
         self.campaign_tasks = world.campaign_tasks
+        self.task_skip_costs = world.campaign_skip_costs
         self.reroll_tasks = world.campaign_rerolls
         self.soulforge = world.soulforge
         self.summons = world.summons

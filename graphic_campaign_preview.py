@@ -3,7 +3,7 @@ import io
 from wand.color import Color
 from wand.drawing import Drawing
 
-from game_constants import CAMPAIGN_COLORS, TASK_SKIP_COSTS
+from game_constants import CAMPAIGN_COLORS
 from graphic_base_preview import BasePreview, FONTS, download_image, scale_down, word_wrap
 from search import _
 
@@ -21,7 +21,7 @@ class CampaignPreview(BasePreview):
         with Drawing() as draw:
             for category, tasks in self.data['campaigns'].items():
                 color = CAMPAIGN_COLORS[category]
-                skip_costs = f'{_("[SKIP_TASK]", self.data["lang"])}: {TASK_SKIP_COSTS[category]} {_("[GEMS]", self.data["lang"])}'
+                skip_costs = f'{_("[SKIP_TASK]", self.data["lang"])}: {self.data["task_skip_costs"][category]} {_("[GEMS]", self.data["lang"])}'
                 title = f'{_(category, self.data["lang"])} ({skip_costs})'
 
                 box_height = 2 * base_font_size + (base_font_size + 5) * len(tasks) + 20
