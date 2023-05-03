@@ -224,9 +224,7 @@ class TeamExpander:
                                 translator=self.translate_troop)
 
     def translate_troop(self, troop, lang):
-        troop['name'] = _(troop['name'], lang)
-        if self.is_untranslated(troop['name']):
-            troop['name'] = troop['reference_name']
+        troop['name'] = _(troop['name'], lang, default=troop['reference_name'])
         troop['description'] = _(troop['description'], lang).replace('widerbeleben',
                                                                      'wiederbeleben')
         troop['color_code'] = "".join(troop['colors'])
