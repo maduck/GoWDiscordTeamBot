@@ -532,6 +532,7 @@ class GameData:
 
         faction_weapon_overrides = {
             3053: 1274,
+            3054: 1391,
             3069: 1272,
         }
         for faction_id, faction_data in factions:
