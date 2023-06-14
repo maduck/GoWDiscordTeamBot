@@ -2,6 +2,7 @@ import datetime
 import platform
 import re
 from calendar import day_name, different_locale
+from itertools import islice
 
 import discord
 
@@ -128,3 +129,18 @@ class U(str):
             s = self.lower()
             fmt = fmt[1:]
         return s.__format__(fmt)
+
+
+def batched(iterable, n: int):
+    """
+    :param iterable:
+    :param n:
+    :return:
+    Batch data into tuples of length n. The last batch may be shorter.
+    """
+    # batched('ABCDEFG', 3) --> ABC DEF G
+    if n < 1:
+        raise ValueError('n must be at least one')
+    it = iter(iterable)
+    while batch := tuple(islice(it, n)):
+        yield batch

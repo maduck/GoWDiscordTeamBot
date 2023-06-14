@@ -694,3 +694,7 @@ class Views:
     def render_orbs(self, orbs, lang):
         e = discord.Embed(title=_('[ORBS]', lang), colour=self.WHITE)
         return self.render_embed(e, "orbs.jinja", orbs=orbs)
+
+    def render_medals(self, medals, lang):
+        e = discord.Embed(title=_('[BADGES_AND_MEDALS]', lang), colour=self.WHITE)
+        return self.render_embed(e, "medals.jinja", medals=medals)

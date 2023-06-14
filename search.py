@@ -16,7 +16,7 @@ from game_constants import COLORS, EVENT_TYPES, GEM_TUTORIAL_IDS, RARITY_COLORS,
     UNDERWORLD_SOULFORGE_REQUIREMENTS, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
-from util import dig, extract_search_tag, get_next_monday_in_locale, translate_day
+from util import batched, dig, extract_search_tag, get_next_monday_in_locale, translate_day
 
 WEEK_DAY_FORMAT = '%b %d'
 
@@ -1600,4 +1600,28 @@ class TeamExpander:
                     'emoji': orb['emoji']
                 }
             )
+        return result
+
+    def get_medals(self, lang):
+        medal_id = 20000
+        result = {
+            'badges': [],
+            'medals': [],
+            'medals_title': _('[MEDALS]', lang),
+            'badges_title': _('[REWARD_HELP_HEADING_MEDAL_1]', lang),
+        }
+        while True:
+            if f'[WONDER_{medal_id}_NAME]' not in t.all_translations[lang]:
+                break
+            result['badges'].append({
+                'name': _(f'[WONDER_{medal_id + 1}_NAME]', lang),
+                'description': _(f'[WONDER_{medal_id + 1}_DESC]', lang)
+            })
+            result['medals'].append({
+                'name': _(f'[WONDER_{medal_id + 2}_NAME]', lang),
+                'description': _(f'[WONDER_{medal_id + 2}_DESC]', lang)
+            })
+            medal_id += 3
+        result['badges'] = list(batched(result['badges'], 10))
+        result['medals'] = list(batched(result['medals'], 10))
         return result

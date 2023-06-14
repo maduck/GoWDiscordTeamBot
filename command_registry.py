@@ -1188,6 +1188,12 @@ COMMAND_REGISTRY = [
         'options': [STANDARD_OPTIONS['lang']],
         'description': 'Shows Orbs in the game',
     },
+    {
+        'function': 'medals',
+        'pattern': re.compile(f'{DEFAULT_PATTERN}medals$', MATCH_OPTIONS),
+        'options': [STANDARD_OPTIONS['lang']],
+        'description': 'Shows Badges & Medals in the game',
+    }
 ]
 
 aliases = {

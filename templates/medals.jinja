@@ -1,0 +1,5 @@
+{% for badges_chunk in medals.medals %}
+<T>**__{{ medals.medals_title }}__** ({{ loop.index }}/{{ loop.length }})</T>
+{% for badge in badges_chunk %}**{{ badge.name }}**: {{ badge.description }}
+{% endfor %}
+{% endfor %}

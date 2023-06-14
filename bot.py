@@ -249,6 +249,11 @@ class DiscordBot(BaseBot):
         e = self.views.render_orbs(orbs, lang)
         return await self.answer(message, e)
 
+    async def medals(self, message, lang, **__):
+        medals = self.expander.get_medals(lang)
+        e = self.views.render_medals(medals, lang)
+        return await self.answer(message, e)
+
     async def adventures(self, message, lang, **__):
         adventures = self.expander.get_adventure_board(lang)
         e = self.views.render_adventure_board(adventures, lang)
