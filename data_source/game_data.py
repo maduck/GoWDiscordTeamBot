@@ -914,6 +914,8 @@ class GameData:
                 minimum_tier = max(minimum_tier, 3)
             self.weekly_event['minimum_tier'] = minimum_tier
 
+        battles = [transform_battle(b) for b in self.event_raw_data.get('BattleArray', [])]
+
         self.weekly_event = {
             'id': self.event_raw_data['Id'],
             'shop_tiers': [self.store_data[gacha] for gacha in self.event_raw_data.get('GachaItems', [])
@@ -933,7 +935,7 @@ class GameData:
             'medal': self.event_raw_data.get('MedalId'),
             'currencies': extract_currencies(self.event_raw_data),
             'rewards': extract_rewards(self.event_raw_data),
-            'battles': [transform_battle(b) for b in self.event_raw_data.get('BattleArray', [])],
+            'battles': battles,
             'start': datetime.datetime.utcfromtimestamp(self.event_raw_data['StartDate']),
             'end': datetime.datetime.utcfromtimestamp(self.event_raw_data['EndDate']),
             'first_battles': get_first_battles(self.event_raw_data),

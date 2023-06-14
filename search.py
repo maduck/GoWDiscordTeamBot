@@ -1315,7 +1315,12 @@ class TeamExpander:
         def translate_battle(b):
             result = b.copy()
             result['name'] = b['names'].get(lang)
+            result['troops'] = []
             del result['names']
+            for troop_id in b['ids']:
+                troop = self.troops.get(troop_id).copy()
+                self.translate_troop(troop, lang)
+                result['troops'].append(troop)
             return result
 
         troop_restriction_types = (
@@ -1330,12 +1335,13 @@ class TeamExpander:
         if event['weapon_id']:
             event['weapon'] = _(self.weapons.get(event['weapon_id'], {'name': ''})['name'], lang)
 
+        event['battles_title'] = _('[BATTLES]', lang)
         new_battles = []
         for battle in event['battles']:
             tb = translate_battle(battle)
             if tb not in new_battles:
                 new_battles.append(tb)
-        event['battles'] = new_battles
+        event['battles'] = sorted(new_battles, key=operator.itemgetter('raw_rarity'), reverse=True)
 
         locale = translations.LANGUAGE_CODE_MAPPING.get(lang, lang)
         locale = translations.LOCALE_MAPPING.get(locale, 'en_GB') + '.UTF8'

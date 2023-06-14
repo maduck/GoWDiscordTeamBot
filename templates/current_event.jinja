@@ -17,6 +17,9 @@
 {% for stage in event.rewards.values() -%}
 ` {{ stage.name }} ` {% for reward in stage.rewards %}{% if reward.amount != 1 %}{{ reward.amount }} {% endif %}{{ reward.type }}{% if not loop.last %}, {% endif %}{% endfor %} | {{ stage.points }}
 {% endfor %}
+{% if event.battles %}<T>__**{{ event.battles_title }}**__</T>
+{% for battle in event.battles %}
+{{ battle.rarity | emoji}} {{ battle.name }}{% endfor %}{% endif %}
 <T>__**{{ calculated_score_title }}**__</T>
 {{ points_needed }}
 {{ battles_needed }}
