@@ -1,4 +1,4 @@
-# public enum EventType
+# public enum LiveEventsData.EventType
 
 EVENT_TYPES = {
     0: '[GUILD_WARS]',
@@ -17,5 +17,6 @@ EVENT_TYPES = {
     13: '[JOURNEY]',
     14: '[KINGDOM_PASS]',
     15: '[LEGENDS_REBORN]',
-    16: '[UNKNOWN]',
+    16: '[HOLIDAYEVENT_TEAMS]',
+    17: '[UNDERSPIRE]',
 }
