@@ -799,8 +799,8 @@ class DiscordBot(BaseBot):
         await self.answer(message, e)
 
     @guild_required
-    async def edit_tower_floor(self, message, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi, lang,
-                               **__):
+    async def edit_tower_floor(self, message, floor, scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi=None,
+                               lang=None, **__):
 
         rooms = ('ii', 'iii', 'iv', 'v', 'vi')
         scrolls = (scroll_ii, scroll_iii, scroll_iv, scroll_v, scroll_vi)
