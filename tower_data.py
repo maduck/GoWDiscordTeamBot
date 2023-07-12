@@ -323,11 +323,14 @@ class TowerOfDoomData:
     def download_from_taran(self, message, map_name, version, token=''):
         headers = {'user-agent': f'garyatrics.com-discord-bot-{version}'}
         download_url = f'https://www.taransworld.com/DoomMap/main.pl?mapName={map_name.upper()}&txt=1&token={token}'
-        r = requests.get(download_url, headers=headers)
         try:
+            r = requests.get(download_url, headers=headers)
             r.raise_for_status()
         except HTTPError:
             return discord.Embed(title='Error', description=f'Map {map_name} not found.',
+                                 color=discord.Color.from_rgb(0, 0, 0))
+        except requests.exceptions.ConnectionError as e:
+            return discord.Embed(title='Error', description=f'Map {map_name} could not be downloaded: `{e.strerror}`',
                                  color=discord.Color.from_rgb(0, 0, 0))
         decoded_content = r.content.decode('utf-8')
 
