@@ -21,5 +21,8 @@
   "data_shift_hours": 0,
   "taran_token": "",
   "special_users_only": false,
-  "request_messages_content_intent": false
+  "request_messages_content_intent": false,
+  "ntfy_host": null,
+  "ntfy_user": null,
+  "ntfy_pass": null
 }
