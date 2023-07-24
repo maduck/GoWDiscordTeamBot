@@ -48,7 +48,7 @@ DEFAULT_LANGUAGE = 'Default Language'
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.89.3'
+    VERSION = '0.89.4'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -1031,7 +1031,7 @@ class DiscordBot(BaseBot):
                 try:
                     await channel.send(embed=e)
                 except discord.DiscordException as ex:
-                    log.error(f'Could not send out news {e.fields:r}, exception follows')
+                    log.error(f'Could not send out news to "{channel}", exception follows')
                     log.exception(ex)
 
     @guild_required
