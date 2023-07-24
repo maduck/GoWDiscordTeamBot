@@ -36,7 +36,7 @@ class Subscriptions:
             'guild_name': guild.name,
             'guild_id': guild.id,
             'channel_id': channel.id,
-            'channel': channel.name,
+            'channel_name': channel.name,
             platform.lower(): True,
         }
         return subscription_id, subscription
@@ -56,7 +56,7 @@ class Subscriptions:
                               (s['channel_id'],
                                s['guild_id'],
                                s['guild_name'],
-                               s['channel'],
+                               s['channel_name'],
                                s.get('pc', False),
                                s.get('switch', False),
                                ))
