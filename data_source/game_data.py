@@ -228,6 +228,8 @@ class GameData:
                 'colors': sorted(colors),
                 'description': troop['Description'],
                 'spell_id': troop['SpellId'],
+                'has_shiny': troop.get('HasShiny', False),
+                'shiny_spell_id': troop.get('ShinySpellId'),
                 'traits': [self.traits.get(trait, NO_TRAIT) for trait in
                            troop['Traits']],
                 'rarity': troop['TroopRarity'],

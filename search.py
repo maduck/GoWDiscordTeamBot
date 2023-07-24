@@ -255,6 +255,9 @@ class TeamExpander:
         troop['spell_title'] = _('[TROOPHELP_SPELL0]', lang)
         self.translate_traitstones(troop, lang)
         troop['bonuses_title'] = _('[BONUSES]', lang)
+        if troop['has_shiny']:
+            troop['shiny'] = _('[SHINY_LEVEL_HINT_FIND_TOKENS]', lang)
+            troop['shiny_spell'] = self.translate_spell(troop['shiny_spell_id'], lang)
 
     @staticmethod
     def translate_traitstones(item, lang):
