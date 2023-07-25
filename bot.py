@@ -48,7 +48,7 @@ DEFAULT_LANGUAGE = 'Default Language'
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.90.0'
+    VERSION = '0.90.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -528,6 +528,13 @@ class DiscordBot(BaseBot):
                               description='Try again with a different search.',
                               color=self.BLACK)
             return await self.answer(message, e)
+        if not message.channel.permissions_for(message.guild.me).send_messages:
+            e = discord.Embed(
+                title='Error',
+                description='✘ Bot has no permissions to send messages to this channel.',
+                colour=self.RED,
+            )
+            return await self.answer(message, embed=e)
         pet = pets[0]
         events = self.expander.get_events(lang)
         now = datetime.datetime.utcnow()
