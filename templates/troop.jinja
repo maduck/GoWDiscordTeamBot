@@ -14,4 +14,5 @@
 **{{ trait.name }}**: {{ trait.description }}
 {%- endfor -%}
 {% if troop.traitstones -%}<T>{{ troop.traitstones_title }}</T>
-{{ troop.traitstones|join(', ') }}{% endif %}**{{ troop.bonuses_title }}**: {{ 'attack'|emoji }} {{ troop.attack }}  {{ 'armor'|emoji }} {{ troop.armor }}  {{ 'health'|emoji }} {{ troop.health }}  {{ 'magic'|emoji }} {{ troop.magic }}
+{{ troop.traitstones|join(', ') }}{% endif %}**
+{{ troop.bonuses_title }}**: {{ 'attack'|emoji }} {{ troop.attack }}  {{ 'armor'|emoji }} {{ troop.armor }}  {{ 'health'|emoji }} {{ troop.health }}  {{ 'magic'|emoji }} {{ troop.magic }}
