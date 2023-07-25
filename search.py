@@ -219,6 +219,7 @@ class TeamExpander:
             'type',
             'roles',
             'spell.description',
+            'shiny',
         ]
         return self.search_item(search_term, lang,
                                 items=self.troops,
