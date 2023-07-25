@@ -2,6 +2,7 @@ import datetime
 import logging
 import os
 import sys
+import traceback
 from enum import Enum
 
 import aiohttp
@@ -220,11 +221,21 @@ class BaseBot(discord.Client):
 
     async def on_error(self, event, *args, **kwargs):
         if host := CONFIG.get('ntfy_host'):
-            data = f'{sys.exc_info()[0].__name__}: {sys.exc_info()[1]}\n\nBot:{self.user.display_name}'
-            requests.post(host, data=data, headers={
+            exception = sys.exc_info()
+            data_lines = [
+                f'# Bot:{self.user.display_name}',
+                f'{exception[0].__name__}: {exception[1]}',
+                '---',
+                '```',
+                ''.join(traceback.format_tb(exception[2])),
+                '```',
+            ]
+
+            requests.post(host, data='\n'.join(data_lines), headers={
                 'Title': f'Exception in {event}',
                 'Priority': 'urgent',
                 'Tags': 'rotating_light',
+                'Markdown': 'yes',
             }, auth=(CONFIG.get('ntfy_user'), CONFIG.get('ntfy_pass')))
         await super().on_error(event, *args, **kwargs)
 
