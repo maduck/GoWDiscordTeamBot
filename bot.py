@@ -1032,7 +1032,7 @@ class DiscordBot(BaseBot):
             if not await self.is_writable(channel):
                 log.debug(f'Channel "{channel}" is not writable.')
                 continue
-            log.debug(f'[{i + 1}/{len(self.subscriptions)}] Sending [{article["platform"]}] {article["title"]} '
+            log.debug(f'[{i + 1}/{len(relevant_subscriptions)}] Sending [{article["platform"]}] {article["title"]} '
                       f'to {channel.guild.name}/{channel.name}.')
             for e in embeds:
                 try:
