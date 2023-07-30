@@ -1343,7 +1343,7 @@ class TeamExpander:
         new_battles = []
         for battle in event['battles']:
             tb = translate_battle(battle)
-            if tb not in new_battles:
+            if tb['name'] and tb not in new_battles:
                 new_battles.append(tb)
         event['battles'] = sorted(new_battles, key=operator.itemgetter('raw_rarity'), reverse=True)
 

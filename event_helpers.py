@@ -35,7 +35,7 @@ def extract_currencies(raw_data):
 
 def transform_battle(battle):
     return {
-        'ids': battle['TeamRules']['TroopIds'],
+        'ids': battle.get('TeamRules', {}).get('TroopIds', []),
         'names': {lang[:2]: translation for lang, translation in
                   battle['Name'].items()} if 'Name' in battle else {},
         'icon': f'Liveevents/Liveeventslocationicons_{battle["Icon"]}_full.png' if 'Icon' in battle else '',
