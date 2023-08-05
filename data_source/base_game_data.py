@@ -92,6 +92,12 @@ class BaseGameDataContainer:
                 continue
             if kwargs.get('no_starry') and self.data.get('reference_name').lower().startswith('starry'):
                 continue
+            if kwargs.get('no_golden'):
+                reference = self.data.get('reference_name').lower()
+                if reference.startswith('golden'):
+                    continue
+                if '’' in reference and reference.split('’')[1].startswith('sgolden'):
+                    continue
             if compacted_search in lookup:
                 return True
         return False

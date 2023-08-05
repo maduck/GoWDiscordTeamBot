@@ -48,7 +48,7 @@ DEFAULT_LANGUAGE = 'Default Language'
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.90.2'
+    VERSION = '0.90.3'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -522,13 +522,15 @@ class DiscordBot(BaseBot):
 
     async def pet_rescue(self, message, search_term, lang, time_left=59, mention='', **__):
         # sourcery skip: aware-datetime-for-utc
-        pets = self.expander.pets.search(search_term, lang, name_only=True, released_only=True, no_starry=True)
+        pets = self.expander.pets.search(search_term, lang, name_only=True, released_only=True,
+                                         no_starry=True, no_golden=True)
         if len(pets) != 1:
             e = discord.Embed(title=f'Pet search for `{search_term}` yielded {len(pets)} results.',
                               description='Try again with a different search.',
                               color=self.BLACK)
             return await self.answer(message, e)
-        if not message.channel.permissions_for(message.guild.me).send_messages:
+
+        if message.guild and not message.channel.permissions_for(message.guild.me).send_messages:
             e = discord.Embed(
                 title='Error',
                 description='✘ Bot has no permissions to send messages to this channel.',
