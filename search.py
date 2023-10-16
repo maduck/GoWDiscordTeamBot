@@ -902,7 +902,7 @@ class TeamExpander:
         where = ''
         if new_task['value1'] == '`?`':
             pass
-        elif task['name'] == '[TASK_KILL_TROOP_COLOR]':
+        elif task['name'] == '[TASK_KILL_TROOP_COLOR]' and color != '`?`':
             color_kingdoms = self.get_color_kingdoms(lang)
             target_kingdom = color_kingdoms[color.lower()]['name']
             where = f' --> {target_kingdom}'
