@@ -136,6 +136,8 @@ class PetContainer(BaseGameDataContainer):
         for translation in self.translations.values():
             if 'effect_replacement' in translation:
                 for before, after in translation.data['effect_replacement'].items():
+                    if after is None:
+                        after = ''
                     translation.data['effect'] = translation.data['effect'].replace(before, after)
 
     def fill_untranslated_kingdom_name(self, kingdom_id, kingdom_reference_name):
