@@ -40,5 +40,6 @@ GEM_TUTORIAL_IDS = {
     'faeriefire': 3359,
     'deathmark': 3600,
     'booty': 3601,
+    'hourglass': 3602,
     'lootgold': None,
 }
