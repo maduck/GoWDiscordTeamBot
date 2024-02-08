@@ -2,7 +2,7 @@ import enum
 
 
 class RewardTypes(enum.IntEnum):
-    # public enum RewardTypes
+    # public enum GWShopData.RewardTypes
     Gems = 0
     Gold = 1
     Skin = 3
@@ -76,12 +76,31 @@ class RewardTypes(enum.IntEnum):
     FeatureUnlock = 75
     AdventureKeys = 76
     Dragonite = 79
-    RandomTroop = 80
-    ChampionLevelUp = 81
-    ChampionTraitsUnlocked = 82
-    DelveChestUpgrade = 83
-    DelveAttempts = 84
-    FactionRenown = 85
-    LiveEventPoints = 86
-    TeamSlot = 87
-    Banner = 88
+    LiveEventPremiumEnergy = 80
+    UnderspirePack = 81
+    ShinyToken = 82
+    ShinyDust = 83
+    LiveEventKeystone = 84
+    LiveEventTrinket = 85
+    HeadStart = 86
+    PathBooster = 87
+    ShinyKeys = 88
+    GuardianKeys = 89
+    ChampionKeys = 90
+    ParagonKeys = 91
+    ExaltedKeys = 92
+    UnderspireLantern = 93
+    VictoryPoints = 94
+    SilverMarks = 95
+    GoldMarks = 96
+    PvPTalismans = 97
+    BurningMarks = 98
+    RandomTroop = 99
+    ChampionLevelUp = 100
+    ChampionTraitsUnlocked = 101
+    DelveChestUpgrade = 102
+    DelveAttempts = 103
+    FactionRenown = 104
+    LiveEventPoints = 105
+    TeamSlot = 106
+    Banner = 107
