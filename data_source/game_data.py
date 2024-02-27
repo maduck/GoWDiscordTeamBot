@@ -774,6 +774,7 @@ class GameData:
             '[TROOP]': '{data[name]}',
             '[CHAOSSHARD]': '[N_CHAOS_SHARD]',
             '[DEEDBOOK]': '[N_DEEDBOOKS{data:02d}]',
+            '[PET]': '[PET_RESCUE_PET]',
         }
         return reward_translation.get(reward_type, reward_type).format(data=data)
 
