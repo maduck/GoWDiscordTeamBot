@@ -46,6 +46,10 @@ class PetContainer(BaseGameDataContainer):
             'kingdom_id': data['KingdomId'],
             'kingdom_name': f'[{data["KingdomId"]}_NAME]',
             'kingdom_title': '[KINGDOM]',
+            'region_title': '[REGION_BONUS]',
+            'region_sentence': '[PVP_BONUS_REGION_N]',
+            'region_id': data.get('RegionId'),
+            'region_name': f'[PVP_REGION_{data.get("RegionId")}]' if data.get('RegionId') else '',
         }
         self.populate_effect_data()
         self.translate()
