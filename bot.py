@@ -48,7 +48,7 @@ DEFAULT_LANGUAGE = 'Default Language'
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.91.0'
+    VERSION = '0.91.1'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -1184,11 +1184,13 @@ class DiscordBot(BaseBot):
     task_check_for_news = bot_tasks.task_check_for_news
     task_check_for_data_updates = bot_tasks.task_check_for_data_updates
     task_update_pet_rescues = bot_tasks.task_update_pet_rescues
+    task_update_status = bot_tasks.task_report_status
 
     async def setup_hook(self):
         self.task_check_for_news.start()
         self.task_check_for_data_updates.start()
         self.task_update_pet_rescues.start()
+        self.task_update_status.start()
 
 
 if __name__ == '__main__':
