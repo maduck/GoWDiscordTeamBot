@@ -1,3 +1,5 @@
+import time
+
 import requests
 
 from configurations import CONFIG
@@ -9,13 +11,18 @@ class StatusReporter:
 
     def __init__(self):
         if not CONFIG.get("statuspage_api_key"):
+            print("Uh-oh.")
             self.update = lambda x: None
 
     def update(self, discord_client):
-        page_id = CONFIG.get("STATUSPAGE_PAGE_ID")
-        component_id = CONFIG.get("STATUSPAGE_COMPONENT_ID")
+        self.update_status(discord_client)
+        self.update_metric(discord_client)
+
+    def update_status(self, discord_client):
+        page_id = CONFIG.get("statuspage_page_id")
+        component_id = CONFIG.get("statuspage_component_id")
         url = f"{self.BASE_URL}/{page_id}/components/{component_id}"
-        headers = {"Authorization": f"OAuth {CONFIG.get('STATUSPAGE_API_KEY')}"}
+        headers = {"Authorization": f"OAuth {CONFIG.get('statuspage_api_key')}"}
 
         status = "operational"
         if discord_client.latency > self.MAX_LATENCY:
@@ -29,4 +36,22 @@ class StatusReporter:
         component = {"component": {"status": status}}
 
         r = requests.patch(url, headers=headers, json=component)
+        r.raise_for_status()
+
+    def update_metric(self, discord_client):
+        page_id = CONFIG.get("statuspage_page_id")
+        metric_id = CONFIG.get("statuspage_metric_id")
+        url = f"{self.BASE_URL}/{page_id}/metrics/{metric_id}/data.json"
+        headers = {"Authorization": f"OAuth {CONFIG.get('statuspage_api_key')}"}
+
+        if not (latency := discord_client.latency):
+            return
+
+        payload = {
+            "data": {
+                'timestamp': int(time.time()),
+                'value': latency
+            }
+        }
+        r = requests.post(url, headers=headers, json=payload)
         r.raise_for_status()
