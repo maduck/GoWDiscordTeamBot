@@ -41,16 +41,18 @@ class StatusReporter:
     def update_metric(self, discord_client):
         page_id = CONFIG.get("statuspage_page_id")
         metric_id = CONFIG.get("statuspage_metric_id")
-        url = f"{self.BASE_URL}/{page_id}/metrics/{metric_id}/data.json"
+        url = f"{self.BASE_URL}/{page_id}/metrics/data"
         headers = {"Authorization": f"OAuth {CONFIG.get('statuspage_api_key')}"}
 
-        if not (latency := discord_client.latency):
+        if not (latency := discord_client.latency * 1000):
             return
 
         payload = {
             "data": {
-                'timestamp': int(time.time()),
-                'value': latency
+                metric_id: [{
+                    'timestamp': int(time.time()),
+                    'value': latency
+                }]
             }
         }
         r = requests.post(url, headers=headers, json=payload)
