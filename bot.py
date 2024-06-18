@@ -48,7 +48,7 @@ DEFAULT_LANGUAGE = 'Default Language'
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.91.1'
+    VERSION = '0.91.2'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -363,17 +363,18 @@ class DiscordBot(BaseBot):
         e = discord.Embed(title=_('[PVPSTATS]', lang), description='<https://garyatrics.com/>', color=color)
         members = sum(g.member_count for g in self.guilds)
 
-        collections = [
-            f'**{_("[GUILD]", lang)} {_("[AMOUNT]", lang)}**: {len(self.guilds)}',
-            f'**{_("[PLAYER]", lang)} {_("[AMOUNT]", lang)}**: {members}',
-            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (PC)**: '
-            f'{sum(s.get("pc", True) for s in self.subscriptions)}',
-            f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (Switch)**: '
-            f'{sum(s.get("switch", True) for s in self.subscriptions)}',
-            f'**{_("[PETRESCUE]", lang)} ({_("[JUST_NOW]", lang)})**: {len(self.pet_rescues)}',
-            f'**{_("[PETRESCUE]", lang)} ({_("[TRAIT_ALL]", lang)})**: {PetRescue.get_amount()}',
-        ]
-        e.add_field(name=_("[COLLECTION]", lang), value='\n'.join(collections))
+        with HumanizeTranslator(LANGUAGE_CODE_MAPPING.get(lang, lang)) as _t:
+            collections = [
+                f'**{_("[GUILD]", lang)} {_("[AMOUNT]", lang)}**: {humanize.intcomma(len(self.guilds))}',
+                f'**{_("[PLAYER]", lang)} {_("[AMOUNT]", lang)}**: {humanize.intcomma(members)}',
+                f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (PC)**: '
+                f'{humanize.intcomma(sum(s.get("pc", True) for s in self.subscriptions))}',
+                f'**{_("[NEWS]", lang)} {_("[CHANNELS]", lang)} (Switch)**: '
+                f'{humanize.intcomma(sum(s.get("switch", True) for s in self.subscriptions))}',
+                f'**{_("[PETRESCUE]", lang)} ({_("[JUST_NOW]", lang)})**: {humanize.intcomma(len(self.pet_rescues))}',
+                f'**{_("[PETRESCUE]", lang)} ({_("[TRAIT_ALL]", lang)})**: {humanize.intcomma(PetRescue.get_amount())}',
+            ]
+            e.add_field(name=_("[COLLECTION]", lang), value='\n'.join(collections))
 
         await self.answer(message, e)
 
