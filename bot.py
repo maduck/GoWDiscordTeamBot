@@ -14,7 +14,6 @@ import aiohttp
 import discord
 import humanize
 import prettytable
-import requests
 
 import bot_tasks
 import graphic_campaign_preview
@@ -723,11 +722,11 @@ class DiscordBot(BaseBot):
         now = datetime.datetime.now(datetime.timezone.utc)
         if self.server_status_cache['last_updated'] <= now - datetime.timedelta(seconds=30):
             async with message.channel.typing():
-                r = requests.get('https://status.infinityplustwo.net/status_v2.txt')
-                await asyncio.sleep(2)
-                status = r.json() if r.status_code == 200 else {'pGameArray': []}
-                self.server_status_cache['status'] = status['pGameArray'][:-1]
-                self.server_status_cache['last_updated'] = now
+                async with self.session.get('https://status.infinityplustwo.net/status_v2.txt') as r:
+                    await asyncio.sleep(2)
+                    status = await r.json(content_type='text/plain') if r.ok else {'pGameArray': []}
+                    self.server_status_cache['status'] = status['pGameArray'][:-1]
+                    self.server_status_cache['last_updated'] = now
         e = self.views.render_server_status(self.server_status_cache)
         await self.answer(message, e)
 
