@@ -10,6 +10,7 @@ import urllib
 from functools import partial, partialmethod
 from typing import Optional
 
+import aiohttp
 import discord
 import humanize
 import prettytable
@@ -74,6 +75,7 @@ class DiscordBot(BaseBot):
         self.pet_rescues = []
         self.pet_rescue_config: Optional[PetRescueConfig] = None
         self.server_status_cache = {'last_updated': datetime.datetime.min.replace(tzinfo=datetime.timezone.utc)}
+        self.session = None
 
     async def on_guild_join(self, guild):
         await super().on_guild_join(guild)
@@ -696,8 +698,9 @@ class DiscordBot(BaseBot):
 
     async def memes(self, message, lang, meme_no=None, **__):
         base_url = 'https://garyatrics.com/images/memes'
-        r = requests.get(f'{base_url}/index.txt')
-        available_memes = [m for m in r.text.split('\n') if m]
+        async with self.session.get(f'{base_url}/index.txt') as r:
+            content = await r.text()
+            available_memes = [m for m in content.split('\n') if m]
         random_title = _('[SPELLEFFECT_CAUSERANDOM]', lang)
         if meme_no and 1 <= int(meme_no) <= len(available_memes):
             meme = available_memes[int(meme_no) - 1]
@@ -1192,6 +1195,7 @@ class DiscordBot(BaseBot):
         self.task_check_for_data_updates.start()
         self.task_update_pet_rescues.start()
         self.task_update_status.start()
+        self.session = aiohttp.ClientSession()
 
 
 if __name__ == '__main__':
