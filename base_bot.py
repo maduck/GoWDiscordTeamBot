@@ -7,7 +7,6 @@ from enum import Enum
 
 import aiohttp
 import discord
-import requests
 
 from configurations import CONFIG
 from discord_fake_classes import FakeMessage
@@ -231,12 +230,13 @@ class BaseBot(discord.Client):
                 '```',
             ]
 
-            requests.post(host, data='\n'.join(data_lines), headers={
+            with self.session.post(host, data='\n'.join(data_lines), headers={
                 'Title': f'Exception in {event}',
                 'Priority': 'urgent',
                 'Tags': 'rotating_light',
                 'Markdown': 'yes',
-            }, auth=(CONFIG.get('ntfy_user'), CONFIG.get('ntfy_pass')))
+            }, auth=(CONFIG.get('ntfy_user'), CONFIG.get('ntfy_pass'))):
+                pass
         await super().on_error(event, *args, **kwargs)
 
     async def update_base_emojis(self):
