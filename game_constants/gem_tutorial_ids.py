@@ -41,5 +41,10 @@ GEM_TUTORIAL_IDS = {
     'deathmark': 3600,
     'booty': 3601,
     'hourglass': 3602,
+    'lightningblue': 3603,
+    'lightningyellow': 3603,
+    'terror': 3604,
+    'angel': 3605,
+    'ghost': 3606,
     'lootgold': None,
 }
