@@ -402,6 +402,15 @@ class DiscordBot(BaseBot):
     async def heroic_gems(self, message, lang, **__):
         gems = self.expander.get_heroic_gems(lang)
         e = self.views.render_heroic_gems(gems, lang)
+        if len(e.fields) > 25:
+            all_fields = e.fields
+            e.clear_fields()
+            [e.add_field(name=field.name, value=field.value, inline=field.inline) for field in all_fields[:25]]
+            await self.answer(message, e)
+            e.clear_fields()
+            [e.add_field(name=field.name, value=field.value, inline=field.inline) for field in all_fields[25:]]
+            await self.answer(message, e)
+            return
         await self.answer(message, e)
 
     async def color_kingdoms(self, message, lang, **__):
