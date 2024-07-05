@@ -19,7 +19,7 @@ formatter = logging.Formatter('%(asctime)-15s [%(levelname)s] %(message)s')
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 handler.setLevel(LOGLEVEL)
-log = logging.getLogger(__name__)
+log: logging.Logger = logging.getLogger(__name__)
 
 log.setLevel(logging.DEBUG)
 log.addHandler(handler)
