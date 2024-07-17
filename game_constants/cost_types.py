@@ -7,5 +7,8 @@ COST_TYPES = (
     '[SILVERMARKS]',
     '[GOLDMARKS]',
     '[BURNINGMARKS]',
+    '[VPICON]',
+    '[VPICON]',
+    '[VPICON]',
     '[TROOPHELP_COUNT0]',
 )
