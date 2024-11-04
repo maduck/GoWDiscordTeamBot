@@ -1,6 +1,7 @@
 from data_source.base_game_data import BaseGameData, BaseGameDataContainer
 from util import convert_color_array
 
+# public enum PetData.EffectType
 EFFECT_TRANSLATIONS = (
     '[PETTYPE_BUFFTEAMCOLOR]',
     '[PETTYPE_BUFFGEMMASTERY]',
