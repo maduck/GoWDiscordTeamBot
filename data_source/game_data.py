@@ -221,17 +221,21 @@ class GameData:
     def populate_troops(self):
         for troop in self.data['Troops']:
             colors = convert_color_array(troop)
+            traits_key = 'Traits'
+            if troop.get('Immortal'):
+                traits_key = 'ImmortalTraits'
             self.troops[troop['Id']] = {
                 'id': troop['Id'],
                 'name': troop['Name'],
                 'reference_name': troop['ReferenceName'],
+                'immortal': troop.get('Immortal', False),
                 'colors': sorted(colors),
                 'description': troop['Description'],
                 'spell_id': troop['SpellId'],
                 'has_shiny': troop.get('HasShiny', False),
                 'shiny_spell_id': troop.get('ShinySpellId'),
                 'traits': [self.traits.get(trait, NO_TRAIT) for trait in
-                           troop['Traits']],
+                           troop[traits_key]],
                 'rarity': troop['TroopRarity'],
                 'types': [troop['TroopType']],
                 'roles': troop['TroopRoleArray'],

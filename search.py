@@ -231,6 +231,8 @@ class TeamExpander:
         troop['description'] = _(troop['description'], lang).replace('widerbeleben',
                                                                      'wiederbeleben')
         troop['color_code'] = "".join(troop['colors'])
+        troop['immortal_title'] = _('[TROOPTYPE_IMMORTAL]', lang)
+        troop['immortal'] = _('[YES]', lang) if troop['immortal'] else _('[NO]', lang)
         troop['rarity_title'] = _('[RARITY]', lang)
         troop['raw_rarity'] = troop['rarity']
         rarity_number = 1
