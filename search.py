@@ -232,7 +232,6 @@ class TeamExpander:
                                                                      'wiederbeleben')
         troop['color_code'] = "".join(troop['colors'])
         troop['immortal_title'] = _('[TROOPTYPE_IMMORTAL]', lang)
-        troop['immortal'] = _('[YES]', lang) if troop['immortal'] else _('[NO]', lang)
         troop['rarity_title'] = _('[RARITY]', lang)
         troop['raw_rarity'] = troop['rarity']
         rarity_number = 1
@@ -241,6 +240,7 @@ class TeamExpander:
         troop['rarity'] = _(f'[RARITY_{rarity_number}]', lang)
         troop['traits_title'] = _('[TRAITS]', lang)
         troop['traits'] = self.enrich_traits(troop['traits'], lang)
+        troop['immortal_traits'] = self.enrich_traits(troop['immortal_traits'], lang)
         troop['roles_title'] = _('[TROOP_ROLE]', lang)
         troop['roles'] = [_(f'[TROOP_ROLE_{role.upper()}]', lang) for role in troop['roles']]
         troop['type_title'] = _('[FILTER_TROOPTYPE]', lang)

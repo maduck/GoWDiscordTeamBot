@@ -3,7 +3,6 @@
 **{{ troop.spell.name }}**: {{ troop.spell.description }}{% if troop.shiny %}
 **{{ troop.shiny_spell.name }}**: {{ troop.shiny_spell.description }}
 *({{ troop.shiny }})*{% endif %}
-**{{ troop.immortal_title }}**: {{ troop.immortal }}
 
 **{{ troop.kingdom_title }}**: {{ troop.kingdom }}
 **{{ troop.rarity_title }}**: {{ troop.rarity }}
@@ -14,6 +13,10 @@
 {%- for trait in troop.traits %}
 **{{ trait.name }}**: {{ trait.description }}
 {%- endfor -%}
+{% if troop.immortal %}<T>{{ troop.traits_title }} ({{ troop.immortal_title }})</T>
+{%- for trait in troop.immortal_traits %}
+**{{ trait.name }}**: {{ trait.description }}
+{%- endfor -%}{% endif %}
 {% if troop.traitstones -%}<T>{{ troop.traitstones_title }}</T>
 {{ troop.traitstones|join(', ') }}{% endif %}**
 {{ troop.bonuses_title }}**: {{ 'attack'|emoji }} {{ troop.attack }}  {{ 'armor'|emoji }} {{ troop.armor }}  {{ 'health'|emoji }} {{ troop.health }}  {{ 'magic'|emoji }} {{ troop.magic }}
