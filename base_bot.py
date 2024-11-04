@@ -242,6 +242,9 @@ class BaseBot(discord.Client):
     async def update_base_emojis(self):
         for guild_id in CONFIG.get('base_guilds'):
             await self.fetch_emojis_from_guild(guild_id)
+        # TODO discord.py 2.5
+        """for emoji in (await self.fetch_application_emojis()):
+            self.my_emojis[emoji.name] = str(emoji)"""
 
     async def fetch_emojis_from_guild(self, guild_id):
         guild = self.get_guild(guild_id)
