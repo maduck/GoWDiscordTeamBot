@@ -20,4 +20,5 @@ EVENT_TYPES = {
     16: '[HOLIDAYEVENT_TEAMS]',
     17: '[UNDERSPIRE]',
     18: '[PVP_SEASON]',
+    19: 'SpecialWeeklyEvent',
 }
