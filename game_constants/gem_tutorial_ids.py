@@ -46,5 +46,7 @@ GEM_TUTORIAL_IDS = {
     'terror': 3604,
     'angel': 3605,
     'ghost': 3606,
+    'demonicportal': 3607,
+    'decay': 3608,
     'lootgold': None,
 }
