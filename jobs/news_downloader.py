@@ -44,6 +44,8 @@ class NewsDownloader:
         :param source:
         :return:
         """
+        if "dividerline" in source or "ForumBanner" in source:
+            return True
         async with self.session.get(source, timeout=self.REQUEST_TIMEOUT, headers=self.HEADERS) as r:
             image = Image.open(BytesIO(await r.read()))
         size = image.size
