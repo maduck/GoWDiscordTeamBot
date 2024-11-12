@@ -1,7 +1,7 @@
 """
 Job code for news downloading and converting
 """
-
+import asyncio
 import datetime
 import html
 import json
@@ -46,8 +46,13 @@ class NewsDownloader:
         """
         if "dividerline" in source or "ForumBanner" in source:
             return True
-        async with self.session.get(source, timeout=self.REQUEST_TIMEOUT, headers=self.HEADERS) as r:
-            image = Image.open(BytesIO(await r.read()))
+        try:
+            async with self.session.get(source, timeout=self.REQUEST_TIMEOUT, headers=self.HEADERS) as r:
+                image = Image.open(BytesIO(await r.read()))
+        except asyncio.TimeoutError:
+            log.error('[NEWS] Timeout while fetching %s', source)
+            return False
+        await asyncio.sleep(5)
         size = image.size
         ratio = size[0] / size[1]
         arbitrary_ratio_limit_for_banners = 5
