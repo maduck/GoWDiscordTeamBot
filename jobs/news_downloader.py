@@ -70,7 +70,7 @@ class NewsDownloader:
         images = []
         for i in source_images:
             source = i['src']
-            if not await self.is_banner(source):
+            if source and not await self.is_banner(source):
                 images.append(source)
 
         forbidden_tags = re.compile(r'</?(a|img|div|figure|em)[^>]*>')
