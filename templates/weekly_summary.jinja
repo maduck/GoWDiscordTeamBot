@@ -11,7 +11,6 @@
 {% endfor %}**{{ summary.weapon_title }}**: {% if summary.world_event.weapon_restrictions %}{% for r, v in summary.world_event.weapon_restrictions.items() -%}
 {{ r }}: {{ v }}{% endfor %}{% else %}-{% endif %}{% endif %}{% if summary.medal.description %}
 ✪ {{ summary.medal }}: {{ summary.world_event.medal.description }}{% endif %}
-✪ {{ summary.flight_school }}
 {% if not summary.faction_assault or summary.today_weekday > summary.faction_assault.start.weekday() %}<T>{{ summary.faction_assault.type }}</T>
 {{ summary.event_ended }}{% else %}
 {% if summary.extra_events %}<T>{{ summary.world_event_title }} ({{ summary.world_event.formatted_start }} - {{ summary.world_event.formatted_end }})</T>{% for event in summary.extra_events %}

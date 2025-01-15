@@ -29,7 +29,6 @@
   "[TASK_SUMMON_TROOPS]": "Evoca truppe per {0} \u0019volta\u0019volte\u0019",
   "[TASK_EXPLODE_GEM_SINGLE]": "Fai esplodere {0} \u0019Gemma\u0019Gemme\u0019",
   "[WEEK]": "Settimana {}",
-  "[FLIGHT_SCHOOL]": "Iscriviti a [Flight School](https://discord.gg/35GXXtz3xD) #world-event per maggiori dettagli.",
   "[CALCULATED_SCORE_TITLE]": "Punteggio calcolato per membro",
   "[POINTS_NEEDED]": "**{} {}** necessario per ottenere l'ultima ricompensa.",
   "[BATTLES_NEEDED]": "**{} {}** per giocatore a partire dalla classifica attuale.",

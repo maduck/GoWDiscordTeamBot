@@ -1545,7 +1545,6 @@ class TeamExpander:
             'event_ended': _('[EVENT_HAS_ENDED]', lang),
             'medal': _('[REWARD_HELP_HEADING_MEDAL_2]', lang),
             'troop_title': _('[TROOP]', lang),
-            'flight_school': _('[FLIGHT_SCHOOL]', lang),
             'last_reward_points': _('[LAST_REWARD]', lang).format(),
             'weapon_title': _('[WEAPON]', lang),
         }
