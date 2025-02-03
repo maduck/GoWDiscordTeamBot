@@ -539,6 +539,7 @@ class GameData:
             3053: 1274,
             3054: 1391,
             3069: 1272,
+            3068: 1295,
         }
         for faction_id, faction_data in factions:
             kingdom_id = faction_data['linked_kingdom_id']
