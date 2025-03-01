@@ -513,23 +513,23 @@ COMMAND_REGISTRY = [
             f'{DEFAULT_PATTERN}towerconfig reset$', MATCH_OPTIONS
         ),
     },
-    {
-        'function': 'import_tower_from_taran',
-        'pattern': re.compile(
-            DEFAULT_PATTERN + 'tower taran (?P<map_name>[a-zA-Z0-9]{1,20})$',
-            MATCH_OPTIONS,
-        ),
-        'options': [
-            {
-                'name': 'map_name',
-                'description': 'map name as entered in taransworld.com',
-                'type': OptionType.STRING.value,
-                'required': True,
-                'choices': [],
-            },
-        ],
-        'description': 'Imports a tower map from Taran\'s World',
-    },
+    # {
+    #     'function': 'import_tower_from_taran',
+    #     'pattern': re.compile(
+    #         DEFAULT_PATTERN + 'tower taran (?P<map_name>[a-zA-Z0-9]{1,20})$',
+    #         MATCH_OPTIONS,
+    #     ),
+    #     'options': [
+    #         {
+    #             'name': 'map_name',
+    #             'description': 'map name as entered in taransworld.com',
+    #             'type': OptionType.STRING.value,
+    #             'required': True,
+    #             'choices': [],
+    #         },
+    #     ],
+    #     'description': 'Imports a tower map from Taran\'s World',
+    # },
     {
         'function': 'show_tower_data',
         'pattern': re.compile(
