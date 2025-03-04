@@ -48,5 +48,8 @@ GEM_TUTORIAL_IDS = {
     'ghost': 3606,
     'demonicportal': 3607,
     'decay': 3608,
+    'submerge': 3609,
+    'enchant': 3610,
+    'enrage': 3611,
     'lootgold': None,
 }
