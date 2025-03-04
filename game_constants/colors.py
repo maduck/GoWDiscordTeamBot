@@ -9,7 +9,6 @@ RARITY_COLORS = {
     'Legendary': (19, 227, 246),
     'Doomed': (186, 0, 0),
     'Mythic': (19, 227, 246),
-
 }
 
 CAMPAIGN_COLORS = {
@@ -78,13 +77,16 @@ COLORS = list(
         54: 'ghost',
         55: 'demonicportal',
         56: 'decay',
-        57: 'basegemtypes',
-        58: 'lootbronze',
-        59: 'lootsilver',
-        60: 'lootgold',
-        61: 'lootbag',
-        62: 'lootchest0',
-        63: 'lootchest1',
-        64: 'lootchest2',
-        65: 'lootsafe',
+        57: 'decay',
+        58: 'enchant',
+        59: 'enrage',
+        60: 'basegemtypes',
+        61: 'lootbronze',
+        62: 'lootsilver',
+        63: 'lootgold',
+        64: 'lootbag',
+        65: 'lootchest0',
+        66: 'lootchest1',
+        67: 'lootchest2',
+        68: 'lootsafe',
     }.values())
