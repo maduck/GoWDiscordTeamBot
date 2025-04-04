@@ -672,7 +672,7 @@ class TeamExpander:
                 multiplier_text = f'{multiplier} ⨯ '
         divisor = ''
         if multiplier < 1:
-            number = int(round(1 / multiplier))
+            number = round(1 / multiplier, 2)
             divisor = f' / {number}'
         return divisor, multiplier_text
 
