@@ -16,7 +16,7 @@ from game_constants import COLORS, EVENT_TYPES, GEM_TUTORIAL_IDS, RARITY_COLORS,
     UNDERWORLD_SOULFORGE_REQUIREMENTS, WEAPON_RARITIES
 from models.bookmark import Bookmark
 from models.toplist import Toplist
-from util import batched, dig, extract_search_tag, get_next_monday_in_locale, translate_day
+from util import batched, dig, extract_search_tag, get_next_monday_in_locale, greatest_common_divisor, translate_day
 
 WEEK_DAY_FORMAT = '%b %d'
 
@@ -653,7 +653,7 @@ class TeamExpander:
             else:
                 description = description.replace(f'{{{i}}}', damage)
 
-        boost = self.calculate_boost(spell)
+        boost = self.calculate_boost_ratio(spell)
 
         description = f'{description}{boost}'
 
@@ -677,14 +677,15 @@ class TeamExpander:
         return divisor, multiplier_text
 
     @staticmethod
-    def calculate_boost(spell):
-        boost = ''
-        if spell['boost']:
-            if spell['boost'] > 100:
-                boost = f' [x{int(round(spell["boost"] / 100))}]'
-            elif spell['boost'] != 1:
-                boost = f' [{100 / spell["boost"]:0.0f}:1]'
-        return boost
+    def calculate_boost_ratio(spell):
+        if spell['boost'] in (10, 20, 25, 34, 50, 100):
+            return f' [{int(100 / spell["boost"])}:1]'
+        if spell['boost'] in (200, 300, 400, 500):
+            return f' [x{int(spell["boost"] / 100)}]'
+        if spell['boost'] > 100:
+            return f' [x{int(round(spell["boost"] / 100))}]'
+        gcd = greatest_common_divisor(spell['boost'], 100)
+        return f' [{spell["boost"] // gcd}:{100 // gcd}]'
 
     def translate_spell_description(self, description, lang):
         description = _(description, lang)

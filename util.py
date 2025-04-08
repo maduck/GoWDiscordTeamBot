@@ -144,3 +144,10 @@ def batched(iterable, n: int):
     it = iter(iterable)
     while batch := tuple(islice(it, n)):
         yield batch
+
+
+def greatest_common_divisor(a, b):
+    # return (b != 0) ? HelperFunctions.GreatestCommonDivisor(b, a % b) : a;
+    if b != 0:
+        return greatest_common_divisor(b, a % b)
+    return a
