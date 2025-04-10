@@ -678,6 +678,8 @@ class TeamExpander:
 
     @staticmethod
     def calculate_boost_ratio(spell):
+        if not spell['boost']:
+            return ''
         if spell['boost'] in (10, 20, 25, 34, 50, 100):
             return f' [{int(100 / spell["boost"])}:1]'
         if spell['boost'] in (200, 300, 400, 500):
