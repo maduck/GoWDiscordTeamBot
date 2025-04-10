@@ -653,7 +653,8 @@ class TeamExpander:
             else:
                 description = description.replace(f'{{{i}}}', damage)
 
-        boost = self.calculate_boost_ratio(spell)
+        if boost := self.calculate_boost_ratio(spell):
+            boost = f" [{_('[BOOST_RATIO]', lang)} {boost}]"
 
         description = f'{description}{boost}'
 
@@ -680,14 +681,12 @@ class TeamExpander:
     def calculate_boost_ratio(spell):
         if not spell['boost']:
             return ''
-        if spell['boost'] in (10, 20, 25, 34, 50, 100):
-            return f' [{round(100 / spell["boost"])}:1]'
-        if spell['boost'] in (200, 300, 400, 500):
-            return f' [x{int(spell["boost"] / 100)}]'
+        if spell['boost'] <= 100:
+            return f'{round(100 / spell["boost"])}:1'
         if spell['boost'] > 100:
-            return f' [x{int(round(spell["boost"] / 100))}]'
+            return f'x{round(spell["boost"] / 100)}'
         gcd = greatest_common_divisor(spell['boost'], 100)
-        return f' [{spell["boost"] // gcd}:{100 // gcd}]'
+        return f'{spell["boost"] // gcd}:{100 // gcd}'
 
     def translate_spell_description(self, description, lang):
         description = _(description, lang)
