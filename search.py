@@ -681,7 +681,7 @@ class TeamExpander:
         if not spell['boost']:
             return ''
         if spell['boost'] in (10, 20, 25, 34, 50, 100):
-            return f' [{int(100 / spell["boost"])}:1]'
+            return f' [{round(100 / spell["boost"])}:1]'
         if spell['boost'] in (200, 300, 400, 500):
             return f' [x{int(spell["boost"] / 100)}]'
         if spell['boost'] > 100:
