@@ -698,8 +698,8 @@ class DiscordBot(BaseBot):
         return await self.foodies(message, lang, waffle_no, max_waffles, base_url, title, subtitle)
 
     async def burgers(self, message, lang, burger_no=None, **__):
-        max_burgers = 31
-        title = _('[QUEST9007_OBJ1_MSG]', lang)
+        max_burgers = 32
+        title = _('[QUEST9002_OBJ1_MSG]', lang)
         subtitle = _('[3000_BATTLE15_NAME]', lang)
         base_url = 'https://garyatrics.com/images/burgers/{0:03d}.jpg'
         return await self.foodies(message, lang, burger_no, max_burgers, base_url, title, subtitle)
