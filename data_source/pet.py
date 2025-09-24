@@ -47,6 +47,8 @@ class PetContainer(BaseGameDataContainer):
             'kingdom_id': data['KingdomId'],
             'kingdom_name': f'[{data["KingdomId"]}_NAME]',
             'kingdom_title': '[KINGDOM]',
+            'pvp': '[YES]' if data.get('LockedHelpText') == 'PVP' else '[NO]',
+            'pvp_title': '[PVP]',
             'region_title': '[REGION_BONUS]',
             'region_sentence': '[PVP_BONUS_REGION_N]',
             'region_id': data.get('RegionId'),
