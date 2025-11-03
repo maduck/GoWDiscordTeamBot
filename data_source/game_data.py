@@ -3,6 +3,8 @@ import math
 import operator
 import re
 
+import arrow
+
 from configurations import CONFIG
 from data_source import Pets
 from event_helpers import extract_currencies, extract_lore, extract_name, get_first_battles, roles_translation, \
@@ -47,7 +49,7 @@ class GameData:
             '`?`': {'name': '[REQUIREMENTS_NOT_MET]', 'underworld': False, 'filename': None, 'id': '`?`',
                     'location': None, 'reference_name': '`?`'}}
         self.pet_effects = ()
-        self.pets: Pets = None
+        self.pets: Pets | None = None
         self.talent_trees = {}
         self.spoilers = []
         self.events = []
@@ -617,8 +619,8 @@ class GameData:
                 'name': recipe['Name'],
                 'id': recipe_id,
                 'costs': recipe['Source'],
-                'start': recipe['StartDate'],
-                'end': recipe['EndDate'],
+                'start': arrow.get(recipe['StartDate']).datetime if recipe['StartDate'] else None,
+                'end': arrow.get(recipe['EndDate']).datetime if recipe['EndDate'] else None,
                 'rarity': recipe['rarity'],
             })
         for colour, troops in enumerate(self.soulforge_raw_data.get('pSummonTroopArray', [])):

@@ -48,7 +48,7 @@ DEFAULT_LANGUAGE = 'Default Language'
 
 class DiscordBot(BaseBot):
     BOT_NAME = 'garyatrics.com'
-    VERSION = '0.91.8'
+    VERSION = '0.91.9'
     NEEDED_PERMISSIONS = [
         'add_reactions',
         'read_messages',
@@ -308,10 +308,16 @@ class DiscordBot(BaseBot):
     async def soulforge(self, message, lang, **kwargs):
         title, craftable_items = self.expander.get_soulforge(lang)
         e = discord.Embed(title=title, description=_('[WEAPON_AVAILABLE_FROM_SOULFORGE]', lang), color=self.WHITE)
+
+        def time_left(r):
+            if r["end"] is None or r["start"] is None:
+                return ""
+            days = (r["end"] - r["start"]).days
+            return f'`{days} {_("[DAYS]", lang)}`'
         for category, recipes in craftable_items.items():
             recipes = sorted(recipes, key=operator.itemgetter('rarity_number', 'id'), reverse=True)
             message_lines = '\n'.join(
-                [f'{self.my_emojis.get(r["raw_rarity"])} {r["name"]} `#{r["id"]}`' for r in recipes])
+                [f'{self.my_emojis.get(r["raw_rarity"])} {r["name"]} {time_left(r)}' for r in recipes])
             e.add_field(name=category, value=message_lines, inline=True)
         await self.answer(message, e)
         if kwargs.get('lengthened'):
