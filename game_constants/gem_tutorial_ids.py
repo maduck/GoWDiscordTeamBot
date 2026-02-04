@@ -51,5 +51,8 @@ GEM_TUTORIAL_IDS = {
     'submerge': 3609,
     'enchant': 3610,
     'enrage': 3611,
+    'bleed': 3612,
+    'trap': 3613,
+    'poison': 3614,
     'lootgold': None,
 }
