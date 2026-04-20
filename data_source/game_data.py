@@ -931,7 +931,7 @@ class GameData:
             'id': self.event_raw_data['Id'],
             'shop_tiers': [self.store_data[gacha] for gacha in self.event_raw_data.get('GachaItems', [])
                            if gacha in self.store_data],
-            'kingdom_id': str(self.event_raw_data.get('Kingdom')),
+            'kingdom_id': str(self.get_current_event_kingdom_id()),
             'type': self.event_raw_data.get('Type'),
             'name': extract_name(self.event_raw_data),
             'lore': extract_lore(self.event_raw_data),
