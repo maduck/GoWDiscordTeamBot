@@ -223,6 +223,8 @@ class GameData:
     def populate_troops(self):
         for troop in self.data['Troops']:
             colors = convert_color_array(troop)
+            if 'SpellId' not in troop:
+                continue
             self.troops[troop['Id']] = {
                 'id': troop['Id'],
                 'name': troop['Name'],
