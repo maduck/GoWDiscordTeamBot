@@ -415,7 +415,7 @@ class DiscordBot(BaseBot):
             await self.answer(message, e)
             e.clear_fields()
             [e.add_field(name=field.name, value=field.value, inline=field.inline) for field in all_fields[25:]]
-            await self.answer(message, e)
+            await self.answer(message, e, no_interaction=True)
             return
         await self.answer(message, e)
 
