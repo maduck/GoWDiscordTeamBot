@@ -54,5 +54,12 @@ GEM_TUTORIAL_IDS = {
     'bleed': 3612,
     'trap': 3613,
     'poison': 3614,
+    'volcano': 3615,
+    'candygreen': 3616,
+    'candyred': 3616,
+    'candyblue': 3616,
+    'candyyellow': 3616,
+    'candypurple': 3616,
+    'candybrown': 3616,
     'lootgold': None,
 }
