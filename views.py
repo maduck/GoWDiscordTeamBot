@@ -10,7 +10,7 @@ from search import _
 from translations import LANGUAGE_CODE_MAPPING
 from util import chunks, flatten
 
-CACHE_VERSION = "1"
+CACHE_VERSION = "9.2.0r82677"
 
 
 class Views:
@@ -365,7 +365,7 @@ class Views:
                 title = f'{title[:250]} ...'
             if not text:
                 text = '-'
-            e.add_field(name=title, value=text, inline=False)
+            e.add_field(name=title, value=text[:6000], inline=False)
         result = [e]
         for i, image_url in enumerate(article['images']):
             if i >= len(result):
