@@ -785,6 +785,7 @@ class GameData:
             '[PET]': '[PET_RESCUE_PET]',
             '[CURSEDRUNE]': '[CURSED_RUNES]',
             '[EPICVAULTKEY]': '[EPIC_VAULT_KEYS]',
+            '[CRYSTAL]': '[CRYSTALS]',
         }
         return reward_translation.get(reward_type, reward_type).format(data=data)
 
