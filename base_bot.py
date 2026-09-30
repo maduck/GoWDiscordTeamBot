@@ -230,7 +230,7 @@ class BaseBot(discord.Client):
                 '```',
             ]
 
-            with self.session.post(host, data='\n'.join(data_lines), headers={
+            with await self.session.post(host, data='\n'.join(data_lines), headers={
                 'Title': f'Exception in {event}',
                 'Priority': 'urgent',
                 'Tags': 'rotating_light',

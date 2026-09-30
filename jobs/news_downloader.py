@@ -52,6 +52,9 @@ class NewsDownloader:
         except asyncio.TimeoutError:
             log.error('[NEWS] Timeout while fetching %s', source)
             return False
+        except aiohttp.client_exceptions.NonHttpUrlClientError:
+            log.error('[NEWS] Source is binary data, skipping for now...')
+            return False
         await asyncio.sleep(5)
         size = image.size
         ratio = size[0] / size[1]
